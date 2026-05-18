@@ -10,31 +10,31 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* CoFound.mg Design System */
+  /* CoFound.mg Design System - Premium Emerald/Slate Theme */
   --background: #ffffff;
-  --foreground: #0f172a;
+  --foreground: #020617; /* Slate 950 for deeper contrast */
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #020617;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #16a34a;
+  --popover-foreground: #020617;
+  --primary: #059669; /* Emerald 600 */
   --primary-foreground: #ffffff;
-  --primary-dark: #15803d;
-  --primary-light: #dcfce7;
-  --secondary: #f8fafc;
+  --primary-dark: #047857; /* Emerald 700 */
+  --primary-light: #ecfdf5; /* Emerald 50 */
+  --secondary: #f1f5f9; /* Slate 100 */
   --secondary-foreground: #0f172a;
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
-  --accent: #f8fafc;
+  --muted: #f8fafc; /* Slate 50 */
+  --muted-foreground: #64748b; /* Slate 500 */
+  --accent: #f1f5f9;
   --accent-foreground: #0f172a;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: #e2e8f0;
   --input: #e2e8f0;
-  --ring: #16a34a;
-  --surface: #f8fafc;
-  --female: #a855f7;
-  --female-light: #f3e8ff;
+  --ring: #059669;
+  --surface: #ffffff;
+  --female: #8b5cf6; /* Violet 500 */
+  --female-light: #ede9fe; /* Violet 100 */
 
   --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
   --font-heading: 'Sora', system-ui, sans-serif;

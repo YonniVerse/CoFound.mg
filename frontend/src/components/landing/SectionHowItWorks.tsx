@@ -20,7 +20,7 @@ const iconMap: Record<string, LucideIcon> = {
 
 export function SectionHowItWorks({ steps }: SectionHowItWorksProps) {
   return (
-    <section id="how-it-works" className="py-24 bg-white">
+    <section id="how-it-works" className="py-24 bg-slate-50/50">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">
@@ -39,22 +39,22 @@ export function SectionHowItWorks({ steps }: SectionHowItWorksProps) {
             const Icon = iconMap[step.icon] || UserPlus;
 
             return (
-              <div key={step.id} className="relative flex flex-col items-center text-center">
+              <div key={step.id} className="relative flex flex-col items-center text-center bg-white rounded-3xl p-8 border border-slate-200/60 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1">
                 {/* Decorative number */}
-                <span className="font-heading font-extrabold text-5xl text-primary-light select-none absolute -top-3 right-4 opacity-80">
+                <span className="font-heading font-extrabold text-7xl text-slate-50 select-none absolute -top-4 right-4 pointer-events-none">
                   {step.number}
                 </span>
 
                 {/* Icon */}
-                <div className="relative z-10 w-14 h-14 rounded-xl bg-primary-light flex items-center justify-center mb-5">
-                  <Icon className="w-6 h-6 text-primary" strokeWidth={1.5} />
+                <div className="relative z-10 w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 ring-4 ring-white">
+                  <Icon className="w-7 h-7 text-primary" strokeWidth={2} />
                 </div>
 
                 {/* Text */}
-                <h3 className="font-heading font-semibold text-lg text-slate-900 mb-2">
+                <h3 className="font-heading font-semibold text-xl text-slate-900 mb-3 relative z-10">
                   {step.title}
                 </h3>
-                <p className="text-slate-500 text-sm leading-relaxed max-w-[260px]">
+                <p className="text-slate-500 text-sm leading-relaxed max-w-[260px] relative z-10">
                   {step.description}
                 </p>
               </div>

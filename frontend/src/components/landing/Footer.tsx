@@ -94,7 +94,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-slate-800 pt-6">
           <p className="text-xs text-slate-500 text-center">
-            © 2025 CoFound.mg — Hackathon ITOVIA · École Polytechnique Madagascar
+            © {new Date().getFullYear()} CoFound.mg. Tous droits réservés.
           </p>
         </div>
       </div>

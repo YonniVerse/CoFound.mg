@@ -31,7 +31,7 @@ export function SectionForWho({ profileTypes }: SectionForWhoProps) {
           {profileTypes.map((profile) => (
             <div
               key={profile.id}
-              className="bg-white border border-slate-200 rounded-xl p-5 transition-all duration-200 hover:shadow-md hover:border-green-200 group"
+              className="bg-white border border-slate-200/60 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20 hover:-translate-y-1 group"
             >
               {/* Icon */}
               <div className="w-11 h-11 rounded-full bg-primary-light flex items-center justify-center mb-4 text-lg">
