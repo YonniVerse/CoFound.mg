@@ -1,4 +1,4 @@
-# PRD — CoFound.mg (Miaraka)
+# PRD — CoFound.mg 
 **Plateforme de Co-Fondateurs Étudiants — Madagascar**
 **Version 1.0 — Hackathon ITOVIA 2025-2026**
 
@@ -6,7 +6,7 @@
 
 ## 1. Vision du Produit
 
-CoFound.mg (nom de marque : **Miaraka**, "Ensemble" en malgache) est une plateforme web qui connecte des étudiants de formations différentes pour co-fonder des startups. L'algorithme de matching repose sur la **complémentarité des compétences**, pas la similarité.
+CoFound.mg est une plateforme web qui connecte des étudiants de formations différentes pour co-fonder des startups. L'algorithme de matching repose sur la **complémentarité des compétences**, pas la similarité.
 
 Le produit répond à deux constats :
 1. Les meilleures startups naissent d'équipes pluridisciplinaires — mais les grandes écoles malgaches fonctionnent en silos étanches.
@@ -417,8 +417,7 @@ Toutes les données sont statiques en JSON pour la démo. Inclure :
 
 | Terme | Définition |
 |-------|------------|
-| Miaraka | Nom malgache signifiant "Ensemble" — nom de marque local |
-| CoFound.mg | Nom de domaine et nom tech du produit |
+| CoFound.mg | Nom du produit |
 | Co-fondateur | Étudiant cherchant à rejoindre ou co-créer une startup |
 | Matching | Mise en relation basée sur la complémentarité des compétences |
 | Impact Féminin | Label pour les projets ciblant des problèmes spécifiquement vécus par les femmes |
