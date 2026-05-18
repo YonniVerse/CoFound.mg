@@ -1,89 +1,34 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  Sun,
-  Moon,
-  ArrowUp,
-  Mail,
-  Instagram,
-  Linkedin,
-  Twitter,
-  Heart
-} from "lucide-react";
+import { Mail, Heart, ExternalLink } from "lucide-react";
 
-function handleScrollTop() {
-  window.scroll({
-    top: 0,
-    behavior: "smooth",
-  });
-}
+const TwitterIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 22.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
 
-// Local Theme Toggle Component
-const ThemeToggle = () => {
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
-    if (typeof window !== "undefined") {
-      return document.documentElement.classList.contains("dark") ? "dark" : "light";
-    }
-    return "light";
-  });
+const InstagramIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+  </svg>
+);
 
-  const toggleTheme = (newTheme: "light" | "dark") => {
-    if (newTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-    setTheme(newTheme);
-  };
-
-  return (
-    <div className="flex items-center justify-center">
-      <div className="flex items-center rounded-full border border-dotted border-slate-300 dark:border-slate-800 p-1 bg-white dark:bg-slate-900 shadow-2xs">
-        <button
-          onClick={() => toggleTheme("light")}
-          className={`mr-3 rounded-full p-2 transition-colors ${
-            theme === "light" 
-              ? "bg-slate-950 text-white" 
-              : "text-slate-500 hover:text-slate-900 dark:text-slate-400"
-          }`}
-        >
-          <Sun className="h-4 w-4" strokeWidth={1.5} />
-          <span className="sr-only">Light</span>
-        </button>
-
-        <button 
-          type="button" 
-          onClick={handleScrollTop}
-          className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 transition-colors"
-        >
-          <ArrowUp className="h-3 w-3" />
-          <span className="sr-only">Top</span>
-        </button>
-
-        <button
-          onClick={() => toggleTheme("dark")}
-          className={`ml-3 rounded-full p-2 transition-colors ${
-            theme === "dark" 
-              ? "bg-slate-950 text-white dark:bg-slate-800" 
-              : "text-slate-500 hover:text-slate-900 dark:text-slate-400"
-          }`}
-        >
-          <Moon className="h-4 w-4" strokeWidth={1.5} />
-          <span className="sr-only">Dark</span>
-        </button>
-      </div>
-    </div>
-  );
-};
+const LinkedinIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+  </svg>
+);
 
 const navigation = {
   categories: [
     {
-      id: "platform",
+      id: "cofound",
       name: "CoFound.mg",
       sections: [
         {
-          id: "explore",
+          id: "plateforme",
           name: "Plateforme",
           items: [
             { name: "Explorer les talents", href: "/projects" },
@@ -92,7 +37,7 @@ const navigation = {
           ],
         },
         {
-          id: "impact",
+          id: "engagement",
           name: "Engagement",
           items: [
             { name: "Charte Mixité 50/50", href: "/impact" },
@@ -112,41 +57,41 @@ const navigation = {
   ],
 };
 
-const Underline = `hover:-translate-y-1 border border-dotted border-slate-300 dark:border-slate-800 rounded-xl p-2.5 transition-transform text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white`;
+const Underline = `hover:-translate-y-1 border border-slate-200 rounded-xl p-2.5 transition-transform bg-white shadow-xs`;
 
 export function Footer() {
   return (
-    <footer className="border-t border-slate-200 dark:border-slate-900 px-4 py-12 bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400">
-      <div className="relative mx-auto grid max-w-7xl items-center justify-center gap-6 pb-6 md:flex border-b border-dotted border-slate-200 dark:border-slate-900">
-        <Link to="/" className="flex items-center justify-center shrink-0">
-          <span className="font-sans font-black text-xl tracking-tight text-slate-950 dark:text-white">CoFound</span>
-          <span className="font-sans text-xl font-black text-indigo-500">.mg</span>
+    <footer className="border-t border-slate-200 px-4 mx-auto w-full bg-slate-50">
+      <div className="relative mx-auto grid max-w-7xl items-center justify-center gap-6 p-10 pb-0 md:flex flex-col">
+        <Link to="/" className="flex items-center gap-0.5 mb-2">
+            <span className="font-sans font-black text-2xl tracking-tight text-slate-950">CoFound</span>
+            <span className="font-sans text-2xl font-black text-indigo-600">.mg</span>
         </Link>
-        <p className="bg-transparent text-center text-xs leading-5 text-slate-500 dark:text-slate-400 md:text-left max-w-4xl">
-          Propulser la prochaine génération de licornes malgaches en connectant les compétences complémentaires au niveau universitaire. 
-          Nous croyons en la force de la parité et de la complémentarité pour structurer l'avenir de l'écosystème entrepreneurial de Madagascar. 
-          Inspiré par les plus hauts standards du Y Combinator.
+        <p className="bg-transparent text-center text-sm leading-relaxed text-slate-600 md:text-center max-w-3xl">
+          Bienvenue sur CoFound.mg, où la créativité rencontre la stratégie pour donner vie à votre vision. Nous sommes passionnés par la connexion des esprits brillants. Notre mission est d'autonomiser les étudiants et futurs fondateurs pour qu'ils se démarquent sur le marché. Propulsez la prochaine génération de licornes malgaches en connectant les compétences complémentaires au niveau universitaire.
         </p>
       </div>
 
-      <div className="mx-auto max-w-7xl px-6 py-8">
-        <div className="py-4">
+      <div className="mx-auto max-w-5xl px-6 py-10">
+        <div className="border-b border-slate-200"> </div>
+        <div className="py-10">
           {navigation.categories.map((category) => (
             <div
-              key={category.id}
-              className="grid grid-cols-1 md:grid-cols-3 gap-8 leading-6 text-center md:text-left"
+              key={category.name}
+              className="grid grid-cols-1 sm:grid-cols-3 flex-row justify-between gap-6 leading-6 md:flex w-full"
             >
               {category.sections.map((section) => (
-                <div key={section.id} className="flex flex-col items-center md:items-start">
-                  <h4 className="font-sans font-bold text-xs uppercase tracking-widest text-slate-900 dark:text-white mb-4">
-                    {section.name}
-                  </h4>
-                  <ul role="list" className="flex flex-col space-y-2.5">
+                <div key={section.name} className="flex-1 text-center md:text-left">
+                  <h3 className="font-semibold text-slate-950 mb-4">{section.name}</h3>
+                  <ul
+                    role="list"
+                    className="flex flex-col space-y-2"
+                  >
                     {section.items.map((item) => (
                       <li key={item.name} className="flow-root">
                         <Link
                           to={item.href}
-                          className="text-sm text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors"
+                          className="text-sm text-slate-500 hover:text-indigo-600 font-medium transition-colors"
                         >
                           {item.name}
                         </Link>
@@ -158,59 +103,68 @@ export function Footer() {
             </div>
           ))}
         </div>
-        <div className="border-b border-dotted border-slate-200 dark:border-slate-900 mt-8"></div>
+        <div className="border-b border-slate-200"> </div>
       </div>
 
-      <div className="flex flex-col md:flex-row items-center justify-between gap-6 max-w-7xl mx-auto px-6">
-        <div className="flex flex-wrap items-center justify-center gap-4">
+      <div className="flex flex-wrap justify-center gap-y-6">
+        <div className="flex flex-wrap items-center justify-center gap-6 gap-y-4 px-6">
           <a
             aria-label="Mail"
             href="mailto:contact@cofound.mg"
+            rel="noreferrer"
+            target="_blank"
             className={Underline}
           >
-            <Mail strokeWidth={1.5} className="h-4 w-4" />
+            <Mail strokeWidth={1.5} className="h-5 w-5 text-slate-700" />
           </a>
           <a
             aria-label="Twitter"
             href="https://x.com/cofound_mg"
-            target="_blank"
             rel="noreferrer"
+            target="_blank"
             className={Underline}
           >
-            <Twitter className="h-4 w-4" />
+            <TwitterIcon className="h-5 w-5 text-slate-700" />
           </a>
           <a
             aria-label="Instagram"
-            href="https://instagram.com/cofound_mg"
-            target="_blank"
+            href="https://www.instagram.com/cofound.mg/"
             rel="noreferrer"
+            target="_blank"
             className={Underline}
           >
-            <Instagram className="h-4 w-4" />
+            <InstagramIcon className="h-5 w-5 text-slate-700" />
           </a>
           <a
             aria-label="LinkedIn"
-            href="https://linkedin.com/company/cofound-mg"
-            target="_blank"
+            href="https://www.linkedin.com/company/cofound-mg"
             rel="noreferrer"
+            target="_blank"
             className={Underline}
           >
-            <Linkedin className="h-4 w-4" />
+            <LinkedinIcon className="h-5 w-5 text-slate-700" />
           </a>
         </div>
-        
-        <ThemeToggle />
       </div>
 
-      <div className="mx-auto mt-8 flex flex-col justify-between text-center text-xs max-w-7xl border-t border-slate-100 dark:border-slate-900 pt-6">
-        <div className="flex flex-row items-center justify-center gap-1 text-slate-500 dark:text-slate-500 font-medium">
-          <span>© {new Date().getFullYear()} CoFound.mg. Fait avec</span>
-          <Heart className="text-red-500 mx-1 h-3.5 w-3.5 animate-pulse fill-red-500" />
-          <span>pour l'écosystème entrepreneurial de Madagascar.</span>
+      <div className="mx-auto mb-10 mt-10 flex flex-col justify-between text-center text-xs md:max-w-7xl">
+        <div className="flex flex-row items-center justify-center gap-1 text-slate-500 font-medium">
+          <span> © </span>
+          <span>{new Date().getFullYear()}</span>
+          <span>Made with</span>
+          <Heart className="text-red-500 mx-1 h-4 w-4 animate-pulse fill-red-500" />
+          <span> by </span>
+          <span className="hover:text-indigo-600 cursor-pointer text-slate-900 transition-colors">
+            <Link
+              aria-label="Home"
+              className="font-bold inline-flex items-center gap-1"
+              to="/"
+            >
+              CoFound.mg <ExternalLink className="h-3 w-3" />
+            </Link>
+          </span>
         </div>
       </div>
     </footer>
   );
 }
-
-export default Footer;

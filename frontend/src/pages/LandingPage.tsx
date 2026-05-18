@@ -9,7 +9,7 @@ import { SectionForWho } from "@/components/landing/SectionForWho";
 import { SectionInclusion } from "@/components/landing/SectionInclusion";
 import { SectionTestimonials } from "@/components/landing/SectionTestimonials";
 import { SectionCTA } from "@/components/landing/SectionCTA";
-import { Footer } from "@/components/landing/Footer";
+import { Footer } from "@/components/shared/Footer";
 
 interface LandingData {
   stats: { id: string; value: string; label: string }[];
