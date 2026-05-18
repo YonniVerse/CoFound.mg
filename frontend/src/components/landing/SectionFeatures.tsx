@@ -20,19 +20,19 @@ const iconMap: Record<string, LucideIcon> = {
 
 export function SectionFeatures({ features }: SectionFeaturesProps) {
   return (
-    <section className="py-24 bg-white border-t border-slate-100">
+    <section className="py-24 bg-background border-t border-border/40">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 rounded-full bg-slate-50 border border-slate-200 px-4 py-1.5 mb-6">
-            <span className="text-slate-700 text-xs font-semibold tracking-wide uppercase">
+          <div className="inline-flex items-center gap-2 rounded-full bg-muted border border-border px-4 py-1.5 mb-6">
+            <span className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
               Tout ce dont vous avez besoin
             </span>
           </div>
-          <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-slate-950">
+          <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground">
             Les outils pour réussir
           </h2>
-          <p className="mt-4 text-slate-500 text-lg max-w-2xl mx-auto">
+          <p className="mt-4 text-muted-foreground text-lg max-w-2xl mx-auto">
             Une plateforme pensée pour faciliter les rencontres et accélérer vos premiers pas d'entrepreneurs.
           </p>
         </div>
@@ -45,15 +45,15 @@ export function SectionFeatures({ features }: SectionFeaturesProps) {
             return (
               <div
                 key={feature.id}
-                className="bg-white border border-slate-200 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20 hover:-translate-y-1"
+                className="bg-card border border-border rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20 hover:-translate-y-1"
               >
-                <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center mb-5">
-                  <Icon className="w-6 h-6 text-slate-900" strokeWidth={1.5} />
+                <div className="w-12 h-12 rounded-xl bg-muted border border-border/50 flex items-center justify-center mb-5">
+                  <Icon className="w-6 h-6 text-foreground" strokeWidth={1.5} />
                 </div>
-                <h3 className="font-heading font-bold text-lg text-slate-950 mb-3">
+                <h3 className="font-heading font-bold text-lg text-foreground mb-3">
                   {feature.title}
                 </h3>
-                <p className="text-slate-600 text-sm leading-relaxed">
+                <p className="text-muted-foreground text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </div>

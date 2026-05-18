@@ -12,7 +12,7 @@
 :root {
   /* CoFound.mg Design System - Premium High-Contrast Theme */
   --background: #ffffff;
-  --foreground: #090d16; /* Entre le Slate 950 et le noir pur, pour une typographie "encre noire" très premium */
+  --foreground: #090d16; /* Le Noir Premium de l'interface */
   
   --card: #ffffff;
   --card-foreground: #090d16;
@@ -21,44 +21,45 @@
   --popover-foreground: #090d16;
   
   /* L'Ancre Tech : Indigo Électrique */
-  --primary: #4f46e5; /* Indigo 600 */
+  --primary: #4f46e5; 
   --primary-foreground: #ffffff;
-  --primary-dark: #4338ca; /* Indigo 700 */
-  --primary-light: #f5f3ff; /* Indigo 50 */
+  --primary-dark: #4338ca; 
+  --primary-light: #f5f3ff; 
   
-  /* L'Étincelle Business : Orange Sienne (Complémentaire parfait de l'Indigo) */
-  --secondary: #f97316; /* Orange 500 */
+  /* L'Étincelle Business : Orange Sienne */
+  --secondary: #f97316; 
   --secondary-foreground: #ffffff;
-  --secondary-light: #fff7ed; /* Orange 50 */
+  --secondary-light: #fff7ed; 
   
-  --muted: #f8fafc; /* Slate 50 */
-  --muted-foreground: #475569; /* Slate 600 - Meilleur contraste pour l'accessibilité */
+  --muted: #f8fafc; 
+  --muted-foreground: #64748b; /* Slate 500 pour une lisibilité optimale */
   
-  --accent: #f1f5f9; /* Slate 100 */
+  --accent: #f1f5f9; 
   --accent-foreground: #090d16;
   
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   
-  /* Bordures ultra-fines style SaaS haut de gamme */
-  --border: #e2e8f0; /* Slate 200 */
+  /* Bordures et Structures Systèmes */
+  --border: #e2e8f0; 
+  --border-dark: #334155; /* Slate 700 dédié aux séparateurs sur fond sombre (Navbar/CTA) */
   --input: #e2e8f0;
-  --ring: #4f46e5; /* Aligné sur le Primary */
+  --ring: #4f46e5; 
   
-  --surface: #f8fafc; /* Remplacé par une surface légèrement grisée pour les sections Bento */
+  --surface: #f8fafc; 
   
-  /* Impact Féminin : Un violet royal profond au lieu du pastel criard */
-  --female: #7c3aed; /* Violet 600 */
-  --female-light: #f5f3ff; /* Violet 50 */
+  /* Impact Féminin */
+  --female: #7c3aed; 
+  --female-light: #f5f3ff; 
 
-  /* Typographie chirurgicale */
+  /* Typographie */
   --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
   --font-heading: 'Sora', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  --radius: 0.75rem; /* Légèrement augmenté pour un aspect moderne sans être trop rond */
+  --radius: 0.75rem;
 
-  /* Ombres réajustées : Moins diffuses, effet "hard surface" très propre */
+  /* Ombres Physiques */
   --shadow-2xs: 0px 1px 2px 0px rgba(9, 13, 22, 0.02);
   --shadow-xs: 0px 1px 2px 0px rgba(9, 13, 22, 0.03);
   --shadow-sm: 0px 2px 4px 0px rgba(9, 13, 22, 0.04);
@@ -68,7 +69,7 @@
   --shadow-xl: 0px 32px 48px -12px rgba(9, 13, 22, 0.14);
   --shadow-2xl: 0px 44px 64px -18px rgba(9, 13, 22, 0.18);
 
-  --tracking-normal: -0.015em; /* Un "kerning" légèrement resserré par défaut rend le texte beaucoup plus pro */
+  --tracking-normal: -0.015em;
 }
 
 @theme inline {
@@ -92,6 +93,7 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
+  --color-border-dark: var(--border-dark);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-surface: var(--surface);
@@ -131,14 +133,12 @@
     @apply border-border/80 outline-ring/40;
   }
   body {
-    @apply bg-background text-foreground antialiased selection:bg-indigo-100 selection:text-indigo-900;
+    @apply bg-background text-foreground antialiased selection:bg-primary-light selection:text-primary-dark;
     letter-spacing: var(--tracking-normal);
   }
   html {
     @apply font-sans scroll-smooth;
   }
-  
-  /* Lissage parfait des titres en Sora */
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading tracking-tight;
   }

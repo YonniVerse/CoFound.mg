@@ -15,23 +15,22 @@ const sizeClasses: Record<AvatarSize, string> = {
   lg: "w-16 h-16 text-lg",
 };
 
-// Generate a consistent pastel color from a name string
-function hashColor(name: string): string {
+// Distribution stricte et équilibrée selon tes jetons système
+function getSemanticThemeColor(name: string): string {
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
-  const colors = [
-    "bg-emerald-100 text-emerald-700",
-    "bg-sky-100 text-sky-700",
-    "bg-amber-100 text-amber-700",
-    "bg-rose-100 text-rose-700",
-    "bg-violet-100 text-violet-700",
-    "bg-teal-100 text-teal-700",
-    "bg-orange-100 text-orange-700",
-    "bg-indigo-100 text-indigo-700",
+  
+  const designSystemCombos = [
+    "bg-primary-light text-primary border border-primary/10",
+    "bg-secondary-light text-secondary border border-secondary/10",
+    "bg-female-light text-female border border-female/10",
+    "bg-muted text-foreground border border-border",
+    "bg-accent text-accent-foreground border border-border/50",
   ];
-  return colors[Math.abs(hash) % colors.length];
+  
+  return designSystemCombos[Math.abs(hash) % designSystemCombos.length];
 }
 
 function getInitials(name: string): string {
@@ -49,7 +48,7 @@ export function Avatar({ name, src, size = "md", className }: AvatarProps) {
       <img
         src={src}
         alt={name}
-        className={cn("rounded-full object-cover", sizeClasses[size], className)}
+        className={cn("rounded-full object-cover border border-border/60", sizeClasses[size], className)}
       />
     );
   }
@@ -57,9 +56,9 @@ export function Avatar({ name, src, size = "md", className }: AvatarProps) {
   return (
     <div
       className={cn(
-        "rounded-full flex items-center justify-center font-semibold select-none",
+        "rounded-full flex items-center justify-center font-bold select-none tracking-tighter",
         sizeClasses[size],
-        hashColor(name),
+        getSemanticThemeColor(name),
         className
       )}
       aria-label={name}

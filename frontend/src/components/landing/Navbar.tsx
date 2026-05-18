@@ -25,20 +25,21 @@ export function Navbar() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-20 flex items-center",
         scrolled
-          ? "bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 h-16 text-white"
-          : "bg-transparent text-slate-900"
+          ? "bg-foreground/90 backdrop-blur-md border-b border-border-dark/40 h-16 text-background"
+          : "bg-transparent text-foreground"
       )}
     >
       <div className="max-w-7xl mx-auto px-6 w-full flex items-center justify-between">
-        {/* Logo Identity */}
+        
+        {/* Identité de marque */}
         <Link to="/" className="flex items-center gap-1 group">
-          <span className={cn("font-sans text-xl font-black tracking-tight transition-colors", scrolled ? "text-white" : "text-slate-950")}>
+          <span className={cn("font-sans text-xl font-black tracking-tight transition-colors", scrolled ? "text-background" : "text-foreground")}>
             CoFound
           </span>
-          <span className="font-sans text-xl font-black text-indigo-500 group-hover:text-orange-500 transition-colors">.mg</span>
+          <span className="font-sans text-xl font-black text-primary group-hover:text-secondary transition-colors">.mg</span>
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Navigation Grand Écran */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <a
@@ -47,8 +48,8 @@ export function Navbar() {
               className={cn(
                 "text-sm font-medium tracking-wide transition-colors duration-200",
                 scrolled 
-                  ? "text-slate-400 hover:text-white" 
-                  : "text-slate-600 hover:text-slate-950"
+                  ? "text-muted-foreground/80 hover:text-background" 
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               {link.label}
@@ -56,19 +57,19 @@ export function Navbar() {
           ))}
         </div>
 
-        {/* Desktop CTA */}
+        {/* Boutons d'actions Grand Écran */}
         <div className="hidden md:flex items-center gap-4">
           <Button 
             variant="ghost" 
             size="sm" 
-            className={cn("text-sm font-medium", scrolled ? "text-slate-300 hover:text-white hover:bg-slate-900" : "text-slate-700 hover:text-slate-950")} 
+            className={cn("text-sm font-medium", scrolled ? "text-muted-foreground/90 hover:text-background hover:bg-background/10" : "")} 
             asChild
           >
             <Link to="/login">Se connecter</Link>
           </Button>
           <Button 
+            variant="default"
             size="sm" 
-            className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-4 font-medium shadow-lg shadow-indigo-600/10 transition-all"
             asChild
           >
             <Link to="/signup" className="flex items-center gap-1.5">
@@ -77,9 +78,9 @@ export function Navbar() {
           </Button>
         </div>
 
-        {/* Mobile Toggle */}
+        {/* Menu Mobile Triggers */}
         <button
-          className={cn("md:hidden p-2 rounded-lg", scrolled ? "text-slate-200" : "text-slate-800")}
+          className={cn("md:hidden p-2 rounded-lg transition-colors", scrolled ? "text-background" : "text-foreground")}
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >
@@ -87,24 +88,24 @@ export function Navbar() {
         </button>
       </div>
 
-      {/* Mobile drawer */}
+      {/* Menu Mobile déroulant */}
       {mobileOpen && (
-        <div className="absolute top-full left-0 right-0 bg-slate-950 border-b border-slate-800 px-6 py-6 flex flex-col gap-4 animate-in fade-in slide-in-from-top-5 duration-200">
+        <div className="absolute top-full left-0 right-0 bg-foreground border-b border-border-dark/60 px-6 py-6 flex flex-col gap-4 animate-in fade-in slide-in-from-top-5 duration-200">
           {navLinks.map((link) => (
             <a
               key={link.label}
               href={link.href}
-              className="text-base font-medium text-slate-300 py-2"
+              className="text-base font-medium text-muted-foreground/90 hover:text-background py-2 transition-colors"
               onClick={() => setMobileOpen(false)}
             >
               {link.label}
             </a>
           ))}
-          <div className="flex flex-col gap-3 pt-4 border-t border-slate-900">
-            <Button variant="outline" className="border-slate-800 text-white hover:bg-slate-900" asChild>
+          <div className="flex flex-col gap-3 pt-4 border-t border-border-dark/20">
+            <Button variant="outline" className="border-border-dark bg-transparent text-background hover:bg-background/10 hover:text-background" asChild>
               <Link to="/login">Se connecter</Link>
             </Button>
-            <Button className="bg-indigo-600 text-white hover:bg-indigo-500" asChild>
+            <Button variant="default" asChild>
               <Link to="/signup">Rejoindre</Link>
             </Button>
           </div>

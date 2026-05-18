@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-type SkillTagVariant = "green" | "slate" | "purple" | "indigo" | "orange";
+type SkillTagVariant = "slate" | "female" | "indigo" | "orange";
 type SkillTagSize = "sm" | "md";
 
 interface SkillTagProps {
@@ -11,23 +11,22 @@ interface SkillTagProps {
 }
 
 const variantClasses: Record<SkillTagVariant, string> = {
-  green: "bg-green-100 text-green-700",
-  slate: "bg-slate-100 text-slate-600",
-  purple: "bg-purple-100 text-purple-700",
-  indigo: "bg-primary-light text-primary",
-  orange: "bg-secondary-light text-secondary",
+  slate: "bg-muted text-muted-foreground border border-border/40",
+  female: "bg-female-light text-female border border-female/10",
+  indigo: "bg-primary-light text-primary border border-primary/10",
+  orange: "bg-secondary-light text-secondary border border-secondary/10",
 };
 
 const sizeClasses: Record<SkillTagSize, string> = {
-  sm: "px-2 py-0.5 text-xs",
-  md: "px-2.5 py-1 text-sm",
+  sm: "px-2 py-0.5 text-xs font-semibold rounded-md",
+  md: "px-2.5 py-1 text-sm font-semibold rounded-lg",
 };
 
-export function SkillTag({ label, variant = "green", size = "sm", className }: SkillTagProps) {
+export function SkillTag({ label, variant = "slate", size = "sm", className }: SkillTagProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-md font-medium whitespace-nowrap",
+        "inline-flex items-center whitespace-nowrap tracking-tight transition-colors",
         variantClasses[variant],
         sizeClasses[size],
         className
