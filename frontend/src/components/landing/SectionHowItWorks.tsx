@@ -20,41 +20,54 @@ const iconMap: Record<string, LucideIcon> = {
 
 export function SectionHowItWorks({ steps }: SectionHowItWorksProps) {
   return (
-    <section id="how-it-works" className="py-24 bg-slate-50/50">
+    <section id="how-it-works" className="py-24 bg-white border-t border-slate-100 relative">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl text-slate-900">
-            Comment ça marche ?
+        
+        {/* Header Minimaliste */}
+        <div className="text-center max-w-xl mx-auto mb-20">
+          <span className="text-[10px] uppercase font-bold tracking-widest text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
+            Le Pipeline CoFound
+          </span>
+          <h2 className="font-sans font-black text-3xl sm:text-4xl text-slate-950 mt-4 tracking-tight">
+            Du profil solo à la startup prête pour l'incubation
           </h2>
-          <p className="mt-3 text-slate-500 text-base">Trois étapes. Pas plus.</p>
         </div>
 
-        {/* Steps grid */}
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-          {/* Connector lines (desktop only) */}
-          <div className="hidden md:block absolute top-16 left-[calc(33.33%+1rem)] right-[calc(33.33%+1rem)] border-t-2 border-dashed border-slate-200" />
+        {/* Pipeline Grid */}
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+          
+          {/* Ligne de flux horizontale élégante (Desktop) */}
+          <div className="hidden md:block absolute top-12 left-[15%] right-[15%] h-[1px] bg-linear-to-r from-indigo-200 via-orange-200 to-slate-200 pointer-events-none" />
 
-          {steps.map((step) => {
+          {steps.map((step, idx) => {
             const Icon = iconMap[step.icon] || UserPlus;
+            // Aligner les bordures d'accentuation sur le parcours utilisateur
+            const accentColors = [
+              "border-indigo-500 text-indigo-600 bg-indigo-50",
+              "border-slate-950 text-slate-950 bg-slate-50",
+              "border-orange-500 text-orange-600 bg-orange-50"
+            ];
 
             return (
-              <div key={step.id} className="relative flex flex-col items-center text-center bg-white rounded-3xl p-8 border border-slate-200/60 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1">
-                {/* Decorative number */}
-                <span className="font-heading font-extrabold text-7xl text-slate-50 select-none absolute -top-4 right-4 pointer-events-none">
-                  {step.number}
-                </span>
-
-                {/* Icon */}
-                <div className="relative z-10 w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 ring-4 ring-white">
-                  <Icon className="w-7 h-7 text-primary" strokeWidth={2} />
+              <div 
+                key={step.id} 
+                className="relative bg-white border border-slate-200/70 rounded-2xl p-8 shadow-xs hover:shadow-md transition-all duration-300 group flex flex-col items-start"
+              >
+                {/* Badge Étape Numérique */}
+                <div className={`w-8 h-8 rounded-lg border flex items-center justify-center font-mono text-xs font-bold mb-6 relative z-10 ${accentColors[idx]}`}>
+                  0{step.number || idx + 1}
                 </div>
 
-                {/* Text */}
-                <h3 className="font-heading font-semibold text-xl text-slate-900 mb-3 relative z-10">
+                {/* Conteneur de l'icône */}
+                <div className="w-12 h-12 rounded-xl bg-slate-950 text-white flex items-center justify-center mb-6 shadow-sm group-hover:scale-105 transition-transform">
+                  <Icon className="w-5 h-5" strokeWidth={2} />
+                </div>
+
+                {/* Titre & Description */}
+                <h3 className="font-sans font-bold text-lg text-slate-950 mb-2 tracking-tight">
                   {step.title}
                 </h3>
-                <p className="text-slate-500 text-sm leading-relaxed max-w-[260px] relative z-10">
+                <p className="text-slate-500 text-sm leading-relaxed font-normal">
                   {step.description}
                 </p>
               </div>

@@ -5,33 +5,39 @@ import { Button } from "@/components/ui/button";
 export function SectionCTA() {
   return (
     <section className="py-24 bg-slate-950 relative overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
+      {/* Pattern de fond micro-géométrique strict */}
+      <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-40" />
       
-      <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
-        <h2 className="font-heading font-extrabold text-4xl sm:text-5xl text-white">
-          Prêt à trouver ton équipe ?
+      <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
+        <span className="text-orange-500 font-mono text-xs font-bold uppercase tracking-widest bg-orange-500/10 px-3 py-1 rounded-md">
+          Accès gratuit pour les étudiants
+        </span>
+        
+        <h2 className="font-sans font-black text-4xl sm:text-5xl text-white tracking-tight mt-6 max-w-2xl mx-auto leading-none">
+          Construis ton équipe. Lance ta startup.
         </h2>
-        <p className="mt-5 text-slate-400 text-lg sm:text-xl font-medium max-w-2xl mx-auto">
-          Rejoins 847 étudiants qui construisent l'avenir de Madagascar.
+        
+        <p className="mt-6 text-slate-400 text-base sm:text-lg font-normal max-w-xl mx-auto leading-relaxed">
+          Rejoins plus de 800 talents issus de Polytechnique, de l'INSCAE, de la MISA et de l'ISCAM prêts à s'associer.
         </p>
-        <div className="flex flex-wrap justify-center gap-4 mt-10">
+        
+        <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10 max-w-md mx-auto">
           <Button
             size="lg"
-            className="bg-primary hover:bg-emerald-500 text-white shadow-xl shadow-primary/20 rounded-xl h-14 px-8 font-heading font-semibold text-lg transition-all hover:scale-105"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-12 px-6 font-semibold text-sm transition-all"
             asChild
           >
-            <Link to="/signup">
-              Créer mon profil gratuitement <ArrowRight className="ml-2 h-5 w-5" />
+            <Link to="/signup" className="flex items-center justify-center gap-2">
+              Créer mon profil fondateur <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
           <Button
             variant="outline"
             size="lg"
-            className="border-slate-700 bg-slate-900/50 text-white hover:bg-slate-800 hover:text-white rounded-xl h-14 px-8 font-heading font-medium text-lg transition-all hover:scale-105"
+            className="border-slate-800 bg-slate-900/40 text-slate-300 hover:bg-slate-900 hover:text-white rounded-xl h-12 px-6 font-medium text-sm transition-all"
             asChild
           >
-            <Link to="/projects">Voir les projets</Link>
+            <Link to="/projects">Voir les profils</Link>
           </Button>
         </div>
       </div>

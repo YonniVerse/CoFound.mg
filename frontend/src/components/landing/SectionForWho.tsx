@@ -1,4 +1,5 @@
 import { SkillTag } from "@/components/shared/SkillTag";
+import { ArrowRightLeft } from "lucide-react";
 
 interface ProfileType {
   id: string;
@@ -14,58 +15,59 @@ interface SectionForWhoProps {
 
 export function SectionForWho({ profileTypes }: SectionForWhoProps) {
   return (
-    <section className="py-24 bg-surface">
+    <section className="py-24 bg-slate-950 text-white relative">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl text-slate-900">
-            Fait pour tous les profils
+        
+        {/* Header Minimaliste style YC */}
+        <div className="max-w-3xl mb-20">
+          <p className="text-xs uppercase font-bold tracking-widest text-indigo-400 mb-3">La loi de la complémentarité</p>
+          <h2 className="font-sans font-black text-4xl sm:text-5xl tracking-tight leading-none text-white">
+            Peu importe ta formation, ta pièce manquante est ici.
           </h2>
-          <p className="mt-3 text-slate-500 text-base">
-            La complémentarité crée les meilleures équipes.
-          </p>
         </div>
 
-        {/* Profiles grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        {/* Grid System Typé Dashboard */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {profileTypes.map((profile) => (
             <div
               key={profile.id}
-              className="bg-white border border-slate-200/60 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20 hover:-translate-y-1 group"
+              className="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between hover:border-slate-700 transition-all duration-200 group"
             >
-              {/* Icon */}
-              <div className="w-11 h-11 rounded-full bg-primary-light flex items-center justify-center mb-4 text-lg">
-                {profile.icon}
-              </div>
-
-              {/* Title */}
-              <h3 className="font-heading font-semibold text-sm text-slate-900 mb-4">
-                {profile.title}
-              </h3>
-
-              {/* Brings */}
-              <div className="mb-3">
-                <span className="text-[11px] font-medium uppercase tracking-wide text-green-600 block mb-1.5">
-                  Ce qu'il apporte
-                </span>
-                <div className="flex flex-wrap gap-1">
-                  {profile.brings.map((skill) => (
-                    <SkillTag key={skill} label={skill} variant="green" size="sm" />
-                  ))}
-                </div>
-              </div>
-
-              {/* Seeks */}
               <div>
-                <span className="text-[11px] font-medium uppercase tracking-wide text-slate-400 block mb-1.5">
-                  Ce qu'il cherche
-                </span>
-                <div className="flex flex-wrap gap-1">
+                {/* Top Section */}
+                <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-5">
+                  <h3 className="font-bold text-lg tracking-tight text-white">{profile.title}</h3>
+                  <span className="text-2xl p-2 bg-slate-800 rounded-xl group-hover:scale-110 transition-transform">{profile.icon}</span>
+                </div>
+
+                {/* Loquet "Brings" */}
+                <div className="mb-6">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block mb-2">
+                    Superpouvoirs à offrir
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {profile.brings.map((skill) => (
+                      <SkillTag key={skill} label={skill} variant="purple" className="bg-emerald-500/10 text-emerald-400" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Loquet "Seeks" */}
+              <div className="pt-4 border-t border-slate-800/60 mt-auto">
+                <div className="flex items-center gap-1.5 mb-2">
+                  <ArrowRightLeft className="h-3 w-3 text-orange-400" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-orange-400 block">
+                    Besoins critiques recherchés
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
                   {profile.seeks.map((skill) => (
-                    <SkillTag key={skill} label={skill} variant="slate" size="sm" />
+                    <SkillTag key={skill} label={skill} variant="slate" className="bg-slate-800 text-slate-300" />
                   ))}
                 </div>
               </div>
+
             </div>
           ))}
         </div>

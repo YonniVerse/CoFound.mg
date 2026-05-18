@@ -4,6 +4,7 @@ import landingData from "@/data/landing.json";
 import { Navbar } from "@/components/landing/Navbar";
 import { SectionHero } from "@/components/landing/SectionHero";
 import { SectionHowItWorks } from "@/components/landing/SectionHowItWorks";
+import { SectionFeatures } from "@/components/landing/SectionFeatures";
 import { SectionForWho } from "@/components/landing/SectionForWho";
 import { SectionInclusion } from "@/components/landing/SectionInclusion";
 import { SectionTestimonials } from "@/components/landing/SectionTestimonials";
@@ -23,6 +24,12 @@ interface LandingData {
   steps: {
     id: string;
     number: string;
+    icon: string;
+    title: string;
+    description: string;
+  }[];
+  platformFeatures: {
+    id: string;
     icon: string;
     title: string;
     description: string;
@@ -78,6 +85,7 @@ export default function LandingPage() {
       <main>
         <SectionHero profiles={data.heroProfiles} stats={data.stats} />
         <SectionHowItWorks steps={data.steps} />
+        <SectionFeatures features={data.platformFeatures} />
         <SectionForWho profileTypes={data.profileTypes} />
         <SectionInclusion features={data.inclusionFeatures} />
         <SectionTestimonials testimonials={data.testimonials} />

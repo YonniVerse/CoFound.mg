@@ -58,38 +58,64 @@
     "profileTypes": [
       {
         "id": "type-1",
-        "icon": "💻",
+        "icon": "Laptop",
         "title": "Informatique",
         "brings": ["Dev", "Architecture"],
         "seeks": ["Business", "Marketing"]
       },
       {
         "id": "type-2",
-        "icon": "📊",
+        "icon": "Briefcase",
         "title": "Gestion",
         "brings": ["Finance", "Stratégie"],
         "seeks": ["Tech", "Design"]
       },
       {
         "id": "type-3",
-        "icon": "🏥",
+        "icon": "Stethoscope",
         "title": "Médecine",
         "brings": ["Expertise santé"],
         "seeks": ["Dev mobile", "Data"]
       },
       {
         "id": "type-4",
-        "icon": "🎨",
+        "icon": "Palette",
         "title": "Design",
         "brings": ["UX/UI", "Branding"],
         "seeks": ["Dev", "Vision produit"]
       },
       {
         "id": "type-5",
-        "icon": "⚖️",
+        "icon": "Scale",
         "title": "Droit",
         "brings": ["Juridique", "Conformité"],
         "seeks": ["Tech", "Gestion"]
+      }
+    ],
+    "platformFeatures": [
+      {
+        "id": "feat-1",
+        "icon": "Zap",
+        "title": "Matching Complémentaire",
+        "description": "L'algorithme vous suggère des profils qui complètent vos compétences pour former des équipes équilibrées."
+      },
+      {
+        "id": "feat-2",
+        "icon": "MessageSquare",
+        "title": "Messagerie Intégrée",
+        "description": "Prenez contact en un clic et commencez à discuter de votre vision avec vos potentiels co-fondateurs."
+      },
+      {
+        "id": "feat-3",
+        "icon": "Rocket",
+        "title": "Espaces Projets",
+        "description": "Publiez votre idée de startup pour attirer les talents ou parcourez les projets qui recrutent."
+      },
+      {
+        "id": "feat-4",
+        "icon": "LineChart",
+        "title": "Tableau de Bord Parité",
+        "description": "Suivez en temps réel les statistiques d'inclusion et l'impact de la plateforme sur l'écosystème étudiant."
       }
     ],
     "testimonials": [
@@ -121,19 +147,19 @@
     "inclusionFeatures": [
       {
         "id": "inclusion-1",
-        "icon": "🔒",
+        "icon": "Shield",
         "title": "Espace Sécurisé",
         "description": "Les étudiantes peuvent rendre leur profil visible uniquement aux femmes dans un premier temps, et candidater en mode anonyme."
       },
       {
         "id": "inclusion-2",
-        "icon": "🤝",
+        "icon": "Users",
         "title": "Réseau de Mentores",
         "description": "Des entrepreneures malgaches établies sont accessibles aux équipes comptant au moins une femme fondatrice."
       },
       {
         "id": "inclusion-3",
-        "icon": "📊",
+        "icon": "BarChart3",
         "title": "Tableau de Bord Parité",
         "description": "La parité rendue visible en temps réel. Rendre visible crée une pression positive et une fierté collective."
       }

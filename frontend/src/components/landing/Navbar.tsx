@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 const navLinks = [
-  { label: "Explorer", href: "/projects" },
-  { label: "À propos", href: "#how-it-works" },
-  { label: "Impact", href: "/impact" },
+  { label: "Explorer les profils", href: "/projects" },
+  { label: "La Méthode", href: "#how-it-works" },
+  { label: "Impact 50/50", href: "/impact" },
 ];
 
 export function Navbar() {
@@ -15,7 +15,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 60);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -23,26 +23,33 @@ export function Navbar() {
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-300",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-20 flex items-center",
         scrolled
-          ? "bg-white/90 backdrop-blur-sm border-b border-slate-200"
-          : "bg-transparent"
+          ? "bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 h-16 text-white"
+          : "bg-transparent text-slate-900"
       )}
     >
-      <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-0">
-          <span className="font-heading text-xl font-bold text-slate-900">CoFound</span>
-          <span className="font-heading text-xl font-bold text-primary">.mg</span>
+      <div className="max-w-7xl mx-auto px-6 w-full flex items-center justify-between">
+        {/* Logo Identity */}
+        <Link to="/" className="flex items-center gap-1 group">
+          <span className={cn("font-sans text-xl font-black tracking-tight transition-colors", scrolled ? "text-white" : "text-slate-950")}>
+            CoFound
+          </span>
+          <span className="font-sans text-xl font-black text-indigo-500 group-hover:text-orange-500 transition-colors">.mg</span>
         </Link>
 
-        {/* Desktop nav */}
+        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <a
               key={link.label}
               href={link.href}
-              className="text-sm font-medium text-slate-600 hover:text-primary transition-colors"
+              className={cn(
+                "text-sm font-medium tracking-wide transition-colors duration-200",
+                scrolled 
+                  ? "text-slate-400 hover:text-white" 
+                  : "text-slate-600 hover:text-slate-950"
+              )}
             >
               {link.label}
             </a>
@@ -50,20 +57,29 @@ export function Navbar() {
         </div>
 
         {/* Desktop CTA */}
-        <div className="hidden md:flex items-center gap-3">
-          <Button variant="ghost" size="sm" asChild>
+        <div className="hidden md:flex items-center gap-4">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className={cn("text-sm font-medium", scrolled ? "text-slate-300 hover:text-white hover:bg-slate-900" : "text-slate-700 hover:text-slate-950")} 
+            asChild
+          >
             <Link to="/login">Se connecter</Link>
           </Button>
-          <Button size="sm" className="bg-primary hover:bg-primary-dark text-white rounded-lg" asChild>
-            <Link to="/signup">
-              Rejoindre <ArrowRight className="ml-1 h-4 w-4" />
+          <Button 
+            size="sm" 
+            className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-4 font-medium shadow-lg shadow-indigo-600/10 transition-all"
+            asChild
+          >
+            <Link to="/signup" className="flex items-center gap-1.5">
+              Rejoindre l'écosystème <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </Button>
         </div>
 
-        {/* Mobile menu toggle */}
+        {/* Mobile Toggle */}
         <button
-          className="md:hidden p-2 text-slate-700"
+          className={cn("md:hidden p-2 rounded-lg", scrolled ? "text-slate-200" : "text-slate-800")}
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >
@@ -71,28 +87,26 @@ export function Navbar() {
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="md:hidden bg-white border-b border-slate-200 px-6 pb-4">
-          <div className="flex flex-col gap-3">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="text-sm font-medium text-slate-600 py-2"
-                onClick={() => setMobileOpen(false)}
-              >
-                {link.label}
-              </a>
-            ))}
-            <div className="flex gap-3 pt-2 border-t border-slate-100">
-              <Button variant="outline" size="sm" className="flex-1" asChild>
-                <Link to="/login">Se connecter</Link>
-              </Button>
-              <Button size="sm" className="flex-1 bg-primary hover:bg-primary-dark text-white" asChild>
-                <Link to="/signup">Rejoindre</Link>
-              </Button>
-            </div>
+        <div className="absolute top-full left-0 right-0 bg-slate-950 border-b border-slate-800 px-6 py-6 flex flex-col gap-4 animate-in fade-in slide-in-from-top-5 duration-200">
+          {navLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="text-base font-medium text-slate-300 py-2"
+              onClick={() => setMobileOpen(false)}
+            >
+              {link.label}
+            </a>
+          ))}
+          <div className="flex flex-col gap-3 pt-4 border-t border-slate-900">
+            <Button variant="outline" className="border-slate-800 text-white hover:bg-slate-900" asChild>
+              <Link to="/login">Se connecter</Link>
+            </Button>
+            <Button className="bg-indigo-600 text-white hover:bg-indigo-500" asChild>
+              <Link to="/signup">Rejoindre</Link>
+            </Button>
           </div>
         </div>
       )}

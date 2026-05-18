@@ -1,3 +1,5 @@
+import { FemaleBadge } from "@/components/shared/FemaleBadge";
+
 interface InclusionFeature {
   id: string;
   icon: string;
@@ -11,56 +13,56 @@ interface SectionInclusionProps {
 
 export function SectionInclusion({ features }: SectionInclusionProps) {
   return (
-    <section className="py-24 bg-linear-to-b from-white to-slate-50">
+    <section className="py-24 bg-slate-50 border-t border-b border-slate-100">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Badge */}
-        <div className="flex justify-center mb-8">
-          <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 border border-slate-200 px-4 py-1.5 text-sm font-semibold text-slate-700 tracking-wide">
-            Notre Engagement Social
-          </span>
+        
+        {/* Layout asymétrique : Titre à gauche, métrique clé à droite */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end mb-16 pb-12 border-b border-slate-200/60">
+          <div className="lg:col-span-7">
+            <FemaleBadge variant="project" className="mb-4" />
+            <h2 className="font-sans font-black text-4xl sm:text-5xl text-slate-950 tracking-tight leading-[0.95]">
+              Casser les barrières invisibles. Structurellement.
+            </h2>
+          </div>
+          <div className="lg:col-span-5 lg:text-right">
+            <div className="inline-block text-left">
+              <span className="font-sans font-black text-6xl text-female tracking-tighter block leading-none">
+                50%
+              </span>
+              <span className="text-xs uppercase font-bold tracking-wider text-slate-500 block mt-1">
+                Objectif strict de mixité dans le vivier
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* Headline */}
-        <div className="text-center mb-6">
-          <h2 className="font-heading font-extrabold text-3xl sm:text-5xl text-slate-900 leading-tight">
-            50% des talents.
-            <br />
-            Pleinement impliquées.
-          </h2>
-        </div>
-
-        {/* Stat */}
-        <p className="text-center max-w-xl mx-auto text-slate-600 text-base sm:text-lg leading-relaxed mb-16">
-          Moins de 20% des fondateurs de startups en Afrique sont des femmes.
-          <br className="hidden sm:block" />
-          <strong className="text-slate-800">CoFound.mg change ça structurellement.</strong>
-        </p>
-
-        {/* 3 mechanisms */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
+        {/* Les Piliers d'actions mécaniques */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-16">
           {features.map((feature) => (
-            <div key={feature.id} className="bg-white rounded-2xl p-8 border border-slate-200/60 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300">
-              <div className="text-3xl mb-6 w-14 h-14 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100">
-                {feature.icon}
+            <div 
+              key={feature.id} 
+              className="bg-white rounded-xl p-6 border border-slate-200/60 shadow-2xs hover:border-female/30 transition-colors"
+            >
+              <div className="text-xl mb-4 w-10 h-10 bg-female-light text-female rounded-lg flex items-center justify-center font-bold">
+                {feature.icon || "✓"}
               </div>
-              <h3 className="font-heading font-semibold text-lg text-slate-900 mb-3">
+              <h3 className="font-sans font-bold text-base text-slate-950 mb-2">
                 {feature.title}
               </h3>
-              <p className="text-slate-500 text-sm leading-relaxed">
+              <p className="text-slate-500 text-xs leading-relaxed font-normal">
                 {feature.description}
               </p>
             </div>
           ))}
         </div>
 
-        {/* Blockquote */}
-        <div className="max-w-2xl mx-auto">
-          <blockquote className="border-l-4 border-primary pl-5 py-2">
-            <p className="font-heading font-semibold italic text-lg sm:text-xl text-slate-700">
-              &ldquo;Pas de quotas. On supprime les barrières invisibles.&rdquo;
-            </p>
-          </blockquote>
+        {/* Citations de Manifeste épuré */}
+        <div className="max-w-3xl mx-auto border-l-2 border-female pl-6 py-1">
+          <p className="font-sans font-medium italic text-lg text-slate-800 leading-relaxed">
+            « Moins de 20% des fondateurs en Afrique sont des femmes. Nous refusons de reproduire ce schéma à Madagascar. CoFound supprime les biais dès le premier jour. »
+          </p>
         </div>
+
       </div>
     </section>
   );

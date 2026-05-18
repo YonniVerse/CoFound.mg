@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-type SkillTagVariant = "green" | "slate" | "purple";
+type SkillTagVariant = "green" | "slate" | "purple" | "indigo" | "orange";
 type SkillTagSize = "sm" | "md";
 
 interface SkillTagProps {
@@ -11,9 +11,11 @@ interface SkillTagProps {
 }
 
 const variantClasses: Record<SkillTagVariant, string> = {
-  green: "bg-primary-light text-green-700",
+  green: "bg-green-100 text-green-700",
   slate: "bg-slate-100 text-slate-600",
   purple: "bg-purple-100 text-purple-700",
+  indigo: "bg-primary-light text-primary",
+  orange: "bg-secondary-light text-secondary",
 };
 
 const sizeClasses: Record<SkillTagSize, string> = {
