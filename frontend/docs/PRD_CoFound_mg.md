@@ -65,32 +65,36 @@ Le produit répond à deux constats :
 
 | Token | Valeur | Usage |
 |-------|--------|-------|
-| `--primary` | `#16a34a` (vert 600) | CTA principaux, accents, liens actifs |
-| `--primary-dark` | `#15803d` (vert 700) | Hover states |
-| `--primary-light` | `#dcfce7` (vert 100) | Badges, backgrounds doux |
-| `--foreground` | `#0f172a` (slate 900) | Texte principal |
-| `--muted` | `#64748b` (slate 500) | Texte secondaire, labels |
-| `--border` | `#e2e8f0` (slate 200) | Bordures, séparateurs |
-| `--background` | `#ffffff` | Fond principal |
-| `--surface` | `#f8fafc` (slate 50) | Cards, panels |
-| `--female-badge` | `#a855f7` (purple 500) | Indicateurs dimension féminine |
+| `--primary` | `#4f46e5` (Indigo 600) | L'Ancre Tech : CTA principaux, accents, liens actifs |
+| `--primary-dark` | `#4338ca` (Indigo 700) | Hover states de l'ancre tech |
+| `--primary-light` | `#f5f3ff` (Indigo 50) | Badges tech, backgrounds doux |
+| `--secondary` | `#f97316` (Orange 500) | L'Étincelle Business : Complémentaire parfait de l'Indigo, highlights |
+| `--secondary-light`| `#fff7ed` (Orange 50) | Badges business |
+| `--foreground` | `#090d16` | Le Noir Premium de l'interface (texte principal, contrastes forts) |
+| `--muted` | `#f8fafc` (Slate 50) | Backgrounds secondaires |
+| `--muted-foreground`| `#64748b` (Slate 500)| Texte secondaire, lisibilité optimale |
+| `--border` | `#e2e8f0` (Slate 200) | Bordures et structures systèmes (ultra-fines) |
+| `--border-dark` | `#334155` (Slate 700) | Séparateurs sur fond sombre (ex: Navbar / CTA) |
+| `--background` | `#ffffff` | Fond principal (Light Mode pur) |
+| `--female` | `#7c3aed` (Violet 600) | Impact Féminin : violet royal profond (au lieu du pastel) |
+| `--female-light` | `#f5f3ff` (Violet 50) | Badges et fonds liés à l'inclusion |
 
 ### 5.2 Typographie
 
-| Rôle | Police | Taille |
-|------|--------|--------|
-| Display / Hero | `Sora` (Google Fonts) — bold 700-800 | 48-72px |
-| Headings | `Sora` — semibold 600 | 24-36px |
-| Body | `Inter` | 14-16px |
-| Labels / Meta | `Inter` — medium 500 | 12-13px |
+| Rôle | Police | Usage & Spécificités |
+|------|--------|----------------------|
+| Display / Hero | `Sora` (Google Fonts) | Titres massifs (bold 700-900), lissage parfait, tracking resserré (`tracking-tight`) |
+| Headings | `Sora` | Titres de section, cards (semibold 600), contraste élevé |
+| Body | `Inter Variable` | Corps de texte, précision chirurgicale (kerning à `-0.015em`) |
+| Labels / Meta | `Inter` | Boutons, tags, metadata (medium 500, texte compact) |
 
 ### 5.3 Principes visuels
 
-- **Minimalisme pro** — inspiré YCombinator : beaucoup de blanc, typographie forte, contenu qui parle
-- Pas d'animations superflues — seulement là où elles ajoutent de la valeur (transitions de page, hover sur cards)
-- Cards avec ombres légères (`shadow-sm`), border-radius modéré (`rounded-xl`)
-- Vert comme couleur signature — pas de gradient, couleur franche
-- La dimension féminine est exprimée via des indicateurs discrets en violet (pas envahissant)
+- **Minimalisme pro (SaaS Premium)** — Inspiré par YCombinator et l'élite tech : beaucoup de blanc, des contrastes radicaux (Foreground très sombre).
+- **Hard Surfaces** — Ombres réajustées (moins diffuses, plus physiques) et bordures ultra-fines style SaaS haut de gamme.
+- **Identité duelle** — Le duo Indigo (Tech) et Orange (Business) remplace le vert générique pour imposer l'idée de complémentarité des profils.
+- **Micro-interactions** — Des animations ciblées (Framer Motion sur les Testimonials, transitions fluides sur les boutons, hover states précis) sans encombrer la vue.
+- **Inclusion par l'autorité** — La dimension féminine utilise un Violet fort et royal (refus du pastel infantilisant), couplé à une mise en page typée dashboard pour valoriser la donnée objective (ex: la parité à 50%).
 
 ---
 
@@ -147,7 +151,7 @@ Le produit répond à deux constats :
 
 #### Section "Inclusion Féminine" (obligatoire — thème hackathon)
 - Titre : "50% des talents. Pleinement impliquées."
-- Stat headline : "Moins de 20% des fondateurs de startups en Afrique sont des femmes. Miaraka change ça."
+- Stat headline : "Moins de 20% des fondateurs de startups en Afrique sont des femmes. CoFound change ça."
 - 3 features mises en avant (icône + titre + 1 ligne) :
   - 🔒 Espace sécurisé — Profil visible uniquement aux femmes en option
   - 🤝 Réseau de mentores — Accès à des entrepreneures établies
@@ -157,7 +161,7 @@ Le produit répond à deux constats :
 #### Section Témoignages (mock)
 - 3 témoignages de profils fictifs réalistes (noms malgaches)
 - Card avec photo avatar, nom, école, quote courte
-- Ex : "J'avais l'idée, il me manquait le dev. Miaraka m'a connecté à Hery en 2 jours." — Fara, ISCAM
+- Ex : "J'avais l'idée, il me manquait le dev. CoFound m'a connecté à Hery en 2 jours." — Fara, ISCAM
 
 #### Footer
 - Logo + tagline "Ensemble, nous construisons l'Afrique de demain."
@@ -304,7 +308,7 @@ Le produit répond à deux constats :
 **Objectif :** Rendre la parité visible. Créer une fierté collective. Point fort pour le jury hackathon.
 
 **Sections :**
-- Titre : "L'impact de Miaraka en chiffres" 
+- Titre : "L'impact de CoFound en chiffres" 
 - **Stats principales (grandes cartes)** :
   - Étudiants inscrits : 847
   - Startups formées : 12
@@ -313,7 +317,7 @@ Le produit répond à deux constats :
 - **Graphique** : Évolution du % de profils féminins (ligne, sur 6 mois mock) — Recharts
 - **Projets à Impact Féminin** : Liste des 3 derniers projets avec badge "Impact Féminin"
 - **Top compétences apportées par les femmes** : Bar chart horizontal
-- Citation : "Les femmes représentent 50% des talents. Miaraka leur donne une plateforme." — style blockquote élégant
+- Citation : "Les femmes représentent 50% des talents. CoFound leur donne une plateforme." — style blockquote élégant
 
 ---
 
