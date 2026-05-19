@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/shared/Button";
+import { Button } from "@/components/ui/button";
 import ctaImage from "@/assets/images/cta.jpg";
 
 export function SectionCTA() {
   return (
     <section className="py-24 bg-foreground relative overflow-hidden border-t border-border-dark/60">
       {/* Pattern de fond micro-géométrique lié à la bordure sombre du système */}
-      <div className="absolute inset-0 bg-[radial-gradient(var(--border-dark)_1px,transparent_1px)] [background-size:24px_24px] opacity-30" />
+      <div className="absolute inset-0 bg-[radial-gradient(var(--border-dark)_1px,transparent_1px)] bg-size-[24px_24px] opacity-30" />
       
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid items-center gap-12 lg:grid-cols-2">
@@ -28,8 +28,8 @@ export function SectionCTA() {
             
             <div className="flex w-full flex-col justify-center gap-4 sm:flex-row lg:justify-start">
               <Button
-                variant="indigo"
-                size="lg"
+                variant="default"
+                size="xl"
                 asChild
               >
                 <Link to="/signup" className="flex items-center justify-center gap-2">
@@ -38,7 +38,7 @@ export function SectionCTA() {
               </Button>
               <Button
                 variant="outline"
-                size="lg"
+                size="xl"
                 className="border-border-dark bg-foreground/40 text-muted-foreground hover:bg-background/10 hover:text-background"
                 asChild
               >

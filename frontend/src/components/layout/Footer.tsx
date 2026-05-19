@@ -57,23 +57,23 @@ const navigation = {
   ],
 };
 
-const Underline = `hover:-translate-y-1 border border-slate-200 rounded-xl p-2.5 transition-transform bg-white shadow-xs`;
+const Underline = `hover:-translate-y-1 border border-border rounded-xl p-2.5 transition-transform bg-background shadow-xs`;
 
 export function Footer() {
   return (
-    <footer className="border-t border-slate-200 px-4 mx-auto w-full bg-slate-50">
+    <footer className="border-t border-border px-4 mx-auto w-full bg-muted/30">
       <div className="relative mx-auto grid max-w-7xl items-center justify-center gap-6 p-10 pb-0 md:flex flex-col">
-        <Link to="/" className="flex items-center gap-0.5 mb-2">
-            <span className="font-sans font-black text-2xl tracking-tight text-slate-950">CoFound</span>
-            <span className="font-sans text-2xl font-black text-indigo-600">.mg</span>
+        <Link to="/" className="flex items-center gap-0.5 mb-2 group">
+          <span className="font-heading font-black text-2xl tracking-tight text-foreground">CoFound</span>
+          <span className="font-heading text-2xl font-black text-primary transition-colors group-hover:text-secondary">.mg</span>
         </Link>
-        <p className="bg-transparent text-center text-sm leading-relaxed text-slate-600 md:text-center max-w-3xl">
+        <p className="bg-transparent text-center text-sm leading-relaxed text-muted-foreground md:text-center max-w-3xl">
           Bienvenue sur CoFound.mg, où la créativité rencontre la stratégie pour donner vie à votre vision. Nous sommes passionnés par la connexion des esprits brillants. Notre mission est d'autonomiser les étudiants et futurs fondateurs pour qu'ils se démarquent sur le marché. Propulsez la prochaine génération de licornes malgaches en connectant les compétences complémentaires au niveau universitaire.
         </p>
       </div>
 
       <div className="mx-auto max-w-5xl px-6 py-10">
-        <div className="border-b border-slate-200"> </div>
+        <div className="border-b border-border"> </div>
         <div className="py-10">
           {navigation.categories.map((category) => (
             <div
@@ -82,7 +82,7 @@ export function Footer() {
             >
               {category.sections.map((section) => (
                 <div key={section.name} className="flex-1 text-center md:text-left">
-                  <h3 className="font-semibold text-slate-950 mb-4">{section.name}</h3>
+                  <h3 className="font-heading font-bold text-foreground mb-4">{section.name}</h3>
                   <ul
                     role="list"
                     className="flex flex-col space-y-2"
@@ -91,7 +91,7 @@ export function Footer() {
                       <li key={item.name} className="flow-root">
                         <Link
                           to={item.href}
-                          className="text-sm text-slate-500 hover:text-indigo-600 font-medium transition-colors"
+                          className="text-sm text-muted-foreground hover:text-primary font-medium transition-colors"
                         >
                           {item.name}
                         </Link>
@@ -103,7 +103,7 @@ export function Footer() {
             </div>
           ))}
         </div>
-        <div className="border-b border-slate-200"> </div>
+        <div className="border-b border-border"> </div>
       </div>
 
       <div className="flex flex-wrap justify-center gap-y-6">
@@ -115,7 +115,7 @@ export function Footer() {
             target="_blank"
             className={Underline}
           >
-            <Mail strokeWidth={1.5} className="h-5 w-5 text-slate-700" />
+            <Mail strokeWidth={1.5} className="h-5 w-5 text-foreground" />
           </a>
           <a
             aria-label="Twitter"
@@ -124,7 +124,7 @@ export function Footer() {
             target="_blank"
             className={Underline}
           >
-            <TwitterIcon className="h-5 w-5 text-slate-700" />
+            <TwitterIcon className="h-5 w-5 text-foreground" />
           </a>
           <a
             aria-label="Instagram"
@@ -133,7 +133,7 @@ export function Footer() {
             target="_blank"
             className={Underline}
           >
-            <InstagramIcon className="h-5 w-5 text-slate-700" />
+            <InstagramIcon className="h-5 w-5 text-foreground" />
           </a>
           <a
             aria-label="LinkedIn"
@@ -142,19 +142,19 @@ export function Footer() {
             target="_blank"
             className={Underline}
           >
-            <LinkedinIcon className="h-5 w-5 text-slate-700" />
+            <LinkedinIcon className="h-5 w-5 text-foreground" />
           </a>
         </div>
       </div>
 
       <div className="mx-auto mb-10 mt-10 flex flex-col justify-between text-center text-xs md:max-w-7xl">
-        <div className="flex flex-row items-center justify-center gap-1 text-slate-500 font-medium">
+        <div className="flex flex-row items-center justify-center gap-1 text-muted-foreground font-medium">
           <span> © </span>
           <span>{new Date().getFullYear()}</span>
           <span>Made with</span>
-          <Heart className="text-red-500 mx-1 h-4 w-4 animate-pulse fill-red-500" />
+          <Heart className="text-destructive mx-1 h-4 w-4 animate-pulse fill-destructive" />
           <span> by </span>
-          <span className="hover:text-indigo-600 cursor-pointer text-slate-900 transition-colors">
+          <span className="hover:text-primary cursor-pointer text-foreground transition-colors">
             <Link
               aria-label="Home"
               className="font-bold inline-flex items-center gap-1"
