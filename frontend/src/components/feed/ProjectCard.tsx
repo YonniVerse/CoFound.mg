@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Avatar } from "@/components/shared/Avatar";
 import { SectorBadge } from "@/components/shared/SectorBadge";
 import { FemaleBadge } from "@/components/shared/FemaleBadge";
@@ -31,9 +32,11 @@ export function ProjectCard({ project }: { project: ProjectData }) {
             <SectorBadge sector={project.sector} />
             {project.isFemaleImpact && <FemaleBadge />}
           </div>
-          <h3 className="font-heading font-bold text-lg text-foreground leading-tight group-hover:text-primary transition-colors">
-            {project.title}
-          </h3>
+          <Link to={`/projects/${project.id}`}>
+            <h3 className="font-heading font-bold text-lg text-foreground leading-tight group-hover:text-primary transition-colors cursor-pointer">
+              {project.title}
+            </h3>
+          </Link>
         </div>
       </div>
 
@@ -68,11 +71,11 @@ export function ProjectCard({ project }: { project: ProjectData }) {
           {project.timeAgo} · {project.applicantsCount} {project.applicantsCount > 1 ? "candidatures" : "candidature"}
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="h-8 text-xs">
-            Voir le projet
+          <Button variant="outline" size="sm" className="h-8 text-xs" asChild>
+            <Link to={`/projects/${project.id}`}>Voir le projet</Link>
           </Button>
-          <Button size="sm" className="h-8 text-xs">
-            Postuler
+          <Button size="sm" className="h-8 text-xs" asChild>
+            <Link to={`/projects/${project.id}`}>Postuler</Link>
           </Button>
         </div>
       </div>

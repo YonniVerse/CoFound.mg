@@ -3,6 +3,7 @@ import LandingPage from "@/pages/LandingPage";
 import SignupPage from "@/pages/SignupPage";
 import OnboardingPage from "@/pages/OnboardingPage";
 import FeedPage from "@/pages/FeedPage";
+import ProjectDetailPage from "@/pages/ProjectDetailPage";
 import { MainLayout } from "@/components/layout/MainLayout";
 
 const LayoutWrapper = () => {
@@ -28,6 +29,7 @@ function App() {
         
         {/* Applicatif (Dashboard) */}
         <Route path="/feed" element={<FeedPage />} />
+        <Route path="/projects/:id" element={<ProjectDetailPage />} />
       </Routes>
     </BrowserRouter>
   );
