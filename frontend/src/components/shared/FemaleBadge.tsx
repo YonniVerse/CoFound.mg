@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Venus } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 interface FemaleBadgeProps {
   variant?: "project" | "profile";
@@ -9,7 +9,7 @@ interface FemaleBadgeProps {
 export function FemaleBadge({ variant = "project", className }: FemaleBadgeProps) {
   if (variant === "profile") {
     return (
-      <Venus 
+      <Sparkles 
         className={cn("text-female w-4 h-4 inline-block", className)} 
         strokeWidth={2.5}
         aria-label="Profil féminin" 
@@ -18,14 +18,13 @@ export function FemaleBadge({ variant = "project", className }: FemaleBadgeProps
   }
 
   return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-full bg-female-light text-female border border-female/10 px-3 py-1 text-xs font-bold uppercase tracking-wider",
-        className
-      )}
-    >
-      <Venus className="w-3.5 h-3.5" strokeWidth={2.5} />
-      Impact Féminin
-    </span>
+    <div className={cn(
+      "flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider",
+      "bg-female/10 text-female border border-female/20 shadow-sm shadow-female/5",
+      className
+    )}>
+      <Sparkles className="w-3 h-3" strokeWidth={3} />
+      <span>Impact Féminin</span>
+    </div>
   );
 }

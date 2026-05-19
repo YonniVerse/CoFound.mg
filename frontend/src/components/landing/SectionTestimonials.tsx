@@ -82,18 +82,19 @@ export function SectionTestimonials({ testimonials }: SectionTestimonialsProps) 
                         exit={{ opacity: 0, scale: 0.9, y: -50 }}
                         transition={{ duration: 0.5, ease: "easeInOut" }}
                         className="absolute inset-0 origin-bottom"
-                        style={{ perspective: '1000px' }}
                       >
-                        <img
-                          src={testimonial.avatar || fallbackImage}
-                          alt={testimonial.name}
-                          draggable={false}
-                          className="h-full w-full rounded-3xl object-cover shadow-2xl border border-border/50 bg-muted"
-                          onError={(e) => {
-                            e.currentTarget.src = fallbackImage;
-                            e.currentTarget.onerror = null;
-                          }}
-                        />
+                        <div className="h-full w-full" style={{ perspective: '1000px' }}>
+                          <img
+                            src={testimonial.avatar || fallbackImage}
+                            alt={testimonial.name}
+                            draggable={false}
+                            className="h-full w-full rounded-3xl object-cover shadow-2xl border border-border/50 bg-muted"
+                            onError={(e) => {
+                              e.currentTarget.src = fallbackImage;
+                              e.currentTarget.onerror = null;
+                            }}
+                          />
+                        </div>
                       </motion.div>
                     );
                   })}
