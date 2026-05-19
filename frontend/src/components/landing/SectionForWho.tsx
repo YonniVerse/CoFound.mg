@@ -1,5 +1,13 @@
 import { SkillTag } from "@/components/shared/SkillTag";
-import { ArrowRightLeft } from "lucide-react";
+import { 
+  ArrowRightLeft,
+  Laptop,
+  Briefcase,
+  Stethoscope,
+  Palette,
+  Scale,
+  type LucideIcon
+} from "lucide-react";
 
 interface ProfileType {
   id: string;
@@ -12,6 +20,14 @@ interface ProfileType {
 interface SectionForWhoProps {
   profileTypes: ProfileType[];
 }
+
+const iconMap: Record<string, LucideIcon> = {
+  Laptop,
+  Briefcase,
+  Stethoscope,
+  Palette,
+  Scale,
+};
 
 export function SectionForWho({ profileTypes }: SectionForWhoProps) {
   return (
@@ -28,7 +44,9 @@ export function SectionForWho({ profileTypes }: SectionForWhoProps) {
 
         {/* Grid System Typé Dashboard */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {profileTypes.map((profile) => (
+          {profileTypes.map((profile) => {
+            const Icon = iconMap[profile.icon] || Laptop;
+            return (
             <div
               key={profile.id}
               className="bg-foreground/40 border border-border-dark/60 rounded-2xl p-6 flex flex-col justify-between hover:border-border-dark transition-all duration-200 group"
@@ -37,7 +55,9 @@ export function SectionForWho({ profileTypes }: SectionForWhoProps) {
                 {/* Top Section */}
                 <div className="flex items-center justify-between border-b border-border-dark/40 pb-4 mb-5">
                   <h3 className="font-bold text-lg tracking-tight text-background">{profile.title}</h3>
-                  <span className="text-2xl p-2 bg-border-dark/30 rounded-xl group-hover:scale-110 transition-transform">{profile.icon}</span>
+                  <div className="p-2.5 bg-border-dark/30 rounded-xl group-hover:scale-110 transition-transform">
+                    <Icon className="w-6 h-6 text-background" strokeWidth={1.5} />
+                  </div>
                 </div>
 
                 {/* Loquet "Brings" (Superpouvoirs) */}
@@ -69,7 +89,8 @@ export function SectionForWho({ profileTypes }: SectionForWhoProps) {
               </div>
 
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

@@ -1,4 +1,10 @@
 import { FemaleBadge } from "@/components/shared/FemaleBadge";
+import { 
+  Shield, 
+  Users, 
+  BarChart3, 
+  type LucideIcon 
+} from "lucide-react";
 
 interface InclusionFeature {
   id: string;
@@ -10,6 +16,12 @@ interface InclusionFeature {
 interface SectionInclusionProps {
   features: InclusionFeature[];
 }
+
+const iconMap: Record<string, LucideIcon> = {
+  Shield,
+  Users,
+  BarChart3,
+};
 
 export function SectionInclusion({ features }: SectionInclusionProps) {
   return (
@@ -38,14 +50,16 @@ export function SectionInclusion({ features }: SectionInclusionProps) {
 
         {/* Les Piliers d'actions mécaniques */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-16">
-          {features.map((feature) => (
-            <div 
-              key={feature.id} 
-              className="bg-card rounded-xl p-6 border border-border/70 shadow-2xs hover:border-female/30 transition-colors"
-            >
-              <div className="text-xl mb-4 w-10 h-10 bg-female-light text-female rounded-lg flex items-center justify-center font-bold">
-                {feature.icon || "✓"}
-              </div>
+          {features.map((feature) => {
+            const Icon = iconMap[feature.icon] || Shield;
+            return (
+              <div 
+                key={feature.id} 
+                className="bg-card rounded-xl p-6 border border-border/70 shadow-2xs hover:border-female/30 transition-colors"
+              >
+                <div className="text-xl mb-4 w-10 h-10 bg-female-light text-female rounded-lg flex items-center justify-center font-bold">
+                  <Icon className="w-5 h-5" strokeWidth={2} />
+                </div>
               <h3 className="font-sans font-bold text-base text-foreground mb-2">
                 {feature.title}
               </h3>
@@ -53,7 +67,8 @@ export function SectionInclusion({ features }: SectionInclusionProps) {
                 {feature.description}
               </p>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Citation de Manifeste épuré */}
