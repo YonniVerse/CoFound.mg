@@ -23,20 +23,20 @@ export function Navbar() {
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-20 flex items-center",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 flex items-center",
         scrolled
-          ? "bg-foreground/90 backdrop-blur-md border-b border-border-dark/40 h-16 text-background"
-          : "bg-transparent text-foreground"
+          ? "bg-background/80 backdrop-blur-xl border-b border-border shadow-2xs h-16"
+          : "bg-transparent border-b border-transparent h-20"
       )}
     >
       <div className="max-w-7xl mx-auto px-6 w-full flex items-center justify-between">
         
         {/* Identité de marque */}
-        <Link to="/" className="flex items-center gap-1 group">
-          <span className={cn("font-sans text-xl font-black tracking-tight transition-colors", scrolled ? "text-background" : "text-foreground")}>
+        <Link to="/" className="flex items-center gap-0.5 group">
+          <span className="font-heading text-xl font-black tracking-tight text-foreground">
             CoFound
           </span>
-          <span className="font-sans text-xl font-black text-primary group-hover:text-secondary transition-colors">.mg</span>
+          <span className="font-heading text-xl font-black text-primary transition-colors group-hover:text-secondary">.mg</span>
         </Link>
 
         {/* Navigation Grand Écran */}
@@ -45,24 +45,20 @@ export function Navbar() {
             <a
               key={link.label}
               href={link.href}
-              className={cn(
-                "text-sm font-medium tracking-wide transition-colors duration-200",
-                scrolled 
-                  ? "text-muted-foreground/80 hover:text-background" 
-                  : "text-muted-foreground hover:text-foreground"
-              )}
+              className="text-sm font-medium tracking-wide text-muted-foreground hover:text-foreground transition-colors duration-200 relative group"
             >
               {link.label}
+              <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full rounded-full opacity-0 group-hover:opacity-100" />
             </a>
           ))}
         </div>
 
         {/* Boutons d'actions Grand Écran */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3">
           <Button 
             variant="ghost" 
             size="sm" 
-            className={cn("text-sm font-medium", scrolled ? "text-muted-foreground/90 hover:text-background hover:bg-background/10" : "")} 
+            className="text-sm font-semibold hover:bg-muted" 
             asChild
           >
             <Link to="/login">Se connecter</Link>
@@ -70,6 +66,7 @@ export function Navbar() {
           <Button 
             variant="default"
             size="sm" 
+            className="font-semibold shadow-sm hover:shadow-md transition-shadow"
             asChild
           >
             <Link to="/signup" className="flex items-center gap-1.5">
@@ -80,7 +77,7 @@ export function Navbar() {
 
         {/* Menu Mobile Triggers */}
         <button
-          className={cn("md:hidden p-2 rounded-lg transition-colors", scrolled ? "text-background" : "text-foreground")}
+          className="md:hidden p-2 rounded-lg text-foreground hover:bg-muted transition-colors"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >
@@ -90,23 +87,23 @@ export function Navbar() {
 
       {/* Menu Mobile déroulant */}
       {mobileOpen && (
-        <div className="absolute top-full left-0 right-0 bg-foreground border-b border-border-dark/60 px-6 py-6 flex flex-col gap-4 animate-in fade-in slide-in-from-top-5 duration-200">
+        <div className="absolute top-full left-0 right-0 bg-background border-b border-border px-6 py-6 flex flex-col gap-4 animate-in fade-in slide-in-from-top-2 duration-200 shadow-lg">
           {navLinks.map((link) => (
             <a
               key={link.label}
               href={link.href}
-              className="text-base font-medium text-muted-foreground/90 hover:text-background py-2 transition-colors"
+              className="text-base font-semibold text-foreground/80 hover:text-primary py-2 transition-colors"
               onClick={() => setMobileOpen(false)}
             >
               {link.label}
             </a>
           ))}
-          <div className="flex flex-col gap-3 pt-4 border-t border-border-dark/20">
-            <Button variant="outline" className="border-border-dark bg-transparent text-background hover:bg-background/10 hover:text-background" asChild>
+          <div className="flex flex-col gap-3 pt-4 border-t border-border/50">
+            <Button variant="outline" className="w-full justify-center font-semibold" asChild>
               <Link to="/login">Se connecter</Link>
             </Button>
-            <Button variant="default" asChild>
-              <Link to="/signup">Rejoindre</Link>
+            <Button variant="default" className="w-full justify-center font-semibold" asChild>
+              <Link to="/signup">Rejoindre l'écosystème</Link>
             </Button>
           </div>
         </div>
