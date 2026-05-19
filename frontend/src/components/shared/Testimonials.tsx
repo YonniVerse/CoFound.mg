@@ -9,38 +9,38 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 const testimonials = [
   {
     quote:
-      "This platform revolutionized our data analysis process. The speed and accuracy are unparalleled. A must-have for any data-driven team.",
-    name: "Priya Sharma",
-    designation: "Data Scientist at QuantumLeap",
-    src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    quote:
-      "The user interface is incredibly intuitive, which made the onboarding process for my team a breeze. We were up and running in hours, not days.",
-    name: "Marcus Johnson",
-    designation: "Head of Operations at Synergy Corp",
+      "J'avais une idée d'application e-santé mais je ne savais pas coder. CoFound m'a permis de rencontrer un développeur de l'ENI en moins de 48 heures. Aujourd'hui, on lance notre MVP.",
+    name: "Hery Rakoto",
+    designation: "Étudiant en Médecine, Faculté de Médecine Antananarivo",
     src: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     quote:
-      "Customer support is top-notch. They are responsive, knowledgeable, and genuinely invested in our success. It feels like a true partnership.",
-    name: "Isabella Rossi",
-    designation: "Client Success Manager at Horizon",
+      "En tant que femme en tech, j'hésitais à me lancer et partager mes idées. L'espace sécurisé de CoFound m'a vraiment rassurée. J'ai pu être mentorée et trouver une équipe bienveillante.",
+    name: "Mialy Randria",
+    designation: "Étudiante en Informatique, École Polytechnique (ESPA)",
+    src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    quote:
+      "Je cherchais un projet technique à rejoindre pour apporter mon expertise en marketing digital. C'est l'outil parfait pour décloisonner nos campus.",
+    name: "Fanja Andriam",
+    designation: "Étudiante en Marketing, ISCAM",
     src: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     quote:
-      "I'm impressed by the constant stream of updates and new features. The development team is clearly passionate and listens to user feedback.",
-    name: "Kenji Tanaka",
-    designation: "Software Engineer at CodeCrafters",
-    src: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%D%3D",
+      "La complémentarité des profils fait toute la différence. Trouver un associé en gestion quand on est 100% développeur, c'était impossible avant.",
+    name: "Njaka Tahina",
+    designation: "Développeur Fullstack, IT University",
+    src: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     quote:
-      "The ROI was almost immediate. It streamlined our workflows so effectively that we cut project delivery times by nearly 30%.",
-    name: "Fatima Al-Jamil",
-    designation: "CFO at Apex Financial",
-    src: "https://images.unsplash.com/photo-1557053910-d9eadeed1c58?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%D%3D",
+      "Le tableau de bord de parité est une idée géniale. Ça montre que la plateforme s'engage vraiment pour l'inclusion des femmes dans l'entrepreneuriat.",
+    name: "Kanto Andriana",
+    designation: "Étudiante en Droit, CNTEMAD",
+    src: "https://images.unsplash.com/photo-1557053910-d9eadeed1c58?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
 ];
 
@@ -135,13 +135,13 @@ const AnimatedTestimonials = ({
               className="flex flex-col justify-between"
             >
                 <div>
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+                    <h3 className="text-2xl font-bold text-foreground">
                         {testimonials[active].name}
                     </h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                    <p className="text-sm text-primary">
                         {testimonials[active].designation}
                     </p>
-                    <motion.p className="mt-8 text-lg text-slate-700 dark:text-slate-300">
+                    <motion.p className="mt-8 text-lg text-muted-foreground leading-relaxed">
                         "{testimonials[active].quote}"
                     </motion.p>
                 </div>
@@ -151,16 +151,16 @@ const AnimatedTestimonials = ({
             <button
               onClick={handlePrev}
               aria-label="Previous testimonial"
-              className="group flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 transition-colors hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 dark:bg-slate-800 dark:hover:bg-slate-700 dark:focus:ring-slate-500"
+              className="group flex h-10 w-10 items-center justify-center rounded-full bg-muted transition-colors hover:bg-border/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
-              <ArrowLeft className="h-5 w-5 text-slate-800 transition-transform duration-300 group-hover:-translate-x-1 dark:text-slate-300" />
+              <ArrowLeft className="h-5 w-5 text-foreground transition-transform duration-300 group-hover:-translate-x-1" />
             </button>
             <button
               onClick={handleNext}
               aria-label="Next testimonial"
-              className="group flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 transition-colors hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 dark:bg-slate-800 dark:hover:bg-slate-700 dark:focus:ring-slate-500"
+              className="group flex h-10 w-10 items-center justify-center rounded-full bg-muted transition-colors hover:bg-border/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
-              <ArrowRight className="h-5 w-5 text-slate-800 transition-transform duration-300 group-hover:translate-x-1 dark:text-slate-300" />
+              <ArrowRight className="h-5 w-5 text-foreground transition-transform duration-300 group-hover:translate-x-1" />
             </button>
           </div>
         </div>

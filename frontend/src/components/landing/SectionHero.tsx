@@ -3,6 +3,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/shared/Avatar";
 import { SkillTag } from "@/components/shared/SkillTag";
+import { FemaleBadge } from "@/components/shared/FemaleBadge";
 
 interface HeroProfile {
   id: string;
@@ -137,6 +138,12 @@ export function SectionHero({ profiles, stats }: SectionHeroProps) {
                 key={profile.id}
                 className={`absolute ${currentStyle.position} bg-card border border-border rounded-2xl p-4 w-64 transition-all duration-350 ${currentStyle.borderHover} group/card shadow-2xs`}
               >
+                {/* Badge Féminin sur la carte centrale */}
+                {isCenterCard && (
+                  <div className="absolute -top-3 -right-3 z-30 transform rotate-6 hover:rotate-0 transition-transform">
+                    <FemaleBadge variant="profile" />
+                  </div>
+                )}
                 {/* En-tête de la carte */}
                 <div className="flex items-center gap-3">
                   <Avatar name={profile.name} src={profile.avatar} size="sm" />
