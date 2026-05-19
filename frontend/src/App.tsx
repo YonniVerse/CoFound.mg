@@ -4,6 +4,7 @@ import SignupPage from "@/pages/SignupPage";
 import OnboardingPage from "@/pages/OnboardingPage";
 import FeedPage from "@/pages/FeedPage";
 import ProjectDetailPage from "@/pages/ProjectDetailPage";
+import ImpactPage from "@/pages/ImpactPage";
 import { MainLayout } from "@/components/layout/MainLayout";
 
 const LayoutWrapper = () => {
@@ -30,6 +31,7 @@ function App() {
         {/* Applicatif (Dashboard) */}
         <Route path="/feed" element={<FeedPage />} />
         <Route path="/projects/:id" element={<ProjectDetailPage />} />
+        <Route path="/impact" element={<ImpactPage />} />
       </Routes>
     </BrowserRouter>
   );
