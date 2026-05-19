@@ -1,0 +1,173 @@
+{
+  "success": true,
+  "data": {
+    "stats": [
+      { "id": "stat-1", "value": "847", "label": "étudiants inscrits" },
+      { "id": "stat-2", "value": "5", "label": "écoles partenaires" },
+      { "id": "stat-3", "value": "12", "label": "startups lancées" }
+    ],
+    "heroProfiles": [
+      {
+        "id": "hero-1",
+        "name": "Hery Andriamaro",
+        "role": "Dev Full Stack",
+        "school": "Polytechnique",
+        "skills": ["React", "Node.js", "Python"],
+        "avatar": null
+      },
+      {
+        "id": "hero-2",
+        "name": "Fara Rakoto",
+        "role": "Business Strategy",
+        "school": "ISCAM",
+        "skills": ["Finance", "Marketing", "Stratégie"],
+        "avatar": null
+      },
+      {
+        "id": "hero-3",
+        "name": "Nivo Rasoa",
+        "role": "UX Design",
+        "school": "IAG",
+        "skills": ["Figma", "UX/UI", "Branding"],
+        "avatar": null
+      }
+    ],
+    "steps": [
+      {
+        "id": "step-1",
+        "number": "01",
+        "icon": "UserPlus",
+        "title": "Crée ton profil",
+        "description": "Décris tes compétences, ce que tu apportes, et ce que tu cherches."
+      },
+      {
+        "id": "step-2",
+        "number": "02",
+        "icon": "Search",
+        "title": "Explore ou publie",
+        "description": "Publie ton projet ou parcours les profils complémentaires au tien."
+      },
+      {
+        "id": "step-3",
+        "number": "03",
+        "icon": "Handshake",
+        "title": "Lance avec ton équipe",
+        "description": "Connecte-toi avec tes co-fondateurs et démarrez votre aventure."
+      }
+    ],
+    "profileTypes": [
+      {
+        "id": "type-1",
+        "icon": "Laptop",
+        "title": "Informatique",
+        "brings": ["Dev", "Architecture"],
+        "seeks": ["Business", "Marketing"]
+      },
+      {
+        "id": "type-2",
+        "icon": "Briefcase",
+        "title": "Gestion",
+        "brings": ["Finance", "Stratégie"],
+        "seeks": ["Tech", "Design"]
+      },
+      {
+        "id": "type-3",
+        "icon": "Stethoscope",
+        "title": "Médecine",
+        "brings": ["Expertise santé"],
+        "seeks": ["Dev mobile", "Data"]
+      },
+      {
+        "id": "type-4",
+        "icon": "Palette",
+        "title": "Design",
+        "brings": ["UX/UI", "Branding"],
+        "seeks": ["Dev", "Vision produit"]
+      },
+      {
+        "id": "type-5",
+        "icon": "Scale",
+        "title": "Droit",
+        "brings": ["Juridique", "Conformité"],
+        "seeks": ["Tech", "Gestion"]
+      }
+    ],
+    "platformFeatures": [
+      {
+        "id": "feat-1",
+        "icon": "Zap",
+        "title": "Matching Complémentaire",
+        "description": "L'algorithme vous suggère des profils qui complètent vos compétences pour former des équipes équilibrées."
+      },
+      {
+        "id": "feat-2",
+        "icon": "MessageSquare",
+        "title": "Messagerie Intégrée",
+        "description": "Prenez contact en un clic et commencez à discuter de votre vision avec vos potentiels co-fondateurs."
+      },
+      {
+        "id": "feat-3",
+        "icon": "Rocket",
+        "title": "Espaces Projets",
+        "description": "Publiez votre idée de startup pour attirer les talents ou parcourez les projets qui recrutent."
+      },
+      {
+        "id": "feat-4",
+        "icon": "LineChart",
+        "title": "Tableau de Bord Parité",
+        "description": "Suivez en temps réel les statistiques d'inclusion et l'impact de la plateforme sur l'écosystème étudiant."
+      }
+    ],
+    "testimonials": [
+      {
+        "id": "testimonial-1",
+        "quote": "J'avais l'idée, il me manquait le dev. Trouvé Hery en 2 jours. On a lancé notre app agricole 3 mois après.",
+        "name": "Fara Rakoto",
+        "school": "ISCAM",
+        "field": "Gestion",
+        "avatar": null
+      },
+      {
+        "id": "testimonial-2",
+        "quote": "En tant que développeur, je pensais que vendre c'était pas mon truc. Mon co-fondateur trouvé sur CoFound m'a prouvé que ça marchait autrement.",
+        "name": "Hery Andriamaro",
+        "school": "Polytechnique",
+        "field": "Informatique",
+        "avatar": null
+      },
+      {
+        "id": "testimonial-3",
+        "quote": "L'espace femmes m'a aidée à oser. J'ai rejoint un projet HealthTech en candidatant anonymement. Maintenant je suis CTO.",
+        "name": "Nivo Rasoa",
+        "school": "IAG",
+        "field": "Design",
+        "avatar": null
+      }
+    ],
+    "inclusionFeatures": [
+      {
+        "id": "inclusion-1",
+        "icon": "Shield",
+        "title": "Espace Sécurisé",
+        "description": "Les étudiantes peuvent rendre leur profil visible uniquement aux femmes dans un premier temps, et candidater en mode anonyme."
+      },
+      {
+        "id": "inclusion-2",
+        "icon": "Users",
+        "title": "Réseau de Mentores",
+        "description": "Des entrepreneures malgaches établies sont accessibles aux équipes comptant au moins une femme fondatrice."
+      },
+      {
+        "id": "inclusion-3",
+        "icon": "BarChart3",
+        "title": "Tableau de Bord Parité",
+        "description": "La parité rendue visible en temps réel. Rendre visible crée une pression positive et une fierté collective."
+      }
+    ]
+  },
+  "message": "Données landing récupérées avec succès",
+  "meta": {
+    "page": "landing",
+    "version": "1.0"
+  }
+}
