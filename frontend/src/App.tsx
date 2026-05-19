@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import LandingPage from "@/pages/LandingPage";
 import SignupPage from "@/pages/SignupPage";
 import OnboardingPage from "@/pages/OnboardingPage";
+import FeedPage from "@/pages/FeedPage";
 import { MainLayout } from "@/components/layout/MainLayout";
 
 const LayoutWrapper = () => {
@@ -25,8 +26,8 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/onboarding" element={<OnboardingPage />} />
         
-        {/* Pages à venir */}
-        <Route path="/feed" element={<div className="min-h-screen flex items-center justify-center bg-background"><h1 className="text-2xl font-bold text-foreground">Feed (En cours de construction...)</h1></div>} />
+        {/* Applicatif (Dashboard) */}
+        <Route path="/feed" element={<FeedPage />} />
       </Routes>
     </BrowserRouter>
   );
