@@ -10,47 +10,48 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* CoFound.mg Design System - Premium High-Contrast Theme */
-  --background: #ffffff;
-  --foreground: #090d16; /* Le Noir Premium de l'interface */
+  /* CoFound.mg Design System - Premium High-Contrast Theme (OKLCH) */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.14 0.02 260); /* Slate premium profond */
   
-  --card: #ffffff;
-  --card-foreground: #090d16;
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.14 0.02 260);
   
-  --popover: #ffffff;
-  --popover-foreground: #090d16;
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.14 0.02 260);
   
-  /* L'Ancre Tech : Indigo Électrique */
-  --primary: #4f46e5; 
-  --primary-foreground: #ffffff;
-  --primary-dark: #4338ca; 
-  --primary-light: #f5f3ff; 
+  /* L'Ancre Tech : Bleu/Indigo Électrique stable (Hue 265) */
+  --primary: oklch(0.51 0.25 265); 
+  --primary-foreground: oklch(1 0 0);
+  --primary-dark: oklch(0.42 0.22 265); 
+  --primary-light: oklch(0.97 0.02 265); 
   
-  /* L'Étincelle Business : Orange Sienne */
-  --secondary: #f97316; 
-  --secondary-foreground: #ffffff;
-  --secondary-light: #fff7ed; 
+  /* L'Étincelle Business : Orange Sienne (Hue 45) */
+  --secondary: oklch(0.70 0.20 45); 
+  --secondary-foreground: oklch(1 0 0);
+  --secondary-light: oklch(0.98 0.02 45); 
   
-  --muted: #f8fafc; 
-  --muted-foreground: #64748b; /* Slate 500 pour une lisibilité optimale */
+  /* Lisibilité et surfaces neutres (Slate) */
+  --muted: oklch(0.98 0.01 255); 
+  --muted-foreground: oklch(0.55 0.03 255); 
   
-  --accent: #f1f5f9; 
-  --accent-foreground: #090d16;
+  --accent: oklch(0.96 0.01 255); 
+  --accent-foreground: oklch(0.14 0.02 260);
   
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
+  --destructive: oklch(0.63 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
   
   /* Bordures et Structures Systèmes */
-  --border: #e2e8f0; 
-  --border-dark: #334155; /* Slate 700 dédié aux séparateurs sur fond sombre (Navbar/CTA) */
-  --input: #e2e8f0;
-  --ring: #4f46e5; 
+  --border: oklch(0.93 0.01 255); 
+  --border-dark: oklch(0.35 0.03 255);
+  --input: oklch(0.93 0.01 255);
+  --ring: oklch(0.51 0.25 265); 
   
-  --surface: #f8fafc; 
+  --surface: oklch(0.98 0.01 255); 
   
-  /* Impact Féminin */
-  --female: #7c3aed; 
-  --female-light: #f5f3ff; 
+  /* Impact Féminin (Hue 300 - Violet net et distinct) */
+  --female: oklch(0.53 0.26 300); 
+  --female-light: oklch(0.97 0.02 300); 
 
   /* Typographie */
   --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
