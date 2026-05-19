@@ -83,7 +83,7 @@ export function SectionHero({ profiles, stats }: SectionHeroProps) {
               size="lg"
               asChild
             >
-              <Link to="/projects">Parcourir le vivier</Link>
+              <Link to="/feed">Parcourir le vivier</Link>
             </Button>
           </div>
 

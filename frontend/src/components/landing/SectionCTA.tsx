@@ -42,7 +42,7 @@ export function SectionCTA() {
                 className="border-border-dark bg-foreground/40 text-muted-foreground hover:bg-background/10 hover:text-background"
                 asChild
               >
-                <Link to="/projects">Voir les profils</Link>
+                <Link to="/feed">Voir les profils</Link>
               </Button>
             </div>
           </div>
