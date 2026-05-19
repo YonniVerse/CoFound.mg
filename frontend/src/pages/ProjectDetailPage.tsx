@@ -129,10 +129,10 @@ export default function ProjectDetailPage() {
           </div>
 
           {/* RIGHT SIDEBAR */}
-          <div className="w-full lg:w-[320px] shrink-0 space-y-6">
+          <div className="w-full lg:w-[320px] shrink-0 space-y-6 lg:sticky lg:top-[100px] lg:h-fit">
             
             {/* Action Card */}
-            <div className="bg-background border border-border shadow-xs rounded-2xl p-6 flex flex-col gap-5 sticky top-[100px] animate-in fade-in slide-in-from-right-8 duration-500 delay-100">
+            <div className="bg-background border border-border shadow-xs rounded-2xl p-6 flex flex-col gap-5 animate-in fade-in slide-in-from-right-8 duration-500 delay-100">
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button size="xl" className="w-full text-base font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-shadow">
