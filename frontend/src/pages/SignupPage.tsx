@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -98,6 +99,11 @@ export default function SignupPage() {
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-16 py-12">
         <div className="w-full max-w-md mx-auto">
           
+          <Link to="/" className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors mb-10">
+            <ArrowLeft className="h-4 w-4" />
+            Retour à l'accueil
+          </Link>
+
           <div className="mb-10 text-center lg:text-left">
             <h2 className="text-3xl font-heading font-bold text-foreground tracking-tight mb-2">Créer un compte</h2>
             <p className="text-sm text-muted-foreground font-medium">
