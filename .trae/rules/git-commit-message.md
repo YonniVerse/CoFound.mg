@@ -2,73 +2,75 @@
 alwaysApply: true
 scene: git_message
 ---
-- Les messages de commit doivent etre toujours en Français
+
+## ⚠️ Langue
+
+TOUS les messages de commit sont en français, sans exception.
+Sujet, corps, footer — tout. Même sur un dépôt avec du code en anglais.
+
 ## Format
 
-Use Conventional Commits: `<type>(<scope>): <subject>`
+Conventional Commits : `<type>(<scope>): <sujet>`
 
-- Subject: imperative mood, sentence case, no period, max 72 chars
-- Scope: one lowercase noun — the module, file, or domain touched
-- Body (optional): explain *why*, not what — wrap at 72 chars
-- Footer (optional): `Closes #123`, `BREAKING CHANGE: <desc>`
+- Sujet : mode impératif, minuscule, sans point final, max 72 caractères
+- Scope : un nom commun au singulier — le module ou domaine concerné
+- Corps (optionnel) : expliquer le *pourquoi*, pas le quoi — retour à 72 chars
+- Footer (optionnel) : `Closes #123`, `BREAKING CHANGE: <description>`
 
 ## Types
 
-| Type     | When to use                                      |
-|----------|--------------------------------------------------|
-| feat     | New user-facing feature                          |
-| fix      | Bug fix                                          |
-| refactor | Code change with no behavior change              |
-| perf     | Performance improvement                          |
-| style    | Formatting, whitespace — no logic change         |
-| test     | Add or update tests                              |
-| docs     | Documentation only                               |
-| chore    | Build, tooling, dependencies, CI config          |
-| revert   | Revert a previous commit                         |
+| Type     | Quand l'utiliser                                      |
+|----------|-------------------------------------------------------|
+| feat     | Nouvelle fonctionnalité visible par l'utilisateur     |
+| fix      | Correction de bug                                     |
+| refactor | Réécriture sans changement de comportement            |
+| perf     | Amélioration de performance                           |
+| style    | Formatage, espaces — aucun changement logique         |
+| test     | Ajout ou mise à jour de tests                         |
+| docs     | Documentation uniquement                             |
+| chore    | Build, outillage, dépendances, config CI              |
+| revert   | Annulation d'un commit précédent                      |
 
-## Rules
+## Règles
 
-1. One logical change per commit — never bundle unrelated changes
-2. Subject answers: "If applied, this commit will …"
-3. Never mention file names in the subject (they are in the diff)
-4. Never use vague verbs: update, change, modify, fix things, misc
-5. Prefer specific verbs: add, remove, replace, extract, rename,
-   expose, hide, simplify, validate, cache, skip, reorder
-6. Breaking changes: add `!` after type — `feat(api)!: …`
-   and always add a `BREAKING CHANGE:` footer
+1. Un seul changement logique par commit — ne jamais mélanger des sujets distincts
+2. Le sujet répond à : « Si appliqué, ce commit va… »
+3. Ne jamais mentionner un nom de fichier dans le sujet (c'est dans le diff)
+4. Éviter les verbes vagues : mettre à jour, modifier, changer, divers
+5. Préférer des verbes précis : ajouter, supprimer, remplacer, extraire,
+   renommer, exposer, simplifier, valider, mettre en cache, ignorer, réordonner
+6. Breaking change : ajouter `!` après le type — `feat(api)!: …`
+   et toujours ajouter un footer `BREAKING CHANGE:`
 
-
-## Examples
+## Exemples
 
 ```
-feat(auth): add OAuth2 login with GitHub provider
+feat(auth): ajouter la connexion OAuth2 via GitHub
 
-Replaces the legacy username/password flow.
-Users are redirected to /dashboard after consent.
+Remplace l'ancien flux identifiant/mot de passe.
+L'utilisateur est redirigé vers /tableau-de-bord après consentement.
 
 Closes #88
 ```
 
 ```
-fix(cart): prevent duplicate items on rapid double-click
+fix(panier): empêcher les doublons lors d'un double-clic rapide
 ```
 
 ```
-refactor(logger): extract formatter into standalone module
+refactor(logger): extraire le formateur dans un module indépendant
 ```
 
 ```
-chore(deps): upgrade Vite to 5.2 and align Rollup peer deps
+chore(deps): mettre à jour Vite vers 5.2 et aligner les dépendances Rollup
 ```
-
 ```
-perf(search): cache autocomplete results for 60 s in Redis
+perf(recherche): mettre en cache les suggestions d'autocomplétion 60 s dans Redis
 ```
-
-## Anti-patterns (never generate these)
+## Anti-patterns (ne jamais générer)
 
 - `fix: bug fix`
 - `update: various changes`
-- `feat: add new feature to the application`
-- `WIP: not finished yet`
-- `fix(auth.ts): update auth.ts`
+- `feat: ajouter une nouvelle fonctionnalité`  ← trop vague
+- `WIP: pas encore terminé`
+- `fix(auth.ts): update auth.ts`  ← nom de fichier + verbe vague
