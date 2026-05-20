@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+// import { LogoIconSVG } from "@/components/ui/LogoIconSVG";
+import { LogoSVG } from "../ui/LogoSVG";
 
 const navLinks = [
   { label: "Explorer les profils", href: "/feed" },
@@ -32,11 +34,11 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-6 w-full flex items-center justify-between">
         
         {/* Identité de marque */}
-        <Link to="/" className="flex items-center gap-0.5 group">
-          <span className="font-heading text-xl font-black tracking-tight text-foreground">
-            CoFound
-          </span>
-          <span className="font-heading text-xl font-black text-primary transition-colors group-hover:text-secondary">.mg</span>
+        {/* <Link to="/" className="flex items-center group transition-opacity hover:opacity-90">
+          <LogoIconSVG className="h-18 w-auto" />
+        </Link> */}
+        <Link to="/" className="flex items-center group transition-opacity hover:opacity-90">
+          <LogoSVG className="h-40 w-auto" />
         </Link>
 
         {/* Navigation Grand Écran */}
