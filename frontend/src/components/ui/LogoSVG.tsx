@@ -5,7 +5,7 @@ export function LogoSVG(props: SVGProps<SVGSVGElement>) {
     <svg
       version="1.0"
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 1536 1024"
+      viewBox="100 250 1420 390"
       preserveAspectRatio="xMidYMid meet"
       {...props}
     >

@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { Mail, Heart, ExternalLink } from "lucide-react";
+import {  LogoSVG } from "../ui/LogoSVG";
+import { LogoIconSVG } from "../ui/LogoIconSVG";
 
 const TwitterIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -63,9 +65,9 @@ export function Footer() {
   return (
     <footer className="border-t border-border px-4 mx-auto w-full bg-muted/30">
       <div className="relative mx-auto grid max-w-7xl items-center justify-center gap-6 p-10 pb-0 md:flex flex-col">
-        <Link to="/" className="flex items-center gap-0.5 mb-2 group">
-          <span className="font-heading font-black text-2xl tracking-tight text-foreground">CoFound</span>
-          <span className="font-heading text-2xl font-black text-primary transition-colors group-hover:text-secondary">.mg</span>
+        <Link to="/" className="flex items-center group transition-opacity hover:opacity-90">
+          <LogoSVG className="hidden md:block h-20 w-auto" />
+          <LogoIconSVG className="block md:hidden h-18 w-auto" />
         </Link>
         <p className="bg-transparent text-center text-sm leading-relaxed text-muted-foreground md:text-center max-w-3xl">
           Bienvenue sur CoFound.mg, où la créativité rencontre la stratégie pour donner vie à votre vision. Nous sommes passionnés par la connexion des esprits brillants. Notre mission est d'autonomiser les étudiants et futurs fondateurs pour qu'ils se démarquent sur le marché. Propulsez la prochaine génération de licornes malgaches en connectant les compétences complémentaires au niveau universitaire.
