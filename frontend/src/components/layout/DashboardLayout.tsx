@@ -75,8 +75,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <aside className="hidden lg:flex w-64 flex-col fixed inset-y-0 left-0 bg-background border-r border-border shadow-xs z-50">
         <div className="p-6">
           <Link to="/" className="flex items-center group transition-opacity hover:opacity-90">
-            <LogoSVG className="hidden md:block h-8 w-auto" />
-            <LogoIconSVG className="block md:hidden h-8 w-auto" />
+            <LogoSVG className="hidden md:block h-12 w-auto -translate-y-1.5" />
+            <LogoIconSVG className="block md:hidden h-12 w-auto" />
           </Link>
         </div>
         
@@ -90,9 +90,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </aside>
 
       {/* Header Mobile */}
-      <header className="lg:hidden flex items-center justify-between p-4 bg-background border-b border-border z-40 sticky top-0">
+      <header className="lg:hidden flex items-center justify-between p-2 bg-background border-b border-border z-40 sticky top-0">
         <Link to="/" className="flex items-center">
-          <LogoSVG className="h-8 w-auto" />
+          <LogoSVG className="h-10 w-auto" />
         </Link>
         <Sheet>
           <SheetTrigger asChild>
@@ -100,10 +100,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <Menu className="h-6 w-6" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="p-0 flex flex-col w-64 bg-background border-r border-border">
-            <div className="p-6 pb-2">
+          <SheetContent side="left" className="p-0 flex flex-col gap-0 w-64 bg-background border-r border-border">
+            <div className="p-2">
               <Link to="/" className="flex items-center">
-                <LogoSVG className="h-8 w-auto" />
+                <LogoSVG className="h-10 w-auto" />
               </Link>
             </div>
             <nav className="flex-1 px-4 space-y-1.5 mt-2 overflow-y-auto">

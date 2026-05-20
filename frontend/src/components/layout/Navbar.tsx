@@ -35,8 +35,8 @@ export function Navbar() {
         
         {/* Identité de marque */}
         <Link to="/" className="flex items-center group transition-opacity hover:opacity-90">
-          <LogoSVG className="hidden md:block h-8 w-auto" />
-          <LogoIconSVG className="block md:hidden h-8 w-auto" />
+          <LogoSVG className="hidden md:block h-12 w-auto -translate-y-1.5" />
+          <LogoIconSVG className="block md:hidden h-12 w-auto" />
         </Link>
 
         {/* Navigation Grand Écran */}
