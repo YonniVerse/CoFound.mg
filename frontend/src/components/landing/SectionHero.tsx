@@ -54,12 +54,12 @@ export function SectionHero({ profiles, stats }: SectionHeroProps) {
         
         {/* COLONNE GAUCHE (Contenu textuel & métriques) */}
         <div className="lg:col-span-7 flex flex-col items-start">
-          <div className="inline-flex items-center gap-2 rounded-full bg-foreground text-background px-3.5 py-1.5 mb-6 shadow-sm">
+          {/* <div className="inline-flex items-center gap-2 rounded-full bg-foreground text-background px-3.5 py-1.5 mb-6 shadow-sm">
             <Sparkles className="h-3.5 w-3.5 text-secondary fill-secondary" />
             <span className="text-xs font-semibold tracking-wider uppercase">L'élite entrepreneuriale étudiante</span>
-          </div>
+          </div> */}
 
-          <h1 className="font-sans font-black text-5xl sm:text-6xl xl:text-[68px] text-foreground leading-[0.95] tracking-tight">
+          <h1 className="font-sans font-black text-5xl sm:text-6xl xl:text-[68px] text-foreground mt-4 leading-[0.95] tracking-tight">
             Ne cherche pas une idée.<br />
             Trouve ton <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Co-fondateur</span>.
           </h1>
