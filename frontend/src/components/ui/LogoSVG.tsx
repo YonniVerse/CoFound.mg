@@ -1,6 +1,9 @@
-import type { SVGProps } from "react";
+import { useId, type SVGProps } from "react";
 
 export function LogoSVG(props: SVGProps<SVGSVGElement>) {
+  const gradId = useId();
+  const gradIdClean = gradId.replace(/:/g, ""); // Safe ID for SVG
+
   return (
     <svg
       version="1.0"
@@ -10,7 +13,7 @@ export function LogoSVG(props: SVGProps<SVGSVGElement>) {
       {...props}
     >
       <defs>
-        <linearGradient id="icon-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <linearGradient id={`icon-grad-${gradIdClean}`} x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#2563eb" />
           <stop offset="50%" stopColor="#4f46e5" />
           <stop offset="100%" stopColor="#9333ea" />
@@ -18,7 +21,7 @@ export function LogoSVG(props: SVGProps<SVGSVGElement>) {
       </defs>
       <g transform="translate(0,1024) scale(0.1,-0.1)" stroke="none">
         {/* ICON */}
-        <g fill="url(#icon-grad)">
+        <g fill={`url(#icon-grad-${gradIdClean})`}>
           <path d="M2930 6964 c-280 -75 -368 -438 -153 -634 74 -68 145 -94 253 -94 72 0 94 4 145 27 81 38 116 67 159 131 149 224 21 526 -243 576 -69 13 -94 12 -161 -6z"/>
           <path d="M2565 6268 c-236 -124 -434 -433 -435 -676 0 -85 19 -129 67 -148 52 -22 95 -12 167 38 33 23 96 57 139 74 60 25 83 40 106 70 95 131 258 214 421 214 42 0 101 -7 131 -16 119 -35 246 -121 303 -203 17 -24 40 -44 55 -48 40 -9 140 -61 192 -99 40 -29 55 -34 102 -34 49 0 58 3 81 30 31 38 40 83 31 156 -32 261 -211 524 -436 643 l-45 24 -59 -60 c-203 -202 -531 -197 -723 11 -23 25 -46 46 -50 46 -4 -1 -25 -10 -47 -22z"/>
           <path d="M1985 5289 c-42 -12 -154 -106 -197 -165 -69 -94 -128 -245 -131 -330 l-2 -46 62 -23 c198 -72 328 -287 310 -510 -4 -41 -16 -98 -27 -127 -24 -63 -27 -59 96 -119 213 -103 454 -115 683 -33 106 37 139 63 147 115 9 56 -9 85 -84 133 -38 24 -89 68 -115 98 l-47 55 -86 6 c-73 4 -97 11 -162 42 -85 42 -153 105 -198 180 l-29 50 -1 185 c-1 141 -5 195 -17 227 -9 24 -21 80 -27 125 -13 96 -21 113 -60 133 -32 16 -69 18 -115 4z"/>

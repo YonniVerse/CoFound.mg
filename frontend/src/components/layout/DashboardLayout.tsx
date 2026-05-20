@@ -11,7 +11,6 @@ import {
   Menu
 } from "lucide-react";
 import { LogoSVG } from "../ui/LogoSVG";
-import { LogoIconSVG } from "../ui/LogoIconSVG";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
@@ -75,8 +74,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <aside className="hidden lg:flex w-64 flex-col fixed inset-y-0 left-0 bg-background border-r border-border shadow-xs z-50">
         <div className="p-6">
           <Link to="/" className="flex items-center group transition-opacity hover:opacity-90">
-            <LogoSVG className="hidden md:block h-12 w-auto -translate-y-1.5" />
-            <LogoIconSVG className="block md:hidden h-12 w-auto" />
+            <LogoSVG className="h-12 w-auto -translate-y-1.5" />
           </Link>
         </div>
         
