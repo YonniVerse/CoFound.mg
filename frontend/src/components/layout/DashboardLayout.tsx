@@ -9,6 +9,8 @@ import {
   User, 
   Settings 
 } from "lucide-react";
+import { LogoSVG } from "../ui/LogoSVG";
+import { LogoIconSVG } from "../ui/LogoIconSVG";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -32,9 +34,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Sidebar Gauche */}
       <aside className="hidden lg:flex w-64 flex-col fixed inset-y-0 left-0 bg-background border-r border-border shadow-xs z-50">
         <div className="p-6">
-          <Link to="/" className="flex items-center gap-0.5 group">
-            <span className="font-heading font-black text-2xl tracking-tight text-foreground">CoFound</span>
-            <span className="font-heading text-2xl font-black text-primary transition-colors group-hover:text-secondary">.mg</span>
+          <Link to="/" className="flex items-center group transition-opacity hover:opacity-90">
+            <LogoSVG className="hidden md:block h-8 w-auto" />
+            <LogoIconSVG className="block md:hidden h-8 w-auto" />
           </Link>
         </div>
         
