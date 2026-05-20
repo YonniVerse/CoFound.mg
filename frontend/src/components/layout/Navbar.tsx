@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-// import { LogoIconSVG } from "@/components/ui/LogoIconSVG";
+import { LogoIconSVG } from "../ui/LogoIconSVG";
 import { LogoSVG } from "../ui/LogoSVG";
 
 const navLinks = [
@@ -34,11 +34,9 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-6 w-full flex items-center justify-between">
         
         {/* Identité de marque */}
-        {/* <Link to="/" className="flex items-center group transition-opacity hover:opacity-90">
-          <LogoIconSVG className="h-18 w-auto" />
-        </Link> */}
         <Link to="/" className="flex items-center group transition-opacity hover:opacity-90">
-          <LogoSVG className="h-40 w-auto" />
+          <LogoSVG className="hidden md:block h-40 w-auto" />
+          <LogoIconSVG className="block md:hidden h-18 w-auto" />
         </Link>
 
         {/* Navigation Grand Écran */}
