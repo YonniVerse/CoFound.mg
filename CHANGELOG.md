@@ -10,6 +10,28 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-21 — Base PostgreSQL Neon configurée pour CoFound.mg
+
+### Ajouté
+
+- Projet Neon **`CoFound.mg`** créé dans l’organisation `Yonni`, avec la branche principale `main` et la base `neondb`.
+- Migrations Prisma `0001_initial` et `0002_auth_tokens` appliquées avec succès.
+- Extensions PostgreSQL vérifiées : `pg_trgm` et `unaccent`.
+- Seed idempotent des référentiels exécuté et vérifié : 8 filières, 6 régions, 8 secteurs et 10 compétences.
+- [`apps/api/.env.example`](apps/api/.env.example) et la documentation de connexion ajoutés via la PR [#27](https://github.com/YonniVerse/CoFound.mg/pull/27).
+
+### Décidé
+
+- La chaîne `DATABASE_URL` Neon n’est pas enregistrée dans Git. Les environnements locaux utilisent `apps/api/.env`, ignoré par Git, à partir de `apps/api/.env.example`.
+- Les migrations doivent être appliquées avant le démarrage de l’API, puis le seed de référence peut être relancé sans risque grâce à son idempotence.
+
+### Validé
+
+- Le schéma public contient les tables Prisma attendues, notamment `User`, `TalentProfile`, `TalentIdentity`, `Project`, `ProjectMember`, `Connection`, `Notification`, `AuditLog`, `Skill`, `Field`, `Sector` et `Region`.
+- La branche `dev` reste propre et alignée sur `origin/dev` après intégration.
+
+---
+
 ## 2026-08-21 — Vague 0 intégrée : client web, traitements, infrastructure et observabilité
 
 ### Ajouté
