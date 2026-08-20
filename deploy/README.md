@@ -38,6 +38,8 @@ Les secrets suivants sont requis dans l’environnement GitHub `production` :
 | `GHCR_USERNAME` | Compte technique autorisé à lire le paquet GHCR |
 | `GHCR_READ_TOKEN` | Token GHCR en lecture seule, stocké uniquement dans GitHub et transmis par stdin à `docker login` |
 
+Le fichier `.env` du VPS contient aussi `R2_ENDPOINT`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET` et `BACKUP_ENCRYPTION_KEY`. La clé de chiffrement doit être distincte de `JWT_SECRET`, conservée hors Git et sauvegardée dans un gestionnaire de secrets. `RESTORE_DATABASE_URL` doit toujours pointer vers une base jetable distincte de `DATABASE_URL`.
+
 Le workflow `deploy-api.yml` s’exécute sur un tag `v*` ou manuellement. Il publie l’image dans GHCR, copie uniquement les fichiers Compose/Caddy, met à jour `COFOUND_API_IMAGE`, tire l’image et recrée les services.
 
 ## Vérifications après déploiement
@@ -48,4 +50,15 @@ curl --fail https://api.example.mg/api/v1/health
 ssh deploy@vps 'cd /srv/cofound && docker compose --env-file deploy/.env -f deploy/compose.production.yml ps'
 ```
 
-Une restauration complète relève du ticket F-17. Les sauvegardes PostgreSQL ne sont donc pas effectuées par ce Compose.
+## Sauvegardes et restauration
+
+Le profil `backup` n’est pas démarré par défaut. Une sauvegarde quotidienne peut être installée avec le modèle [`backup/cron.example`](./backup/cron.example) : elle produit un dump custom PostgreSQL, le chiffre avant transfert et conserve un objet horodaté ainsi qu’un pointeur `latest`. Le checksum est stocké à côté de chaque objet.
+
+La restauration de contrôle s’exécute vers `RESTORE_DATABASE_URL`, jamais vers `DATABASE_URL` :
+
+```bash
+docker compose --env-file deploy/.env -f deploy/compose.production.yml \
+  --profile restore-test run --rm restore-test
+```
+
+Cette commande vérifie le checksum, déchiffre le dump et exécute `pg_restore --single-transaction`. Elle doit être exécutée au moins une fois avant la production et ensuite périodiquement.

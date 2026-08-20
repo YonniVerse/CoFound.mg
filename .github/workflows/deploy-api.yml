@@ -25,6 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image: ${{ steps.meta.outputs.image }}
+      backup_image: ${{ steps.meta.outputs.backup_image }}
     steps:
       - name: Récupérer le dépôt
         uses: actions/checkout@v4
@@ -46,10 +47,12 @@ jobs:
             TAG="${{ inputs.image_tag }}"
           fi
           IMAGE="ghcr.io/yonniverse/cofound-api:${TAG}"
+          BACKUP_IMAGE="ghcr.io/yonniverse/cofound-backup:${TAG}"
           echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
+          echo "backup_image=$BACKUP_IMAGE" >> "$GITHUB_OUTPUT"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
-      - name: Construire et publier
+      - name: Construire et publier l’image API/worker
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -58,6 +61,16 @@ jobs:
           tags: |
             ${{ steps.meta.outputs.image }}
             ghcr.io/yonniverse/cofound-api:${{ github.sha }}
+
+      - name: Construire et publier l’image backup
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/backup/Dockerfile
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.backup_image }}
+            ghcr.io/yonniverse/cofound-backup:${{ github.sha }}
 
   deploy:
     name: Déployer sur le VPS
@@ -93,6 +106,7 @@ jobs:
           GHCR_READ_TOKEN: ${{ secrets.GHCR_READ_TOKEN }}
           GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
           IMAGE: ${{ needs.publish.outputs.image }}
+          BACKUP_IMAGE: ${{ needs.publish.outputs.backup_image }}
         run: |
           printf '%s' "$GHCR_READ_TOKEN" | ssh -o StrictHostKeyChecking=yes "$DEPLOY_USER@$DEPLOY_HOST" \\
-            "cd '$DEPLOY_PATH' && sed -i 's#^COFOUND_API_IMAGE=.*#COFOUND_API_IMAGE=$IMAGE#' deploy/.env && docker login ghcr.io -u '$GHCR_USERNAME' --password-stdin && docker compose --env-file deploy/.env -f deploy/compose.production.yml pull && docker compose --env-file deploy/.env -f deploy/compose.production.yml up -d --remove-orphans && docker image prune -f"
+            "cd '$DEPLOY_PATH' && sed -i 's#^COFOUND_API_IMAGE=.*#COFOUND_API_IMAGE=$IMAGE#; s#^COFOUND_BACKUP_IMAGE=.*#COFOUND_BACKUP_IMAGE=$BACKUP_IMAGE#' deploy/.env && docker login ghcr.io -u '$GHCR_USERNAME' --password-stdin && docker compose --env-file deploy/.env -f deploy/compose.production.yml pull && docker compose --env-file deploy/.env -f deploy/compose.production.yml up -d --remove-orphans && docker image prune -f"

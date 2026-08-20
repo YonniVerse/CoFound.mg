@@ -32,6 +32,20 @@ services:
       api:
         condition: service_healthy
 
+  backup:
+    image: ${COFOUND_BACKUP_IMAGE}
+    profiles: ["backup"]
+    env_file:
+      - .env
+    command: ["/usr/local/bin/backup.sh"]
+
+  restore-test:
+    image: ${COFOUND_BACKUP_IMAGE}
+    profiles: ["restore-test"]
+    env_file:
+      - .env
+    command: ["/usr/local/bin/restore-test.sh"]
+
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
