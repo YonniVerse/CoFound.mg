@@ -2,7 +2,7 @@
 
 API NestJS en monolithe modulaire. F-05 initialise le runtime, Prisma et le schéma PostgreSQL ; les modules métier et les garanties transversales arrivent dans les tickets suivants de la vague 0.
 
-Le healthcheck local est disponible sur `GET /api/v1/health`.
+Le healthcheck local est disponible sur `GET /api/v1/health`. Les référentiels initiaux sont chargés avec `pnpm --filter @cofound/api seed:reference`; la commande est idempotente.
 
 | Ticket | Contenu |
 |---|---|
