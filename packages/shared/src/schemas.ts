@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { AccountStatus, ProjectStatus } from './enums'
-import { ApiErrorCode } from './errors'
+import { AccountStatus, ProjectStatus } from './enums.js'
+import { ApiErrorCode } from './errors.js'
 
 export const idSchema = z.string().min(1)
 
