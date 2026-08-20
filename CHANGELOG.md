@@ -10,6 +10,51 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-20 — Restructuration en monorepo pnpm (F-01)
+
+### Ajouté
+
+- Workspace pnpm : `apps/web`, `apps/api` (vide), `packages/shared`
+- `tsconfig.base.json` — options TypeScript communes, avec `strict` et
+  `noUncheckedIndexedAccess` activés
+- `packages/shared` — énumérations du domaine et invariants produit
+  (`MIN_AGGREGATION_THRESHOLD`, durées de jetons, limites anti-démarchage). Les schémas
+  Zod viennent au ticket `F-11`.
+- `.gitignore` et `.nvmrc` à la racine
+
+### Modifié
+
+- `frontend/` déplacé en `apps/web/` par `git mv` — historique préservé
+- Passage de npm à pnpm : `package-lock.json` supprimé, `pnpm-lock.yaml` généré
+- `@cofound/web` déclare `@cofound/shared` en `workspace:*` — le lien est vérifié
+- Port du serveur de développement web : 3000 → **5173**, pour libérer 3000 pour l'API
+- `vite.config.ts` : `__dirname` remplacé par `import.meta.url`, dont Vite annonce la
+  dépréciation
+
+### Corrigé
+
+- 14 erreurs de typage révélées par l'activation de `strict` :
+  - 6 symboles inutilisés — préexistantes, le build du dépôt était déjà rouge
+  - 8 accès indexés non vérifiés (`SectionHero`, `SectionTestimonials`, `Avatar`),
+    corrigés par des tuples `as const` et une valeur de repli plutôt que par des
+    assertions de non-nullité
+- `useProjectDetail` : l'état d'erreur et de chargement est désormais **dérivé au rendu**
+  au lieu d'être synchronisé dans un effet, ce qui supprime les rendus en cascade
+- ESLint aligné sur TypeScript : les identifiants préfixés par `_` sont ignorés — les deux
+  outils se contredisaient
+- `react-refresh/only-export-components` désactivée sur `src/components/ui/**`, format
+  généré par shadcn qu'on ne modifie pas à la main
+
+### Constaté, non traité
+
+- Le bundle pèse **959 Ko (293 Ko gzip)** contre un budget de 200 Ko fixé dans
+  l'architecture. Aucun découpage de code, `recharts` et `framer-motion` chargés d'emblée.
+  Ticket `S-10`.
+- Le projet Vercel pointe toujours sur `frontend/` : son répertoire racine doit passer à
+  `apps/web`.
+
+---
+
 ## 2026-08-20 — Cadrage complet du projet
 
 ### Décidé

@@ -7,45 +7,38 @@
 > arrêtées dans `CLAUDE.md`, le détail dans `docs/`.
 
 **Dernière mise à jour** : 2026-08-20
-**Phase** : cadrage terminé, développement non démarré
+**Phase** : vague 0 (Fondations) — `F-01` terminé
 
 ---
 
 ## 1. Où on en est
 
-Le cadrage complet est terminé : périmètre, architecture, modèle de données, plan de
-développement et documents business sont écrits et validés par Yonni.
+Cadrage terminé et validé. Le dépôt a été rapatrié dans `~/Lab/CoFound.mg` et
+restructuré en monorepo pnpm (`F-01`).
 
-**Aucune ligne de code du MVP n'a été écrite.** Ce qui existe :
-
-| Élément | État | Où |
-|---|---|---|
-| Documentation produit, technique, business | ✅ 9 documents | `docs/` |
-| Prototype frontend (React 19 + Vite, design system, 5 pages, données simulées) | ✅ ~4 300 lignes | dépôt GitHub, branche `dev`, dossier `frontend/` |
-| Backend | ⬜ inexistant | — |
-| Monorepo | ⬜ non restructuré | — |
-| Infrastructure | ⬜ rien de provisionné | — |
+| Élément | État |
+|---|---|
+| Documentation produit, technique, business | ✅ 9 documents dans `docs/` |
+| Monorepo pnpm (`apps/web`, `packages/shared`) | ✅ `F-01` |
+| Prototype frontend | ✅ déplacé en `apps/web`, historique git préservé |
+| `pnpm dev` / `build` / `typecheck` / `lint` | ✅ tous verts |
+| `packages/shared` | ✅ énumérations du domaine ; schémas Zod au ticket `F-11` |
+| Backend `apps/api` | ⬜ inexistant — ticket `F-05` |
+| Infrastructure | ⬜ rien de provisionné |
 
 ---
 
 ## 2. Prochaine action
 
-> **Ticket `F-01` — restructuration en monorepo pnpm.**
+> **Ticket `F-03` — pipeline CI GitHub Actions** (lint, types, tests, build).
 
-```bash
-cd <dépôt>
-git checkout dev
-git add -A && git commit -m "chore: état avant restructuration monorepo"
-git checkout -b chore/monorepo
-mkdir -p apps packages/shared apps/api
-git mv frontend apps/web          # git mv préserve l'historique
-mkdir -p docs/archive
-git mv docs/PRD_CoFound_mg.md docs/archive/
-git mv docs/SPECS_CoFound_mg.md docs/archive/
-# puis : pnpm-workspace.yaml, package.json racine, tsconfig de base
-```
+C'est le prochain à faire parce que tout est déjà vert : la CI verrouille cet état avant
+que le backend n'arrive. Elle doit aussi porter `F-04` (budget de performance) — le build
+actuel produit **959 Ko de JS (293 Ko gzip)**, très au-dessus du budget de 200 Ko fixé
+dans `docs/architecture.md` §6. Le découpage de bundle est à traiter au ticket `S-10`,
+mais le seuil doit être posé dès maintenant, sinon il ne le sera jamais.
 
-Puis enchaîner sur le chemin critique : **`F-05` → `F-07` → `F-08` → `F-09`**.
+Ensuite, le chemin critique : **`F-05` → `F-07` → `F-08` → `F-09`**.
 Tant que ces quatre tickets ne sont pas fusionnés, la moitié du backlog est bloquée.
 
 Backlog complet : `docs/plan-de-developpement.md`.
@@ -78,8 +71,10 @@ Ces trois-là ont un délai externe et doivent partir avant le code :
 
 ## 5. Points de vigilance actifs
 
-- **L'arbre de travail local du dépôt prototype est sale** (fichiers `.agents/skills/`, docs,
-  README modifiés non committés). À committer ou nettoyer **avant** `F-01`.
+- **Vercel pointe encore sur `frontend/`.** Le répertoire racine du projet Vercel doit
+  passer à **`apps/web`**, sinon le prochain déploiement échouera. Action manuelle, hors dépôt.
+- **Le bundle pèse 959 Ko (293 Ko gzip)**, contre un budget de 200 Ko. Cause principale :
+  aucun découpage de code, plus `recharts` et `framer-motion` chargés d'emblée. Ticket `S-10`.
 - **Corrections à appliquer au prototype** lors de sa reprise dans `apps/web` (ticket `F-13`) :
   - `C1` — retirer `isFemale` et `FemaleBadge` **des profils de personnes** (garder
     `isFemaleImpact` sur les projets)
