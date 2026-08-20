@@ -20,18 +20,24 @@ services:
     working_dir: /workspace
     volumes:
       - .:/workspace:ro
+      - workspace_node_modules:/workspace/node_modules
+      - api_node_modules:/workspace/apps/api/node_modules
+      - api_dist:/workspace/apps/api/dist
     environment:
       NODE_ENV: development
       PORT: 3000
       DATABASE_URL: postgresql://cofound:cofound_local@postgres:5432/cofound
-    command: ["node", "apps/api/dev-server.mjs"]
+    command:
+      - sh
+      - -c
+      - corepack enable && pnpm install --frozen-lockfile && pnpm --filter @cofound/api prisma:migrate:deploy && pnpm --filter @cofound/api prisma:generate && pnpm --filter @cofound/api build && pnpm --filter @cofound/api start
     ports:
       - "3000:3000"
     depends_on:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/health >/dev/null || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/v1/health >/dev/null || exit 1"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -62,3 +68,5 @@ volumes:
   workspace_node_modules:
   web_node_modules:
   shared_node_modules:
+  api_node_modules:
+  api_dist:
