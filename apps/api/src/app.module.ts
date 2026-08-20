@@ -1,10 +1,18 @@
 import { Module } from '@nestjs/common'
+import { APP_GUARD } from '@nestjs/core'
 import { AuthModule } from './auth/auth.module.js'
 import { HealthController } from './health/health.controller.js'
 import { PrismaModule } from './prisma/prisma.module.js'
+import { AccessTokenGuard } from './rbac/access-token.guard.js'
+import { PermissionGuard } from './rbac/permission.guard.js'
+import { MeController } from './rbac/me.controller.js'
 
 @Module({
   imports: [PrismaModule, AuthModule],
-  controllers: [HealthController],
+  controllers: [HealthController, MeController],
+  providers: [
+    { provide: APP_GUARD, useClass: AccessTokenGuard },
+    { provide: APP_GUARD, useClass: PermissionGuard },
+  ],
 })
 export class AppModule {}

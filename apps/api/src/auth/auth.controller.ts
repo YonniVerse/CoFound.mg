@@ -1,5 +1,6 @@
 import { Body, Controller, Post, Req, Res, UnauthorizedException } from '@nestjs/common'
 import { AuthService } from './auth.service.js'
+import { AllowAnonymous } from '../rbac/rbac.decorators.js'
 import {
   activationInputSchema,
   loginInputSchema,
@@ -19,6 +20,7 @@ type RequestWithCookies = {
   cookies?: Record<string, string | undefined>
 }
 
+@AllowAnonymous()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
