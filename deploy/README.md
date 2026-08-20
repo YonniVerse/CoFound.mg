@@ -62,3 +62,11 @@ docker compose --env-file deploy/.env -f deploy/compose.production.yml \
 ```
 
 Cette commande vérifie le checksum, déchiffre le dump et exécute `pg_restore --single-transaction`. Elle doit être exécutée au moins une fois avant la production et ensuite périodiquement.
+
+## Observabilité
+
+L’API écrit des logs JSON via pino sur stdout. Les cookies, en-têtes Authorization, mots de passe et jetons sont redacted à la source. Le niveau est réglable par `LOG_LEVEL`.
+
+Sentry est initialisé avant NestJS quand `SENTRY_DSN` est défini. Le filtre global Sentry capture les exceptions non gérées et n’envoie pas les données personnelles par défaut. `SENTRY_TRACES_SAMPLE_RATE` doit rester proportionné au trafic et au budget du projet.
+
+La sonde `GET /api/v1/health` est anonyme et teste PostgreSQL. Elle renvoie `200` avec `{"status":"ok","database":"ok"}` lorsque la base répond, et `503` avec `{"status":"degraded","database":"unavailable"}` sinon. Le healthcheck Compose dépend de cette readiness.
