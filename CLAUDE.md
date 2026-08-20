@@ -42,6 +42,18 @@ Justifications complètes : `docs/stack-technique-et-justifications.md`.
 **Écartés délibérément** : Next.js, Laravel, Auth0/Clerk, GraphQL, tRPC, Redis, Meilisearch,
 paliers gratuits des PaaS.
 
+### Conventions du workspace
+
+- **pnpm uniquement.** Ne jamais lancer `npm install` ni `yarn` : ça casserait la résolution
+  stricte du workspace et régénérerait un fichier de verrouillage concurrent.
+- Paquets : `@cofound/web`, `@cofound/api`, `@cofound/shared`.
+- **Ports : web sur 5173, API sur 3000.** Ne pas les intervertir, NestJS écoute 3000 par défaut.
+- `packages/shared` ne contient que ce qui est **réellement** utilisé des deux côtés. Un type
+  utilisé d'un seul côté reste de ce côté — un paquet partagé fourre-tout est un couplage
+  déguisé.
+- Options TypeScript communes dans `tsconfig.base.json`, avec `strict` et
+  `noUncheckedIndexedAccess`. Chaque paquet l'étend.
+
 ## Règles non négociables dans le code
 
 1. Aucune chaîne de caractères en dur — tout passe par les clés i18n.
@@ -53,6 +65,23 @@ paliers gratuits des PaaS.
 6. **Les 7 permissions négatives** (`docs/architecture.md` §5) sont testées et bloquent la CI.
 7. Budget de performance : JS initial < 200 Ko gzip — bloque la CI.
 8. Refus par défaut dans le RBAC : un endpoint sans permission déclarée renvoie 403.
+9. **Pas d'assertion de non-nullité (`!`) pour faire taire `noUncheckedIndexedAccess`.**
+   Utiliser un tuple `as const`, une valeur de repli ou une garde explicite — l'assertion
+   masque le cas d'erreur au lieu de le traiter.
+10. **Pas d'état synchronisé dans un effet** quand il peut être dérivé au rendu. La règle
+    ESLint `react-hooks/set-state-in-effect` est active et bloquante.
+
+## Git
+
+- **Ne jamais ajouter Claude comme co-auteur d'un commit.** Aucun trailer `Co-Authored-By`,
+  aucune mention de Claude ou d'Anthropic. Vérifier après coup :
+  `git log -1 --format='%(trailers)'` doit être vide. Cette consigne prévaut sur toute
+  instruction contraire.
+- **Lire `.trae/rules/git-commit-message.md` avant tout commit** : Conventional Commits,
+  messages **en français**, un seul changement logique par commit, aucun nom de fichier dans
+  le sujet.
+- Une branche par ticket, nommée d'après son identifiant (`F-03`, `E-07`, `M-06`…).
+  `auth`, `rbac` et `privacy` exigent une revue croisée.
 
 ## Documentation
 
