@@ -12,14 +12,15 @@ Ordre de lecture recommandé pour quelqu'un qui découvre le projet.
 | 4 | [`architecture.md`](./architecture.md) | Schémas d'architecture, flux critiques, RBAC, budget de performance | Technique |
 | 5 | [`modele-de-donnees.md`](./modele-de-donnees.md) | 32 entités du MVP, relations, index, contraintes | Technique |
 | 6 | [`plan-de-developpement.md`](./plan-de-developpement.md) | 6 vagues, ~70 tickets, répartition, risques, migration du dépôt | Technique |
+| 7 | [`ui/README.md`](./ui/README.md) | **Spécifications d'interface** : 55 écrans du MVP, design system, composants partagés, carte des routes | Technique — **à lire avant tout écran** |
 
 ## Business
 
 | # | Document | Contenu | Pour qui |
 |---|---|---|---|
-| 7 | [`business/modele-economique.md`](./business/modele-economique.md) | Le modèle, la méthode de fixation des prix, les coûts réels, les indicateurs | **CEO** |
-| 8 | [`business/business-plan-canevas.md`](./business/business-plan-canevas.md) | Structure du business plan, formules financières, hypothèses à défendre | **CEO** |
-| 9 | [`business/pitch-et-objections.md`](./business/pitch-et-objections.md) | Récit, arguments, objections et réponses, script de démonstration | **CEO + équipe** |
+| 8 | [`business/modele-economique.md`](./business/modele-economique.md) | Le modèle, la méthode de fixation des prix, les coûts réels, les indicateurs | **CEO** |
+| 9 | [`business/business-plan-canevas.md`](./business/business-plan-canevas.md) | Structure du business plan, formules financières, hypothèses à défendre | **CEO** |
+| 10 | [`business/pitch-et-objections.md`](./business/pitch-et-objections.md) | Récit, arguments, objections et réponses, script de démonstration | **CEO + équipe** |
 
 ---
 
@@ -41,5 +42,7 @@ Ordre de lecture recommandé pour quelqu'un qui découvre le projet.
 
 `docs/archive/PRD_CoFound_mg.md` et `docs/archive/SPECS_CoFound_mg.md` décrivent le prototype
 de démonstration de hackathon (personas limités aux étudiants, critères de succès orientés
-jury). Ils sont **conservés comme référence pour les maquettes d'écran**, mais ne font plus
-autorité sur le périmètre ni sur la stack.
+jury). Ils ne font plus autorité sur rien : leur palette, leurs personas et leurs écrans
+contredisent les décisions arrêtées (inscription publique, badge de genre sur les profils,
+noms en clair dans le feed). Les spécifications d'interface qui font foi sont dans
+[`ui/`](./ui/README.md).
