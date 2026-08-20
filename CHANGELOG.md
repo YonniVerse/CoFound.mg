@@ -10,6 +10,37 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-21 — Vague 0 intégrée : client web, traitements, infrastructure et observabilité
+
+### Ajouté
+
+- **F-14 — Client HTTP web** : `apps/web/src/lib/api-client.ts` fournit un client générique typé avec base URL configurable, Bearer conservé uniquement en mémoire, cookies `httpOnly` envoyés par `credentials: include` et parsing des erreurs via `@cofound/shared`.
+- **F-15 — File de traitements** : ajout de `pg-boss` sur PostgreSQL, de la queue `cofound.notifications.email`, d’un publisher NestJS et d’un worker séparé (`start:worker`). Les demandes de réinitialisation publient un job sans jamais renvoyer le jeton brut par l’API.
+- **F-16 — Infrastructure** : image API/worker multi-stage, Compose de production, Caddy avec TLS automatique, healthchecks, publication GHCR et déploiement SSH automatisé avec `known_hosts` strict. Le frontend reste déployé séparément sur son CDN statique.
+- **F-17 — Sauvegardes** : image dédiée avec `pg_dump`, chiffrement avant transfert, checksum, objets horodatés et pointeur `latest` dans R2. Le profil `restore-test` restaure exclusivement vers `RESTORE_DATABASE_URL`, une base jetable distincte de la production.
+- **F-18 — Observabilité** : Sentry initialisé avant NestJS quand `SENTRY_DSN` existe, filtre global des exceptions, logs JSON pino avec redaction des cookies, Authorization, mots de passe et jetons, et readiness check PostgreSQL sur `/api/v1/health`.
+- Tests unitaires du healthcheck : réponse `200` lorsque PostgreSQL répond et réponse `503` lorsqu’il est indisponible.
+
+### Décidé
+
+- Le **plan versionné du dépôt** fait foi lorsque le contexte de reprise diverge du mapping des tickets. F-16, F-17 et F-18 suivent donc le périmètre infrastructure, sauvegardes et observabilité de `docs/plan-de-developpement.md`.
+- Le fournisseur d’email transactionnel n’est pas choisi dans F-15. Le worker et ses contrats sont prêts ; le transport réel et les gabarits relèvent de `E-01`/`E-02`.
+- `BACKUP_ENCRYPTION_KEY` est distinct de `JWT_SECRET` et `RESTORE_DATABASE_URL` doit toujours cibler une base de restauration jetable.
+
+### Validé
+
+- Pull requests fusionnées vers `dev` : [#20](https://github.com/YonniVerse/CoFound.mg/pull/20), [#21](https://github.com/YonniVerse/CoFound.mg/pull/21), [#22](https://github.com/YonniVerse/CoFound.mg/pull/22), [#23](https://github.com/YonniVerse/CoFound.mg/pull/23) et [#24](https://github.com/YonniVerse/CoFound.mg/pull/24).
+- `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build` et `pnpm check:bundle` passent sur `dev`.
+- La suite API compte 12 tests passants.
+- Le JavaScript initial pèse 271 701 octets gzip, sous le cliquet de 290 221 octets gzip.
+
+### À faire hors sandbox
+
+- Configurer les secrets GitHub de l’environnement `production`, le `.env` du VPS, le domaine Caddy, les identifiants R2 et le DSN Sentry.
+- Exécuter un build Docker réel, une sauvegarde et une restauration testée sur une machine équipée de Docker. Le sandbox ne contient pas Docker ; la simulation `pnpm deploy --filter @cofound/api --prod --legacy` a toutefois confirmé le runtime Prisma.
+
+---
+
 ## 2026-08-20 — Rapatriement du dépôt et nettoyage des permissions
 
 *Précède la restructuration en monorepo décrite dans l'entrée suivante.*
