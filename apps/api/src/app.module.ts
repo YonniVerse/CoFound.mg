@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common'
-import { APP_GUARD } from '@nestjs/core'
+import { APP_FILTER, APP_GUARD } from '@nestjs/core'
+import { SentryModule } from '@sentry/nestjs/setup'
+import { SentryGlobalFilter } from '@sentry/nestjs/setup'
 import { AuditModule } from './audit/audit.module.js'
 import { AuthModule } from './auth/auth.module.js'
 import { HealthController } from './health/health.controller.js'
@@ -10,9 +12,10 @@ import { MeController } from './rbac/me.controller.js'
 import { PrivacyModule } from './privacy/privacy.module.js'
 
 @Module({
-  imports: [PrismaModule, AuthModule, PrivacyModule, AuditModule],
+  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, PrivacyModule, AuditModule],
   controllers: [HealthController, MeController],
   providers: [
+    { provide: APP_FILTER, useClass: SentryGlobalFilter },
     { provide: APP_GUARD, useClass: AccessTokenGuard },
     { provide: APP_GUARD, useClass: PermissionGuard },
   ],
