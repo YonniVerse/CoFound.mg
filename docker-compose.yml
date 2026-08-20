@@ -30,7 +30,7 @@ services:
     command:
       - sh
       - -c
-      - corepack enable && pnpm install --frozen-lockfile && pnpm --filter @cofound/api prisma:migrate:deploy && pnpm --filter @cofound/api prisma:generate && pnpm --filter @cofound/api build && pnpm --filter @cofound/api start
+      - corepack enable && pnpm install --frozen-lockfile && pnpm --filter @cofound/shared build && pnpm --filter @cofound/api prisma:migrate:deploy && pnpm --filter @cofound/api prisma:generate && pnpm --filter @cofound/api build && pnpm --filter @cofound/api start
     ports:
       - "3000:3000"
     depends_on:
@@ -56,7 +56,7 @@ services:
     command:
       - sh
       - -c
-      - corepack enable && pnpm install --frozen-lockfile && pnpm --filter @cofound/web dev --host 0.0.0.0
+      - corepack enable && pnpm install --frozen-lockfile && pnpm --filter @cofound/shared build && pnpm --filter @cofound/web dev --host 0.0.0.0
     ports:
       - "5173:5173"
     depends_on:

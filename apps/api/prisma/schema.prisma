@@ -209,8 +209,9 @@ model User {
   affiliations               Affiliation[]
   organizationMembers        OrganizationMember[]
   invitationTokens           InvitationToken[]
-  refreshTokens              RefreshToken[]
-  consents                   Consent[]
+    refreshTokens             RefreshToken[]
+  passwordResetTokens       PasswordResetToken[]
+  consents                  Consent[]
   importBatchesUploaded      ImportBatch[]             @relation("ImportUploader")
   projectsCreated            Project[]                 @relation("ProjectCreator")
   projectMembers             ProjectMember[]
@@ -407,6 +408,18 @@ model RefreshToken {
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([familyId])
+}
+
+model PasswordResetToken {
+  id         String   @id @default(cuid())
+  userId     String
+  tokenHash  String   @unique
+  expiresAt  DateTime
+  usedAt     DateTime?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
 }
 
 model Consent {
