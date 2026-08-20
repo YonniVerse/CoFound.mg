@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common'
 import type { CanActivate, ExecutionContext } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { jwtVerify } from 'jose'
-import { getJwtSecret } from '../auth/auth.service.js'
+import { getJwtSecret } from '../auth/jwt-secret.js'
 import { ANONYMOUS_KEY } from './rbac.decorators.js'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
 
