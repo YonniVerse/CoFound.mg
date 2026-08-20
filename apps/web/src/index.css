@@ -50,8 +50,8 @@
   --surface: oklch(0.98 0.01 255); 
   
   /* Impact Féminin (Hue 300 - Violet net et distinct) */
-  --female: oklch(0.53 0.26 300); 
-  --female-light: oklch(0.97 0.02 300); 
+  --impact: oklch(0.53 0.26 300);
+  --impact-light: oklch(0.97 0.02 300);
 
   /* Typographie */
   --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
@@ -98,8 +98,8 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-surface: var(--surface);
-  --color-female: var(--female);
-  --color-female-light: var(--female-light);
+  --color-impact: var(--impact);
+  --color-impact-light: var(--impact-light);
 
   --font-sans: var(--font-sans);
   --font-heading: var(--font-heading);

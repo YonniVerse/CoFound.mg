@@ -1,7 +1,5 @@
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
-import { lazy, Suspense } from "react";
 import LandingPage from "@/pages/LandingPage";
-const SignupRoute = lazy(() => import("@/routes/SignupRoute"));
 import OnboardingPage from "@/pages/OnboardingPage";
 import FeedPage from "@/pages/FeedPage";
 import ProjectDetailPage from "@/pages/ProjectDetailPage";
@@ -27,14 +25,6 @@ function App() {
         </Route>
 
         {/* Routes Plein Écran (Auth & Onboarding) */}
-        <Route
-          path="/signup"
-          element={
-            <Suspense fallback={<div className="min-h-screen bg-background" aria-busy="true" />}>
-              <SignupRoute />
-            </Suspense>
-          }
-        />
         <Route path="/onboarding" element={<OnboardingPage />} />
         
         {/* Applicatif (Dashboard) */}

@@ -1,5 +1,5 @@
 import { SectorBadge } from "@/components/shared/SectorBadge";
-import { FemaleBadge } from "@/components/shared/FemaleBadge";
+import { ImpactBadge } from "@/components/shared/ImpactBadge";
 import type { ProjectDetail } from "@/data/mockProject";
 
 export function ProjectHeader({ project }: { project: ProjectDetail }) {
@@ -7,7 +7,7 @@ export function ProjectHeader({ project }: { project: ProjectDetail }) {
     <div className="space-y-4">
       <div className="flex items-center gap-3">
         <SectorBadge sector={project.sector} />
-        {project.isFemaleImpact && <FemaleBadge />}
+        {project.isFemaleImpact && <ImpactBadge />}
       </div>
       <h1 className="font-heading font-black text-4xl sm:text-5xl text-foreground leading-tight">
         {project.title}
