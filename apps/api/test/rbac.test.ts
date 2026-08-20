@@ -1,0 +1,84 @@
+import 'reflect-metadata'
+import { strict as assert } from 'node:assert'
+import { test } from 'node:test'
+import { ForbiddenException, UnauthorizedException } from '@nestjs/common'
+import type { ExecutionContext } from '@nestjs/common'
+import { Reflector } from '@nestjs/core'
+import { AccessTokenGuard } from '../src/rbac/access-token.guard.js'
+import { PermissionGuard } from '../src/rbac/permission.guard.js'
+import { PERMISSIONS_KEY } from '../src/rbac/rbac.decorators.js'
+import { Permission } from '../src/rbac/permissions.js'
+import { SignJWT } from 'jose'
+import { getJwtSecret } from '../src/auth/jwt-secret.js'
+
+type Request = {
+  headers: { authorization?: string }
+  user?: { userId: string; platformRole: string; status: string }
+}
+
+function contextFor(request: Request, permissions?: Permission[]): ExecutionContext {
+  const handler = () => undefined
+  if (permissions) Reflect.defineMetadata(PERMISSIONS_KEY, permissions, handler)
+  return {
+    getHandler: () => handler,
+    getClass: () => class TestController {},
+    switchToHttp: () => ({ getRequest: () => request }),
+  } as unknown as ExecutionContext
+}
+
+async function signedToken(platformRole: string): Promise<string> {
+  return new SignJWT({ platformRole, status: 'ACTIVE' })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setSubject('user-test')
+    .setIssuedAt()
+    .setExpirationTime('15m')
+    .sign(getJwtSecret())
+}
+
+const permissionGuard = new PermissionGuard(new Reflector())
+
+const negativeCases: Array<[string, string, Permission]> = [
+  ['un talent ne peut pas gérer une organisation', 'TALENT', Permission.ORG_MANAGE],
+  ['un talent ne peut pas agir en modération', 'TALENT', Permission.MODERATION_ACT],
+  ['un membre organisation ne peut pas créer un projet', 'ORG_MEMBER', Permission.PROJECT_CREATE],
+  ['un membre organisation ne peut pas gérer un projet', 'ORG_MEMBER', Permission.PROJECT_MANAGE],
+  ['un membre organisation ne peut pas envoyer un message', 'ORG_MEMBER', Permission.MESSAGE_SEND],
+  ['un staff sans permission étendue ne peut pas agir en modération', 'STAFF', Permission.MODERATION_ACT],
+  ['un rôle inconnu ne reçoit aucune permission', 'UNKNOWN_ROLE', Permission.TALENT_READ],
+]
+
+for (const [description, platformRole, permission] of negativeCases) {
+  test(`F-19 — ${description}`, () => {
+    const request: Request = {
+      headers: {},
+      user: { userId: 'user-test', platformRole, status: 'ACTIVE' },
+    }
+    assert.throws(
+      () => permissionGuard.canActivate(contextFor(request, [permission])),
+      (error: unknown) => error instanceof ForbiddenException,
+    )
+  })
+}
+
+test('F-19 — une route protégée sans Bearer est refusée', async () => {
+  const accessGuard = new AccessTokenGuard(new Reflector())
+  await assert.rejects(
+    () => accessGuard.canActivate(contextFor({ headers: {} })),
+    (error: unknown) => error instanceof UnauthorizedException,
+  )
+})
+
+test('F-19 — un Bearer invalide est refusé', async () => {
+  const accessGuard = new AccessTokenGuard(new Reflector())
+  await assert.rejects(
+    () => accessGuard.canActivate(contextFor({ headers: { authorization: 'Bearer invalid' } })),
+    (error: unknown) => error instanceof UnauthorizedException,
+  )
+})
+
+test('F-19 — un Bearer valide injecte le contexte utilisateur', async () => {
+  const accessGuard = new AccessTokenGuard(new Reflector())
+  const request: Request = { headers: { authorization: `Bearer ${await signedToken('TALENT')}` } }
+  assert.equal(await accessGuard.canActivate(contextFor(request)), true)
+  assert.deepEqual(request.user, { userId: 'user-test', platformRole: 'TALENT', status: 'ACTIVE' })
+})

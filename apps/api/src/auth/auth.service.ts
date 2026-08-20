@@ -2,6 +2,7 @@ import { createHash, randomBytes } from 'node:crypto'
 import { Injectable, UnauthorizedException } from '@nestjs/common'
 import * as argon2 from 'argon2'
 import { PrismaService } from '../prisma/prisma.service.js'
+import { getJwtSecret } from './jwt-secret.js'
 import { ApiErrorCode, type ActivationInput, type LoginInput, type PasswordResetInput } from '@cofound/shared'
 import { SignJWT } from 'jose'
 
@@ -9,14 +10,6 @@ const ACCESS_TOKEN_TTL_SECONDS = 15 * 60
 const REFRESH_TOKEN_TTL_SECONDS = 30 * 24 * 60 * 60
 const PASSWORD_RESET_TTL_SECONDS = 60 * 60
 
-export function getJwtSecret(): Uint8Array {
-  const configuredSecret = process.env.JWT_SECRET
-  if (configuredSecret) return new TextEncoder().encode(configuredSecret)
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error('JWT_SECRET est obligatoire en production.')
-  }
-  return new TextEncoder().encode('cofound-local-development-secret-change-me')
-}
 
 export type AuthSession = {
   accessToken: string

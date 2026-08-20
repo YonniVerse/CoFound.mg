@@ -43,11 +43,11 @@ jobs:
       - name: Vérifier les types
         run: pnpm typecheck
 
+      - name: Exécuter les tests
+        run: pnpm test
+
       - name: Construire le workspace
         run: pnpm build
 
       - name: Vérifier le budget JavaScript initial
         run: pnpm check:bundle
-
-      # Les scripts de test des modules arrivent avec F-19. Ne pas lancer
-      # `pnpm test` avant ce ticket : le workspace n'a pas encore de tests.
