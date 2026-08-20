@@ -42,6 +42,25 @@ services:
       timeout: 3s
       retries: 10
 
+  worker:
+    image: node:22-alpine
+    working_dir: /workspace
+    volumes:
+      - .:/workspace:ro
+      - workspace_node_modules:/workspace/node_modules
+      - api_node_modules:/workspace/apps/api/node_modules
+      - api_dist:/workspace/apps/api/dist
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://cofound:cofound_local@postgres:5432/cofound
+    command:
+      - sh
+      - -c
+      - corepack enable && pnpm install --frozen-lockfile && pnpm --filter @cofound/shared build && pnpm --filter @cofound/api build && pnpm --filter @cofound/api start:worker
+    depends_on:
+      api:
+        condition: service_healthy
+
   web:
     image: node:22-alpine
     working_dir: /workspace
