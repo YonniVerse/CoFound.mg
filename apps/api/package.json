@@ -24,6 +24,7 @@
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
     "@prisma/client": "^6.19.0",
+    "prisma": "^6.19.0",
     "argon2": "^0.45.1",
     "jose": "^6.1.0",
     "pg-boss": "^12.27.0",
@@ -35,7 +36,6 @@
     "@types/node": "^22.13.4",
     "eslint": "10.0.1",
     "globals": "17.11.0",
-    "prisma": "^6.19.0",
     "tsx": "^4.19.3",
     "typescript": "^5.7.3",
     "typescript-eslint": "8.67.0"

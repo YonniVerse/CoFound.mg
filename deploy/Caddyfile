@@ -1,0 +1,18 @@
+{$COFOUND_DOMAIN}
+
+encode zstd gzip
+
+@api path /api/*
+reverse_proxy @api api:3000
+
+header {
+  -Server
+  X-Content-Type-Options nosniff
+  Referrer-Policy strict-origin-when-cross-origin
+  X-Frame-Options DENY
+}
+
+respond /health 200 {
+  body "ok\n"
+  close
+}
