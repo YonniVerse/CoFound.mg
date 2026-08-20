@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Qualité du workspace
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.9.0
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Installer les dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Vérifier le lint
+        run: pnpm lint
+
+      - name: Vérifier les types
+        run: pnpm typecheck
+
+      - name: Construire le workspace
+        run: pnpm build
+
+      # Les scripts de test des modules arrivent avec F-19. Ne pas lancer
+      # `pnpm test` avant ce ticket : le workspace n'a pas encore de tests.
