@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "pnpm --parallel --filter \"./apps/*\" dev",
     "build": "pnpm --recursive build",
+    "check:bundle": "node scripts/check-bundle-size.mjs",
     "lint": "pnpm --recursive lint",
     "test": "pnpm --recursive test",
     "typecheck": "pnpm --recursive typecheck"
