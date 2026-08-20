@@ -1,6 +1,8 @@
 # apps/api
 
-API NestJS — **pas encore initialisée**. F-02 fournit uniquement un serveur de santé provisoire pour valider l’orchestration locale ; il sera remplacé par NestJS au ticket F-05.
+API NestJS en monolithe modulaire. F-05 initialise le runtime, Prisma et le schéma PostgreSQL ; les modules métier et les garanties transversales arrivent dans les tickets suivants de la vague 0.
+
+Le healthcheck local est disponible sur `GET /api/v1/health`.
 
 | Ticket | Contenu |
 |---|---|
