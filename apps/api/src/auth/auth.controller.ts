@@ -1,6 +1,7 @@
 import { Body, Controller, Post, Req, Res, UnauthorizedException } from '@nestjs/common'
 import { AuthService } from './auth.service.js'
 import { AllowAnonymous } from '../rbac/rbac.decorators.js'
+import { AuditAction } from '../audit/audit.decorator.js'
 import {
   activationInputSchema,
   loginInputSchema,
@@ -25,6 +26,7 @@ type RequestWithCookies = {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @AuditAction('AUTH_LOGIN', 'User')
   @Post('login')
   async login(@Body() body: unknown, @Res({ passthrough: true }) response: ResponseWithHeaders) {
     const session = await this.authService.login(loginInputSchema.parse(body))
@@ -32,6 +34,7 @@ export class AuthController {
     return { accessToken: session.accessToken }
   }
 
+  @AuditAction('AUTH_ACTIVATE', 'User')
   @Post('activate')
   async activate(@Body() body: unknown, @Res({ passthrough: true }) response: ResponseWithHeaders) {
     const session = await this.authService.activate(activationInputSchema.parse(body))
@@ -39,6 +42,7 @@ export class AuthController {
     return { accessToken: session.accessToken }
   }
 
+  @AuditAction('AUTH_REFRESH', 'RefreshToken')
   @Post('refresh')
   async refresh(@Req() request: RequestWithCookies, @Res({ passthrough: true }) response: ResponseWithHeaders) {
     const refreshToken = this.readRefreshCookie(request)
@@ -50,6 +54,7 @@ export class AuthController {
     return { accessToken: session.accessToken }
   }
 
+  @AuditAction('AUTH_LOGOUT', 'RefreshToken')
   @Post('logout')
   async logout(@Req() request: RequestWithCookies, @Res({ passthrough: true }) response: ResponseWithHeaders) {
     await this.authService.logout(this.readRefreshCookie(request))
@@ -57,6 +62,7 @@ export class AuthController {
     return { ok: true }
   }
 
+  @AuditAction('AUTH_PASSWORD_RESET_REQUEST', 'User')
   @Post('password-reset/request')
   async requestPasswordReset(@Body() body: unknown) {
     const input = passwordResetRequestSchema.parse(body)
@@ -64,6 +70,7 @@ export class AuthController {
     return { accepted: true }
   }
 
+  @AuditAction('AUTH_PASSWORD_RESET_COMPLETE', 'User')
   @Post('password-reset/complete')
   async completePasswordReset(@Body() body: unknown) {
     await this.authService.resetPassword(passwordResetInputSchema.parse(body))
