@@ -8,7 +8,8 @@ interface ProjectActionCardProps {
   isApplying: boolean;
 }
 
-export function ProjectActionCard({ project, onApply, isApplying }: ProjectActionCardProps) {
+// TODO(P-05) : câbler onApply et isApplying sur le bouton « Postuler ».
+export function ProjectActionCard({ project }: ProjectActionCardProps) {
   return (
     <div className="bg-background border border-border shadow-xs rounded-2xl p-6 flex flex-col gap-5 animate-in fade-in slide-in-from-right-8 duration-500 delay-100">
       <Button 

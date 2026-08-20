@@ -49,11 +49,10 @@ Détail : [`docs/business/modele-economique.md`](./docs/business/modele-economiq
 | Architecture et modèle de données | ✅ Arrêtés |
 | Plan de développement | ✅ ~70 tickets, 6 vagues |
 | **Prototype d'interface** | ✅ Existant — React 19 + Vite, design system complet, données simulées |
-| **Backend** | ⬜ Pas encore démarré |
-| **Monorepo** | ⬜ Pas encore restructuré (ticket `F-01`) |
+| **Monorepo pnpm** | ✅ Restructuré — `apps/web` + `packages/shared` (ticket `F-01`) |
+| **Backend** | ⬜ Pas encore démarré (ticket `F-05`) |
 
-> **Prochaine action** : ticket `F-01` — restructuration en monorepo.
-> Voir [`NEXT_SESSION.md`](./NEXT_SESSION.md) pour l'état détaillé.
+> **Prochaine action** : voir [`NEXT_SESSION.md`](./NEXT_SESSION.md).
 
 ---
 
@@ -62,11 +61,13 @@ Détail : [`docs/business/modele-economique.md`](./docs/business/modele-economiq
 ```
 CoFound.mg/
 ├── apps/
-│   ├── web/          # SPA React 19 + Vite + Tailwind 4 + shadcn  (← prototype existant)
-│   └── api/          # API NestJS + Prisma + PostgreSQL
+│   ├── web/          # ✅ SPA React 19 + Vite + Tailwind 4 + shadcn
+│   └── api/          # ⬜ API NestJS + Prisma + PostgreSQL — ticket F-05
 ├── packages/
-│   └── shared/       # Schémas Zod, types, codes d'erreur — partagés web ↔ api
-└── docs/             # Documentation produit, technique et business
+│   └── shared/       # ✅ Énumérations du domaine ; schémas Zod au ticket F-11
+├── docs/             # Documentation produit, technique et business
+├── pnpm-workspace.yaml
+└── tsconfig.base.json # Options TypeScript communes — strict activé
 ```
 
 ## Stack
@@ -89,52 +90,36 @@ Chaque choix, ses alternatives et son compromis assumé :
 
 ## Lancer le projet en local
 
-### Aujourd'hui — prototype frontend seul
-
-Le monorepo n'est pas encore en place. Le prototype se lance depuis le dossier `frontend/` :
+**Prérequis** : Node 22+ (`.nvmrc`), pnpm 11+.
 
 ```bash
-cd frontend
-pnpm install       # ou npm install
-pnpm dev           # http://localhost:5173
-```
-
-Aucun backend n'est nécessaire : les données proviennent de modules simulés
-(`src/data/*Api.ts`) exposés derrière la même interface que la future API.
-
-### Après le ticket `F-01` — monorepo complet
-
-```bash
-# Prérequis : Node 20+, pnpm 9+, Docker
-
 pnpm install
-
-# Base de données et services locaux
-docker compose up -d
-
-# Migrations et jeu de données de démonstration
-pnpm --filter api prisma migrate dev
-pnpm --filter api seed:demo
-
-# Tout lancer
-pnpm dev           # web : http://localhost:5173  ·  api : http://localhost:3000
+pnpm dev            # web : http://localhost:5173
 ```
 
-**Variables d'environnement** : copier `.env.example` vers `.env` dans `apps/api`.
-Les valeurs requises sont documentées dans le fichier d'exemple.
+Le backend n'existe pas encore : les données proviennent de modules simulés
+(`apps/web/src/data/*Api.ts`), exposés derrière la même interface que la future API. Le
+branchement se fera au ticket `F-14`, en remplaçant ces modules — sans toucher aux
+composants.
 
-### Commandes utiles
+### Commandes
 
-| Commande | Effet |
-|---|---|
-| `pnpm dev` | Web + API en mode développement |
-| `pnpm test` | Tests unitaires et d'intégration |
-| `pnpm test:permissions` | **Les 7 permissions négatives** — doit toujours passer |
-| `pnpm lint` | ESLint + vérification des chaînes en dur (i18n) |
-| `pnpm build` | Build de production, avec vérification du budget de performance |
-| `pnpm --filter api seed:demo` | Reconstruit le jeu de démonstration complet |
+| Commande | Effet | État |
+|---|---|---|
+| `pnpm dev` | Toutes les applications en mode développement | ✅ |
+| `pnpm build` | Build de production de tout le workspace | ✅ |
+| `pnpm typecheck` | Vérification des types de tout le workspace | ✅ |
+| `pnpm lint` | ESLint sur tout le workspace | ✅ |
+| `pnpm test` | Tests | ⬜ ticket `F-03` |
+| `pnpm --filter @cofound/api test:permissions` | Les 7 permissions négatives | ⬜ ticket `F-19` |
+| `pnpm --filter @cofound/api seed:demo` | Reconstruit le jeu de démonstration | ⬜ ticket `S-08` |
 
----
+Cibler un paquet : `pnpm --filter @cofound/web <script>`.
+
+### À prévoir avant le premier déploiement
+
+Le déploiement Vercel pointe encore sur `frontend/`. **Le répertoire racine du projet
+Vercel doit passer à `apps/web`**, sinon le build échouera au prochain push.
 
 ## Documentation
 

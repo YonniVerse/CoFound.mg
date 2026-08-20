@@ -43,7 +43,7 @@ export function SectionHero({ profiles, stats }: SectionHeroProps) {
       tagVariant: "orange" as const,
       borderHover: "hover:border-secondary/50",
     },
-  ];
+  ] as const;
 
   return (
     <section className="relative min-h-screen flex items-center bg-background pt-24 pb-16 overflow-hidden">
@@ -130,7 +130,7 @@ export function SectionHero({ profiles, stats }: SectionHeroProps) {
 
           {/* Rendu dynamique des cartes de profils */}
           {profiles?.slice(0, 3).map((profile, index) => {
-            const currentStyle = cardStyles[index] || cardStyles[1];
+            const currentStyle = cardStyles[index] ?? cardStyles[1];
             const isCenterCard = index === 1;
 
             return (

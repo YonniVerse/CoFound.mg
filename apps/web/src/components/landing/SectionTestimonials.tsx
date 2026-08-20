@@ -41,6 +41,9 @@ export function SectionTestimonials({ testimonials }: SectionTestimonialsProps) 
 
   if (!testimonials || testimonials.length === 0) return null;
 
+  const current = testimonials[active];
+  if (!current) return null;
+
   return (
     <section className="py-24 bg-background border-t border-border/40 overflow-hidden relative">
       {/* Background grid pattern */}
@@ -114,13 +117,13 @@ export function SectionTestimonials({ testimonials }: SectionTestimonialsProps) 
                 >
                   <div>
                     <h3 className="text-2xl font-bold font-sans tracking-tight text-foreground">
-                      {testimonials[active].name}
+                      {current.name}
                     </h3>
                     <p className="text-sm text-muted-foreground font-medium mt-1">
-                      {testimonials[active].school} <span className="mx-1">·</span> {testimonials[active].field}
+                      {current.school} <span className="mx-1">·</span> {current.field}
                     </p>
                     <motion.p className="mt-8 text-lg text-foreground/90 leading-relaxed italic">
-                      "{testimonials[active].quote}"
+                      "{current.quote}"
                     </motion.p>
                   </div>
                 </motion.div>

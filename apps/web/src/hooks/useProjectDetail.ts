@@ -5,20 +5,21 @@ import type { ProjectDetail } from "@/data/mockProject";
 export function useProjectDetail(projectId: string | undefined) {
   const [project, setProject] = useState<ProjectDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [isApplying, setIsApplying] = useState(false);
 
+  // Dérivés au rendu plutôt que synchronisés dans un effet : l'absence
+  // d'identifiant est connue immédiatement, elle n'a pas à transiter par un état.
+  const error = projectId ? fetchError : "Aucun identifiant de projet fourni.";
+  const loading = projectId ? isLoading : false;
+
   useEffect(() => {
-    if (!projectId) {
-      setError("Aucun identifiant de projet fourni.");
-      setIsLoading(false);
-      return;
-    }
+    if (!projectId) return;
 
     async function loadProject() {
       try {
         setIsLoading(true);
-        setError(null);
+        setFetchError(null);
         
         const res = await getProjectById(projectId!);
         if (res.success) {
@@ -27,7 +28,7 @@ export function useProjectDetail(projectId: string | undefined) {
           throw new Error(res.message);
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Erreur lors du chargement du projet.");
+        setFetchError(err instanceof Error ? err.message : "Erreur lors du chargement du projet.");
       } finally {
         setIsLoading(false);
       }
@@ -51,5 +52,5 @@ export function useProjectDetail(projectId: string | undefined) {
     }
   };
 
-  return { project, isLoading, error, isApplying, applyToProject };
+  return { project, isLoading: loading, error, isApplying, applyToProject };
 }

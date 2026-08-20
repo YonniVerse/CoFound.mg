@@ -1,5 +1,5 @@
 import { fetchMock } from "./api";
-import { MOCK_PROJECT_DETAIL, type ProjectDetail } from "./mockProject";
+import { MOCK_PROJECT_DETAIL } from "./mockProject";
 
 export async function getProjectById(id: string) {
   // Dans la réalité, on ferait un find() ou un appel API ciblé.
@@ -12,7 +12,7 @@ export async function getProjectById(id: string) {
   });
 }
 
-export async function submitProjectApplication(projectId: string, applicationText: string) {
+export async function submitProjectApplication(_projectId: string, _applicationText: string) {
   return fetchMock({
     success: true,
     data: null,

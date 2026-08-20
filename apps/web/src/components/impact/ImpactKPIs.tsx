@@ -1,4 +1,4 @@
-import { ShieldCheck, Trophy, TrendingUp, Users } from "lucide-react";
+import { Trophy, TrendingUp, Users } from "lucide-react";
 import type { ImpactKPIsData } from "@/data/mockImpact";
 
 export function ImpactKPIs({ kpis }: { kpis: ImpactKPIsData | null }) {

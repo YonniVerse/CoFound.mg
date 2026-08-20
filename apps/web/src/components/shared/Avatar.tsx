@@ -28,9 +28,9 @@ function getSemanticThemeColor(name: string): string {
     "bg-female-light text-female border border-female/10",
     "bg-muted text-foreground border border-border",
     "bg-accent text-accent-foreground border border-border/50",
-  ];
+  ] as const;
   
-  return designSystemCombos[Math.abs(hash) % designSystemCombos.length];
+  return designSystemCombos[Math.abs(hash) % designSystemCombos.length] ?? designSystemCombos[0];
 }
 
 function getInitials(name: string): string {

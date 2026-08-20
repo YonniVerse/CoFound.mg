@@ -1,0 +1,26 @@
+# Dépendances
+node_modules
+
+# Builds
+dist
+dist-ssr
+build
+*.tsbuildinfo
+
+# Environnement — ne jamais committer de secret
+.env
+.env.*
+!.env.example
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Éditeurs et systèmes
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.local
