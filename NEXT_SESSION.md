@@ -6,7 +6,7 @@
 
 **Dernière mise à jour** : 2026-08-21
 **Phase** : vague 0 (Fondations) — **F-01 à F-19 intégrés dans `dev`**
-**Branche** : `dev`, alignée sur `origin/dev` (dernier commit `68bece2`)
+**Branche** : `dev`, alignée sur `origin/dev` (dernier commit `09f1155`)
 **État du workspace** : propre
 
 ---
@@ -28,10 +28,11 @@
 | Déploiement | ✅ image API/worker, Caddy, Compose production, workflow GHCR + SSH |
 | Sauvegardes | ✅ dump PostgreSQL chiffré, R2, checksum, restauration vers base jetable |
 | Observabilité | ✅ Sentry conditionnel, pino redacted, readiness PostgreSQL |
+| Base de données Neon | ✅ Projet `CoFound.mg`, branche `main`, base `neondb`, migrations et seed appliqués |
 | Tests négatifs RBAC et healthcheck | ✅ 12 tests API, tous passants |
 | Budget JavaScript initial | ✅ 271 701 octets gzip, sous le cliquet de 290 221 |
 
-Les pull requests finales sont fusionnées dans `dev` : [#20](https://github.com/YonniVerse/CoFound.mg/pull/20), [#21](https://github.com/YonniVerse/CoFound.mg/pull/21), [#22](https://github.com/YonniVerse/CoFound.mg/pull/22), [#23](https://github.com/YonniVerse/CoFound.mg/pull/23) et [#24](https://github.com/YonniVerse/CoFound.mg/pull/24).
+Les pull requests finales sont fusionnées dans `dev` : [#20](https://github.com/YonniVerse/CoFound.mg/pull/20), [#21](https://github.com/YonniVerse/CoFound.mg/pull/21), [#22](https://github.com/YonniVerse/CoFound.mg/pull/22), [#23](https://github.com/YonniVerse/CoFound.mg/pull/23), [#24](https://github.com/YonniVerse/CoFound.mg/pull/24) et [#27](https://github.com/YonniVerse/CoFound.mg/pull/27).
 
 ---
 
@@ -49,6 +50,8 @@ pnpm check:bundle
 
 La suite API compte actuellement **12 tests**. Les deux cas du readiness check couvrent PostgreSQL disponible et PostgreSQL indisponible avec réponse HTTP 503.
 
+La base Neon `CoFound.mg` est créée dans le projet `autumn-scene-61665488`, sur la branche `main` (`br-snowy-credit-aragwop4`) et la base `neondb`. Les migrations `0001_initial` et `0002_auth_tokens` sont appliquées, les extensions `pg_trgm` et `unaccent` sont présentes, et le seed contient 8 filières, 6 régions, 8 secteurs et 10 compétences.
+
 Le sandbox ne dispose pas de Docker. Le build Docker réel et le démarrage Compose de production restent donc à exécuter sur le VPS ou dans une machine équipée de Docker. La simulation `pnpm deploy --filter @cofound/api --prod --legacy` a confirmé que le runtime déployable contient Prisma et ses dépendances de production.
 
 ---
@@ -63,6 +66,7 @@ Avant le premier déploiement de recette, effectuer les opérations d’exploita
 |---|---|---|
 | Renseigner les secrets de l’environnement GitHub `production` | Autoriser publication GHCR et déploiement SSH | ⬜ À faire |
 | Créer `/srv/cofound/deploy/.env` sur le VPS | Fournir `DATABASE_URL`, `JWT_SECRET`, R2, backup et Sentry | ⬜ À faire |
+| Renseigner `apps/api/.env` localement si nécessaire | Connecter un environnement local à Neon sans commiter le secret | ⬜ À faire |
 | Vérifier le domaine Caddy et les enregistrements DNS | Obtenir le certificat TLS automatique | ⬜ À faire |
 | Exécuter une sauvegarde puis `restore-test` | Vérifier la restauration avant la production | ⬜ À faire |
 | Configurer SPF, DKIM et DMARC | Réduire le risque critique `R1` avant les invitations | ⬜ À faire |
