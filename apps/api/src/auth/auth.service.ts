@@ -5,6 +5,7 @@ import { PrismaService } from '../prisma/prisma.service.js'
 import { getJwtSecret } from './jwt-secret.js'
 import { ApiErrorCode, type ActivationInput, type LoginInput, type PasswordResetInput } from '@cofound/shared'
 import { SignJWT } from 'jose'
+import { NotificationsQueueService } from '../notifications/notifications-queue.service.js'
 
 const ACCESS_TOKEN_TTL_SECONDS = 15 * 60
 const REFRESH_TOKEN_TTL_SECONDS = 30 * 24 * 60 * 60
@@ -21,7 +22,10 @@ export type AuthSession = {
 export class AuthService {
   private readonly jwtSecret = getJwtSecret()
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationsQueue: NotificationsQueueService,
+  ) {}
 
   async login(input: LoginInput): Promise<AuthSession> {
     const user = await this.prisma.user.findUnique({ where: { email: input.email.toLowerCase() } })
@@ -169,7 +173,12 @@ export class AuthService {
         expiresAt: new Date(Date.now() + PASSWORD_RESET_TTL_SECONDS * 1000),
       },
     })
-    // E-02 branchera l’envoi transactionnel. Aucun jeton brut n’est renvoyé par l’API.
+    await this.notificationsQueue.enqueue({
+      kind: 'password.reset',
+      recipient: user.email,
+      resetToken: rawToken,
+      locale: user.locale === 'mg' ? 'mg' : 'fr',
+    })
   }
 
   async resetPassword(input: PasswordResetInput): Promise<void> {
