@@ -9,6 +9,15 @@ const ACCESS_TOKEN_TTL_SECONDS = 15 * 60
 const REFRESH_TOKEN_TTL_SECONDS = 30 * 24 * 60 * 60
 const PASSWORD_RESET_TTL_SECONDS = 60 * 60
 
+export function getJwtSecret(): Uint8Array {
+  const configuredSecret = process.env.JWT_SECRET
+  if (configuredSecret) return new TextEncoder().encode(configuredSecret)
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('JWT_SECRET est obligatoire en production.')
+  }
+  return new TextEncoder().encode('cofound-local-development-secret-change-me')
+}
+
 export type AuthSession = {
   accessToken: string
   refreshToken: string
@@ -17,7 +26,7 @@ export type AuthSession = {
 
 @Injectable()
 export class AuthService {
-  private readonly jwtSecret = this.getJwtSecret()
+  private readonly jwtSecret = getJwtSecret()
 
   constructor(private readonly prisma: PrismaService) {}
 
@@ -224,12 +233,4 @@ export class AuthService {
     return createHash('sha256').update(token).digest('hex')
   }
 
-  private getJwtSecret(): Uint8Array {
-    const configuredSecret = process.env.JWT_SECRET
-    if (configuredSecret) return new TextEncoder().encode(configuredSecret)
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('JWT_SECRET est obligatoire en production.')
-    }
-    return new TextEncoder().encode('cofound-local-development-secret-change-me')
-  }
 }

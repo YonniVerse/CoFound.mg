@@ -1,0 +1,48 @@
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common'
+import type { CanActivate, ExecutionContext } from '@nestjs/common'
+import { Reflector } from '@nestjs/core'
+import type { AuthenticatedRequest } from '../auth/auth-request.js'
+import { ANONYMOUS_KEY, PERMISSIONS_KEY } from './rbac.decorators.js'
+import { PLATFORM_ROLE_PERMISSIONS, type Permission } from './permissions.js'
+
+@Injectable()
+export class PermissionGuard implements CanActivate {
+  constructor(private readonly reflector: Reflector) {}
+
+  canActivate(context: ExecutionContext): boolean {
+    const isAnonymous = this.reflector.getAllAndOverride<boolean>(ANONYMOUS_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ])
+    if (isAnonymous) return true
+
+    const requiredPermissions = this.reflector.getAllAndOverride<Permission[]>(PERMISSIONS_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ])
+    if (!requiredPermissions?.length) {
+      throw new ForbiddenException({
+        code: 'FORBIDDEN',
+        messageKey: 'rbac.errors.permissionRequired',
+      })
+    }
+
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>()
+    if (!request.user) {
+      throw new UnauthorizedException({
+        code: 'UNAUTHENTICATED',
+        messageKey: 'auth.errors.accessTokenRequired',
+      })
+    }
+
+    const granted = PLATFORM_ROLE_PERMISSIONS[request.user.platformRole] ?? []
+    if (!requiredPermissions.every((permission) => granted.includes(permission))) {
+      throw new ForbiddenException({
+        code: 'FORBIDDEN',
+        messageKey: 'rbac.errors.insufficientPermissions',
+      })
+    }
+
+    return true
+  }
+}
