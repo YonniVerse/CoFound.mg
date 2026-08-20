@@ -10,6 +10,37 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-20 — Rapatriement du dépôt et nettoyage des permissions
+
+*Précède la restructuration en monorepo décrite dans l'entrée suivante.*
+
+### Modifié
+
+- Le dépôt vit désormais dans `~/Lab/CoFound.mg` au lieu de `~/Lab/archives/CoFound.mg`.
+  `.git` a été déplacé tel quel : historique, branches et remote intacts.
+- `docs/PRD_CoFound_mg.md` et `docs/SPECS_CoFound_mg.md` déplacés dans `docs/archive/`.
+  Archivés plutôt que supprimés : ils décrivent un produit de démonstration de hackathon
+  qui ne fait plus autorité, mais restent une référence pour les maquettes d'écran.
+
+### Corrigé
+
+- 218 fichiers apparaissaient modifiés en `755` au lieu de `644`, sans un seul changement
+  de contenu — séquelle d'un `chmod -R` ou d'une copie depuis un support FAT/NTFS.
+  Permissions restaurées depuis les modes enregistrés dans l'index, en préservant le seul
+  fichier légitimement exécutable et les 24 liens symboliques. Ce bruit n'est donc entré
+  dans aucun commit.
+
+### Décidé
+
+- **Aucune mention de Claude comme co-auteur dans les commits.** Demande explicite de
+  Yonni : le dépôt est un livrable présenté à un jury et à des partenaires, les commits
+  doivent être entièrement les siens.
+- **La convention de message du dépôt fait foi** (`.trae/rules/git-commit-message.md`) :
+  Conventional Commits en français, un seul changement logique par commit. À lire avant
+  tout commit.
+
+---
+
 ## 2026-08-20 — Restructuration en monorepo pnpm (F-01)
 
 ### Ajouté
