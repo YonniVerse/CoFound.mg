@@ -1,6 +1,6 @@
 # apps/api
 
-API NestJS — **pas encore initialisée**.
+API NestJS — **pas encore initialisée**. F-02 fournit uniquement un serveur de santé provisoire pour valider l’orchestration locale ; il sera remplacé par NestJS au ticket F-05.
 
 | Ticket | Contenu |
 |---|---|
