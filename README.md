@@ -1,166 +1,164 @@
-# CoFound.mg 🚀
+# CoFound.mg
 
-> Plateforme SaaS de matching de co-fondateurs étudiants à Madagascar, avec un focus fort sur la parité et la mixité d'équipe. Projet développé dans le cadre du Hackathon CoFound.mg.
+**Infrastructure numérique de structuration entrepreneuriale étudiante à Madagascar.**
 
----
+CoFound.mg connecte des étudiants de filières différentes pour former des équipes
+complémentaires, structurer des projets crédibles et devenir visibles des incubateurs,
+entreprises et institutions.
 
-## Présentation du Projet
-
-**CoFound.mg** est une application web conçue pour dynamiser l'entrepreneuriat étudiant à Madagascar. Le concept repose sur une idée clé : **les contraires s'attirent**. L'algorithme connecte la rigueur technique des développeurs (Tech) avec la vision commerciale des profils business (Marketing, Finance, Gestion).
-
-La force unique de cette version MVP est son **moteur d'inclusion féminine**, conçu pour adresser le fossé des genres dans la tech malgache en offrant un espace sécurisé et une visibilité valorisée pour les étudiantes fondatrices.
+Équipe fondatrice : **You-ARY** — ESP-Antsiranana.
 
 ---
 
-## Stack Technique
+## Le problème
 
-* **Framework Core** : React 18, TypeScript, Vite
-* **Styling & UI Components** : Tailwind CSS, Shadcn UI, Lucide React (pour les icônes)
-* **Data Visualization** : Recharts (intégré de façon native via le composant `Chart` de Shadcn)
-* **Routing** : React Router DOM V6
+Des milliers d'étudiants malgaches ont des idées et des compétences ; presque aucun ne monte
+un projet. Pas par manque d'envie, mais par manque de **complémentarité** — un informaticien ne
+connaît que des informaticiens. Et quand une équipe se forme, personne ne la prend au sérieux :
+rien ne prouve qui elle est ni ce qu'elle vaut.
+
+## La réponse
+
+Une plateforme **fermée et certifiée** où :
+
+1. **L'établissement inscrit ses étudiants** — il n'y a pas d'inscription publique. C'est ce
+   qui rend le badge crédible : personne ne peut se déclarer étudiant.
+2. **On se rencontre sur les compétences** — nom, photo et genre restent masqués jusqu'à un
+   dévoilement mutuel et consenti.
+3. **On structure avant d'être visible** — un projet ne sort du brouillon qu'avec un Business
+   Model Canvas rempli.
+4. **Les partenaires trouvent des dossiers comparables** — pas dix messages WhatsApp.
+
+## Le modèle économique
+
+> **Les établissements ne paient pas. Les partenaires paient.**
+
+On subventionne le côté qui crée la valeur (la densité de talents) et on monétise le côté qui
+la capte (incubateurs, entreprises, institutions cherchant du dealflow ou du sourcing).
+
+Détail : [`docs/business/modele-economique.md`](./docs/business/modele-economique.md)
 
 ---
 
-## Structure du Projet
+## État du projet
 
-L'architecture suit les meilleures pratiques modernes d'organisation React / Vite :
+| | Statut |
+|---|---|
+| Cadrage produit et technique | ✅ Terminé — voir [`docs/`](./docs/) |
+| Périmètre du MVP | ✅ Arrêté |
+| Architecture et modèle de données | ✅ Arrêtés |
+| Plan de développement | ✅ ~70 tickets, 6 vagues |
+| **Prototype d'interface** | ✅ Existant — React 19 + Vite, design system complet, données simulées |
+| **Backend** | ⬜ Pas encore démarré |
+| **Monorepo** | ⬜ Pas encore restructuré (ticket `F-01`) |
 
-```bash
-frontend/
-├── docs/                     # Spécifications fonctionnelles (PRD_CoFound_mg.md)
-├── src/
-│   ├── assets/               # Ressources statiques (images, polices)
-│   ├── components/
-│   │   ├── feed/             # Cartes du Feed (ProjectCard, ProfileCard)
-│   │   ├── landing/          # Sections modulaires de la Landing Page
-│   │   ├── layout/           # Layouts d'application (MainLayout, DashboardLayout, Navbar, Footer)
-│   │   ├── shared/           # Éléments partagés (Avatar, Badges, SkillTags)
-│   │   └── ui/               # Composants atomiques Shadcn UI (Dialog, Button, Progress, Inputs)
-│   ├── lib/                  # Utilitaires globaux (ex: cn pour tailwind merge)
-│   ├── pages/                # Écrans principaux (Landing, Signup, Onboarding, Feed, Details, Impact, ComingSoon)
-│   ├── App.tsx               # Orchestrateur de routes (React Router)
-│   ├── main.tsx              # Point d'entrée de l'application
-│   └── index.css             # Définition des variables de thème et styles globaux
+> **Prochaine action** : ticket `F-01` — restructuration en monorepo.
+> Voir [`NEXT_SESSION.md`](./NEXT_SESSION.md) pour l'état détaillé.
+
+---
+
+## Structure cible
+
+```
+CoFound.mg/
+├── apps/
+│   ├── web/          # SPA React 19 + Vite + Tailwind 4 + shadcn  (← prototype existant)
+│   └── api/          # API NestJS + Prisma + PostgreSQL
+├── packages/
+│   └── shared/       # Schémas Zod, types, codes d'erreur — partagés web ↔ api
+└── docs/             # Documentation produit, technique et business
 ```
 
+## Stack
+
+| Brique | Choix |
+|---|---|
+| Frontend | React 19 · Vite · TypeScript · Tailwind 4 · shadcn/Radix · React Router 7 |
+| Backend | NestJS · TypeScript · monolithe modulaire |
+| Base de données | PostgreSQL managé · Prisma · recherche intégrée (`tsvector`, `pg_trgm`, `unaccent`) |
+| Temps réel | **SSE** (pas WebSocket — voir la justification) |
+| Auth | Maison — argon2id, jeton d'accès en mémoire, rafraîchissement en cookie `httpOnly` avec rotation |
+| Traitements | pg-boss (file dans PostgreSQL, pas de Redis) |
+| Fichiers | Cloudflare R2, téléversement direct présigné |
+| Hébergement | Statique sur CDN · API sur VPS européen (Docker Compose + Caddy) · base managée même région |
+
+Chaque choix, ses alternatives et son compromis assumé :
+[`docs/stack-technique-et-justifications.md`](./docs/stack-technique-et-justifications.md)
+
 ---
 
-## Système de Design & Tokens CSS
+## Lancer le projet en local
 
-Nous utilisons une palette sémantique stricte définie dans `src/index.css` via des variables CSS. **Ne surchargez pas les couleurs brutes dans vos classes Tailwind.** Utilisez les variables de thème :
+### Aujourd'hui — prototype frontend seul
 
-* **Primary (`--primary` - Indigo)** : Représente la rigueur technique, le code, l'EdTech et l'ingénierie.
-* **Secondary (`--secondary` - Orange)** : Représente l'esprit business, le marketing, la finance et le dynamisme.
-* **Female/Parity (`--female` - Violet/Rose)** : Représente notre charte d'inclusion féminine, la parité et les badges d'impact.
+Le monorepo n'est pas encore en place. Le prototype se lance depuis le dossier `frontend/` :
 
----
-
-## Installation et Démarrage local
-
-Pour lancer le projet sur votre machine de développement :
-
-### 1. Prérequis
-Assurez-vous d'avoir [Node.js](https://nodejs.org/) (v18 ou supérieur) installé sur votre système.
-
-### 2. Cloner et installer les dépendances
 ```bash
-# Accéder au dossier du frontend
 cd frontend
-
-# Installer les dépendances
-npm install
+pnpm install       # ou npm install
+pnpm dev           # http://localhost:5173
 ```
 
-### 3. Lancer en mode développement
+Aucun backend n'est nécessaire : les données proviennent de modules simulés
+(`src/data/*Api.ts`) exposés derrière la même interface que la future API.
+
+### Après le ticket `F-01` — monorepo complet
+
 ```bash
-npm run dev
-```
-L'application sera accessible par défaut à l'adresse [http://localhost:5173/](http://localhost:5173/).
+# Prérequis : Node 20+, pnpm 9+, Docker
 
-### 4. Build de Production (Vérification TypeScript)
-Avant de pousser vos modifications, assurez-vous que le projet compile sans erreurs :
-```bash
-npm run build
+pnpm install
+
+# Base de données et services locaux
+docker compose up -d
+
+# Migrations et jeu de données de démonstration
+pnpm --filter api prisma migrate dev
+pnpm --filter api seed:demo
+
+# Tout lancer
+pnpm dev           # web : http://localhost:5173  ·  api : http://localhost:3000
 ```
+
+**Variables d'environnement** : copier `.env.example` vers `.env` dans `apps/api`.
+Les valeurs requises sont documentées dans le fichier d'exemple.
+
+### Commandes utiles
+
+| Commande | Effet |
+|---|---|
+| `pnpm dev` | Web + API en mode développement |
+| `pnpm test` | Tests unitaires et d'intégration |
+| `pnpm test:permissions` | **Les 7 permissions négatives** — doit toujours passer |
+| `pnpm lint` | ESLint + vérification des chaînes en dur (i18n) |
+| `pnpm build` | Build de production, avec vérification du budget de performance |
+| `pnpm --filter api seed:demo` | Reconstruit le jeu de démonstration complet |
 
 ---
 
-## Guide d'Implémentation du MVP (6 Pages clés)
+## Documentation
 
-Voici un aperçu des parcours et fonctionnalités déjà déployés pour notre démonstration de Hackathon :
+Index complet : [`docs/README.md`](./docs/README.md)
 
-### 1. Landing Page (`/`)
-* Design immersif avec un Hero texturé.
-* Intégration de la section **Méthode**, **Testimonials** (carousel interactif), **Inclusion** (présentation de l'Espace Sécurisé) et un **Footer premium** avec animation au survol.
+**Avant toute contribution**, lire au minimum :
+- [`docs/mvp-scope.md`](./docs/mvp-scope.md) — ce qui est dans le périmètre et ce qui n'y est pas
+- [`docs/architecture.md`](./docs/architecture.md) §5 — les permissions et la règle de visibilité de l'identité
 
-### 2. Page d'Inscription (`/signup`)
-* Flux moderne *Split Screen*.
-* Formulaire d'inscription avec sélection des universités malgaches phares (ISCAM, INSCAE, MISA, Polytechnique...).
-* Bouton d'évitement rapide "Retour à l'accueil" pour fluidifier l'UX.
+## Règles non négociables
 
-### 3. Parcours d'Onboarding Gamifié (`/onboarding`)
-* Formulaire en 3 étapes avec barre de progression interactive.
-* **Logique d'impact féminin** : Si l'utilisateur sélectionne le genre "Femme" à l'étape 1, l'option conditionnelle **"Espace Sécurisé"** apparaît immédiatement en violet pour lui permettre de restreindre sa visibilité ou d'activer le bonus de matching paritaire.
+1. **Aucune chaîne de caractères en dur** — tout passe par les clés i18n.
+2. **Aucun référentiel en dur dans le code** — compétences, filières, secteurs et régions
+   vivent en base.
+3. **Tout montant porte sa devise.**
+4. **Les données privées ne sont jamais chargées** hors du contexte qui y donne droit — on ne
+   les masque pas à l'affichage.
+5. **Toute action sensible est auditée.**
+6. **Les 7 permissions négatives sont testées** et bloquent la CI.
+7. **Le budget de performance bloque la CI** — JS initial < 200 Ko gzip.
 
-### 4. Le Feed Applicatif (`/feed`)
-* Barre de filtres (Tous, Projets, Co-fondateurs) avec effet de flou dynamique (`backdrop-blur`).
-* Rendu de listes dynamiques via `<ProjectCard />` et `<ProfileCard />`.
-* **Sidebar droite contextuelle** : Contient un mini-widget d'impact de parité (jauge dynamique violette) et des suggestions rapides d'amis.
+## Contribuer
 
-### 5. Page Détail d'un Projet (`/projects/:id`)
-* Rendu complet des arguments fondateurs ("Le Problème", "La Solution", "Compétences recherchées").
-* **Sidebar Pinned** : Sidebar de droite intelligente (`sticky top-[100px] h-fit`) qui reste visible au défilement.
-* **Candidature direct via Dialog** : Le bouton de candidature ouvre une modale superposée (Shadcn UI `Dialog`) permettant de taper son pitch d'intérêt avec état de chargement simulé (simulation réseau).
+Une branche par ticket, nommée d'après son identifiant (`F-01`, `E-07`, `M-06`…).
+CI verte obligatoire. `auth`, `rbac` et `privacy` exigent une **revue croisée**.
 
-### 6. Dashboard d'Impact & Parité (`/impact`)
-* Véritable outil d'analyse à l'usage du jury.
-* **Data-Viz** : Graphique de surface (`AreaChart` de Recharts) montrant la croissance des inscriptions par genre.
-* **Leaderboard** : Classement ludique des écoles avec le meilleur taux d'étudiantes impliquées pour créer de l'émulation positive.
-
-### 7. Gestion de l'inachevé (`ComingSoonPage`)
-* Toutes les routes non essentielles au pitch du Hackathon (ex: `/messages`, `/settings`, `/profile/me`) sont redirigées vers une page **"Bientôt disponible"** très soignée avec une icône animée, évitant ainsi les erreurs 404 lors des démonstrations.
-
----
-
-## Déploiement Vercel
-Le fichier `frontend/vercel.json` is configuré avec un rewrite universel (`source: /(.*)`) pour permettre aux routes internes du React Router de fonctionner parfaitement après le build sans générer d'erreurs 404 lors des rafraîchissements de page en production.
-
----
-
-## Guide de Contribution & Git Workflow
-
-Pour maintenir le projet propre, stable et éviter les conflits de code, veuillez respecter le flux de travail Git suivant lorsque vous ajoutez des fonctionnalités ou corrigez des bugs :
-
-### 1. Règle d'or ⚠️
-**Ne travaillez JAMAIS directement sur la branche `main` !** La branche `main` doit toujours rester stable, testée et prête à être déployée.
-
-### 2. Flux de travail recommandé
-
-```bash
-# 1. Revenez sur main et récupérez le dernier code à jour
-git checkout main
-git pull origin main
-
-# 2. Créez une nouvelle branche pour votre fonctionnalité
-# Utilisez un nom clair : feature/nom-de-la-feature ou bugfix/nom-du-bug
-git checkout -b feature/nom-de-votre-feature
-
-# 3. Codez vos modifications...
-
-# 4. Avant de faire un commit, vérifiez que le build passe localement
-cd frontend
-npm run build
-
-# 5. Ajoutez et validez vos fichiers modifiés (commits propres)
-git add .
-git commit -m "feat: description claire de ce que fait la fonctionnalité"
-
-# 6. Poussez votre branche sur le dépôt distant
-git push origin feature/nom-de-votre-feature
-```
-
-### 3. Pull Requests (PR)
-Une fois votre branche poussée, ouvrez une Pull Request sur votre plateforme de gestion de code (GitHub, GitLab, etc.) vers la branche `main`. 
-* Demandez à au moins un collègue de relire votre code.
-* Assurez-vous que les tests et builds automatiques de votre CI/CD passent au vert avant de valider la fusion (Merge).
-
+Backlog complet : [`docs/plan-de-developpement.md`](./docs/plan-de-developpement.md)
