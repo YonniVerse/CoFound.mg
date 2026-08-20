@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Avatar } from "@/components/shared/Avatar";
 import { SectorBadge } from "@/components/shared/SectorBadge";
-import { FemaleBadge } from "@/components/shared/FemaleBadge";
+import { ImpactBadge } from "@/components/shared/ImpactBadge";
 import { SkillTag } from "@/components/shared/SkillTag";
 import { Button } from "@/components/ui/button";
 
@@ -30,7 +30,7 @@ export function ProjectCard({ project }: { project: ProjectData }) {
         <div className="space-y-1">
           <div className="flex items-center gap-2 mb-2">
             <SectorBadge sector={project.sector} />
-            {project.isFemaleImpact && <FemaleBadge />}
+            {project.isFemaleImpact && <ImpactBadge />}
           </div>
           <Link to={`/projects/${project.id}`}>
             <h3 className="font-heading font-bold text-lg text-foreground leading-tight group-hover:text-primary transition-colors cursor-pointer">
