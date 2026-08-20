@@ -1,0 +1,98 @@
+name: Déployer l'API et le worker
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Tag d'image à publier
+        required: true
+        default: manual
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publier l'image API/worker
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.meta.outputs.image }}
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      - name: Se connecter à GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Déterminer le tag
+        id: meta
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            TAG="$GITHUB_REF_NAME"
+          else
+            TAG="${{ inputs.image_tag }}"
+          fi
+          IMAGE="ghcr.io/yonniverse/cofound-api:${TAG}"
+          echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Construire et publier
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/api.Dockerfile
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.image }}
+            ghcr.io/yonniverse/cofound-api:${{ github.sha }}
+
+  deploy:
+    name: Déployer sur le VPS
+    needs: publish
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Récupérer les artefacts de déploiement
+        uses: actions/checkout@v4
+
+      - name: Installer la clé SSH
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Installer la configuration sans écraser les secrets
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -o StrictHostKeyChecking=yes "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$DEPLOY_PATH/deploy'"
+          scp -o StrictHostKeyChecking=yes deploy/compose.production.yml deploy/Caddyfile "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/deploy/"
+
+      - name: Mettre à jour les services
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          GHCR_READ_TOKEN: ${{ secrets.GHCR_READ_TOKEN }}
+          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+          IMAGE: ${{ needs.publish.outputs.image }}
+        run: |
+          printf '%s' "$GHCR_READ_TOKEN" | ssh -o StrictHostKeyChecking=yes "$DEPLOY_USER@$DEPLOY_HOST" \\
+            "cd '$DEPLOY_PATH' && sed -i 's#^COFOUND_API_IMAGE=.*#COFOUND_API_IMAGE=$IMAGE#' deploy/.env && docker login ghcr.io -u '$GHCR_USERNAME' --password-stdin && docker compose --env-file deploy/.env -f deploy/compose.production.yml pull && docker compose --env-file deploy/.env -f deploy/compose.production.yml up -d --remove-orphans && docker image prune -f"
