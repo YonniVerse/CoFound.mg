@@ -22,6 +22,7 @@ export class OnboardingService {
     const input = parsed.data as OnboardingStepRequest
     await this.validateStep(input.step, input.data)
     if (input.step === 1) {
+      await this.prisma.talentProfile.upsert({ where: { userId }, create: { userId, pseudonym: `talent-${userId.slice(0, 8)}`, avatarSeed: userId }, update: {} })
       await this.profileService.updateIdentity(userId, input.data)
     } else if (input.step === 6) {
       await this.profileService.updateMine(userId, input.data)
