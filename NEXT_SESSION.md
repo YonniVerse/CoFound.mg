@@ -4,7 +4,7 @@
 
 ## 1. État actuel
 
-La PR #56 de M-01 est fusionnée dans `dev` via le commit `29f18e4`. La branche active est `M-02` et la PR #57 est ouverte vers `dev`. M-02 est implémenté localement avec l’optimisation des chunks frontend.
+La PR #56 de M-01 et la PR #57 de M-02 sont fusionnées dans `dev` via les commits `29f18e4` et `7f26b60`. La branche active est `M-03` et la PR #58 est ouverte vers `dev`. M-03 est implémenté sur le Feed Projets.
 
 ## 2. Livrables de cette session
 
@@ -22,8 +22,8 @@ Les routes de messagerie exigent `message:send` et vérifient l’appartenance �
 
 ## 5. Vigilance et travaux restants
 
-Les tests ciblés M-09/M-10/M-11/P-10 sont ajoutés et la suite compte 99 tests réussis. P-10 dispose maintenant de l’écran `/projects/:id/channel`, du client API et d’un canal `PROJECT` réservé aux membres actifs. M-01 est fusionné et M-02 est en revue dans la PR #57. Le build frontend ne signale plus de chunk supérieur à 500 kB : `vendor-react` 217,50 kB, `vendor-ui` 232,78 kB et `vendor-data` 363,98 kB. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
+Les tests API comptent 99 réussites sur l’état M-02/M-03. M-01 et M-02 sont fusionnés. M-03 ajoute le Feed Projets connecté à M-02, les filtres, la recherche, la pagination infinie, les skeletons et les cartes pseudonymisées. Le build frontend ne signale plus de chunk supérieur à 500 kB : `vendor-react` 217,50 kB, `vendor-ui` 232,92 kB et `vendor-data` 363,98 kB. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
 
 ## 6. Prochaine action
 
-Revoir et fusionner la PR #57 après contrôles GitHub, puis commencer M-03 sur `origin/dev` avec les composants du Feed Projets.
+Revoir et fusionner la PR #58 après les contrôles GitHub, puis préparer M-04 — Feed Talents pseudonymisé — depuis le dev synchronisé.

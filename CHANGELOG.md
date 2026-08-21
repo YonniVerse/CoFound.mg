@@ -10,6 +10,28 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Démarrage de M-03 — Interface Feed Projets
+
+### Modifié
+
+- M-02 est fusionné dans `dev` via la PR #57 et le commit `7f26b60`.
+- M-03 est rebasé sur `origin/dev` et proposé dans la PR #58.
+- Le Feed Projets utilise l’API M-02 avec filtres, recherche, pagination infinie, skeletons et cartes pseudonymisées.
+- Le chargement initial du hook Feed respecte les règles React hooks.
+
+### Validation
+
+- Typecheck frontend : réussi.
+- Lint frontend : réussi.
+- Build frontend : réussi.
+- Chunks : index 76,82 kB, vendor-react 217,50 kB, vendor-ui 232,92 kB, vendor-data 363,98 kB.
+
+### En cours
+
+- Revue et fusion de la PR #58, puis préparation de M-04.
+
+---
+
 ## 2026-08-22 — Démarrage de la Vague 2 avec M-01 et M-02
 
 ### Modifié
