@@ -23,6 +23,16 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-21 — Stabilisation de P-05
+
+### Corrigé
+
+- Suppression des imports inutilisés dans les tests de candidatures.
+- Correction du chargement initial du hook `useMyApplications` pour respecter la règle React ESLint `set-state-in-effect`.
+- Validation finale : 58 tests backend passants, typechecks API/frontend et lint global réussis.
+
+---
+
 ## 2026-08-21 — Base PostgreSQL Neon configurée pour CoFound.mg
 
 ### Ajouté

@@ -10,8 +10,8 @@
 
 - **Dernière mise à jour** : 2026-08-21
 - **Vague actuelle** : Vague 3 (Le projet) — **P-01, P-02, P-03, P-04 (réalisés par l'équipe), P-05 (réalisé)**
-- **Branche Git actuelle** : `feat/P-05-candidatures-candidat`
-- **Tests automatisés** : 54/54 tests backend validés (`pnpm test` dans `apps/api`)
+- **Branche Git actuelle** : `P-05` (issue de `origin/feat/P-05-candidatures-candidat`)
+- **Tests automatisés** : 58/58 tests backend validés (`pnpm test` dans `apps/api`)
 - **Build Web** : Validé sans aucune erreur (`pnpm --filter web build`)
 
 ---
@@ -38,8 +38,8 @@
 - `apps/api/src/applications/applications.service.ts` : Service NestJS créant une candidature (contrôle unicité candidature `PENDING`, poste ouvert), listant les candidatures du candidat et permettant le retrait.
 - `apps/api/src/applications/applications.controller.ts` : Endpoints protégés par `project:apply` (`POST /applications`, `GET /applications/me`, `PATCH /applications/:id/withdraw`).
 - `apps/api/src/applications/applications.module.ts` : Déclaration et enregistrement dans `AppModule`.
-- `apps/api/test/applications.test.ts` : Suite de tests unitaires (soumission, rejet doublon `PENDING`, liste candidat, retrait).
-- `apps/web/src/hooks/useMyApplications.ts` : Hook React connecté à l'API `/applications/me` avec fallback démo.
+- `apps/api/test/applications.test.ts` : Suite de tests unitaires (soumission, rejet doublon `PENDING`, liste candidat, retrait), avec mocks contrôlés et imports nettoyés.
+- `apps/web/src/hooks/useMyApplications.ts` : Hook React connecté à l'API `/applications/me` avec fallback démo et chargement initial différé pour respecter le lint React.
 - `apps/web/src/components/applications/ApplyModal.tsx` : Modal de postulation à un projet avec message et sélection de poste.
 - `apps/web/src/pages/MyApplicationsPage.tsx` : Page candidat `/my-applications` avec filtres de statut (`En attente`, `Acceptée`, `Refusée`, `Retirée`), motif de refus et bouton de retrait.
 - `apps/web/src/App.tsx` : Enregistrement de la route lazy `/my-applications`.

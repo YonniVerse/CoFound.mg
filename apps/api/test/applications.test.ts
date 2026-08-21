@@ -1,10 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { strict as assert } from 'node:assert'
 import { test } from 'node:test'
-import {
-  BadRequestException,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common'
+import { ConflictException } from '@nestjs/common'
 import { ApplicationsService } from '../src/applications/applications.service.js'
 import { ApplicationsController } from '../src/applications/applications.controller.js'
 import { ApplicationStatus, ProjectStatus } from '@cofound/shared'

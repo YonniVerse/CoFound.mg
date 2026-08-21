@@ -77,7 +77,10 @@ export function useMyApplications() {
   }, []);
 
   useEffect(() => {
-    fetchApplications();
+    const load = window.setTimeout(() => {
+      void fetchApplications();
+    }, 0);
+    return () => window.clearTimeout(load);
   }, [fetchApplications]);
 
   const applyToProject = async (input: CreateApplicationInput): Promise<ApplicationItem> => {
@@ -85,7 +88,7 @@ export function useMyApplications() {
       const response = await apiClient.post("/applications", input, applicationItemSchema);
       setApplications((prev) => [response, ...prev]);
       return response;
-    } catch (err) {
+    } catch {
       // Fallback local create for demo
       const newMockApp: ApplicationItem = {
         id: `app-demo-${Date.now()}`,
