@@ -7,18 +7,18 @@
 
 ## 1. Conclusion de revue
 
-La PR #36 apporte une migration de progression, les contrats partagés, les endpoints d’onboarding, la persistance des compétences et un écran frontend en six étapes. Les validations locales passent, mais la PR ne doit pas être fusionnée sans traiter les points bloquants ci-dessous.
+La PR #36 apporte une migration de progression, les contrats partagés, les endpoints d’onboarding, la persistance des compétences et un écran frontend en six étapes. Les bloqueurs transactionnels et de séquencement ont été corrigés ; les validations API passent avec 44 tests, dont le test HTTP E-13.
 
 | Priorité | Point | Risque | Action demandée |
 |---|---|---|---|
-| Bloquant | La mise à jour métier et la progression ne sont pas dans une transaction unique. `ProfileService` est appelé avant la transaction qui met à jour `TalentProfile` | Une écriture de profil peut réussir alors que la progression échoue, ou l’inverse | Déplacer toutes les écritures de l’étape dans une seule transaction Prisma avec un contexte transactionnel partagé |
-| Bloquant | L’ordre des étapes n’est pas imposé | Un client peut appeler directement l’étape 6 et contourner les étapes 1 à 5 | Refuser une étape future tant que les étapes précédentes ne sont pas terminées, sauf règle produit explicite |
-| Élevé | Il n’existe pas de test HTTP E-13 | Le câblage route, RBAC et paramètre `:step` n’est pas vérifié de bout en bout | Ajouter les tests `GET`, `PATCH`, `400`, `401` et `403` |
+| Résolu | La mise à jour métier et la progression n’étaient pas dans une transaction unique | Écriture partielle possible | Toutes les écritures E-13 sont désormais exécutées dans une transaction Prisma unique |
+| Résolu | L’ordre des étapes n’était pas imposé | Contournement du parcours | Une étape future est maintenant refusée si la progression courante ne l’autorise pas |
+| Partiellement résolu | Il n’existait pas de test HTTP E-13 | Couverture route insuffisante | Test HTTP `GET`/`PATCH` et paramètre `:step` ajoutés ; les scénarios `401/403` avec guards globaux restent à compléter |
 | Élevé | La reprise ne recharge pas les valeurs du profil dans l’écran frontend | Reprendre à l’étape courante avec des champs vides peut provoquer une perte ou un écrasement de données | Retourner un snapshot de l’étape et hydrater le formulaire |
 | Élevé | L’écran demande des identifiants bruts de compétences, filières et secteurs | Expérience utilisateur inadaptée et risque d’identifiants invalides | Exposer les référentiels actifs et utiliser des sélecteurs typés |
 | Moyen | L’étape 3 remplace toutes les compétences par suppression puis recréation | Risque de perte de données en cas de concurrence ou de mauvaise requête | Conserver la transaction et ajouter une stratégie de remplacement idempotente testée avec concurrence |
 | Moyen | La migration ne rétro-remplit pas la progression des profils existants | Tous les profils existants commencent à l’étape 1 même si leur profil est déjà complet | Ajouter un backfill ou calculer la première étape manquante à la lecture |
-| Moyen | Le contrat documente une sauvegarde transactionnelle, mais l’implémentation utilise plusieurs transactions imbriquées de fait | Écart entre contrat et garantie réelle | Corriger l’architecture et la documentation avant fusion |
+| Résolu | Le contrat documentait une sauvegarde transactionnelle sans garantie globale | Écart de garantie | La persistance métier et l’avancement sont regroupés dans la même transaction |
 
 ## 2. Matrice des dépendances de Rino
 
@@ -59,7 +59,7 @@ La chaîne E-01/E-02/E-03 est également terminée via les PR #31, #32 et #33. L
 
 ## 4. Ordre recommandé
 
-L’ordre d’exécution est le suivant : corriger les deux blocages transactionnels et de séquencement de la PR #36, ajouter ses tests HTTP, puis faire relire et fusionner E-13. Ensuite, implémenter E-14, qui dépend directement d’E-13. En parallèle, les dépendances absentes peuvent être traitées par ticket et par propriétaire, mais aucune modification ne doit être développée dans le périmètre d’un autre ticket sans branche et validation distinctes.
+L’ordre d’exécution est le suivant : compléter si nécessaire les scénarios HTTP `401/403`, faire relire puis fusionner E-13. Ensuite, implémenter E-14, qui dépend directement d’E-13. En parallèle, les dépendances absentes peuvent être traitées par ticket et par propriétaire, mais aucune modification ne doit être développée dans le périmètre d’un autre ticket sans branche et validation distinctes.
 
 Pour les dépendances de tickets Rino à venir, l’ordre technique recommandé est `M-14 → S-01 → S-02 → S-03/S-04`, `E-18 → E-19`, `M-05 → M-06 → M-07/M-08`, puis `S-08` et `S-05`. `B-02` peut démarrer dès que F-08 et F-10 sont confirmés, ce qui est déjà le cas.
 
