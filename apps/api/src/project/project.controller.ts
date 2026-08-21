@@ -15,6 +15,12 @@ export class ProjectController {
     return this.projectService.create(request.user!.userId, projectCreateSchema.parse(body))
   }
 
+  @Post(':id/recruiting')
+  @RequirePermissions(Permission.PROJECT_MANAGE)
+  publish(@Req() request: AuthenticatedRequest, @Param('id') id: string) {
+    return this.projectService.publish(request.user!.userId, id)
+  }
+
   @Get(':id')
   @RequirePermissions(Permission.PROJECT_READ)
   getById(@Req() request: AuthenticatedRequest, @Param('id') id: string) {

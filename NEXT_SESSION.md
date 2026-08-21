@@ -2,11 +2,11 @@
 > L’état vivant est ici ; l’historique détaillé est dans `CHANGELOG.md`.
 
 **Dernière mise à jour** : 2026-08-21
-**Phase** : Vague 3 — P-02 publié, en attente de revue
-**Branche** : `P-02`, publiée sur `origin/P-02`
-**Ticket courant** : P-02 — BMC guidé
+**Phase** : Vague 3 — P-03 implémenté, prêt à publier
+**Branche** : `P-03`, créée depuis `dev` après fusion de P-02
+**Ticket courant** : P-03 — Transition Brouillon → Recrutement
 **Vague** : Vague 3 — Le projet
-**État du workspace** : propre après le commit `a589da0` ; PR #45 ouverte vers `dev` ; aucun secret Neon ajouté
+**État du workspace** : modifications P-03 et handoff non committées ; aucun secret Neon ajouté
 
 ---
 ## 1. Tickets Vague 3
@@ -21,9 +21,11 @@ Le commit `62ae3c2 feat(project): créer un projet en brouillon` ajoute le contr
 Validations P-01 : 52 tests API passants sur la branche dédiée, typecheck shared/API/frontend passant et lint API/frontend passant.
 
 ---
-## 3. P-02 — implémenté
+## 3. P-02 — terminé
 
-P-02 est implémenté : contrats Zod partagés pour neuf blocs, service NestJS transactionnel, routes GET/PATCH protégées, calcul serveur de complétion, écran UI-26 avec exemples contextualisés, indicateur d’enregistrement et autosave debouncé. Les membres actifs du projet peuvent lire et modifier le BMC ; les non-membres sont refusés. La transition `DRAFT → RECRUITING` reste réservée à P-03.
+La PR #45 a été fusionnée dans `dev`.
+
+P-02 a été livré et fusionné : contrats Zod partagés pour neuf blocs, service NestJS transactionnel, routes GET/PATCH protégées, calcul serveur de complétion, écran UI-26 avec exemples contextualisés, indicateur d’enregistrement et autosave debouncé. Les membres actifs du projet peuvent lire et modifier le BMC ; les non-membres sont refusés.
 
 Les neuf blocs sont : segments clients, propositions de valeur, canaux, relations clients, flux de revenus, ressources clés, activités clés, partenaires clés et structure de coûts. Validations : shared build, typechecks API/web, lint et build OK ; 56 tests API passants, 0 échec.
 
@@ -51,4 +53,4 @@ Les neuf blocs sont : segments clients, propositions de valeur, canaux, relation
 ---
 ## 6. Prochaine action
 
-Revoir et fusionner la PR #45 (`P-02`) après les contrôles CI ; ensuite créer la branche P-03 depuis `dev` et implémenter la transition `DRAFT → RECRUITING` conditionnée à 100 % de complétion, avec la liste des blocs manquants. Vigilances restantes : file offline persistante, conflit avec historique et lecture publique bloc par bloc à vérifier dans les tickets concernés.
+Lancer `git diff --check`, committer les changements P-03 avec un message conventionnel français, pousser `origin/P-03` et ouvrir sa PR vers `dev`. La PR devra être relue avant fusion. Vigilances restantes : file offline persistante, conflit avec historique et lecture publique bloc par bloc à vérifier dans les tickets concernés.

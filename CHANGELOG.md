@@ -10,6 +10,27 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-21 — Implémentation de la transition P-03
+
+### Ajouté
+
+- Action projet `POST /api/v1/projects/:id/recruiting` protégée par `PROJECT_MANAGE`.
+- Vérification transactionnelle du propriétaire, du statut `DRAFT` et de la complétion des neuf blocs BMC.
+- Retour explicite des clés de blocs manquants lorsque la publication est refusée.
+- Trois tests P-03 couvrant le refus incomplet, la transition complète et les métadonnées de permission.
+
+### Décidé
+
+- Seul un propriétaire actif peut publier un projet, afin que la transition d’état reste une décision de gouvernance.
+- La publication n’écrit `RECRUITING` et `publishedAt` que lorsque les neuf contenus BMC sont non vides.
+
+### Validé
+
+- `pnpm test` : 59 tests API passants, 0 échec.
+- `pnpm typecheck`, `pnpm lint` et `pnpm build` : OK.
+
+---
+
 ## 2026-08-21 — Implémentation du BMC guidé P-02
 
 ### Ajouté

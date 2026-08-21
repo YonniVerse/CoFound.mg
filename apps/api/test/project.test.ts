@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
+import { BMC_BLOCK_KEYS } from '@cofound/shared'
 import { ProjectController } from '../src/project/project.controller.js'
 import { ProjectService } from '../src/project/project.service.js'
 import type { PrismaService } from '../src/prisma/prisma.service.js'
@@ -50,4 +51,31 @@ test('P-01 refuse la consultation d’un projet dont l’utilisateur n’est pas
 test('P-01 expose PROJECT_CREATE et PROJECT_READ sur les routes attendues', () => {
   assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, ProjectController.prototype.create), [Permission.PROJECT_CREATE])
   assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, ProjectController.prototype.getById), [Permission.PROJECT_READ])
+})
+
+
+test('P-03 refuse la publication et retourne les blocs BMC manquants', async () => {
+  const prisma = {
+    $transaction: async (callback: (tx: unknown) => Promise<unknown>) => callback({ project: { findUnique: async () => ({ id: 'p1', status: 'DRAFT', members: [{ role: 'OWNER' }], canvas: { blocks: { customerSegments: { content: 'Clients' } } } }) } }),
+  } as unknown as PrismaService
+  const response = await new ProjectService(prisma).publish('u1', 'p1')
+  assert.equal(response.published, false)
+  assert.equal(response.missingBlocks.length, 8)
+  assert.ok(response.missingBlocks.includes('costStructure'))
+})
+
+test('P-03 passe un projet complet de DRAFT à RECRUITING dans une transaction', async () => {
+  const blocks = Object.fromEntries(BMC_BLOCK_KEYS.map((key) => [key, { content: key }]))
+  let updateCalled = false
+  const prisma = {
+    $transaction: async (callback: (tx: unknown) => Promise<unknown>) => callback({ project: { findUnique: async () => ({ id: 'p1', status: 'DRAFT', members: [{ role: 'OWNER' }], canvas: { blocks } }), update: async () => { updateCalled = true; return { id: 'p1', status: 'RECRUITING', publishedAt: new Date() } } } }),
+  } as unknown as PrismaService
+  const response = await new ProjectService(prisma).publish('u1', 'p1')
+  assert.equal(updateCalled, true)
+  assert.equal(response.published, true)
+  assert.equal(response.status, 'RECRUITING')
+})
+
+test('P-03 expose la transition avec PROJECT_MANAGE', () => {
+  assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, ProjectController.prototype.publish), [Permission.PROJECT_MANAGE])
 })
