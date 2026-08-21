@@ -5,9 +5,9 @@
 > dans `CLAUDE.md`, le détail dans `docs/`.
 
 **Dernière mise à jour** : 2026-08-21
-**Phase** : Vague 1 — implémentation de E-14
+**Phase** : Vague 1 — revue E-14 et préparation E-15
 **Branche** : `E-14`, issue de `dev` après fusion de la PR #36
-**État du workspace** : E-12 et E-13 finalisés et fusionnés ; E-14 implémenté sur la branche dédiée
+**État du workspace** : E-12 et E-13 finalisés et fusionnés ; E-14 implémenté, PR #37 ouverte et en revue ; E-15 préparé
 
 ---
 
@@ -61,4 +61,4 @@ Le détail doit présenter les compteurs créés, mis à jour, ignorés, erreurs
 
 ## 5. Prochaine action
 
-E-14 est implémenté sur la branche dédiée. L’API `GET /api/v1/me/profile/completion-reminder` calcule la complétion, les champs manquants et le lien vers `/onboarding` sans exposer de donnée sensible. Le rappel est affiché dans l’espace personnel via `DashboardLayout`. Les tests API, le lint, le typecheck et le build passent. La prochaine action est la revue et la fusion de la PR E-14.
+E-14 est implémenté sur la branche dédiée et la PR #37 est en revue. Le rapport `docs/revue-pr37-et-preparation-e15.md` recense les points à vérifier : i18n de la bannière, test HTTP de l’endpoint, fréquence des requêtes et catalogue des clés. E-15 est le ticket suivant, attribué à Yonni ; son modèle Prisma `Consent` existe déjà et sa dépendance F-05 est livrée. La prochaine action est de valider/fusionner E-14, puis de coordonner la branche dédiée E-15 avec revue croisée confidentialité.
