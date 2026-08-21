@@ -95,6 +95,24 @@ export type ConsentPurpose = z.infer<typeof consentPurposeSchema>
 export type ConsentGrantInput = z.infer<typeof consentGrantSchema>
 export type ConsentRevokeInput = z.infer<typeof consentRevokeSchema>
 export type ConsentRecord = z.infer<typeof consentRecordSchema>
+export const institutionOverviewSchema = z.object({
+  organizations: z.array(z.object({
+    id: idSchema,
+    name: z.string(),
+    role: z.string(),
+    canManage: z.boolean(),
+    metrics: z.object({ affiliates: z.number().int().nullable(), activated: z.number().int().nullable(), completedProfiles: z.number().int().nullable(), projects: z.number().int().nullable() }),
+    recentImports: z.array(z.object({ id: idSchema, fileName: z.string(), status: z.string(), createdAt: z.coerce.date(), totalRows: z.number().int(), errorRows: z.number().int() })),
+  })),
+})
+export type InstitutionOverview = z.infer<typeof institutionOverviewSchema>
+export const organizationRoleSchema = z.enum(['ORG_ADMIN', 'ORG_MANAGER', 'ORG_VIEWER'])
+export const institutionMemberInviteSchema = z.object({ email: z.string().trim().email(), role: organizationRoleSchema })
+export const institutionMemberUpdateSchema = z.object({ role: organizationRoleSchema })
+export const institutionMembersSchema = z.object({ members: z.array(z.object({ id: idSchema, userId: idSchema, email: z.string().email(), status: z.string(), role: organizationRoleSchema, createdAt: z.coerce.date() })) })
+export type InstitutionMemberInvite = z.infer<typeof institutionMemberInviteSchema>
+export type InstitutionMemberUpdate = z.infer<typeof institutionMemberUpdateSchema>
+export type InstitutionMembers = z.infer<typeof institutionMembersSchema>
 
 export const privateTalentProfileSchema = z.object({
   user: z.object({ id: idSchema, email: z.string().email(), locale: localeSchema }),

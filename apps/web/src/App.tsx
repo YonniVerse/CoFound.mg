@@ -1,55 +1,43 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import LandingPage from "@/pages/LandingPage";
-import OnboardingPage from "@/pages/OnboardingPage";
-import FeedPage from "@/pages/FeedPage";
-import ProjectDetailPage from "@/pages/ProjectDetailPage";
-import ImpactPage from "@/pages/ImpactPage";
-import ComingSoonPage from "@/pages/ComingSoonPage";
-import SettingsPage from "@/pages/SettingsPage";
-import ImportMappingPage from "@/pages/ImportMappingPage";
-import ImportPreviewPage from "@/pages/ImportPreviewPage";
-import ImportBatchesPage from "@/pages/ImportBatchesPage";
 import { MainLayout } from "@/components/layout/MainLayout";
 
-const LayoutWrapper = () => {
-  return (
-    <MainLayout>
-      <Outlet />
-    </MainLayout>
-  );
-};
+const OnboardingPage = lazy(() => import("@/pages/OnboardingPage"));
+const FeedPage = lazy(() => import("@/pages/FeedPage"));
+const ProjectDetailPage = lazy(() => import("@/pages/ProjectDetailPage"));
+const ImpactPage = lazy(() => import("@/pages/ImpactPage"));
+const ComingSoonPage = lazy(() => import("@/pages/ComingSoonPage"));
+const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
+const ImportMappingPage = lazy(() => import("@/pages/ImportMappingPage"));
+const ImportPreviewPage = lazy(() => import("@/pages/ImportPreviewPage"));
+const ImportBatchesPage = lazy(() => import("@/pages/ImportBatchesPage"));
+const InstitutionOverviewPage = lazy(() => import("@/pages/InstitutionOverviewPage"));
+const InstitutionMembersPage = lazy(() => import("@/pages/InstitutionMembersPage"));
+
+const LayoutWrapper = () => <MainLayout><Outlet /></MainLayout>;
+const Loading = () => <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">Chargement…</div>;
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        {/* Routes avec Layout Global */}
-        <Route element={<LayoutWrapper />}>
-          <Route path="/" element={<LandingPage />} />
-        </Route>
-
-        {/* Routes Plein Écran (Auth & Onboarding) */}
-        <Route path="/onboarding" element={<OnboardingPage />} />
-        
-        {/* Applicatif (Dashboard) */}
-        <Route path="/feed" element={<FeedPage />} />
-        <Route path="/projects/:id" element={<ProjectDetailPage />} />
-        <Route path="/impact" element={<ImpactPage />} />
-        <Route path="/institution/imports" element={<ImportBatchesPage />} />
-        <Route path="/institution/imports/:id" element={<ImportBatchesPage />} />
-        <Route path="/institution/imports/new" element={<ImportMappingPage />} />
-        <Route path="/institution/imports/preview" element={<ImportPreviewPage />} />
-        <Route path="/institution/imports/:id/preview" element={<ImportPreviewPage />} />
-
-        {/* Routes MVP non implémentées (Coming Soon) */}
-        <Route path="/projects" element={<ComingSoonPage />} />
-        <Route path="/profiles" element={<ComingSoonPage />} />
-        <Route path="/messages" element={<ComingSoonPage />} />
-        <Route path="/profile/me" element={<ComingSoonPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-      </Routes>
-    </BrowserRouter>
-  );
+  return <BrowserRouter><Suspense fallback={<Loading />}><Routes>
+    <Route element={<LayoutWrapper />}><Route path="/" element={<LandingPage />} /></Route>
+    <Route path="/onboarding" element={<OnboardingPage />} />
+    <Route path="/feed" element={<FeedPage />} />
+    <Route path="/projects/:id" element={<ProjectDetailPage />} />
+    <Route path="/impact" element={<ImpactPage />} />
+    <Route path="/institution" element={<InstitutionOverviewPage />} />
+    <Route path="/institution/members" element={<InstitutionMembersPage />} />
+    <Route path="/institution/imports" element={<ImportBatchesPage />} />
+    <Route path="/institution/imports/:id" element={<ImportBatchesPage />} />
+    <Route path="/institution/imports/new" element={<ImportMappingPage />} />
+    <Route path="/institution/imports/preview" element={<ImportPreviewPage />} />
+    <Route path="/institution/imports/:id/preview" element={<ImportPreviewPage />} />
+    <Route path="/projects" element={<ComingSoonPage />} />
+    <Route path="/profiles" element={<ComingSoonPage />} />
+    <Route path="/messages" element={<ComingSoonPage />} />
+    <Route path="/profile/me" element={<ComingSoonPage />} />
+    <Route path="/settings" element={<SettingsPage />} />
+  </Routes></Suspense></BrowserRouter>;
 }
 
 export default App;
