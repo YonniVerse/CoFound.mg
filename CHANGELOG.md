@@ -19,15 +19,17 @@ Retiré · En cours · Bloqué**.
 - Endpoint `GET /me/dream-match/suggestions` avec pagination.
 - Scoring SQL pondéré par complémentarité de compétences, secteurs et disponibilité.
 - Tests unitaires du score, de la pagination et du pseudonymat.
+- Test HTTP d’intégration de `GET /api/v1/me/dream-match/suggestions`, avec vérification du curseur, des facteurs et de l’absence d’identité civile.
 
 ### Validation
 
-- 108/108 tests API réussis.
-- Lint API et typecheck API réussis.
+- 109/109 tests API réussis.
+- Lint, typecheck et build du monorepo réussis.
+- Chunk frontend maximal observé : `vendor-data` à 363,98 kB, sous le seuil de 500 kB.
 
 ### En cours
 
-- Validation SQL sur base de recette et tests HTTP avant PR M-06.
+- Revue de code et fusion de la PR #61.
 
 ---
 
