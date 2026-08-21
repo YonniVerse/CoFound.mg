@@ -113,6 +113,10 @@ export const institutionMembersSchema = z.object({ members: z.array(z.object({ i
 export type InstitutionMemberInvite = z.infer<typeof institutionMemberInviteSchema>
 export type InstitutionMemberUpdate = z.infer<typeof institutionMemberUpdateSchema>
 export type InstitutionMembers = z.infer<typeof institutionMembersSchema>
+export const affiliationStatusSchema = z.enum(['ACTIVE', 'LEAVING', 'ALUMNI', 'SUSPENDED'])
+export const affiliationFiltersSchema = z.object({ cohortYear: z.coerce.number().int().optional(), fieldId: idSchema.optional(), status: affiliationStatusSchema.optional() })
+export const affiliationUpdateSchema = z.object({ status: affiliationStatusSchema })
+export const affiliationBulkStatusSchema = z.object({ affiliationIds: z.array(idSchema).min(1).max(1000), status: affiliationStatusSchema, confirmation: z.string().min(1) })
 
 export const privateTalentProfileSchema = z.object({
   user: z.object({ id: idSchema, email: z.string().email(), locale: localeSchema }),
