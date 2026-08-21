@@ -10,6 +10,32 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-21 — Publication P-07 et démarrage P-08 membres & rôles
+
+### Décidé
+
+- Les mutations de rôle et de retrait vérifient le dernier `OWNER` dans une transaction Prisma, afin d’éviter une perte concurrente de propriété.
+- L’identité civile reste réservée à l’espace des membres actifs ; le genre n’est jamais renvoyé par l’API équipe.
+
+### Ajouté
+
+- PR [#49](https://github.com/YonniVerse/CoFound.mg/pull/49) pour la relance automatique P-07.
+- `ProjectMembersService` et `ProjectMembersController` avec liste, ajout, changement de rôle et retrait.
+- Schémas partagés des rôles et membres P-08.
+- Écran UI-29 `/projects/:id/team`, route lazy et protection visuelle du dernier porteur.
+- Tests ciblés `project-members.test.ts`.
+
+### Modifié
+
+- La branche `P-08` réintègre les dépendances projet P-01 à P-04 nécessaires au module projet.
+- Le module projet enregistre désormais les contrôleurs et services BMC, postes et membres.
+
+### En cours
+
+- UI-29 utilise encore des données locales de démonstration ; le branchement au client API réel et les tests HTTP/intégration restent à faire.
+
+---
+
 ## 2026-08-21 — Vague 3 : Ticket P-05 (Candidature API + Écran candidat)
 
 ### Ajouté
