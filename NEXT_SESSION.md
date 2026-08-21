@@ -23,7 +23,7 @@
 | E-05 — Mapping assisté | ✅ intégré dans `dev` via la branche E-06 |
 | E-06 — Prévisualisation sans écriture | ✅ PR #29 fusionnée |
 | E-07 — Application transactionnelle idempotente | ✅ PR #30 fusionnée |
-| E-08 — Annulation et relance groupée | ✅ backend implémenté et validé ; UI-36 à réaliser |
+| E-08 — Annulation et relance groupée | ✅ backend et UI-36 implémentés et validés |
 
 ---
 
@@ -61,4 +61,4 @@ Le détail doit présenter les compteurs créés, mis à jour, ignorés, erreurs
 
 ## 5. Prochaine action
 
-Créer la PR du backend E-08, puis implémenter **UI-36** dans `apps/web` : liste des imports, détail avec compteurs, filtrage des lignes et actions d’annulation et de relance. Après stabilisation de l’ensemble E-08, passer à **E-12 — API et modèle de profil**.
+La PR backend E-08 est ouverte (#34) et UI-36 est intégrée dans `apps/web` avec liste, détail, compteurs, filtres et actions. Après revue et fusion de l’ensemble E-08, passer à **E-12 — API et modèle de profil**.
