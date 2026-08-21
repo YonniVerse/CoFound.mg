@@ -7,7 +7,7 @@
 **Dernière mise à jour** : 2026-08-21
 **Phase** : Vague 1 — démarrage de E-16
 **Branche** : `E-16`, issue de `dev` synchronisé après fusion de la PR #38
-**État du workspace** : E-15 est fusionné dans `dev` ; le socle de la console établissement est en cours
+**État du workspace** : E-15 est fusionné dans `dev` ; E-16 est implémenté sur sa branche et prêt pour revue
 
 ---
 
@@ -23,7 +23,7 @@
 | E-15 — Registre des consentements | ✅ PR #38 fusionnée dans `dev` |
 | F-08 — Organisations et capacités | ✅ dépendance vérifiée dans `dev` |
 | F-13 — RBAC et permissions | ✅ dépendance vérifiée dans `dev` |
-| E-16 — Console établissement | 🔄 branche créée ; overview backend et UI-34 initiale en cours |
+| E-16 — Console établissement | ✅ overview, UI-34, membres et rôles implémentés ; PR #39 à finaliser |
 
 ---
 
@@ -31,7 +31,7 @@
 
 L’endpoint `GET /institution/overview` est protégé par `ORG_READ` et ne retourne que les organisations de type `INSTITUTION` auxquelles l’utilisateur appartient. Les métriques sont agrégées au niveau organisationnel et toute valeur strictement inférieure à `MIN_AGGREGATION_THRESHOLD` (5) est remplacée par `null`. Aucun champ de genre n’est utilisé ou exposé.
 
-La page `/institution` fournit l’état de chargement, l’erreur, le premier usage sans chiffres à zéro, l’action principale « Importer une promotion », les cartes de métriques masquées et les cinq derniers lots d’import. Les liens vers la liste et le rapport des lots réutilisent les routes E-08 existantes.
+La page `/institution` fournit l’état de chargement, l’erreur, le premier usage sans chiffres à zéro, l’action principale « Importer une promotion », les cartes de métriques masquées et les cinq derniers lots d’import. Les liens vers la liste et le rapport des lots réutilisent les routes E-08 existantes. Les routes `/organizations/:organizationId/members` permettent de lister, inviter, modifier le rôle et retirer un membre. Les mutations sont transactionnelles lorsqu’elles créent une invitation et protègent le dernier administrateur ; elles sont auditées au niveau contrôleur.
 
 ---
 
@@ -46,4 +46,4 @@ La page `/institution` fournit l’état de chargement, l’erreur, le premier u
 
 ## 4. Prochaine action
 
-Ajouter les tests unitaires et d’intégration de `InstitutionOverviewService` et du contrôleur, notamment l’isolement organisationnel, le rejet des non-membres, `ORG_READ` et le masquage des valeurs sous le seuil. Ensuite, finaliser la revue E-16 avant d’ouvrir la PR.
+Les tests API passent avec 53 tests. Typecheck, lint, validation Prisma avec une URL locale de schéma et builds API/web passent. Le contrôle `check:bundle` reste en échec sur le budget préexistant du bundle JavaScript : 314 985 octets gzip pour un seuil strict de 290 221. La PR #39 doit être mise à jour puis revue avant fusion ; une passe de découpage du bundle pourra être traitée séparément si elle est exigée par la CI.
