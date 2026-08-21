@@ -226,3 +226,46 @@ export type OnboardingProgress = z.infer<typeof onboardingProgressSchema>
 export type TalentView = z.infer<typeof talentViewSchema>
 export type ProjectSummary = z.infer<typeof projectSummarySchema>
 export type ApiError = z.infer<typeof apiErrorSchema>
+
+// ─── Applications (P-05) ───────────────────────────────────────────────────────
+
+export const createApplicationInputSchema = z.object({
+  projectId: idSchema,
+  positionId: idSchema.optional(),
+  message: z.string().trim().min(10, 'Le message de candidature doit contenir au moins 10 caractères').max(2000),
+})
+
+export const applicationItemSchema = z.object({
+  id: idSchema,
+  projectId: idSchema,
+  positionId: idSchema.nullable(),
+  applicantId: idSchema,
+  message: z.string(),
+  status: z.enum(['PENDING', 'ACCEPTED', 'REJECTED', 'WITHDRAWN']),
+  rejectionReason: z.string().nullable(),
+  decidedAt: z.coerce.date().nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  project: z.object({
+    id: idSchema,
+    title: z.string(),
+    pitch: z.string(),
+    status: z.nativeEnum(ProjectStatus),
+  }),
+  position: z
+    .object({
+      id: idSchema,
+      title: z.string(),
+      description: z.string().nullable(),
+    })
+    .nullable(),
+})
+
+export const myApplicationsResponseSchema = z.object({
+  items: z.array(applicationItemSchema),
+})
+
+export type CreateApplicationInput = z.infer<typeof createApplicationInputSchema>
+export type ApplicationItem = z.infer<typeof applicationItemSchema>
+export type MyApplicationsResponse = z.infer<typeof myApplicationsResponseSchema>
+
