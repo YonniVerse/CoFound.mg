@@ -10,6 +10,19 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-21 — Vague 3 : Ticket P-05 (Candidature API + Écran candidat)
+
+### Ajouté
+- **Ticket P-05 — Candidature API & Écran candidat** :
+  - **API NestJS (`POST /applications`, `GET /applications/me`, `PATCH /applications/:id/withdraw`)** : Endpoints de soumission de candidature, de liste candidat et de retrait autonome protégés par `Permission.PROJECT_APPLY`.
+  - **Schémas Zod partagés** : `createApplicationInputSchema`, `applicationItemSchema`, `myApplicationsResponseSchema`.
+  - **Composant Web Modal `ApplyModal.tsx`** : Modal permettant aux candidats de postuler avec message de motivation et choix optionnel du poste ouvert.
+  - **Page Candidat `/my-applications` (`MyApplicationsPage.tsx`)** : Tableau de bord de suivi des candidatures avec filtres par statut (`En attente`, `Acceptée`, `Refusée`, `Retirée`), motif de refus et bouton de retrait.
+  - **Hook `useMyApplications.ts`** : Hook React d'interaction API avec secours démo local.
+  - **Tests unitaires** : Suite de tests `apps/api/test/applications.test.ts` (54/54 tests backend passants).
+
+---
+
 ## 2026-08-21 — Base PostgreSQL Neon configurée pour CoFound.mg
 
 ### Ajouté

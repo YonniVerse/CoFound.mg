@@ -1,49 +1,65 @@
-> Fichier de reprise de contexte. Chargé automatiquement par `CLAUDE.md`.
-> Mis à jour par la commande `/handoff` en fin de session.
->
-> **Ne contient que l’état vivant.** L’historique va dans `CHANGELOG.md`, les décisions arrêtées
-> dans `CLAUDE.md`, le détail dans `docs/`.
+# Context Handoff — Reprise de session CoFound.mg
 
-**Dernière mise à jour** : 2026-08-21
-**Phase** : Vague 1 — démarrage de E-16
-**Branche** : `E-16`, issue de `dev` synchronisé après fusion de la PR #38
-**État du workspace** : E-15 est fusionné dans `dev` ; E-16 est implémenté sur sa branche et prêt pour revue
+> **Fichier de reprise de contexte**. Mis à jour à la fin de chaque session de travail.
+> **Périmètre Développeur** : Norman (Référent Frontend & Responsable Découverte / Feeds / Espace Projet).
+> **Source de vérité du backlog & séquencement** : [`docs/plan-de-developpement.md`](docs/plan-de-developpement.md).
 
 ---
 
-## 1. Où on en est
+## 1. État Actuel du Projet
 
-| Élément | État |
-|---|---|
-| Vague 0 — Fondations | ✅ `F-01` à `F-19` intégrés dans `dev` |
-| E-01 à E-08 | ✅ tickets d’import et dépendances email fusionnés ou intégrés |
-| E-12 — API et modèle de profil | ✅ fusionné dans `dev` |
-| E-13 — Onboarding progressif | ✅ fusionné dans `dev` |
-| E-14 — Rappel de complétion | ✅ fusionné dans `dev` |
-| E-15 — Registre des consentements | ✅ PR #38 fusionnée dans `dev` |
-| F-08 — Organisations et capacités | ✅ dépendance vérifiée dans `dev` |
-| F-13 — RBAC et permissions | ✅ dépendance vérifiée dans `dev` |
-| E-16 — Console établissement | ✅ overview, UI-34, membres et rôles implémentés ; PR #39 à finaliser |
+- **Dernière mise à jour** : 2026-08-21
+- **Vague actuelle** : Vague 3 (Le projet) — **P-01, P-02, P-03, P-04 (réalisés par l'équipe), P-05 (réalisé)**
+- **Branche Git actuelle** : `feat/P-05-candidatures-candidat`
+- **Tests automatisés** : 54/54 tests backend validés (`pnpm test` dans `apps/api`)
+- **Build Web** : Validé sans aucune erreur (`pnpm --filter web build`)
 
 ---
 
-## 2. E-16 — socle en cours
+## 2. Récapitulatif des Tickets de Norman
 
-L’endpoint `GET /institution/overview` est protégé par `ORG_READ` et ne retourne que les organisations de type `INSTITUTION` auxquelles l’utilisateur appartient. Les métriques sont agrégées au niveau organisationnel et toute valeur strictement inférieure à `MIN_AGGREGATION_THRESHOLD` (5) est remplacée par `null`. Aucun champ de genre n’est utilisé ou exposé.
-
-La page `/institution` fournit l’état de chargement, l’erreur, le premier usage sans chiffres à zéro, l’action principale « Importer une promotion », les cartes de métriques masquées et les cinq derniers lots d’import. Les liens vers la liste et le rapport des lots réutilisent les routes E-08 existantes. Les routes `/organizations/:organizationId/members` permettent de lister, inviter, modifier le rôle et retirer un membre. Les mutations sont transactionnelles lorsqu’elles créent une invitation et protègent le dernier administrateur ; elles sont auditées au niveau contrôleur.
+| Ticket | Description | Branche Git | État |
+|---|---|---|---|
+| **E-10** | Écran d'activation `/activation/:token` + choix du mot de passe | `feat/E-10-activation` | ✅ **TERMINÉ** |
+| **E-11** | Écran de connexion + mot de passe oublié | `feat/E-11-login` | ✅ **TERMINÉ** |
+| **M-01** | Recherche PostgreSQL (`tsvector`, `pg_trgm`, `unaccent`) | `feat/M-01-postgresql-search` | ✅ **TERMINÉ** |
+| **M-02** | API Feed Projets : filtres statut/secteur/région, pagination par curseur | `feat/M-02-api-feed-projets` | ✅ **TERMINÉ** |
+| **M-03** | Interface Feed Projets : scroll infini, filtre statut latéral fixe | `feat/M-03-interface-feed-projets` | ✅ **TERMINÉ** |
+| **M-04** | API + interface Feed Talents (opt-in, cartes pseudonymisées) | `feat/M-04-feed-talents` | ✅ **TERMINÉ** |
+| **P-01 à P-04** | Création projet, BMC guidé, transition statut, postes ouverts | - | ✅ **TERMINÉS PAR L'ÉQUIPE** |
+| **P-05** | Candidature : API + écran candidat + modal postulation + tableau de bord candidat `/my-applications` | `feat/P-05-candidatures-candidat` | ✅ **TERMINÉ** |
+| **P-06** | File de candidatures côté porteur, accepter / refuser avec motif | `feat/P-06-file-candidatures-porteur` | ➡️ **PROCHAIN TICKET** |
 
 ---
 
-## 3. Points de vigilance
+## 3. Fichiers Majeurs Modifiés pendant la Session
 
-- Toute route de console doit vérifier le rôle contextuel de l’utilisateur dans l’organisation, et non une organisation fournie librement par le client.
-- Le seuil de cinq personnes s’applique à chaque agrégat ; aucune donnée individuelle ni donnée de genre ne doit apparaître.
-- Les mutations futures de E-16 (membres et rôles) devront être transactionnelles et auditées.
-- Les alertes d’invitations anciennes et de rebonds seront traitées dans l’intégration détaillée E-17.
+- `packages/shared/src/schemas.ts` : Ajout des schémas Zod `createApplicationInputSchema`, `applicationItemSchema`, `myApplicationsResponseSchema`.
+- `apps/api/src/applications/applications.service.ts` : Service NestJS créant une candidature (contrôle unicité candidature `PENDING`, poste ouvert), listant les candidatures du candidat et permettant le retrait.
+- `apps/api/src/applications/applications.controller.ts` : Endpoints protégés par `project:apply` (`POST /applications`, `GET /applications/me`, `PATCH /applications/:id/withdraw`).
+- `apps/api/src/applications/applications.module.ts` : Déclaration et enregistrement dans `AppModule`.
+- `apps/api/test/applications.test.ts` : Suite de tests unitaires (soumission, rejet doublon `PENDING`, liste candidat, retrait).
+- `apps/web/src/hooks/useMyApplications.ts` : Hook React connecté à l'API `/applications/me` avec fallback démo.
+- `apps/web/src/components/applications/ApplyModal.tsx` : Modal de postulation à un projet avec message et sélection de poste.
+- `apps/web/src/pages/MyApplicationsPage.tsx` : Page candidat `/my-applications` avec filtres de statut (`En attente`, `Acceptée`, `Refusée`, `Retirée`), motif de refus et bouton de retrait.
+- `apps/web/src/App.tsx` : Enregistrement de la route lazy `/my-applications`.
 
 ---
 
-## 4. Prochaine action
+## 4. Décisions Techniques Prises
 
-Les tests API passent avec 53 tests. Typecheck, lint, validation Prisma avec une URL locale de schéma, builds API/web et `check:bundle` passent. Le découpage dynamique des pages réduit le JavaScript initial à 125 964 octets gzip, sous le seuil strict de 290 221. La PR #39 est prête pour revue et fusion.
+1. **Unicité des candidatures en attente** : Un candidat ne peut avoir qu'une seule candidature `PENDING` active pour un projet donné. Une tentative de double postulation renvoie un code d'erreur `APPLICATION_ALREADY_EXISTS` (`409 Conflict`).
+2. **Poste ouvert obligatoire si spécifié** : Si un `positionId` est fourni, l'API vérifie qu'il appartient bien au projet et possède `isOpen: true`.
+3. **Permission `project:apply`** : Tous les endpoints candidatures exigent la permission `Permission.PROJECT_APPLY` (accordée aux comptes `TALENT`).
+4. **Retrait autonome** : Le candidat peut retirer une candidature à l'état `PENDING`, la faisant passer à `WITHDRAWN`.
+
+---
+
+## 5. Instructions de Reprise (À faire ensuite)
+
+Pour la prochaine session :
+1. Lire ce fichier (`NEXT_SESSION.md`) et vérifier la branche Git courante.
+2. Basculer sur `dev`, la synchroniser, puis créer la branche **`feat/P-06-file-candidatures-porteur`**.
+3. Réaliser le ticket **P-06 — File de candidatures côté porteur, accepter / refuser avec motif** :
+   - Endpoints backend pour le porteur de projet : lister les candidatures reçues par projet (`GET /projects/:id/applications`), accepter (`PATCH /applications/:id/accept`), refuser avec motif obligatoire (`PATCH /applications/:id/reject`).
+   - Interface Web de gestion des candidatures reçues pour le porteur de projet dans l'espace projet.
