@@ -5,9 +5,9 @@
 > dans `CLAUDE.md`, le détail dans `docs/`.
 
 **Dernière mise à jour** : 2026-08-21
-**Phase** : Vague 1 — implémentation de E-13
-**Branche** : `E-13`, issue de `dev` après fusion de la PR #35
-**État du workspace** : E-12 finalisé et fusionné ; E-13 implémenté, PR #36 en revue ; dépendances directes F-13 et E-12 vérifiées comme livrées
+**Phase** : Vague 1 — implémentation de E-14
+**Branche** : `E-14`, issue de `dev` après fusion de la PR #36
+**État du workspace** : E-12 et E-13 finalisés et fusionnés ; E-14 implémenté sur la branche dédiée
 
 ---
 
@@ -61,4 +61,4 @@ Le détail doit présenter les compteurs créés, mis à jour, ignorés, erreurs
 
 ## 5. Prochaine action
 
-La PR #36 est en revue. Points bloquants à corriger avant fusion : transaction unique pour les données et la progression, interdiction de sauter les étapes, tests HTTP E-13 et hydratation des données à la reprise. L’audit détaillé est dans `docs/revue-pr36-dependances-rino.md`. F-13 (PR #19) et les autres dépendances directes vérifiées sont déjà livrés ; aucune dépendance externe n’est à réimplémenter actuellement.
+E-14 est implémenté sur la branche dédiée. L’API `GET /api/v1/me/profile/completion-reminder` calcule la complétion, les champs manquants et le lien vers `/onboarding` sans exposer de donnée sensible. Le rappel est affiché dans l’espace personnel via `DashboardLayout`. Les tests API, le lint, le typecheck et le build passent. La prochaine action est la revue et la fusion de la PR E-14.
