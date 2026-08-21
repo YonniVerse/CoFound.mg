@@ -10,6 +10,43 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-21 — Implémentation du BMC guidé P-02
+
+### Ajouté
+
+- Contrats Zod partagés pour les neuf blocs standard du BMC, leur visibilité et la réponse de complétion.
+- Service BMC NestJS avec contrôle des membres actifs, normalisation JSONB, upsert dans une transaction Prisma et calcul serveur de complétion.
+- Routes protégées `GET` et `PATCH /api/v1/projects/:projectId/bmc`.
+- Écran UI-26 responsive avec explications, exemples contextualisés, indicateur d’enregistrement, autosave debouncé et compteur de complétion.
+- Quatre tests P-02 couvrant complétion, transaction, isolation et permissions.
+
+### Validé
+
+- `pnpm --filter @cofound/shared build`, les typechecks API/web, `pnpm lint` et `pnpm build` passent.
+- La suite API compte 56 tests passants, 0 échec.
+
+### Décidé
+
+- Les neuf cases sont les blocs standard : segments clients, propositions de valeur, canaux, relations clients, flux de revenus, ressources clés, activités clés, partenaires clés et structure de coûts.
+- La transition `DRAFT → RECRUITING` reste hors P-02 et relève de P-03.
+
+---
+
+## 2026-08-21 — Préparation P-02 après publication de P-01
+
+### Publié
+
+- Branche `P-01` créée depuis la base de développement et publiée sur `origin/P-01`.
+- Commit `62ae3c2 feat(project): créer un projet en brouillon` créé avec uniquement les fichiers P-01.
+
+### Préparé
+
+- Branche locale `P-02` créée depuis P-01.
+- Modèle Prisma `BusinessModelCanvas` vérifié : relation unique avec `Project`, blocs JSON, complétion et traçage de l’utilisateur ayant modifié le BMC.
+- Aucun code P-02 ajouté pendant cette session ; contrats, routes, autosave et tests restent à développer.
+
+---
+
 ## 2026-08-21 — Base PostgreSQL Neon configurée pour CoFound.mg
 
 ### Ajouté
