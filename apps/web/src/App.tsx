@@ -19,6 +19,7 @@ const MyApplicationsPage = lazy(() => import("@/pages/MyApplicationsPage"));
 const ProjectApplicationsPage = lazy(() => import("@/pages/ProjectApplicationsPage"));
 const ProjectTeamPage = lazy(() => import("@/pages/ProjectTeamPage"));
 const ProjectTasksPage = lazy(() => import("@/pages/ProjectTasksPage"));
+const ProjectPostsPage = lazy(() => import("@/pages/ProjectPostsPage"));
 
 const LayoutWrapper = () => <MainLayout><Outlet /></MainLayout>;
 const Loading = () => <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">Chargement…</div>;
@@ -33,6 +34,7 @@ function App() {
     <Route path="/projects/:id/applications" element={<ProjectApplicationsPage />} />
     <Route path="/projects/:id/team" element={<ProjectTeamPage />} />
     <Route path="/projects/:id/tasks" element={<ProjectTasksPage />} />
+    <Route path="/projects/:id/posts" element={<ProjectPostsPage />} />
     <Route path="/my-applications" element={<MyApplicationsPage />} />
     <Route path="/impact" element={<ImpactPage />} />
     <Route path="/institution" element={<InstitutionOverviewPage />} />
