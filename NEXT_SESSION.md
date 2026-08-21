@@ -7,7 +7,7 @@
 **Dernière mise à jour** : 2026-08-21
 **Phase** : Vague 1 — implémentation de E-13
 **Branche** : `E-13`, issue de `dev` après fusion de la PR #35
-**État du workspace** : E-12 finalisé et fusionné ; API, migration, contrats et UI initiale E-13 implémentés
+**État du workspace** : E-12 finalisé et fusionné ; E-13 implémenté, PR #36 en revue ; dépendances directes F-13 et E-12 vérifiées comme livrées
 
 ---
 
@@ -61,4 +61,4 @@ Le détail doit présenter les compteurs créés, mis à jour, ignorés, erreurs
 
 ## 5. Prochaine action
 
-E-13 est implémenté sur la branche dédiée : migration de progression, contrats Zod, `GET /me/onboarding`, `PATCH /me/onboarding/steps/:step`, persistance des compétences et écran `/onboarding`. Relancer les validations complètes, corriger les éventuels points de revue, puis publier la PR E-13.
+La PR #36 est en revue. Points bloquants à corriger avant fusion : transaction unique pour les données et la progression, interdiction de sauter les étapes, tests HTTP E-13 et hydratation des données à la reprise. L’audit détaillé est dans `docs/revue-pr36-dependances-rino.md`. F-13 (PR #19) et les autres dépendances directes vérifiées sont déjà livrés ; aucune dépendance externe n’est à réimplémenter actuellement.
