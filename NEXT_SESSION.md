@@ -2,11 +2,11 @@
 > L’état vivant est ici ; l’historique détaillé est dans `CHANGELOG.md`.
 
 **Dernière mise à jour** : 2026-08-21
-**Phase** : Vague 3 — P-02 implémenté, prêt à commit
-**Branche** : `P-02`
+**Phase** : Vague 3 — P-02 publié, en attente de revue
+**Branche** : `P-02`, publiée sur `origin/P-02`
 **Ticket courant** : P-02 — BMC guidé
 **Vague** : Vague 3 — Le projet
-**État du workspace** : modifications P-02 non committées ; aucun secret Neon ajouté
+**État du workspace** : propre après le commit `a589da0` ; PR #45 ouverte vers `dev` ; aucun secret Neon ajouté
 
 ---
 ## 1. Tickets Vague 3
@@ -51,4 +51,4 @@ Les neuf blocs sont : segments clients, propositions de valeur, canaux, relation
 ---
 ## 6. Prochaine action
 
-Lancer `git diff --check && git add ... && git commit -m "feat(bmc): ajouter le canevas guidé" && git push -u origin P-02`, puis ouvrir la PR P-02. Après cette publication, démarrer P-03. Vigilances restantes : file offline persistante, conflit avec historique et lecture publique bloc par bloc à vérifier dans les tickets concernés.
+Revoir et fusionner la PR #45 (`P-02`) après les contrôles CI ; ensuite créer la branche P-03 depuis `dev` et implémenter la transition `DRAFT → RECRUITING` conditionnée à 100 % de complétion, avec la liste des blocs manquants. Vigilances restantes : file offline persistante, conflit avec historique et lecture publique bloc par bloc à vérifier dans les tickets concernés.
