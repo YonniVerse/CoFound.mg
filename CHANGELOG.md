@@ -10,6 +10,25 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Démarrage de la Vague 2 avec M-01 et M-02
+
+### Modifié
+
+- M-01 est fusionné dans `dev` via la PR #56 et le commit `29f18e4`.
+- M-02 est implémenté sur la branche `M-02` et proposé dans la PR #57.
+- Le code splitting frontend sépare React, UI et données ; le build ne produit plus de chunk supérieur à 500 kB.
+
+### Validation
+
+- M-01 : 97 tests API réussis après construction de `@cofound/shared`, lint et typecheck réussis.
+- M-02 : 99 tests API réussis, lint et typecheck réussis ; build frontend réussi après optimisation.
+
+### En cours
+
+- Revue et fusion de la PR #57, puis démarrage de M-03.
+
+---
+
 ## 2026-08-22 — Fusion de M-09 à M-11 et P-10 dans dev
 
 ### Modifié
