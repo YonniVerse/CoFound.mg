@@ -2,11 +2,11 @@
 > L’état vivant est ici ; l’historique détaillé est dans `CHANGELOG.md`.
 
 **Dernière mise à jour** : 2026-08-21
-**Phase** : Vague 3 — P-02 publié, en attente de revue
-**Branche** : `P-02`, publiée sur `origin/P-02`
-**Ticket courant** : P-02 — BMC guidé
+**Phase** : Vague 3 — P-04 commencé
+**Branche** : `P-04`, créée depuis `dev` après fusion de P-02
+**Ticket courant** : P-04 — Postes ouverts et compétences requises
 **Vague** : Vague 3 — Le projet
-**État du workspace** : propre après le commit `a589da0` ; PR #45 ouverte vers `dev` ; aucun secret Neon ajouté
+**État du workspace** : implémentation P-04 non committée ; P-03 reste en PR #46 ; aucun secret Neon ajouté
 
 ---
 ## 1. Tickets Vague 3
@@ -21,14 +21,22 @@ Le commit `62ae3c2 feat(project): créer un projet en brouillon` ajoute le contr
 Validations P-01 : 52 tests API passants sur la branche dédiée, typecheck shared/API/frontend passant et lint API/frontend passant.
 
 ---
-## 3. P-02 — implémenté
+## 3. P-02 — terminé
 
-P-02 est implémenté : contrats Zod partagés pour neuf blocs, service NestJS transactionnel, routes GET/PATCH protégées, calcul serveur de complétion, écran UI-26 avec exemples contextualisés, indicateur d’enregistrement et autosave debouncé. Les membres actifs du projet peuvent lire et modifier le BMC ; les non-membres sont refusés. La transition `DRAFT → RECRUITING` reste réservée à P-03.
+P-02 est fusionné dans `dev`.
+
+P-02 est livré et fusionné : contrats, service transactionnel, routes GET/PATCH BMC, écran UI-26 et tests validés. La transition `DRAFT → RECRUITING` est portée par P-03.
 
 Les neuf blocs sont : segments clients, propositions de valeur, canaux, relations clients, flux de revenus, ressources clés, activités clés, partenaires clés et structure de coûts. Validations : shared build, typechecks API/web, lint et build OK ; 56 tests API passants, 0 échec.
 
 ---
-## 4. Fichiers importants
+## 4. P-04 — état actuel
+
+La première tranche P-04 est implémentée : contrats partagés de création/modification, service transactionnel de liste/création/mise à jour, validation des compétences actives, routes GET/POST/PATCH et trois tests unitaires. Le référentiel `Skill` réel expose `labelKey` et `isActive`; aucune compétence libre n’est acceptée.
+
+Validations actuelles : `pnpm --filter api test` — 59 passants ; `pnpm --filter api typecheck` — OK ; `pnpm --filter api lint` — OK.
+
+## 5. Fichiers importants
 
 - `packages/shared/src/schemas.ts` : `BMC_BLOCK_KEYS`, schémas de bloc, patch et réponse.
 - `apps/api/src/project/bmc.service.ts` : contrôle membre actif, normalisation, upsert transactionnel et complétion serveur.
@@ -39,7 +47,7 @@ Les neuf blocs sont : segments clients, propositions de valeur, canaux, relation
 - `docs/plan-de-developpement.md` : backlog officiel.
 
 ---
-## 5. Décisions et vigilance
+## 6. Décisions et vigilance
 
 - Utiliser une transaction Prisma pour créer ou mettre à jour le BMC et conserver la cohérence du projet.
 - Ne pas exposer d’informations privées de membres ou de projets dans les contrats BMC.
@@ -49,6 +57,6 @@ Les neuf blocs sont : segments clients, propositions de valeur, canaux, relation
 - Ne pas utiliser ni stocker les secrets Neon dans le dépôt.
 
 ---
-## 6. Prochaine action
+## 7. À faire ensuite
 
-Revoir et fusionner la PR #45 (`P-02`) après les contrôles CI ; ensuite créer la branche P-03 depuis `dev` et implémenter la transition `DRAFT → RECRUITING` conditionnée à 100 % de complétion, avec la liste des blocs manquants. Vigilances restantes : file offline persistante, conflit avec historique et lecture publique bloc par bloc à vérifier dans les tickets concernés.
+Ajouter l’écran UI-27 `/projects/:id/team` et une source de sélection des Skills du référentiel, puis ajouter les scénarios de création, modification, fermeture et isolation des postes avant de committer P-04 et ouvrir sa PR. Vigilances restantes : file offline persistante, conflit BMC et lecture publique à traiter dans les tickets concernés.

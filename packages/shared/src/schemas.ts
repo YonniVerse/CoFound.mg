@@ -186,6 +186,26 @@ export type BmcBlockKey = (typeof BMC_BLOCK_KEYS)[number]
 export type BmcBlocks = z.infer<typeof bmcBlocksSchema>
 export type BmcPatchInput = z.infer<typeof bmcPatchSchema>
 
+export const openPositionCreateSchema = z.object({
+  title: z.string().trim().min(2).max(120),
+  description: z.string().trim().max(2_000).optional().nullable(),
+  expectedHours: z.number().int().min(1).max(168).optional().nullable(),
+  skillIds: z.array(idSchema).min(1).max(8).refine((ids) => new Set(ids).size === ids.length, 'Compétences dupliquées.'),
+})
+export const openPositionPatchSchema = openPositionCreateSchema.partial().extend({ isOpen: z.boolean().optional() })
+export const openPositionResponseSchema = z.object({
+  id: idSchema,
+  projectId: idSchema,
+  title: z.string(),
+  description: z.string().nullable(),
+  expectedHours: z.number().int().nullable(),
+  isOpen: z.boolean(),
+  skills: z.array(z.object({ id: idSchema, name: z.string() })),
+})
+export const projectPositionsResponseSchema = z.object({ projectId: idSchema, positions: z.array(openPositionResponseSchema) })
+export type OpenPositionCreateInput = z.infer<typeof openPositionCreateSchema>
+export type OpenPositionPatchInput = z.infer<typeof openPositionPatchSchema>
+
 export const projectSummarySchema = z.object({
   id: idSchema,
   title: z.string(),

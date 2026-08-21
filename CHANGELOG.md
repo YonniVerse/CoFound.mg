@@ -9,7 +9,25 @@ Retiré · En cours · Bloqué**.
 > Mis à jour par la commande `/handoff`.
 
 ---
+## 2026-08-21 — Démarrage de l’implémentation P-04
 
+### Ajouté
+
+- Contrats partagés pour créer et modifier un poste : intitulé, description, temps attendu, état ouvert/fermé et `skillIds` issus du référentiel.
+- Service et contrôleur NestJS pour lister, créer et modifier les postes d’un projet.
+- Validation transactionnelle des compétences actives et isolation par projet.
+- Trois tests unitaires P-04 couvrant la transaction, le rejet des compétences invalides et les permissions du propriétaire.
+
+### Validé
+
+- `pnpm --filter api test` : 59 tests passants, 0 échec.
+- `pnpm --filter api typecheck` et `pnpm --filter api lint` : OK.
+
+### En cours
+
+- L’écran UI-27 et la sélection des compétences du référentiel restent à ajouter.
+
+---
 ## 2026-08-21 — Implémentation du BMC guidé P-02
 
 ### Ajouté
