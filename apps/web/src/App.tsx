@@ -10,6 +10,7 @@ import ImportMappingPage from "@/pages/ImportMappingPage";
 import ImportPreviewPage from "@/pages/ImportPreviewPage";
 import ImportBatchesPage from "@/pages/ImportBatchesPage";
 import InstitutionOverviewPage from "@/pages/InstitutionOverviewPage";
+import InstitutionMembersPage from "@/pages/InstitutionMembersPage";
 import { MainLayout } from "@/components/layout/MainLayout";
 
 const LayoutWrapper = () => {
@@ -37,6 +38,7 @@ function App() {
         <Route path="/projects/:id" element={<ProjectDetailPage />} />
         <Route path="/impact" element={<ImpactPage />} />
         <Route path="/institution" element={<InstitutionOverviewPage />} />
+        <Route path="/institution/members" element={<InstitutionMembersPage />} />
         <Route path="/institution/imports" element={<ImportBatchesPage />} />
         <Route path="/institution/imports/:id" element={<ImportBatchesPage />} />
         <Route path="/institution/imports/new" element={<ImportMappingPage />} />

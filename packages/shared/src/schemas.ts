@@ -112,6 +112,7 @@ export const institutionMemberUpdateSchema = z.object({ role: organizationRoleSc
 export const institutionMembersSchema = z.object({ members: z.array(z.object({ id: idSchema, userId: idSchema, email: z.string().email(), status: z.string(), role: organizationRoleSchema, createdAt: z.coerce.date() })) })
 export type InstitutionMemberInvite = z.infer<typeof institutionMemberInviteSchema>
 export type InstitutionMemberUpdate = z.infer<typeof institutionMemberUpdateSchema>
+export type InstitutionMembers = z.infer<typeof institutionMembersSchema>
 
 export const privateTalentProfileSchema = z.object({
   user: z.object({ id: idSchema, email: z.string().email(), locale: localeSchema }),
