@@ -1,5 +1,6 @@
 import { PgBoss } from 'pg-boss'
 import { NOTIFICATION_QUEUE, type NotificationJob } from './notification-job.js'
+import { EmailTemplateService } from './email-template.service.js'
 
 export interface NotificationTransport {
   deliver(job: NotificationJob): Promise<void>
@@ -10,10 +11,15 @@ export interface NotificationTransport {
  * Le worker et la queue sont prêts, mais aucun fournisseur email n’est choisi au MVP F-15.
  */
 export class LoggingNotificationTransport implements NotificationTransport {
+  private readonly templates = new EmailTemplateService()
+
   async deliver(job: NotificationJob): Promise<void> {
-    console.info('[notification] job processed', {
+    const email = this.templates.render(job)
+    console.info('[notification] email rendered', {
       kind: job.kind,
       locale: job.locale,
+      recipient: email.to,
+      subject: email.subject,
     })
   }
 }
