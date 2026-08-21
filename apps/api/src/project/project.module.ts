@@ -12,10 +12,14 @@ import { ProjectTasksController } from './project-tasks.controller.js'
 import { ProjectTasksService } from './project-tasks.service.js'
 import { ProjectPostsController } from './project-posts.controller.js'
 import { ProjectPostsService } from './project-posts.service.js'
+import { ProjectExportController } from './project-export.controller.js'
+import { ProjectExportService } from './project-export.service.js'
+import { ProjectPublicController } from './project-public.controller.js'
+import { ProjectPublicService } from './project-public.service.js'
 
 @Module({
   imports: [PrismaModule],
-  controllers: [ProjectController, BmcController, PositionController, ProjectMembersController, ProjectTasksController, ProjectPostsController],
-  providers: [ProjectService, BmcService, PositionService, ProjectMembersService, ProjectTasksService, ProjectPostsService],
+  controllers: [ProjectController, BmcController, PositionController, ProjectMembersController, ProjectTasksController, ProjectPostsController, ProjectExportController, ProjectPublicController],
+  providers: [ProjectService, BmcService, PositionService, ProjectMembersService, ProjectTasksService, ProjectPostsService, ProjectExportService, ProjectPublicService],
 })
 export class ProjectModule {}

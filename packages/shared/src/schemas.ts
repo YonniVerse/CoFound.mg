@@ -452,3 +452,18 @@ export type ProjectPostCreateInput = z.infer<typeof projectPostCreateSchema>
 export type ProjectPostUpdateInput = z.infer<typeof projectPostUpdateSchema>
 export type ProjectPost = z.infer<typeof projectPostSchema>
 export type ProjectPostsResponse = z.infer<typeof projectPostsResponseSchema>
+
+// ─── Détail projet public/privé (P-13) ─────────────────────────────────────────
+export const publicProjectDetailSchema = z.object({
+  id: idSchema,
+  title: z.string(),
+  pitch: z.string(),
+  status: z.string(),
+  sectorId: idSchema.nullable(),
+  regionId: idSchema.nullable(),
+  publicBmc: z.record(z.string(), z.object({ content: z.string(), isPublic: z.literal(true) })),
+  members: z.array(z.object({ pseudonym: z.string(), avatarSeed: z.string().nullable(), role: z.string() })),
+  positions: z.array(z.object({ id: idSchema, title: z.string(), description: z.string().nullable(), expectedHours: z.number().int().nullable() })),
+  posts: z.array(z.object({ id: idSchema, type: z.string(), content: z.string(), createdAt: z.coerce.date() })),
+})
+export type PublicProjectDetail = z.infer<typeof publicProjectDetailSchema>
