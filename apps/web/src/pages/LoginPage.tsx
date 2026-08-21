@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { LogIn, Mail, Lock, Eye, EyeOff, ArrowLeft, AlertCircle, ShieldCheck, Sparkles, Users, Award } from 'lucide-react'
+import { LogIn, Mail, Lock, Eye, EyeOff, ArrowLeft, AlertCircle, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -66,18 +66,18 @@ export default function LoginPage() {
         </header>
 
         {/* Main Form Center */}
-        <main className="my-auto py-8 max-w-md w-full mx-auto space-y-8">
+        <main className="my-auto py-8 max-w-md w-full mx-auto space-y-6">
           {/* Brand Identity & Heading */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             <Link to="/" aria-label="CoFound.mg" className="inline-block">
-              <LogoSVG className="h-11 w-auto" />
+              <LogoSVG className="h-10 w-auto" />
             </Link>
 
-            <div className="space-y-2">
-              <h1 className="font-heading text-3xl sm:text-4xl font-black tracking-tight text-foreground">
+            <div className="space-y-1.5">
+              <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                 {t('auth.login.title')}
               </h1>
-              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                 {t('auth.login.subtitle')}
               </p>
             </div>
@@ -87,22 +87,22 @@ export default function LoginPage() {
           {error && (
             <div
               role="alert"
-              className="flex items-start gap-3 rounded-xl bg-destructive/10 border border-destructive/20 p-4 text-sm text-destructive animate-in fade-in slide-in-from-top-2 duration-300"
+              className="flex items-start gap-2.5 rounded-xl bg-destructive/10 border border-destructive/20 p-3.5 text-xs sm:text-sm text-destructive animate-in fade-in slide-in-from-top-2 duration-300"
             >
-              <AlertCircle className="h-5 w-5 mt-0.5 shrink-0" />
+              <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
               <span className="font-medium leading-snug">{error}</span>
             </div>
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email Field */}
-            <div className="space-y-2">
-              <Label htmlFor="login-email" className="text-sm font-semibold text-foreground">
+            <div className="space-y-1.5">
+              <Label htmlFor="login-email" className="text-xs font-semibold text-foreground">
                 {t('auth.login.email')}
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 <Input
                   id="login-email"
                   type="email"
@@ -111,16 +111,16 @@ export default function LoginPage() {
                   placeholder={t('auth.login.emailPlaceholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 h-12 text-sm rounded-xl border-border bg-card shadow-2xs focus-visible:ring-2 focus-visible:ring-primary"
+                  className="pl-9 h-10 text-xs sm:text-sm rounded-xl border-border bg-card shadow-2xs focus-visible:ring-2 focus-visible:ring-primary"
                   aria-invalid={error ? true : undefined}
                 />
               </div>
             </div>
 
             {/* Password Field */}
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <Label htmlFor="login-password" className="text-sm font-semibold text-foreground">
+                <Label htmlFor="login-password" className="text-xs font-semibold text-foreground">
                   {t('auth.login.password')}
                 </Label>
                 <Link
@@ -131,7 +131,7 @@ export default function LoginPage() {
                 </Link>
               </div>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 <Input
                   id="login-password"
                   type={showPassword ? 'text' : 'password'}
@@ -140,12 +140,12 @@ export default function LoginPage() {
                   placeholder={t('auth.login.passwordPlaceholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 pr-11 h-12 text-sm rounded-xl border-border bg-card shadow-2xs focus-visible:ring-2 focus-visible:ring-primary"
+                  className="pl-9 pr-10 h-10 text-xs sm:text-sm rounded-xl border-border bg-card shadow-2xs focus-visible:ring-2 focus-visible:ring-primary"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                   aria-label={showPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -156,13 +156,12 @@ export default function LoginPage() {
             {/* Submit Button */}
             <Button
               type="submit"
-              size="lg"
               disabled={isSubmitting}
-              className="w-full h-12 rounded-xl text-base font-semibold shadow-md hover:shadow-lg transition-all duration-200 gap-2 mt-2"
+              className="w-full h-10 rounded-xl text-sm font-semibold shadow-xs hover:shadow-sm transition-all duration-200 gap-2 mt-1"
             >
               {isSubmitting ? (
                 <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                  <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
                   {t('auth.login.loading')}
                 </>
               ) : (
@@ -175,9 +174,9 @@ export default function LoginPage() {
           </form>
 
           {/* Invitation Info Box (Decision D1) */}
-          <div className="rounded-xl bg-muted/60 border border-border/80 p-4 space-y-2">
+          <div className="rounded-xl bg-muted/50 border border-border p-3.5 space-y-1.5">
             <div className="flex items-center gap-2 text-xs font-bold text-foreground uppercase tracking-wider">
-              <ShieldCheck className="h-4 w-4 text-primary" />
+              <ShieldCheck className="h-3.5 w-3.5 text-primary" />
               <span>{t('auth.login.noAccount')}</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
@@ -192,61 +191,14 @@ export default function LoginPage() {
         </footer>
       </div>
 
-      {/* RIGHT COLUMN: Visual Hero (Desktop only) */}
-      <div className="hidden lg:flex lg:col-span-6 xl:col-span-7 relative bg-slate-950 flex-col justify-between p-12 overflow-hidden">
-        {/* Ambient Radial Lighting Effects */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/25 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl pointer-events-none" />
-
-        {/* Embedded 3D Illustration */}
-        <div className="absolute inset-0 z-0 opacity-40 mix-blend-luminosity hover:opacity-50 transition-opacity duration-700 bg-cover bg-center"
-             style={{ backgroundImage: `url('/images/auth-hero.png')` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-1" />
-
-        {/* Floating Top Badge */}
-        <div className="relative z-10 flex items-center justify-between">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md px-3.5 py-1.5 border border-white/15 text-white text-xs font-semibold">
-            <Sparkles className="h-3.5 w-3.5 text-secondary" />
-            <span>L'écosystème d'innovation universitaire</span>
-          </div>
-        </div>
-
-        {/* Floating Bottom Card & Stats */}
-        <div className="relative z-10 space-y-6 max-w-xl">
-          {/* Glassmorphic Metrics Card */}
-          <div className="rounded-2xl bg-white/10 backdrop-blur-xl border border-white/15 p-6 shadow-2xl space-y-4">
-            <h3 className="text-white font-heading text-lg font-bold">
-              "Ne cherche pas une idée. Trouve ton co-fondateur."
-            </h3>
-            <p className="text-white/80 text-sm leading-relaxed">
-              L'algorithme de CoFound.mg associe la rigueur technique des développeurs et designers avec la vision des profils business.
-            </p>
-
-            <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/10">
-              <div className="space-y-0.5">
-                <div className="flex items-center gap-1.5 text-white font-black text-xl">
-                  <Users className="h-4 w-4 text-primary-light" />
-                  1 200+
-                </div>
-                <div className="text-[11px] text-white/70 font-medium">Talents certifiés</div>
-              </div>
-              <div className="space-y-0.5">
-                <div className="flex items-center gap-1.5 text-white font-black text-xl">
-                  <Sparkles className="h-4 w-4 text-secondary" />
-                  98%
-                </div>
-                <div className="text-[11px] text-white/70 font-medium">Matching précis</div>
-              </div>
-              <div className="space-y-0.5">
-                <div className="flex items-center gap-1.5 text-white font-black text-xl">
-                  <Award className="h-4 w-4 text-emerald-400" />
-                  50/50
-                </div>
-                <div className="text-[11px] text-white/70 font-medium">Engagement Parité</div>
-              </div>
-            </div>
-          </div>
+      {/* RIGHT COLUMN: Image Area (Desktop only) - ONLY THE IMAGE */}
+      <div className="hidden lg:block lg:col-span-6 xl:col-span-7 relative p-4 sm:p-6 lg:p-8 bg-slate-950/20">
+        <div className="w-full h-full rounded-2xl overflow-hidden relative border border-border/50 shadow-md">
+          <img
+            src="/images/auth-hero.png"
+            alt="CoFound.mg Innovation & Collaboration"
+            className="w-full h-full object-cover object-center"
+          />
         </div>
       </div>
     </div>

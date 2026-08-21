@@ -112,42 +112,42 @@ export default function ResetPasswordPage() {
           {/* Brand Logo */}
           <div className="flex justify-center">
             <Link to="/" aria-label="CoFound.mg">
-              <LogoSVG className="h-11 w-auto" />
+              <LogoSVG className="h-10 w-auto" />
             </Link>
           </div>
 
           {/* Card */}
-          <div className="rounded-2xl border border-border bg-card shadow-xl p-8 sm:p-10 space-y-6">
+          <div className="rounded-2xl border border-border bg-card shadow-lg p-6 sm:p-8 space-y-5">
             {isSuccess ? (
               /* Success State */
-              <div className="space-y-6 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 mx-auto text-primary">
-                  <CheckCircle2 className="h-7 w-7" />
+              <div className="space-y-5 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 mx-auto text-primary">
+                  <CheckCircle2 className="h-6 w-6" />
                 </div>
 
-                <div className="space-y-2">
-                  <h1 className="font-heading text-2xl font-bold text-foreground">
+                <div className="space-y-1.5">
+                  <h1 className="font-heading text-xl sm:text-2xl font-bold text-foreground">
                     {t('auth.resetPassword.successTitle')}
                   </h1>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                     {t('auth.resetPassword.success')}
                   </p>
                 </div>
 
                 <div className="pt-2">
-                  <Button size="lg" onClick={() => navigate('/connexion')} className="w-full h-12 rounded-xl font-semibold gap-2">
+                  <Button onClick={() => navigate('/connexion')} className="w-full h-10 rounded-xl text-sm font-semibold gap-2">
                     {t('auth.resetPassword.backToLogin')}
                   </Button>
                 </div>
               </div>
             ) : (
               /* Form State */
-              <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+              <div className="space-y-5">
+                <div className="text-center space-y-1.5">
+                  <h1 className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-foreground">
                     {t('auth.resetPassword.title')}
                   </h1>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                     {t('auth.resetPassword.subtitle')}
                   </p>
                 </div>
@@ -156,16 +156,16 @@ export default function ResetPasswordPage() {
                 {error && (
                   <div
                     role="alert"
-                    className="flex flex-col gap-2 rounded-xl bg-destructive/10 border border-destructive/20 p-4 text-sm text-destructive animate-in fade-in slide-in-from-top-2 duration-300"
+                    className="flex flex-col gap-2 rounded-xl bg-destructive/10 border border-destructive/20 p-3.5 text-xs sm:text-sm text-destructive animate-in fade-in slide-in-from-top-2 duration-300"
                   >
                     <div className="flex items-start gap-2.5">
-                      <AlertCircle className="h-5 w-5 mt-0.5 shrink-0" />
+                      <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
                       <span className="font-medium leading-snug">{error}</span>
                     </div>
                     {error === t('auth.resetPassword.error.invalidToken') && (
                       <Link
                         to="/mot-de-passe-oublie"
-                        className="text-xs font-bold underline hover:no-underline ml-7 transition-colors"
+                        className="text-xs font-bold underline hover:no-underline ml-6 transition-colors"
                       >
                         Demander un nouveau lien de réinitialisation
                       </Link>
@@ -173,14 +173,14 @@ export default function ResetPasswordPage() {
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   {/* New Password Field */}
-                  <div className="space-y-2">
-                    <Label htmlFor="reset-password" className="text-sm font-semibold text-foreground">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="reset-password" className="text-xs font-semibold text-foreground">
                       {t('auth.resetPassword.password')}
                     </Label>
                     <div className="relative">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                       <Input
                         id="reset-password"
                         type={showPassword ? 'text' : 'password'}
@@ -189,12 +189,12 @@ export default function ResetPasswordPage() {
                         placeholder={t('auth.resetPassword.passwordPlaceholder')}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="pl-10 pr-11 h-12 text-sm rounded-xl border-border bg-card shadow-2xs focus-visible:ring-2 focus-visible:ring-primary"
+                        className="pl-9 pr-10 h-10 text-xs sm:text-sm rounded-xl border-border bg-card shadow-2xs focus-visible:ring-2 focus-visible:ring-primary"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                         aria-label={showPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
                       >
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -203,8 +203,8 @@ export default function ResetPasswordPage() {
 
                     {/* Password Strength Indicator */}
                     {password && (
-                      <div className="space-y-1.5 pt-1 animate-in fade-in duration-200">
-                        <div className="flex items-center justify-between text-xs">
+                      <div className="space-y-1 pt-1 animate-in fade-in duration-200">
+                        <div className="flex items-center justify-between text-[11px]">
                           <span className="text-muted-foreground font-medium">Robustesse :</span>
                           <span className="font-bold text-foreground">{strength.label}</span>
                         </div>
@@ -223,12 +223,12 @@ export default function ResetPasswordPage() {
                   </div>
 
                   {/* Confirm Password Field */}
-                  <div className="space-y-2">
-                    <Label htmlFor="reset-confirm" className="text-sm font-semibold text-foreground">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="reset-confirm" className="text-xs font-semibold text-foreground">
                       {t('auth.resetPassword.confirm')}
                     </Label>
                     <div className="relative">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                       <Input
                         id="reset-confirm"
                         type={showConfirmPassword ? 'text' : 'password'}
@@ -237,12 +237,12 @@ export default function ResetPasswordPage() {
                         placeholder={t('auth.resetPassword.confirmPlaceholder')}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="pl-10 pr-11 h-12 text-sm rounded-xl border-border bg-card shadow-2xs focus-visible:ring-2 focus-visible:ring-primary"
+                        className="pl-9 pr-10 h-10 text-xs sm:text-sm rounded-xl border-border bg-card shadow-2xs focus-visible:ring-2 focus-visible:ring-primary"
                       />
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                         aria-label={showConfirmPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
                       >
                         {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -251,7 +251,7 @@ export default function ResetPasswordPage() {
                   </div>
 
                   {/* Real-time Checklist */}
-                  <div className="rounded-xl bg-muted/50 border border-border/80 p-3.5 space-y-2 text-xs">
+                  <div className="rounded-xl bg-muted/50 border border-border p-3 space-y-1.5 text-xs">
                     <div className="flex items-center gap-2">
                       {hasMinLength ? (
                         <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
@@ -289,13 +289,12 @@ export default function ResetPasswordPage() {
                   {/* Submit Button */}
                   <Button
                     type="submit"
-                    size="lg"
                     disabled={isSubmitting || !hasMinLength || !isMatching}
-                    className="w-full h-12 rounded-xl text-base font-semibold shadow-md hover:shadow-lg transition-all duration-200 gap-2"
+                    className="w-full h-10 rounded-xl text-sm font-semibold shadow-xs hover:shadow-sm transition-all duration-200 gap-2"
                   >
                     {isSubmitting ? (
                       <>
-                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                        <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
                         {t('auth.resetPassword.loading')}
                       </>
                     ) : (
