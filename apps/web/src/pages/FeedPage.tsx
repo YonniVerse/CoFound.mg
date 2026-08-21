@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ProjectCard, type ProjectData } from "@/components/feed/ProjectCard";
 import { ProfileCard, type ProfileData } from "@/components/feed/ProfileCard";
 import { FeedFilters, type FeedFilterType } from "@/components/feed/FeedFilters";
 import { ParityWidget } from "@/components/feed/ParityWidget";
 import { SuggestedProfilesWidget } from "@/components/feed/SuggestedProfilesWidget";
+import { StatusFilterWidget } from "@/components/feed/StatusFilterWidget";
+import { ProjectCardSkeleton } from "@/components/feed/ProjectCardSkeleton";
 import { useFeedData } from "@/hooks/useFeedData";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles } from "lucide-react";
 
 export default function FeedPage() {
@@ -27,6 +27,29 @@ export default function FeedPage() {
     loadMore,
   } = useFeedData();
 
+  // Sentinel ref for infinite scroll
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!sentinelRef.current || !hasMore || isLoadingMore || isLoading) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1, rootMargin: "200px" },
+    );
+
+    const target = sentinelRef.current;
+    observer.observe(target);
+
+    return () => {
+      observer.unobserve(target);
+    };
+  }, [hasMore, isLoadingMore, isLoading, loadMore]);
+
   const mockFilteredItems = feedItems.filter((item) => {
     if (filter === "all") return true;
     if (filter === "projects") return item.type === "project";
@@ -43,18 +66,16 @@ export default function FeedPage() {
         setFilter={setFilter}
         search={search}
         setSearch={setSearch}
-        selectedStatus={selectedStatus}
-        setSelectedStatus={setSelectedStatus}
       />
 
-      <div className="flex px-6 sm:px-10 py-8 gap-10 max-w-[1400px]">
-        {/* Main Column: Feed */}
+      <div className="flex px-6 sm:px-10 py-8 gap-8 max-w-[1400px] mx-auto">
+        {/* Main Column: Project Feed */}
         <div className="flex-1 max-w-3xl flex flex-col gap-6">
           {isLoading && (
             <div className="space-y-4">
-              <Skeleton className="h-44 w-full rounded-xl" />
-              <Skeleton className="h-44 w-full rounded-xl" />
-              <Skeleton className="h-44 w-full rounded-xl" />
+              <ProjectCardSkeleton />
+              <ProjectCardSkeleton />
+              <ProjectCardSkeleton />
             </div>
           )}
 
@@ -73,11 +94,12 @@ export default function FeedPage() {
                     <Sparkles className="h-3.5 w-3.5 text-primary" />
                     <span>Projets CoFound.mg ({apiProjects.length})</span>
                   </div>
+
                   {apiProjects.map((project, index) => (
                     <div
                       key={project.id}
                       className="animate-in fade-in slide-in-from-bottom-3 duration-400"
-                      style={{ animationDelay: `${index * 60}ms` }}
+                      style={{ animationDelay: `${(index % 5) * 60}ms` }}
                     >
                       <ProjectCard project={project} />
                     </div>
@@ -91,7 +113,7 @@ export default function FeedPage() {
                   <div
                     key={`${item.type}-${item.data.id}-${index}`}
                     className="animate-in fade-in slide-in-from-bottom-3 duration-400"
-                    style={{ animationDelay: `${index * 60}ms` }}
+                    style={{ animationDelay: `${(index % 5) * 60}ms` }}
                   >
                     {item.type === "project" ? (
                       <ProjectCard project={item.data as ProjectData} />
@@ -101,17 +123,17 @@ export default function FeedPage() {
                   </div>
                 ))}
 
-              {/* Load More Button for API pagination */}
+              {/* Infinite Scroll Skeletons & Sentinel */}
               {hasApiProjects && hasMore && filter !== "profiles" && (
-                <div className="pt-4 text-center">
-                  <Button
-                    onClick={loadMore}
-                    disabled={isLoadingMore}
-                    variant="outline"
-                    className="rounded-xl px-6 h-10 text-xs font-semibold"
-                  >
-                    {isLoadingMore ? "Chargement..." : "Charger plus de projets"}
-                  </Button>
+                <div className="space-y-4 pt-2">
+                  {isLoadingMore && (
+                    <>
+                      <ProjectCardSkeleton />
+                      <ProjectCardSkeleton />
+                    </>
+                  )}
+                  {/* Invisible sentinel element observed for auto loading */}
+                  <div ref={sentinelRef} className="h-8 w-full" />
                 </div>
               )}
 
@@ -125,8 +147,12 @@ export default function FeedPage() {
           )}
         </div>
 
-        {/* Right Sidebar: Suggestions & Stats (Desktop) */}
-        <div className="hidden xl:flex w-[320px] flex-col gap-6 sticky top-[100px] h-fit">
+        {/* Right Fixed/Sticky Panel: Status Filter, Stats & Suggestions */}
+        <div className="hidden lg:flex w-[320px] flex-col gap-6 sticky top-[90px] h-fit shrink-0">
+          <StatusFilterWidget
+            selectedStatus={selectedStatus}
+            setSelectedStatus={setSelectedStatus}
+          />
           <ParityWidget percentage={38} />
           <SuggestedProfilesWidget profiles={suggestedProfiles} />
         </div>

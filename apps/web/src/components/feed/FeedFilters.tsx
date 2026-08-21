@@ -1,6 +1,5 @@
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { ProjectStatus } from "@cofound/shared";
 
 export type FeedFilterType = "all" | "projects" | "profiles";
 
@@ -9,8 +8,6 @@ interface FeedFiltersProps {
   setFilter: (filter: FeedFilterType) => void;
   search?: string;
   setSearch?: (search: string) => void;
-  selectedStatus?: ProjectStatus | "ALL";
-  setSelectedStatus?: (status: ProjectStatus | "ALL") => void;
 }
 
 export function FeedFilters({
@@ -18,12 +15,10 @@ export function FeedFilters({
   setFilter,
   search = "",
   setSearch,
-  selectedStatus = ProjectStatus.RECRUITING,
-  setSelectedStatus,
 }: FeedFiltersProps) {
   return (
-    <div className="bg-background/80 backdrop-blur-md sticky top-0 z-10 border-b border-border pt-4 pb-3 px-6 sm:px-10 space-y-3">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="bg-background/80 backdrop-blur-md sticky top-0 z-10 border-b border-border py-3 px-6 sm:px-10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 max-w-[1400px] mx-auto">
         {/* Navigation Tabs */}
         <div className="flex items-center gap-6">
           <button
@@ -60,33 +55,6 @@ export function FeedFilters({
           </div>
         )}
       </div>
-
-      {/* Sub-filter: Project Status Pills (Visible for Projects & All) */}
-      {setSelectedStatus && filter !== "profiles" && (
-        <div className="flex items-center gap-2 pt-1 overflow-x-auto text-xs scrollbar-none">
-          <span className="text-muted-foreground font-semibold text-[11px] uppercase tracking-wider mr-1 shrink-0">
-            Statut :
-          </span>
-          <button
-            onClick={() => setSelectedStatus("ALL")}
-            className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-all shrink-0 ${selectedStatus === "ALL" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"}`}
-          >
-            Tous les statuts
-          </button>
-          <button
-            onClick={() => setSelectedStatus(ProjectStatus.RECRUITING)}
-            className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-all shrink-0 ${selectedStatus === ProjectStatus.RECRUITING ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"}`}
-          >
-            Recrutement
-          </button>
-          <button
-            onClick={() => setSelectedStatus(ProjectStatus.ACTIVE)}
-            className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-all shrink-0 ${selectedStatus === ProjectStatus.ACTIVE ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"}`}
-          >
-            En cours
-          </button>
-        </div>
-      )}
     </div>
   );
 }
