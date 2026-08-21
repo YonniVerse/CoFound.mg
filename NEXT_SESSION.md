@@ -6,7 +6,7 @@
 **Branche** : `P-03`, publiée sur `origin/P-03`
 **Ticket courant** : P-03 — Transition Brouillon → Recrutement
 **Vague** : Vague 3 — Le projet
-**État du workspace** : commit `121fc68` publié ; PR #46 ouverte vers `dev` ; aucun secret Neon ajouté
+**État du workspace** : commits `121fc68` et `cc3ce26` publiés ; PR #46 ouverte vers `dev` ; workspace propre ; aucun secret Neon ajouté
 
 ---
 ## 1. Tickets Vague 3
