@@ -26,7 +26,7 @@ Retiré · En cours · Bloqué**.
 
 ### En cours
 
-- La branche `P-09` doit encore être commitée, poussée et publiée en PR vers `dev`.
+- La branche `P-09` est commitée au commit `8fa637a`, poussée et publiée dans la PR [#51](https://github.com/YonniVerse/CoFound.mg/pull/51) vers `dev`.
 - La dépendance M-10 doit être confirmée avant la fusion finale de la chaîne de la Vague 3.
 
 ---
