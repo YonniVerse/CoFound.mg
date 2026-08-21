@@ -11,7 +11,7 @@
 - **Dernière mise à jour** : 2026-08-21
 - **Vague actuelle** : Vague 3 (Le projet) — **P-01 à P-05 réalisés, P-06 en cours**
 - **Branche Git actuelle** : `P-06` (issue de `origin/feat/P-05-candidatures-candidat`)
-- **Tests automatisés** : 58/58 tests backend validés (`pnpm test` dans `apps/api`) ; validations P-06 en cours
+- **Tests automatisés** : 62/62 tests backend validés (`pnpm test` dans `apps/api`) ; typechecks et lint validés
 - **Build Web** : Validé sans aucune erreur (`pnpm --filter web build`)
 
 ---
@@ -38,7 +38,8 @@
 - `apps/api/src/applications/applications.service.ts` : Service NestJS créant une candidature (contrôle unicité candidature `PENDING`, poste ouvert), listant les candidatures du candidat et permettant le retrait.
 - `apps/api/src/applications/applications.controller.ts` : Endpoints protégés par `project:apply` (`POST /applications`, `GET /applications/me`, `PATCH /applications/:id/withdraw`).
 - `apps/api/src/applications/applications.module.ts` : Déclaration et enregistrement dans `AppModule`.
-- `apps/api/test/applications.test.ts` : Suite de tests unitaires (soumission, rejet doublon `PENDING`, liste candidat, retrait), avec mocks contrôlés et imports nettoyés.
+- `apps/api/test/applications.test.ts` : Suite de tests unitaires P-05, avec mocks contrôlés et imports nettoyés.
+- `apps/api/test/applications.owner.test.ts` : Tests ciblés P-06 sur la file pseudonymisée, la propriété du projet, l’acceptation transactionnelle et le refus d’une candidature déjà décidée.
 - `apps/web/src/hooks/useMyApplications.ts` : Hook React connecté à l'API `/applications/me` avec fallback démo et chargement initial différé pour respecter le lint React.
 - `apps/web/src/components/applications/ApplyModal.tsx` : Modal de postulation à un projet avec message et sélection de poste.
 - `apps/web/src/pages/MyApplicationsPage.tsx` : Page candidat `/my-applications` avec filtres de statut (`En attente`, `Acceptée`, `Refusée`, `Retirée`), motif de refus et bouton de retrait.
@@ -61,7 +62,7 @@
 
 ## 5. Instructions de Reprise (À faire ensuite)
 
-P-06 est en cours : le premier lot API/UI est typé et validé par build/lint. Il reste à ajouter les tests ciblés d’intégration HTTP, finaliser les textes et états UI-28, puis préparer la PR.
+P-06 est en cours : le premier lot API/UI est typé et validé. Les tests ciblés de service sont ajoutés ; il reste à ajouter les tests HTTP d’intégration, finaliser les états UI-28 et préparer la PR.
 
 Pour la prochaine session :
 1. Lire ce fichier (`NEXT_SESSION.md`) et vérifier la branche Git courante.

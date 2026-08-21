@@ -260,3 +260,7 @@ Dépôt `YonniVerse/CoFound.mg`, branche `dev`, commit `2c7999e`.
 
 - Ajouter les tests ciblés d’intégration HTTP P-06.
 - Finaliser les états UI et préparer la Pull Request.
+
+## 2026-08-21 — Couverture P-06
+
+Les tests ciblés de la file porteur couvrent désormais la lecture pseudonymisée, le refus d’un accès par un non-propriétaire, l’acceptation transactionnelle d’une candidature en attente et le rejet d’une candidature déjà décidée. La suite API compte 62 tests passants, et les typechecks ainsi que le lint global sont réussis.
