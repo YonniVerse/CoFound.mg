@@ -265,3 +265,125 @@ export type OnboardingProgress = z.infer<typeof onboardingProgressSchema>
 export type TalentView = z.infer<typeof talentViewSchema>
 export type ProjectSummary = z.infer<typeof projectSummarySchema>
 export type ApiError = z.infer<typeof apiErrorSchema>
+
+// ─── Applications (P-05) ───────────────────────────────────────────────────────
+
+export const createApplicationInputSchema = z.object({
+  projectId: idSchema,
+  positionId: idSchema.optional(),
+  message: z.string().trim().min(10, 'Le message de candidature doit contenir au moins 10 caractères').max(2000),
+})
+
+export const applicationItemSchema = z.object({
+  id: idSchema,
+  projectId: idSchema,
+  positionId: idSchema.nullable(),
+  applicantId: idSchema,
+  message: z.string(),
+  status: z.enum(['PENDING', 'ACCEPTED', 'REJECTED', 'WITHDRAWN']),
+  rejectionReason: z.string().nullable(),
+  decidedAt: z.coerce.date().nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  project: z.object({
+    id: idSchema,
+    title: z.string(),
+    pitch: z.string(),
+    status: z.nativeEnum(ProjectStatus),
+  }),
+  position: z
+    .object({
+      id: idSchema,
+      title: z.string(),
+      description: z.string().nullable(),
+    })
+    .nullable(),
+})
+
+export const myApplicationsResponseSchema = z.object({
+  items: z.array(applicationItemSchema),
+})
+
+export type CreateApplicationInput = z.infer<typeof createApplicationInputSchema>
+export type ApplicationItem = z.infer<typeof applicationItemSchema>
+export type MyApplicationsResponse = z.infer<typeof myApplicationsResponseSchema>
+
+
+// ─── Applications porteur (P-06) ───────────────────────────────────────────────
+
+export const rejectApplicationInputSchema = z.object({
+  rejectionReason: z.string().trim().min(3).max(500),
+})
+
+export const ownerApplicationItemSchema = applicationItemSchema.extend({
+  candidate: z.object({
+    pseudonym: z.string(),
+    avatarSeed: z.string(),
+    headline: z.string().nullable(),
+  }),
+})
+
+export const ownerApplicationsResponseSchema = z.object({
+  items: z.array(ownerApplicationItemSchema),
+})
+
+export type RejectApplicationInput = z.infer<typeof rejectApplicationInputSchema>
+export type OwnerApplicationItem = z.infer<typeof ownerApplicationItemSchema>
+export type OwnerApplicationsResponse = z.infer<typeof ownerApplicationsResponseSchema>
+
+// ─── Membres et rôles projet (P-08) ─────────────────────────────────────────────
+
+export const projectRoleSchema = z.enum(['OWNER', 'MEMBER', 'MENTOR', 'OBSERVER'])
+
+export const projectMemberItemSchema = z.object({
+  id: idSchema,
+  projectId: idSchema,
+  userId: idSchema,
+  role: projectRoleSchema,
+  functionalRole: z.string().nullable(),
+  joinedAt: z.coerce.date(),
+  displayName: z.string().nullable(),
+  pseudonym: z.string().nullable(),
+  avatarSeed: z.string().nullable(),
+})
+
+export const projectMembersResponseSchema = z.object({
+  items: z.array(projectMemberItemSchema),
+})
+
+export const updateProjectMemberRoleSchema = z.object({
+  role: projectRoleSchema,
+})
+
+export type ProjectRoleInput = z.infer<typeof projectRoleSchema>
+export type ProjectMemberItem = z.infer<typeof projectMemberItemSchema>
+export type ProjectMembersResponse = z.infer<typeof projectMembersResponseSchema>
+export type UpdateProjectMemberRoleInput = z.infer<typeof updateProjectMemberRoleSchema>
+
+export const addProjectMemberSchema = z.object({
+  userId: idSchema,
+  role: projectRoleSchema.default('MEMBER'),
+})
+export type AddProjectMemberInput = z.infer<typeof addProjectMemberSchema>
+
+// ─── Postes ouverts (P-04) ───────────────────────────────────────────────────────
+
+export const openPositionCreateSchema = z.object({
+  title: z.string().trim().min(2).max(120),
+  description: z.string().trim().max(2_000).optional().nullable(),
+  expectedHours: z.number().int().min(1).max(168).optional().nullable(),
+  skillIds: z.array(idSchema).min(1).max(8).refine((ids) => new Set(ids).size === ids.length, 'Compétences dupliquées.'),
+})
+export const openPositionPatchSchema = openPositionCreateSchema.partial().extend({ isOpen: z.boolean().optional() })
+export const openPositionResponseSchema = z.object({
+  id: idSchema,
+  projectId: idSchema,
+  title: z.string(),
+  description: z.string().nullable(),
+  expectedHours: z.number().int().nullable(),
+  isOpen: z.boolean(),
+  skills: z.array(z.object({ id: idSchema, name: z.string() })),
+})
+export const projectPositionsResponseSchema = z.object({ projectId: idSchema, positions: z.array(openPositionResponseSchema) })
+export type OpenPositionCreateInput = z.infer<typeof openPositionCreateSchema>
+export type OpenPositionPatchInput = z.infer<typeof openPositionPatchSchema>

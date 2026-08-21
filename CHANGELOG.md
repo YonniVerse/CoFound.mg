@@ -10,40 +10,74 @@ Retiré · En cours · Bloqué**.
 
 ---
 
-## 2026-08-21 — Implémentation du BMC guidé P-02
+## 2026-08-21 — Finalisation technique de P-08 : intégration HTTP et UI-29 réelle
 
 ### Ajouté
 
-- Contrats Zod partagés pour les neuf blocs standard du BMC, leur visibilité et la réponse de complétion.
-- Service BMC NestJS avec contrôle des membres actifs, normalisation JSONB, upsert dans une transaction Prisma et calcul serveur de complétion.
-- Routes protégées `GET` et `PATCH /api/v1/projects/:projectId/bmc`.
-- Écran UI-26 responsive avec explications, exemples contextualisés, indicateur d’enregistrement, autosave debouncé et compteur de complétion.
-- Quatre tests P-02 couvrant complétion, transaction, isolation et permissions.
+- Test d’intégration HTTP du `ProjectMembersController` couvrant `GET`, `POST`, `PATCH` et `DELETE` sous `/api/v1/projects/:projectId/members`.
+- Conversion des erreurs de validation des schémas membres en réponse HTTP `400`.
+- Appels `projectApi` réels pour charger, ajouter, modifier et quitter une équipe.
 
-### Validé
+### Modifié
 
-- `pnpm --filter @cofound/shared build`, les typechecks API/web, `pnpm lint` et `pnpm build` passent.
-- La suite API compte 56 tests passants, 0 échec.
+- UI-29 `/projects/:id/team` ne dépend plus de données de démonstration : elle utilise `apiClient`, gère les états de chargement, erreur, vide et mutation, et respecte la règle du dernier `OWNER`.
+- Le service P-08 vérifie l’existence du compte cible avant ajout.
+- Le test BMC réintégré a été typé sans `any` pour maintenir le lint strict.
 
-### Décidé
+### Validation
 
-- Les neuf cases sont les blocs standard : segments clients, propositions de valeur, canaux, relations clients, flux de revenus, ressources clés, activités clés, partenaires clés et structure de coûts.
-- La transition `DRAFT → RECRUITING` reste hors P-02 et relève de P-03.
+- Suite API complète : **83/83 tests réussis**.
+- Typecheck et lint API/frontend réussis.
+- Build frontend réussi.
 
 ---
 
-## 2026-08-21 — Préparation P-02 après publication de P-01
+## 2026-08-21 — Publication P-07 et démarrage P-08 membres & rôles
 
-### Publié
+### Décidé
 
-- Branche `P-01` créée depuis la base de développement et publiée sur `origin/P-01`.
-- Commit `62ae3c2 feat(project): créer un projet en brouillon` créé avec uniquement les fichiers P-01.
+- Les mutations de rôle et de retrait vérifient le dernier `OWNER` dans une transaction Prisma, afin d’éviter une perte concurrente de propriété.
+- L’identité civile reste réservée à l’espace des membres actifs ; le genre n’est jamais renvoyé par l’API équipe.
 
-### Préparé
+### Ajouté
 
-- Branche locale `P-02` créée depuis P-01.
-- Modèle Prisma `BusinessModelCanvas` vérifié : relation unique avec `Project`, blocs JSON, complétion et traçage de l’utilisateur ayant modifié le BMC.
-- Aucun code P-02 ajouté pendant cette session ; contrats, routes, autosave et tests restent à développer.
+- PR [#49](https://github.com/YonniVerse/CoFound.mg/pull/49) pour la relance automatique P-07.
+- `ProjectMembersService` et `ProjectMembersController` avec liste, ajout, changement de rôle et retrait.
+- Schémas partagés des rôles et membres P-08.
+- Écran UI-29 `/projects/:id/team`, route lazy et protection visuelle du dernier porteur.
+- Tests ciblés `project-members.test.ts`.
+
+### Modifié
+
+- La branche `P-08` réintègre les dépendances projet P-01 à P-04 nécessaires au module projet.
+- Le module projet enregistre désormais les contrôleurs et services BMC, postes et membres.
+
+### En cours
+
+- UI-29 utilise encore des données locales de démonstration ; le branchement au client API réel et les tests HTTP/intégration restent à faire.
+
+---
+
+## 2026-08-21 — Vague 3 : Ticket P-05 (Candidature API + Écran candidat)
+
+### Ajouté
+- **Ticket P-05 — Candidature API & Écran candidat** :
+  - **API NestJS (`POST /applications`, `GET /applications/me`, `PATCH /applications/:id/withdraw`)** : Endpoints de soumission de candidature, de liste candidat et de retrait autonome protégés par `Permission.PROJECT_APPLY`.
+  - **Schémas Zod partagés** : `createApplicationInputSchema`, `applicationItemSchema`, `myApplicationsResponseSchema`.
+  - **Composant Web Modal `ApplyModal.tsx`** : Modal permettant aux candidats de postuler avec message de motivation et choix optionnel du poste ouvert.
+  - **Page Candidat `/my-applications` (`MyApplicationsPage.tsx`)** : Tableau de bord de suivi des candidatures avec filtres par statut (`En attente`, `Acceptée`, `Refusée`, `Retirée`), motif de refus et bouton de retrait.
+  - **Hook `useMyApplications.ts`** : Hook React d'interaction API avec secours démo local.
+  - **Tests unitaires** : Suite de tests `apps/api/test/applications.test.ts` (54/54 tests backend passants).
+
+---
+
+## 2026-08-21 — Stabilisation de P-05
+
+### Corrigé
+
+- Suppression des imports inutilisés dans les tests de candidatures.
+- Correction du chargement initial du hook `useMyApplications` pour respecter la règle React ESLint `set-state-in-effect`.
+- Validation finale : 58 tests backend passants, typechecks API/frontend et lint global réussis.
 
 ---
 
@@ -253,3 +287,40 @@ Dépôt `YonniVerse/CoFound.mg`, branche `dev`, commit `2c7999e`.
 - Montants des formules partenaires
 - Arbitrage de marque : `CoFound.mg` vs `CoFounder.mg`
 - Choix de l'établissement pilote
+
+## 2026-08-21 — Démarrage de P-06
+
+### Ajouté
+
+- Contrats partagés pour la file porteur et le refus motivé.
+- Routes de lecture, acceptation et refus des candidatures reçues.
+- Décisions protégées par la propriété du projet et exécutées dans une transaction Prisma.
+- Écran UI-28 `/projects/:id/applications` avec filtres par statut, pseudonymat du candidat et actions accepter/refuser.
+
+### Validé
+
+- 58 tests API passants.
+- Typecheck partagé, API et frontend réussi.
+- Lint global réussi.
+- Build frontend réussi.
+
+### À poursuivre
+
+- Ajouter les tests ciblés d’intégration HTTP P-06.
+- Finaliser les états UI et préparer la Pull Request.
+
+## 2026-08-21 — Couverture P-06
+
+Les tests ciblés de la file porteur couvrent désormais la lecture pseudonymisée, le refus d’un accès par un non-propriétaire, l’acceptation transactionnelle d’une candidature en attente et le rejet d’une candidature déjà décidée. La suite API compte 62 tests passants, et les typechecks ainsi que le lint global sont réussis.
+
+## 2026-08-21 — Publication P-06 et démarrage P-07
+
+La branche `feat/P-06-file-candidatures-porteur` a été publiée et la Pull Request #48 a été ouverte vers `dev`. La validation complète des modules présents a réussi avec 62 tests API passants, typechecks, lint, build et contrôle bundle.
+
+Le premier lot P-07 ajoute `ApplicationReminderService`, configurable par `APPLICATION_REMINDER_DAYS`, qui regroupe les candidatures `PENDING` dépassant le seuil et crée une notification in-app idempotente par porteur et projet. Le déclenchement planifié, les tests ciblés et l’interface de notification restent à finaliser.
+
+## 2026-08-21 — Finalisation locale de P-07
+
+Le service de relance du porteur dispose maintenant d’un déclenchement périodique configurable par `APPLICATION_REMINDER_ENABLED` et `APPLICATION_REMINDER_INTERVAL_MS`. Le timer est non bloquant et s’arrête proprement avec le module NestJS. Les relances restent in-app et sont idempotentes par porteur et projet.
+
+Trois tests ciblés couvrent le seuil temporel, le regroupement de plusieurs candidatures d’un même projet et l’absence de doublon. La suite API compte 65 tests passants ; le typecheck API et le lint global sont également réussis.

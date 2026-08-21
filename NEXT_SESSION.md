@@ -1,54 +1,62 @@
-> Fichier de reprise de contexte. Chargé automatiquement par `CLAUDE.md`.
-> L’état vivant est ici ; l’historique détaillé est dans `CHANGELOG.md`.
+# Context Handoff — Reprise de session CoFound.mg
 
-**Dernière mise à jour** : 2026-08-21
-**Phase** : Vague 3 — P-02 publié, en attente de revue
-**Branche** : `P-02`, publiée sur `origin/P-02`
-**Ticket courant** : P-02 — BMC guidé
-**Vague** : Vague 3 — Le projet
-**État du workspace** : propre après le commit `a589da0` ; PR #45 ouverte vers `dev` ; aucun secret Neon ajouté
+> **Fichier de reprise de contexte**. Lire ce fichier en premier à chaque nouvelle session.
+> **Périmètre développeur** : Rinoh / Roédrino — Vague 3, domaine Projet.
+> **Source de vérité du backlog** : [`docs/plan-de-developpement.md`](docs/plan-de-developpement.md).
 
 ---
-## 1. Tickets Vague 3
 
-P-01 est validé et committé. L’ordre restant est P-02 → P-03, P-04 → P-05 → P-06 → P-07, P-08 → P-09, puis P-10, P-11, P-12 et P-13 selon leurs dépendances.
+## 1. État actuel
 
----
-## 2. P-01 terminé
+- **Dernière mise à jour** : 2026-08-21.
+- **Vague** : Vague 3 — Projet.
+- **Ticket courant** : **P-08 — Membres & rôles**, finalisé techniquement, PR ouverte.
+- **Branche Git** : `P-08`.
+- **PR P-07** : [#49](https://github.com/YonniVerse/CoFound.mg/pull/49), ouverte vers `dev`.
+- **PR P-06** : [#48](https://github.com/YonniVerse/CoFound.mg/pull/48), ouverte vers `dev`.
+- **État Git** : branche P-08 synchronisée avec `origin/P-08` au commit `2fcd742`; seuls des fichiers hérités non suivis restent dans le workspace et ne doivent pas être ajoutés.
 
-Le commit `62ae3c2 feat(project): créer un projet en brouillon` ajoute le contrat `projectCreateSchema`, le module projet NestJS, `POST /api/v1/projects`, `GET /api/v1/projects/:id`, la création transactionnelle en `DRAFT`, l’ajout du créateur comme `OWNER`, l’écran `/projects/new` et trois tests dédiés. La branche est publiée sur `origin/P-01`.
+## 2. Tickets réalisés et en cours
 
-Validations P-01 : 52 tests API passants sur la branche dédiée, typecheck shared/API/frontend passant et lint API/frontend passant.
+| Ticket | État | Référence |
+|---|---|---|
+| P-01 | Intégré dans la base P-08 | Création projet brouillon |
+| P-02 | Intégré dans la base P-08 | BMC guidé et autosave côté équipe |
+| P-03 | Intégré dans la base P-08 | Publication transactionnelle |
+| P-04 | Intégré dans la base P-08 | Postes ouverts et compétences |
+| P-05 | Terminé sur branche dédiée | Candidature candidat |
+| P-06 | Implémenté, PR ouverte | File porteur, acceptation/refus pseudonymisés |
+| P-07 | Implémenté, PR #49 ouverte | Relance périodique idempotente |
+| P-08 | Finalisation technique | Membres, rôles, intégration HTTP et UI-29 connecté à l’API |
 
----
-## 3. P-02 — implémenté
+## 3. Travail réalisé cette session
 
-P-02 est implémenté : contrats Zod partagés pour neuf blocs, service NestJS transactionnel, routes GET/PATCH protégées, calcul serveur de complétion, écran UI-26 avec exemples contextualisés, indicateur d’enregistrement et autosave debouncé. Les membres actifs du projet peuvent lire et modifier le BMC ; les non-membres sont refusés. La transition `DRAFT → RECRUITING` reste réservée à P-03.
+Le ticket P-07 a été poussé et publié dans la PR #49. La branche P-08 a ensuite été reconstruite avec les commits projet P-01 à P-04 nécessaires à sa compilation. L’API P-08 contient maintenant `ProjectMembersService` et `ProjectMembersController` avec les routes de liste, ajout, changement de rôle et retrait. Les contrôles d’accès passent par `PROJECT_READ` et `PROJECT_MANAGE`; les mutations de rôle et de retrait utilisent une transaction Prisma afin de protéger le dernier `OWNER`.
 
-Les neuf blocs sont : segments clients, propositions de valeur, canaux, relations clients, flux de revenus, ressources clés, activités clés, partenaires clés et structure de coûts. Validations : shared build, typechecks API/web, lint et build OK ; 56 tests API passants, 0 échec.
+Les contrats partagés P-08 couvrent les rôles et la réponse équipe. La liste révèle l’identité uniquement dans l’espace des membres actifs et n’expose pas le genre. UI-29 existe à `/projects/:id/team`, est chargée avec `React.lazy` et utilise désormais `projectApi`/`apiClient` pour charger l’équipe, ajouter un membre, modifier un rôle et quitter le projet. Les états de chargement, erreur, vide et mutation sont gérés dans l’écran.
 
----
 ## 4. Fichiers importants
 
-- `packages/shared/src/schemas.ts` : `BMC_BLOCK_KEYS`, schémas de bloc, patch et réponse.
-- `apps/api/src/project/bmc.service.ts` : contrôle membre actif, normalisation, upsert transactionnel et complétion serveur.
-- `apps/api/src/project/bmc.controller.ts` : GET/PATCH `/api/v1/projects/:projectId/bmc`.
-- `apps/api/src/project/project.module.ts` : enregistrement du service et contrôleur.
-- `apps/api/test/bmc.test.ts` : quatre tests P-02.
-- `apps/web/src/pages/ProjectBmcPage.tsx` : écran UI-26 responsive.
-- `docs/plan-de-developpement.md` : backlog officiel.
+- `apps/api/src/project/project-members.service.ts` — logique métier et transactions P-08.
+- `apps/api/src/project/project-members.controller.ts` — routes REST P-08.
+- `apps/api/src/project/project.module.ts` — enregistrement des contrôleurs/services projet, BMC, postes et membres.
+- `packages/shared/src/schemas.ts` — contrats P-04 à P-08 fusionnés.
+- `apps/api/test/project-members.test.ts` — tests ciblés P-08.
+- `apps/api/test/project-members.integration.test.ts` — tests HTTP du contrôleur P-08.
+- `apps/web/src/pages/ProjectTeamPage.tsx` — écran UI-29 actuel.
+- `apps/web/src/App.tsx` — route lazy `/projects/:id/team`.
+- `apps/api/src/applications/application-reminder.service.ts` — relance P-07.
 
----
-## 5. Décisions et vigilance
+## 5. Validation et points de vigilance
 
-- Utiliser une transaction Prisma pour créer ou mettre à jour le BMC et conserver la cohérence du projet.
-- Ne pas exposer d’informations privées de membres ou de projets dans les contrats BMC.
-- Refuser l’accès aux utilisateurs qui ne sont pas membres actifs du projet.
-- La transition `DRAFT → RECRUITING` appartient à P-03 et ne doit pas être implémentée dans P-02.
-- Les données d’exemple doivent être statiques, localisées et séparées des réponses persistées.
-- Ne pas utiliser ni stocker les secrets Neon dans le dépôt.
+- `pnpm --filter @cofound/shared build` : réussi.
+- `pnpm --filter @cofound/api typecheck` : réussi.
+- Suite API complète : **83/83 réussis**, dont les deux tests HTTP P-08.
+- `pnpm --filter @cofound/web typecheck`, lint et build : réussis ; le chunk initial reste conforme au budget observé.
+- Les tests HTTP P-08 couvrent les quatre routes et la validation d’un rôle invalide avec un serveur NestJS réel et un service substitué.
+- Un test concurrent avec Prisma réel reste une amélioration ultérieure ; la protection applicative du dernier `OWNER` est déjà transactionnelle.
+- Ne pas ajouter au commit les fichiers hérités non suivis : `analyse-backlog-vagues.md`, `guide-collaboration-CoFound.md`, `plan-tickets-utilisateur.md`, `rapport-analyse-attributions.md`, `pr-e*-body.md` et `apps/api/test/email-chain.test.ts`.
 
----
 ## 6. Prochaine action
 
-Revoir et fusionner la PR #45 (`P-02`) après les contrôles CI ; ensuite créer la branche P-03 depuis `dev` et implémenter la transition `DRAFT → RECRUITING` conditionnée à 100 % de complétion, avec la liste des blocs manquants. Vigilances restantes : file offline persistante, conflit avec historique et lecture publique bloc par bloc à vérifier dans les tickets concernés.
+**Faire relire puis fusionner la PR #50** : vérifier les commentaires CI/revue sur https://github.com/YonniVerse/CoFound.mg/pull/50, puis fusionner vers `dev` après validation humaine.
