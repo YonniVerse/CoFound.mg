@@ -44,3 +44,19 @@ test('M-06 utilise un curseur et limite la page à la taille demandée', async (
   assert.equal(response.hasMore, true)
   assert.equal(response.nextCursor, 'talent-2')
 })
+
+test('M-08 enregistre une exclusion de manière transactionnelle et idempotente', async () => {
+  const calls: string[] = []
+  const tx = {
+    dreamMatchProfile: { findFirst: async () => ({ talentId: 'talent-1' }) },
+    talentProfile: { findUnique: async () => ({ id: 'talent-2' }) },
+    dreamMatchExclusion: { upsert: async () => { calls.push('upsert') } },
+  }
+  const prisma = {
+    $transaction: async <T>(callback: (transaction: typeof tx) => Promise<T>) => callback(tx),
+  } as unknown as PrismaService
+  const service = new DreamMatchScoringService(prisma)
+  assert.deepEqual(await service.markNotInterested('user-1', 'talent-2'), { excluded: true, talentId: 'talent-2' })
+  assert.deepEqual(await service.markNotInterested('user-1', 'talent-2'), { excluded: true, talentId: 'talent-2' })
+  assert.deepEqual(calls, ['upsert', 'upsert'])
+})

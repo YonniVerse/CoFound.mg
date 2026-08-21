@@ -44,6 +44,29 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Démarrage de M-08 — Retour « pas intéressé »
+
+### Ajouté
+
+- Branche `feat/M-08-not-interested` créée depuis `dev` après les fusions de M-05, M-06 et M-07.
+- Modèle Prisma `DreamMatchExclusion` avec unicité `(seekerId, candidateId)` et migration SQL dédiée.
+- Route `POST /me/dream-match/suggestions/:talentId/not-interested`.
+- Upsert transactionnel idempotent et filtre SQL `NOT EXISTS` pour exclure les profils écartés des suggestions futures.
+- Tests unitaires et HTTP du retour « pas intéressé ».
+
+### Validation
+
+- Prisma validate réussi avec une URL locale non persistée.
+- Lint et typecheck API réussis.
+- **111/111 tests API réussis**.
+
+### En cours
+
+- Ajouter le bouton frontend et le retrait optimiste de la carte.
+- Vérifier la migration sur Neon avant la PR M-08.
+
+---
+
 ## 2026-08-22 — Reprise de M-04 Feed Talents
 
 ### Modifié
