@@ -9,9 +9,9 @@
 ## 1. État Actuel du Projet
 
 - **Dernière mise à jour** : 2026-08-21
-- **Vague actuelle** : Vague 3 (Le projet) — **P-01 à P-05 réalisés, P-06 en cours**
-- **Branche Git actuelle** : `P-06` (issue de `origin/feat/P-05-candidatures-candidat`)
-- **Tests automatisés** : 62/62 tests backend validés (`pnpm test` dans `apps/api`) ; typechecks et lint validés
+- **Vague actuelle** : Vague 3 (Le projet) — **P-01 à P-06 réalisés, P-07 en cours**
+- **Branche Git actuelle** : `P-06` pour la PR publiée ; P-07 démarré localement sur cette base
+- **Tests automatisés** : 62/62 tests backend validés ; validation globale tests/typecheck/lint/build/bundle réussie
 - **Build Web** : Validé sans aucune erreur (`pnpm --filter web build`)
 
 ---
@@ -28,7 +28,8 @@
 | **M-04** | API + interface Feed Talents (opt-in, cartes pseudonymisées) | `feat/M-04-feed-talents` | ✅ **TERMINÉ** |
 | **P-01 à P-04** | Création projet, BMC guidé, transition statut, postes ouverts | - | ✅ **TERMINÉS PAR L'ÉQUIPE** |
 | **P-05** | Candidature : API + écran candidat + modal postulation + tableau de bord candidat `/my-applications` | `feat/P-05-candidatures-candidat` | ✅ **TERMINÉ** |
-| **P-06** | File de candidatures côté porteur, accepter / refuser avec motif | `P-06` | 🔄 **EN COURS — API et UI-28 ajoutées** |
+| **P-06** | File de candidatures côté porteur, accepter / refuser avec motif | `feat/P-06-file-candidatures-porteur` | ✅ **PR #48 OUVERTE** |
+| **P-07** | Relance automatique du porteur au-delà d'un délai | `P-07` | 🔄 **PREMIER LOT EN COURS** |
 
 ---
 
@@ -48,6 +49,8 @@
 - `apps/api/src/applications/applications.controller.ts` : Routes porteur de lecture, acceptation et refus motivé.
 - `apps/api/src/applications/applications.service.ts` : Autorisation propriétaire et décisions transactionnelles P-06.
 - `apps/api/src/rbac/permissions.ts` : Permission `project:manage` disponible pour les comptes Talent, avec propriété vérifiée au niveau service.
+- `apps/api/src/applications/application-reminder.service.ts` : Premier service P-07 de relance in-app idempotente par projet, configurable via `APPLICATION_REMINDER_DAYS`.
+- `apps/api/src/applications/applications.module.ts` : Enregistrement du service de relance P-07.
 
 ---
 
@@ -62,11 +65,12 @@
 
 ## 5. Instructions de Reprise (À faire ensuite)
 
-P-06 est en cours : le premier lot API/UI est typé et validé. Les tests ciblés de service sont ajoutés ; il reste à ajouter les tests HTTP d’intégration, finaliser les états UI-28 et préparer la PR.
+P-06 dispose de la PR #48 vers `dev` et sa validation globale passe. P-07 est commencé avec un service de relance in-app ; il reste à ajouter le déclenchement planifié, les tests ciblés et l’interface de notification.
 
 Pour la prochaine session :
 1. Lire ce fichier (`NEXT_SESSION.md`) et vérifier la branche Git courante.
-2. Rester sur `P-06` et vérifier le diff avant toute modification.
-3. Finaliser le ticket **P-06 — File de candidatures côté porteur, accepter / refuser avec motif** :
-   - Endpoints backend pour le porteur de projet : lister les candidatures reçues par projet (`GET /projects/:id/applications`), accepter (`PATCH /applications/:id/accept`), refuser avec motif obligatoire (`PATCH /applications/:id/reject`).
-   - Interface Web de gestion des candidatures reçues pour le porteur de projet dans l'espace projet.
+2. Rester sur la branche de travail P-07 et vérifier le diff avant toute modification.
+3. Finaliser le ticket **P-07 — Relance automatique du porteur au-delà d’un délai** :
+   - ajouter le déclenchement périodique de la relance in-app ;
+   - garantir l’idempotence par porteur et projet ;
+   - ajouter les tests et l’interface de notification associée.
