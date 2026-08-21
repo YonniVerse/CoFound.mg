@@ -13,9 +13,10 @@ import { PrivacyModule } from './privacy/privacy.module.js'
 import { BounceModule } from './import/bounce.module.js'
 import { ImportModule } from './import/import.module.js'
 import { ProfileModule } from './profile/profile.module.js'
+import { OnboardingModule } from './onboarding/onboarding.module.js'
 
 @Module({
-  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, PrivacyModule, AuditModule, BounceModule, ImportModule, ProfileModule],
+  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, PrivacyModule, AuditModule, BounceModule, ImportModule, ProfileModule, OnboardingModule],
   controllers: [HealthController, MeController],
   providers: [
     { provide: APP_FILTER, useClass: SentryGlobalFilter },

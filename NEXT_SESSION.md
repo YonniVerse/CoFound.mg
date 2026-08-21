@@ -5,9 +5,9 @@
 > dans `CLAUDE.md`, le détail dans `docs/`.
 
 **Dernière mise à jour** : 2026-08-21
-**Phase** : Vague 1 — implémentation de E-12
-**Branche** : `E-12`, issue de `dev` après fusion de la PR #34
-**État du workspace** : audit des tickets Rino ajouté ; E-12 en revue dans la PR #35 ; E-13 identifié comme prochain ticket
+**Phase** : Vague 1 — implémentation de E-13
+**Branche** : `E-13`, issue de `dev` après fusion de la PR #35
+**État du workspace** : E-12 finalisé et fusionné ; E-13 implémenté, PR #36 en revue ; dépendances directes F-13 et E-12 vérifiées comme livrées
 
 ---
 
@@ -29,11 +29,11 @@
 
 ## 2. Validation avant E-12
 
-La PR #34 (E-08 backend + UI-36) est fusionnée dans `dev`. La branche E-12 est issue de ce `dev` synchronisé. Les tests API passent avec 37 tests, dont un test HTTP d’intégration des routes `GET` et `PATCH /api/v1/me/profile`. La revue et le plan E-13 sont dans `docs/revue-pr35-et-plan-e13.md`. Le bilan exhaustif des tickets de Rino est dans `docs/audit-tickets-rino.md`.
+Les PR #34 (E-08) et #35 (E-12) sont fusionnées dans `dev`. E-12 fournit le profil public/privé, l’édition partielle, l’identité privée, les contrôles de référentiels actifs et le seuil de visibilité. Les tests API passent avec 40 tests, dont l’intégration HTTP des routes `/me/profile` et `/me/identity`. La branche E-13 est issue de ce `dev` synchronisé. La revue et le plan sont dans `docs/revue-pr35-et-plan-e13.md`, et l’audit des tickets dans `docs/audit-tickets-rino.md`.
 
 ---
 
-## 3. Ticket livré — E-08 et ticket courant — E-12
+## 3. Tickets livrés — E-08/E-12 et ticket courant — E-13
 
 **Objectif** : permettre à un établissement de suivre ses lots, d’annuler un lot admissible et de relancer uniquement les invitations non activées.
 
@@ -61,4 +61,4 @@ Le détail doit présenter les compteurs créés, mis à jour, ignorés, erreurs
 
 ## 5. Prochaine action
 
-Corriger les points prioritaires de la revue PR #35 — seuil de complétion, erreurs 400 et validation des référentiels — puis fusionner E-12. Créer ensuite E-13 depuis `dev` avec la définition des étapes, la persistance de progression et les endpoints d’onboarding.
+La PR #36 est en revue. Points bloquants à corriger avant fusion : transaction unique pour les données et la progression, interdiction de sauter les étapes, tests HTTP E-13 et hydratation des données à la reprise. L’audit détaillé est dans `docs/revue-pr36-dependances-rino.md`. F-13 (PR #19) et les autres dépendances directes vérifiées sont déjà livrés ; aucune dépendance externe n’est à réimplémenter actuellement.
