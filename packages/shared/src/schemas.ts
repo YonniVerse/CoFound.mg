@@ -101,6 +101,15 @@ export const importFieldSchema = z.enum([
   'studentNumber',
 ])
 
+export const emailBounceWebhookSchema = z.object({
+  event: z.literal('email.bounced'),
+  email: z.string().trim().email(),
+  batchId: idSchema.optional(),
+  providerMessageId: z.string().min(1).optional(),
+})
+
+export type EmailBounceWebhook = z.infer<typeof emailBounceWebhookSchema>
+
 export const importColumnMappingSchema = z.object({
   columns: z.record(z.string().trim().min(1), importFieldSchema.nullable()),
 })
