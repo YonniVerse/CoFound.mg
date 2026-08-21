@@ -5,9 +5,9 @@
 > dans `CLAUDE.md`, le détail dans `docs/`.
 
 **Dernière mise à jour** : 2026-08-21
-**Phase** : transition Vague 1 → Vague 2 — E-04, E-06 et E-07 finalisés sur leurs branches ; PR E-07 à ouvrir
-**Branche** : `E-07`, issue de `dev` après fusion de la PR #29 (dernier commit `9e7b1a8`)
-**État du workspace** : propre
+**Phase** : Vague 1 — implémentation de E-08
+**Branche** : `E-08`, issue de `dev` après fusion des PR #31, #32, #33, #26, #29 et #30
+**État du workspace** : backend E-08 implémenté et validé ; rapports Markdown d’analyse non suivis conservés hors commit
 
 ---
 
@@ -15,97 +15,50 @@
 
 | Élément | État |
 |---|---|
-| Documentation produit, technique et business | ✅ Cadrage complet dans `docs/` |
-| Monorepo pnpm | ✅ `apps/web`, `apps/api`, `packages/shared` |
-| CI GitHub Actions | ✅ lint, typecheck, tests, build et budget bundle |
-| Authentification et sessions | ✅ argon2id, JWT court, refresh cookie rotatif, réinitialisation |
-| RBAC et confidentialité | ✅ Bearer global, permissions à refus par défaut, projections pseudonymes |
-| Audit | ✅ écriture seule, interceptor et annotations des mutations sensibles |
-| Contrats partagés et i18n | ✅ Zod partagé, codes d’erreur, fr/mg et catalogue lazy-loaded |
-| Design system | ✅ tokens OKLCH, corrections C1 à C5, primitives partagées |
-| Client HTTP web | ✅ `apps/web/src/lib/api-client.ts`, Bearer uniquement en mémoire |
-| File de traitements | ✅ pg-boss sur PostgreSQL, worker séparé, service Compose dédié |
-| Déploiement | ✅ image API/worker, Caddy, Compose production, workflow GHCR + SSH |
-| Sauvegardes | ✅ dump PostgreSQL chiffré, R2, checksum, restauration vers base jetable |
-| Observabilité | ✅ Sentry conditionnel, pino redacted, readiness PostgreSQL |
-| Base de données Neon | ✅ Projet `CoFound.mg`, branche `main`, base `neondb`, migrations et seed appliqués |
-| Tests négatifs RBAC et healthcheck | ✅ 12 tests API, tous passants |
-| Budget JavaScript initial | ✅ 271 701 octets gzip, sous le cliquet de 290 221 |
-
-Les pull requests finales sont fusionnées dans `dev`, notamment les fondations #20 à #24, la documentation #27 et les tickets d’import #26 (E-04) et #29 (E-06).
+| Vague 0 — Fondations | ✅ `F-01` à `F-19` intégrés dans `dev` |
+| E-01 — Domaine et configuration email | ✅ PR #31 fusionnée ; DNS et fournisseur à renseigner en exploitation |
+| E-02 — Gabarits transactionnels | ✅ PR #32 fusionnée ; transport réel à configurer |
+| E-03 — Webhook de rebond | ✅ PR #33 fusionnée |
+| E-04 — Analyse CSV/XLSX | ✅ PR #26 fusionnée |
+| E-05 — Mapping assisté | ✅ intégré dans `dev` via la branche E-06 |
+| E-06 — Prévisualisation sans écriture | ✅ PR #29 fusionnée |
+| E-07 — Application transactionnelle idempotente | ✅ PR #30 fusionnée |
+| E-08 — Annulation et relance groupée | ✅ backend implémenté et validé ; UI-36 à réaliser |
 
 ---
 
-## 2. Validation finale
+## 2. Validation avant E-08
 
-Les commandes suivantes passent sur `dev` :
-
-```bash
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm build
-pnpm check:bundle
-```
-
-La suite API compte actuellement **12 tests**. Les deux cas du readiness check couvrent PostgreSQL disponible et PostgreSQL indisponible avec réponse HTTP 503.
-
-La base Neon `CoFound.mg` est créée dans le projet `autumn-scene-61665488`, sur la branche `main` (`br-snowy-credit-aragwop4`) et la base `neondb`. Les migrations `0001_initial` et `0002_auth_tokens` sont appliquées, les extensions `pg_trgm` et `unaccent` sont présentes, et le seed contient 8 filières, 6 régions, 8 secteurs et 10 compétences.
-
-Le sandbox ne dispose pas de Docker. Le build Docker réel et le démarrage Compose de production restent donc à exécuter sur le VPS ou dans une machine équipée de Docker. La simulation `pnpm deploy --filter @cofound/api --prod --legacy` a confirmé que le runtime déployable contient Prisma et ses dépendances de production.
+Les tests API, le lint, le typecheck et le build passent sur la chaîne cumulée E-01 à E-07. La branche E-08 est issue du `dev` contenant ces fusions. Les rapports d’analyse locaux ne sont pas suivis par Git et ne doivent pas être inclus dans un commit métier.
 
 ---
 
-## 3. Prochaine action recommandée
+## 3. Ticket livré — E-08
 
-La Vague 0 est techniquement terminée. Dans la Vague 1, `E-04`, `E-06` et `E-07` sont finalisés ; `E-05` est déjà ancêtre de `dev` via E-06. La prochaine vague est la **Vague 2 — La rencontre**, dont le premier ticket est `M-01` — recherche PostgreSQL (`tsvector`, `pg_trgm`, `unaccent`), attribué à Norman. Pour Rino, le premier ticket de V2 est `M-05` — formulaire Dream-Match, après `E-12`.
+**Objectif** : permettre à un établissement de suivre ses lots, d’annuler un lot admissible et de relancer uniquement les invitations non activées.
 
-Avant le premier déploiement de recette, effectuer les opérations d’exploitation suivantes :
-
-| Action | Pourquoi | État |
+| Fonction | Accès | Endpoint prévu |
 |---|---|---|
-| Renseigner les secrets de l’environnement GitHub `production` | Autoriser publication GHCR et déploiement SSH | ⬜ À faire |
-| Créer `/srv/cofound/deploy/.env` sur le VPS | Fournir `DATABASE_URL`, `JWT_SECRET`, R2, backup et Sentry | ⬜ À faire |
-| Renseigner `apps/api/.env` localement si nécessaire | Connecter un environnement local à Neon sans commiter le secret | ⬜ À faire |
-| Vérifier le domaine Caddy et les enregistrements DNS | Obtenir le certificat TLS automatique | ⬜ À faire |
-| Exécuter une sauvegarde puis `restore-test` | Vérifier la restauration avant la production | ⬜ À faire |
-| Configurer SPF, DKIM et DMARC | Réduire le risque critique `R1` avant les invitations | ⬜ À faire |
+| Liste des lots | `ORG_VIEWER` | `GET /institution/imports` |
+| Détail du lot et des rebonds | `ORG_VIEWER` | `GET /institution/imports/:id` |
+| Annuler un lot | `ORG_MANAGER` | `POST /institution/imports/:id/cancel` |
+| Relancer les invitations | `ORG_MANAGER` | `POST /institution/imports/:id/resend-invitations` |
+
+Le détail doit présenter les compteurs créés, mis à jour, ignorés, erreurs et rebonds, les lignes filtrables par résultat et les adresses `BOUNCED` exportables. L’annulation doit être protégée par RBAC, auditée et idempotente. Un lot déjà appliqué ou déjà annulé ne doit pas être annulé de nouveau. La relance doit cibler les comptes encore `INVITED`, exclure les comptes activés et republier les notifications via F-15 sans créer de nouveau compte.
+
+**Dépendance directe** : `E-07`. Les dépendances techniques disponibles sont Prisma, RBAC, audit et F-15.
 
 ---
 
-## 4. Points de vigilance actifs
+## 4. Points de vigilance
 
-- **Le transport email de F-15 est volontairement provisoire** : la queue et le worker sont prêts, mais le fournisseur et les gabarits transactionnels relèvent de `E-02`. Les jobs de réinitialisation sont publiés sans jamais renvoyer le jeton brut par l’API.
-- **La clé `BACKUP_ENCRYPTION_KEY` doit être distincte de `JWT_SECRET`**, conservée hors Git et récupérable lors d’une restauration. `RESTORE_DATABASE_URL` doit toujours pointer vers une base jetable.
-- **Sentry est activé uniquement si `SENTRY_DSN` est défini**. Pino reste actif et redacted les cookies, Authorization, mots de passe et jetons.
-- **Le healthcheck `/api/v1/health` dépend de PostgreSQL**. Une base indisponible doit empêcher le service API d’être considéré comme prêt.
-- **Le budget actuel est un cliquet architectural**, pas encore l’objectif final de 200 Ko gzip. La baisse progressive reste à traiter dans `S-10`.
-- **Ne jamais faire de `chmod -R` sur le dépôt.** Une copie antérieure depuis un support FAT/NTFS avait produit des modifications de mode sans changement de contenu.
+- Le transport email F-15 reste un transport de journalisation tant qu’un fournisseur réel n’est pas configuré.
+- Le domaine `.mg`, SPF, DKIM, DMARC et `EMAIL_WEBHOOK_SECRET` doivent être renseignés dans l’environnement de déploiement.
+- Toute mutation E-08 doit vérifier l’organisation du lot, le rôle contextuel et l’état courant avant d’écrire.
+- Aucun ticket E-08 ne doit exposer le genre individuel dans la console établissement.
 
 ---
 
-## 5. Questions ouvertes
+## 5. Prochaine action
 
-| # | Question | Bloque quoi | Pour qui |
-|---|---|---|---|
-| Q-1 | Montants des formules partenaires | Le business plan, pas le développement | CEO |
-| Q-2 | `CoFound.mg` ou `CoFounder.mg` ? | Domaine, marque et supports | CEO |
-| Q-3 | Statut juridique de l’entité | Contrats institutionnels | CEO |
-| Q-4 | Établissement pilote et calendrier | Import réel et recette | CEO + Yonni |
-| Q-5 | Fournisseur email transactionnel et configuration SPF/DKIM/DMARC | `E-01` et `E-02` | Yonni |
-| Q-6 | Revue et fusion de la PR E-07 | Chaîne d’import complète | Rino |
-
-
----
-
-## 6. Répartition
-
-| Membre | Domaine | Charge MVP |
-|---|---|---|
-| **Yonni** (CTO) | Socle transversal, infrastructure, auth/RBAC/privacy/audit, messagerie, notifications | 42 j |
-| **Rino** | Import, invitations, profil et onboarding, Dream-Match, console établissement, modération | 38,5 j |
-| **Norman** | Design system, feeds, recherche, espace projet, console partenaire | 50 j |
-
-Total : **130,5 jours-homme**, soit environ 9 à 11 semaines à trois personnes à temps plein.
-
-Backlog complet : [`docs/plan-de-developpement.md`](docs/plan-de-developpement.md).
+Créer la PR du backend E-08, puis implémenter **UI-36** dans `apps/web` : liste des imports, détail avec compteurs, filtrage des lignes et actions d’annulation et de relance. Après stabilisation de l’ensemble E-08, passer à **E-12 — API et modèle de profil**.
