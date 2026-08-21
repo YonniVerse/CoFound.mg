@@ -46,4 +46,4 @@ La page `/institution` fournit l’état de chargement, l’erreur, le premier u
 
 ## 4. Prochaine action
 
-Les tests API passent avec 53 tests. Typecheck, lint, validation Prisma avec une URL locale de schéma et builds API/web passent. Le contrôle `check:bundle` reste en échec sur le budget préexistant du bundle JavaScript : 314 985 octets gzip pour un seuil strict de 290 221. La PR #39 doit être mise à jour puis revue avant fusion ; une passe de découpage du bundle pourra être traitée séparément si elle est exigée par la CI.
+Les tests API passent avec 53 tests. Typecheck, lint, validation Prisma avec une URL locale de schéma, builds API/web et `check:bundle` passent. Le découpage dynamique des pages réduit le JavaScript initial à 125 964 octets gzip, sous le seuil strict de 290 221. La PR #39 est prête pour revue et fusion.
