@@ -17,9 +17,10 @@ import { OnboardingModule } from './onboarding/onboarding.module.js'
 import { ConsentModule } from './consent/consent.module.js'
 import { InstitutionModule } from './institution/institution.module.js'
 import { ApplicationsModule } from './applications/applications.module.js'
+import { ProjectModule } from './project/project.module.js'
 
 @Module({
-  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, PrivacyModule, AuditModule, BounceModule, ImportModule, ProfileModule, OnboardingModule, ConsentModule, InstitutionModule, ApplicationsModule],
+  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, PrivacyModule, AuditModule, BounceModule, ImportModule, ProfileModule, OnboardingModule, ConsentModule, InstitutionModule, ApplicationsModule, ProjectModule],
   controllers: [HealthController, MeController],
   providers: [
     { provide: APP_FILTER, useClass: SentryGlobalFilter },
