@@ -59,11 +59,14 @@ export function useFeedData() {
   }, []);
 
   useEffect(() => {
-    fetchProjects({
-      status: selectedStatus === "ALL" ? undefined : selectedStatus,
-      search: search || undefined,
-      limit: 10,
-    });
+    const timer = window.setTimeout(() => {
+      void fetchProjects({
+        status: selectedStatus === "ALL" ? undefined : selectedStatus,
+        search: search || undefined,
+        limit: 10,
+      });
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [fetchProjects, selectedStatus, search]);
 
   useEffect(() => {
