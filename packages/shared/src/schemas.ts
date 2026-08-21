@@ -591,7 +591,39 @@ export const projectFeedResponseSchema = z.object({
   hasMore: z.boolean(),
 })
 
+// ─── Talent Feed (M-04) ───────────────────────────────────────────────────────
+
+export const talentFeedQuerySchema = z.object({
+  fieldId: idSchema.optional(),
+  search: z.string().trim().max(100).optional(),
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+})
+
+export const talentFeedCardSchema = z.object({
+  id: idSchema,
+  pseudonym: z.string(),
+  avatarSeed: z.string(),
+  headline: z.string().nullable(),
+  bio: z.string().nullable(),
+  field: z.object({ id: idSchema, slug: z.string(), labelKey: z.string() }).nullable(),
+  cohortYear: z.number().int().nullable(),
+  availabilityHours: z.number().int().nullable(),
+  goals: z.array(z.string()),
+  skills: z.array(z.object({ id: idSchema, slug: z.string(), labelKey: z.string() })),
+  completion: z.number().int().min(0).max(100),
+})
+
+export const talentFeedResponseSchema = z.object({
+  items: z.array(talentFeedCardSchema),
+  nextCursor: z.string().nullable(),
+  hasMore: z.boolean(),
+})
+
 export type ProjectFeedQuery = z.infer<typeof projectFeedQuerySchema>
 export type ProjectFeedCard = z.infer<typeof projectFeedCardSchema>
 export type ProjectFeedResponse = z.infer<typeof projectFeedResponseSchema>
 
+export type TalentFeedQuery = z.infer<typeof talentFeedQuerySchema>
+export type TalentFeedCard = z.infer<typeof talentFeedCardSchema>
+export type TalentFeedResponse = z.infer<typeof talentFeedResponseSchema>
