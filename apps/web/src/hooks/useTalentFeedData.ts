@@ -80,13 +80,16 @@ export function useTalentFeedData() {
       setIsLoading(false);
       setIsLoadingMore(false);
     }
-  }, []);
+  }, [search]);
 
   useEffect(() => {
-    fetchTalents({
-      search: search || undefined,
-      limit: 12,
-    });
+    const timer = window.setTimeout(() => {
+      void fetchTalents({
+        search: search || undefined,
+        limit: 12,
+      });
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [fetchTalents, search]);
 
   const loadMore = useCallback(() => {

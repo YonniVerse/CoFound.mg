@@ -4,21 +4,37 @@ import { TalentsService } from '../src/talents/talents.service.js'
 import { TalentsController } from '../src/talents/talents.controller.js'
 import type { PrismaService } from '../src/prisma/prisma.service.js'
 
-function mockPrisma(profiles: any[] = []) {
+type MockProfile = {
+  visibleInTalentFeed: boolean
+  fieldId: string | null
+  pseudonym: string
+  headline: string | null
+  bio: string | null
+}
+
+type MockFeedArgs = {
+  where?: {
+    fieldId?: string
+    OR?: Array<{ pseudonym: { contains: string } }>
+  }
+  take?: number
+}
+
+function mockPrisma(profiles: MockProfile[] = []) {
   return {
     talentProfile: {
-      findMany: async (args: any) => {
-        let result = profiles.filter((p) => p.visibleInTalentFeed)
+      findMany: async (args: MockFeedArgs) => {
+        let result = profiles.filter((profile) => profile.visibleInTalentFeed)
         if (args.where?.fieldId) {
-          result = result.filter((p) => p.fieldId === args.where.fieldId)
+          result = result.filter((profile) => profile.fieldId === args.where?.fieldId)
         }
-        if (args.where?.OR) {
-          const search = args.where.OR[0].pseudonym.contains.toLowerCase()
+        const search = args.where?.OR?.[0]?.pseudonym.contains.toLowerCase()
+        if (search) {
           result = result.filter(
-            (p) =>
-              p.pseudonym.toLowerCase().includes(search) ||
-              (p.headline && p.headline.toLowerCase().includes(search)) ||
-              (p.bio && p.bio.toLowerCase().includes(search)),
+            (profile) =>
+              profile.pseudonym.toLowerCase().includes(search) ||
+              profile.headline?.toLowerCase().includes(search) ||
+              profile.bio?.toLowerCase().includes(search),
           )
         }
         const take = args.take ?? 21
@@ -69,7 +85,7 @@ test('TalentsService: return only opt-in profiles (visibleInTalentFeed=true)', a
   const prisma = mockPrisma([mockProfile1, mockProfilePrivate])
   const service = new TalentsService(prisma)
 
-  const result = await service.getFeed({})
+  const result = await service.getFeed({ limit: 20 })
 
   assert.equal(result.items.length, 1)
   assert.equal(result.items[0]?.pseudonym, 'Tsiky')
@@ -82,10 +98,10 @@ test('TalentsService: search filter by pseudonym/headline', async () => {
   const prisma = mockPrisma([mockProfile1, mockProfilePrivate])
   const service = new TalentsService(prisma)
 
-  const resultMatch = await service.getFeed({ search: 'Fullstack' })
+  const resultMatch = await service.getFeed({ search: 'Fullstack', limit: 20 })
   assert.equal(resultMatch.items.length, 1)
 
-  const resultNoMatch = await service.getFeed({ search: 'Inexistant' })
+  const resultNoMatch = await service.getFeed({ search: 'Inexistant', limit: 20 })
   assert.equal(resultNoMatch.items.length, 0)
 })
 
