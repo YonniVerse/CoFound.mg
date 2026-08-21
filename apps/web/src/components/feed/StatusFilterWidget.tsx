@@ -1,5 +1,5 @@
 import { ProjectStatus } from "@cofound/shared";
-import { Check, SlidersHorizontal } from "lucide-react";
+import { Check, ListFilter } from "lucide-react";
 
 interface StatusFilterWidgetProps {
   selectedStatus: ProjectStatus | "ALL";
@@ -42,13 +42,13 @@ export function StatusFilterWidget({
       {/* Header */}
       <div className="flex items-center justify-between pb-2.5 border-b border-border/70">
         <div className="flex items-center gap-2 text-foreground">
-          <SlidersHorizontal className="h-4 w-4 text-primary" />
-          <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider">
+          <ListFilter className="h-4 w-4 text-primary" />
+          <h3 className="text-xs sm:text-sm font-bold">
             Statut du projet
           </h3>
         </div>
         <span className="text-xs text-muted-foreground font-mono font-medium">
-          FILTRES
+          Filtres
         </span>
       </div>
 
