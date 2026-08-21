@@ -1,6 +1,6 @@
 import { Avatar } from "@/components/shared/Avatar";
-import { SkillTag } from "@/components/shared/SkillTag";
 import { Button } from "@/components/ui/button";
+import { Eye, MessageSquare } from "lucide-react";
 
 export interface ProfileData {
   id: string;
@@ -16,53 +16,75 @@ export interface ProfileData {
 
 export function ProfileCard({ profile }: { profile: ProfileData }) {
   return (
-    <div className="bg-background border border-border rounded-xl p-5 shadow-xs hover:shadow-sm transition-all duration-200 flex flex-col gap-4 group">
-      
+    <div className="bg-card border border-border rounded-xl p-5 shadow-2xs hover:border-border/80 transition-all duration-150 flex flex-col gap-3.5 group">
       {/* Header: Avatar, Name, School, Field */}
-      <div className="flex items-start gap-4">
-        <Avatar name={profile.name} src={profile.avatar} size="lg" className="h-14 w-14 border-2 border-background shadow-xs" />
-        <div className="flex flex-col flex-1 pt-1">
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="font-heading font-bold text-lg text-foreground leading-tight group-hover:text-primary transition-colors">
-              {profile.name}
-            </h3>
-            {profile.isFemale && (
-              <span className="h-2 w-2 rounded-full bg-female" title="Profil Féminin" />
-            )}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Avatar
+            name={profile.name}
+            src={profile.avatar}
+            size="md"
+            className="h-11 w-11 border border-border/60 shadow-2xs"
+          />
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-center gap-1.5">
+              <h3 className="font-semibold text-sm sm:text-base text-foreground leading-tight group-hover:text-primary transition-colors truncate">
+                {profile.name}
+              </h3>
+              {profile.isFemale && (
+                <span
+                  className="h-2 w-2 rounded-full bg-female shrink-0"
+                  title="Profil Féminin"
+                />
+              )}
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-normal mt-0.5 truncate">
+              <span>{profile.school}</span>
+              <span>·</span>
+              <span>{profile.field}</span>
+            </div>
           </div>
-          <span className="text-xs text-muted-foreground font-medium">{profile.school} · {profile.field}</span>
         </div>
       </div>
 
       {/* Bio */}
-      <p className="text-sm text-muted-foreground font-medium line-clamp-2">
+      <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
         "{profile.bio}"
       </p>
 
       {/* Skills & Seeking */}
-      <div className="flex flex-col gap-3 py-3 border-y border-border/50 mt-1">
-        <div className="flex flex-col gap-2">
-          <span className="text-xs font-bold text-foreground uppercase tracking-widest opacity-60">Apporte :</span>
-          <div className="flex flex-wrap gap-1.5">
-            {profile.skills.map(skill => (
-              <SkillTag key={skill} label={skill} variant="slate" />
-            ))}
-          </div>
-        </div>
-        
-        <div className="flex flex-col gap-1.5">
-          <span className="text-xs font-bold text-foreground uppercase tracking-widest opacity-60">Cherche :</span>
-          <span className="text-sm text-foreground font-medium">{profile.seeking}</span>
-        </div>
+      <div className="flex flex-wrap items-center gap-1.5 pt-1">
+        {profile.skills.map((skill) => (
+          <span
+            key={skill}
+            className="text-[11px] font-medium bg-muted/60 text-foreground px-2 py-0.5 rounded-md border border-border/40"
+          >
+            {skill}
+          </span>
+        ))}
+        {profile.seeking && (
+          <span className="text-[11px] font-medium bg-primary/10 text-primary px-2 py-0.5 rounded-md">
+            Cherche : {profile.seeking}
+          </span>
+        )}
       </div>
 
-      {/* CTA */}
-      <div className="flex gap-2 mt-auto pt-1 w-full">
-        <Button variant="outline" size="sm" className="h-8 text-xs flex-1">
-          Voir le profil
+      {/* Footer Actions */}
+      <div className="flex items-center justify-end gap-2 pt-2 border-t border-border/50 mt-1">
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-8 px-3 text-xs font-medium rounded-lg border-border hover:bg-accent cursor-pointer gap-1.5"
+        >
+          <Eye className="h-3.5 w-3.5" />
+          <span>Profil</span>
         </Button>
-        <Button size="sm" className="h-8 text-xs flex-1">
-          Contacter
+        <Button
+          size="sm"
+          className="h-8 px-3 text-xs font-medium rounded-lg cursor-pointer gap-1.5"
+        >
+          <MessageSquare className="h-3.5 w-3.5" />
+          <span>Contacter</span>
         </Button>
       </div>
     </div>
