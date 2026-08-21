@@ -4,7 +4,7 @@
 
 ## 1. État actuel
 
-La PR #60 de M-05 est fusionnée dans `dev` via le commit `773a9ed`. La branche active est `feat/M-06-dream-match-scoring`, créée depuis `origin/dev`. La PR #61 de M-06 sera ouverte après le commit du test HTTP et du handoff.
+M-05 est fusionné dans `dev` via la PR #60 et M-06 via la PR #61. M-07 est également fusionné via la PR #62. La branche active est `dev`, synchronisée avec `origin/dev` au commit `c27b5ea`.
 
 ## 2. Livrables de cette session
 
@@ -22,8 +22,8 @@ Les routes de messagerie exigent `message:send` et vérifient l’appartenance �
 
 ## 5. Vigilance et travaux restants
 
-M-05 est intégré dans `dev` après 106 tests API et un test HTTP GET/PATCH. M-06 ajoute les contrats de suggestions, le service de scoring SQL pondéré par compétences, secteurs et disponibilité, l’endpoint `GET /me/dream-match/suggestions`, des tests unitaires et un test HTTP d’intégration. Les tests API comptent 109 réussites ; lint, typecheck et build monorepo passent. Les résultats restent pseudonymisés et aucune identité civile ni genre n’est exposé. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
+M-05 est intégré dans `dev` après 106 tests API et un test HTTP GET/PATCH. M-06 ajoute les contrats de suggestions, le service de scoring SQL pondéré par compétences, secteurs et disponibilité, l’endpoint `GET /me/dream-match/suggestions`, des tests unitaires et un test HTTP d’intégration. M-07 connecte ce contrat au frontend et affiche les facteurs explicatifs sans score numérique. Les tests API comptent 109 réussites ; lint, typecheck et build monorepo passent. Les résultats restent pseudonymisés et aucune identité civile ni genre n’est exposé. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
 
 ## 6. Prochaine action
 
-PR #61 ouverte pour M-06. Après revue et fusion, implémenter M-07 (facteurs explicatifs), puis M-08 (retour « pas intéressé » et exclusion). M-12 à M-16 restent à traiter selon les dépendances du backlog.
+M-08 est la prochaine priorité Rino : retour « pas intéressé » et exclusion transactionnelle des suggestions. Ensuite M-14 concerne le signalement transverse. M-12, M-13, M-15 et M-16 restent à traiter par leurs propriétaires selon le backlog.

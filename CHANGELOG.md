@@ -27,9 +27,20 @@ Retiré · En cours · Bloqué**.
 - Lint, typecheck et build du monorepo réussis.
 - Chunk frontend maximal observé : `vendor-data` à 363,98 kB, sous le seuil de 500 kB.
 
+### Modifié
+
+- La PR #61 de M-06 est fusionnée dans `dev`.
+- La PR #62 de M-07 est fusionnée dans `dev`.
+- L’écran Dream-Match récupère les suggestions via le client API réel et affiche les facteurs explicatifs sans score numérique.
+
+### Validation
+
+- 109/109 tests API réussis.
+- Typecheck, lint et build frontend réussis.
+
 ### En cours
 
-- Revue de code et fusion de la PR #61.
+- M-08 — retour « pas intéressé » et exclusion transactionnelle.
 
 ---
 
