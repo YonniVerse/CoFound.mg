@@ -10,11 +10,11 @@
 
 - **Dernière mise à jour** : 2026-08-21.
 - **Vague** : Vague 3 — Projet.
-- **Ticket courant** : **P-08 — Membres & rôles**, finalisation technique effectuée, publication du correctif en attente.
+- **Ticket courant** : **P-08 — Membres & rôles**, finalisé techniquement, PR ouverte.
 - **Branche Git** : `P-08`.
 - **PR P-07** : [#49](https://github.com/YonniVerse/CoFound.mg/pull/49), ouverte vers `dev`.
 - **PR P-06** : [#48](https://github.com/YonniVerse/CoFound.mg/pull/48), ouverte vers `dev`.
-- **État Git** : modifications P-08 non commitées ; plusieurs fichiers de documentation hérités restent non suivis et ne doivent pas être ajoutés automatiquement.
+- **État Git** : branche P-08 synchronisée avec `origin/P-08` au commit `2fcd742`; seuls des fichiers hérités non suivis restent dans le workspace et ne doivent pas être ajoutés.
 
 ## 2. Tickets réalisés et en cours
 
@@ -59,4 +59,4 @@ Les contrats partagés P-08 couvrent les rôles et la réponse équipe. La liste
 
 ## 6. Prochaine action
 
-**Publier la finalisation P-08** : lancer `git diff --check`, committer les fichiers P-08, pousser `P-08` et mettre à jour la PR #50 avec les tests HTTP et le branchement API réel.
+**Faire relire puis fusionner la PR #50** : vérifier les commentaires CI/revue sur https://github.com/YonniVerse/CoFound.mg/pull/50, puis fusionner vers `dev` après validation humaine.
