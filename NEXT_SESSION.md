@@ -6,7 +6,7 @@
 **Branche** : `P-04`, créée depuis `dev` après fusion de P-02
 **Ticket courant** : P-04 — Postes ouverts et compétences requises
 **Vague** : Vague 3 — Le projet
-**État du workspace** : implémentation P-04 non committée ; P-03 reste en PR #46 ; aucun secret Neon ajouté
+**État du workspace** : commit `bac47a2` publié sur `origin/P-04` ; PR P-04 ouverte vers `dev` ; P-03 reste en PR #46 ; aucun secret Neon ajouté
 
 ---
 ## 1. Tickets Vague 3
@@ -59,4 +59,4 @@ Validations actuelles : `pnpm --filter api test` — 59 passants ; `pnpm --filte
 ---
 ## 7. À faire ensuite
 
-Ajouter l’écran UI-27 `/projects/:id/team` et une source de sélection des Skills du référentiel, puis ajouter les scénarios de création, modification, fermeture et isolation des postes avant de committer P-04 et ouvrir sa PR. Vigilances restantes : file offline persistante, conflit BMC et lecture publique à traiter dans les tickets concernés.
+Ajouter l’écran UI-27 `/projects/:id/team` et une source de sélection des Skills du référentiel, puis ajouter les scénarios frontend et la fermeture explicite des postes avant de compléter la PR P-04. Vigilances restantes : file offline persistante, conflit BMC et lecture publique à traiter dans les tickets concernés.
