@@ -53,3 +53,30 @@ test('M-11 relit la conversation gagnante après une collision concurrente', asy
   const result = await new MessagingService(prisma).openDirect('a', 'connection-1')
   assert.deepEqual(result, { id: 'conv-winner' })
 })
+
+test('P-10 refuse l’ouverture du canal à un ancien membre', async () => {
+  const prisma: any = {
+    $transaction: async (fn: any) => fn({ projectMember: { findFirst: async () => null } }),
+  }
+  await assert.rejects(() => new MessagingService(prisma).openProject('u1', 'project-1'), (error: any) => error?.response?.code === 'PROJECT_CHANNEL_ACCESS_DENIED')
+})
+
+test('P-10 crée un canal PROJECT avec tous les membres actifs', async () => {
+  let created: any
+  const prisma: any = {
+    $transaction: async (fn: any) => fn({
+      projectMember: {
+        findFirst: async () => ({ id: 'member-1' }),
+        findMany: async () => [{ userId: 'u1' }, { userId: 'u2' }],
+      },
+      conversation: {
+        findUnique: async () => null,
+        create: async (args: any) => { created = args; return { id: 'conversation-1', type: 'PROJECT', projectId: 'project-1' } },
+      },
+    }),
+  }
+  await new MessagingService(prisma).openProject('u1', 'project-1')
+  assert.equal(created.data.type, 'PROJECT')
+  assert.equal(created.data.projectId, 'project-1')
+  assert.deepEqual(created.data.participants.create, [{ userId: 'u1' }, { userId: 'u2' }])
+})

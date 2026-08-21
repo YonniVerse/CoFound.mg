@@ -4,7 +4,7 @@
 
 ## 1. État actuel
 
-La branche active est `M-09`, basée sur `origin/dev`. Les corrections de la chaîne API M-09, M-10 et M-11 sont committées localement et doivent être poussées dans la PR #55 vers `dev`. P-10 n’est donc pas déclaré terminé.
+La branche active est `M-09`, basée sur `origin/dev`. M-09, M-10, M-11 et l’intégration P-10 sont implémentés localement et doivent être poussés dans la PR #55 vers `dev`. P-10 est fonctionnel localement, mais n’est pas encore fusionné dans `dev`.
 
 ## 2. Livrables de cette session
 
@@ -22,8 +22,8 @@ Les routes de messagerie exigent `message:send` et vérifient l’appartenance �
 
 ## 5. Vigilance et travaux restants
 
-Les tests ciblés M-09/M-10/M-11 sont ajoutés et la suite compte 97 tests réussis. L’écran ou mock P-10 n’a pas été retrouvé dans les fichiers frontend recherchés, donc son remplacement par le client API réel reste à localiser et réaliser. La PR #55 doit être revue avant fusion. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés au commit.
+Les tests ciblés M-09/M-10/M-11/P-10 sont ajoutés et la suite compte 99 tests réussis. P-10 dispose maintenant de l’écran `/projects/:id/channel`, du client API et d’un canal `PROJECT` réservé aux membres actifs. La PR #55 doit être revue avant fusion. L’audit détaillé des Vagues 2 et 3 est disponible dans `audit-vagues-2-3.md`. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
 
 ## 6. Prochaine action
 
-Pousser les corrections sur la PR #55, faire vérifier les contrôles GitHub, puis revoir et fusionner la PR; ensuite localiser et raccorder l’écran/mock P-10 aux routes M-11 avant de déclarer P-10 terminé.
+Pousser les changements P-10 dans la PR #55, vérifier les contrôles GitHub, puis fusionner vers `dev`; ensuite exécuter la démonstration de recette authentifiée avant de clôturer Vague 3.

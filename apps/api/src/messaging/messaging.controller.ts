@@ -11,6 +11,9 @@ export class MessagingController {
   @Post('from-connection/:connectionId')
   @RequirePermissions(Permission.MESSAGE_SEND)
   open(@Req() req: AuthenticatedRequest, @Param('connectionId') id: string) { return this.service.openDirect(req.user!.userId, id) }
+  @Post('project/:projectId')
+  @RequirePermissions(Permission.MESSAGE_SEND)
+  openProject(@Req() req: AuthenticatedRequest, @Param('projectId') projectId: string) { return this.service.openProject(req.user!.userId, projectId) }
   @Get()
   @RequirePermissions(Permission.MESSAGE_SEND)
   list(@Req() req: AuthenticatedRequest) { return this.service.list(req.user!.userId) }

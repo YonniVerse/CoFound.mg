@@ -519,4 +519,6 @@ export type ConnectionView = z.infer<typeof connectionSchema>
 export type ConversationView = z.infer<typeof conversationSchema>
 export type ConversationMessageCreateInput = z.infer<typeof conversationMessageCreateSchema>
 export type ConversationMessage = z.infer<typeof conversationMessageSchema>
+export const conversationMessagesResponseSchema = z.object({ items: z.array(conversationMessageSchema) })
+export type ConversationMessagesResponse = z.infer<typeof conversationMessagesResponseSchema>
 

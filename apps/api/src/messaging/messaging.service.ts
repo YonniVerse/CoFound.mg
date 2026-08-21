@@ -26,6 +26,18 @@ export class MessagingService {
     }
   }
 
+  async openProject(userId: string, projectId: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const member = await tx.projectMember.findFirst({ where: { projectId, userId, leftAt: null } })
+      if (!member) throw new ForbiddenException({ code: 'PROJECT_CHANNEL_ACCESS_DENIED', messageKey: 'errors.projectChannelAccessDenied' })
+      const existing = await tx.conversation.findUnique({ where: { projectId } })
+      if (existing) return existing
+      const members = await tx.projectMember.findMany({ where: { projectId, leftAt: null }, select: { userId: true } })
+      if (members.length === 0) throw new ForbiddenException({ code: 'PROJECT_CHANNEL_ACCESS_DENIED', messageKey: 'errors.projectChannelAccessDenied' })
+      return tx.conversation.create({ data: { type: 'PROJECT', projectId, participants: { create: members.map(({ userId: participantId }) => ({ userId: participantId })) } } })
+    })
+  }
+
   list(userId: string) {
     return this.prisma.conversation.findMany({ where: { participants: { some: { userId } } }, orderBy: { createdAt: 'desc' } })
   }
@@ -38,7 +50,7 @@ export class MessagingService {
   async messages(userId: string, conversationId: string) {
     await this.assertParticipant(userId, conversationId)
     const rows = await this.prisma.message.findMany({ where: { conversationId }, orderBy: { createdAt: 'asc' }, include: { author: { select: { talentProfile: { select: { pseudonym: true } } } } } })
-    return rows.map(({ author, ...message }) => ({ ...message, authorPseudonym: author.talentProfile?.pseudonym ?? 'Membre' }))
+    return { items: rows.map(({ author, ...message }) => ({ ...message, authorPseudonym: author.talentProfile?.pseudonym ?? 'Membre' })) }
   }
 
   async send(userId: string, conversationId: string, input: ConversationMessageCreateInput) {
