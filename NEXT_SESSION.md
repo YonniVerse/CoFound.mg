@@ -1,14 +1,13 @@
-# État courant — CoFound.mg
-
 > Fichier de reprise de contexte. Chargé automatiquement par `CLAUDE.md`.
 > Mis à jour par la commande `/handoff` en fin de session.
 >
-> **Ne contient que l'état vivant.** L'historique va dans `CHANGELOG.md`, les décisions
-> arrêtées dans `CLAUDE.md`, le détail dans `docs/`.
+> **Ne contient que l’état vivant.** L’historique va dans `CHANGELOG.md`, les décisions arrêtées
+> dans `CLAUDE.md`, le détail dans `docs/`.
 
-**Dernière mise à jour** : 2026-08-20
-**Phase** : vague 0 (Fondations) — `F-01` terminé, `F-02` à `F-19` restants
-**Branche** : `dev`, alignée sur `origin/dev` (dernier commit `30a05a7`)
+**Dernière mise à jour** : 2026-08-21
+**Phase** : vague 0 (Fondations) — **F-01 à F-19 intégrés dans `dev`**
+**Branche** : `dev`, alignée sur `origin/dev` (dernier commit `09f1155`)
+**État du workspace** : propre
 
 ---
 
@@ -16,95 +15,84 @@
 
 | Élément | État |
 |---|---|
-| Documentation produit, technique, business | ✅ 9 documents dans `docs/` |
-| Dépôt rapatrié dans `~/Lab/CoFound.mg` | ✅ historique et remote intacts |
-| Monorepo pnpm — `apps/web`, `packages/shared` | ✅ `F-01` |
-| `pnpm dev` / `build` / `typecheck` / `lint` | ✅ tous verts |
-| `packages/shared` | ✅ énumérations et invariants ; schémas Zod au ticket `F-11` |
-| Backend `apps/api` | ⬜ dossier vide avec un README — ticket `F-05` |
-| CI, Docker Compose, infrastructure | ⬜ rien — tickets `F-02`, `F-03`, `F-16` |
+| Documentation produit, technique et business | ✅ Cadrage complet dans `docs/` |
+| Monorepo pnpm | ✅ `apps/web`, `apps/api`, `packages/shared` |
+| CI GitHub Actions | ✅ lint, typecheck, tests, build et budget bundle |
+| Authentification et sessions | ✅ argon2id, JWT court, refresh cookie rotatif, réinitialisation |
+| RBAC et confidentialité | ✅ Bearer global, permissions à refus par défaut, projections pseudonymes |
+| Audit | ✅ écriture seule, interceptor et annotations des mutations sensibles |
+| Contrats partagés et i18n | ✅ Zod partagé, codes d’erreur, fr/mg et catalogue lazy-loaded |
+| Design system | ✅ tokens OKLCH, corrections C1 à C5, primitives partagées |
+| Client HTTP web | ✅ `apps/web/src/lib/api-client.ts`, Bearer uniquement en mémoire |
+| File de traitements | ✅ pg-boss sur PostgreSQL, worker séparé, service Compose dédié |
+| Déploiement | ✅ image API/worker, Caddy, Compose production, workflow GHCR + SSH |
+| Sauvegardes | ✅ dump PostgreSQL chiffré, R2, checksum, restauration vers base jetable |
+| Observabilité | ✅ Sentry conditionnel, pino redacted, readiness PostgreSQL |
+| Base de données Neon | ✅ Projet `CoFound.mg`, branche `main`, base `neondb`, migrations et seed appliqués |
+| Tests négatifs RBAC et healthcheck | ✅ 12 tests API, tous passants |
+| Budget JavaScript initial | ✅ 271 701 octets gzip, sous le cliquet de 290 221 |
 
-Le web tourne sur `http://localhost:5173` avec des données simulées
-(`apps/web/src/data/*Api.ts`), derrière la même interface que la future API.
-
----
-
-## 2. Prochaine action
-
-> **Ticket `F-03` — pipeline CI GitHub Actions.**
-> Créer `.github/workflows/ci.yml` : `pnpm install --frozen-lockfile`, puis
-> `pnpm lint`, `pnpm typecheck`, `pnpm build`. Node 22, pnpm 11, cache pnpm.
-
-À faire maintenant **parce que tout est vert** : la CI verrouille cet état avant que le
-backend n'arrive. Un dépôt dont la CI naît rouge est un dépôt où personne ne regarde la CI.
-
-`pnpm test` n'a encore rien à exécuter — ne pas l'ajouter au workflow avant `F-19`, sinon
-l'étape échoue ou ment.
-
-### Décision à prendre dans le même ticket — `F-04`, budget de performance
-
-Le build produit **959 Ko de JS (293 Ko gzip)**, contre les 200 Ko fixés dans
-`docs/architecture.md` §6. Poser le seuil à 200 Ko rendrait la CI rouge immédiatement.
-
-**Approche recommandée — le cliquet** : fixer le plafond à la valeur actuelle, de sorte
-qu'aucune modification ne puisse aggraver la situation, et le descendre par paliers au
-ticket `S-10`. La CI reste verte et exploitable, et le budget cible reste inscrit dans
-l'architecture comme objectif, pas comme fiction.
-
-Ensuite, chemin critique : **`F-05` → `F-07` → `F-08` → `F-09`**. Tant que ces quatre
-tickets ne sont pas fusionnés, la moitié du backlog est bloquée.
-
-Backlog complet : `docs/plan-de-developpement.md`.
+Les pull requests finales sont fusionnées dans `dev` : [#20](https://github.com/YonniVerse/CoFound.mg/pull/20), [#21](https://github.com/YonniVerse/CoFound.mg/pull/21), [#22](https://github.com/YonniVerse/CoFound.mg/pull/22), [#23](https://github.com/YonniVerse/CoFound.mg/pull/23), [#24](https://github.com/YonniVerse/CoFound.mg/pull/24) et [#27](https://github.com/YonniVerse/CoFound.mg/pull/27).
 
 ---
 
-## 3. Actions à lancer en parallèle, dès maintenant
+## 2. Validation finale
 
-Ces trois-là ont un délai externe et doivent partir avant le code.
+Les commandes suivantes passent sur `dev` :
 
-| Action | Pourquoi maintenant | Qui |
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm check:bundle
+```
+
+La suite API compte actuellement **12 tests**. Les deux cas du readiness check couvrent PostgreSQL disponible et PostgreSQL indisponible avec réponse HTTP 503.
+
+La base Neon `CoFound.mg` est créée dans le projet `autumn-scene-61665488`, sur la branche `main` (`br-snowy-credit-aragwop4`) et la base `neondb`. Les migrations `0001_initial` et `0002_auth_tokens` sont appliquées, les extensions `pg_trgm` et `unaccent` sont présentes, et le seed contient 8 filières, 6 régions, 8 secteurs et 10 compétences.
+
+Le sandbox ne dispose pas de Docker. Le build Docker réel et le démarrage Compose de production restent donc à exécuter sur le VPS ou dans une machine équipée de Docker. La simulation `pnpm deploy --filter @cofound/api --prod --legacy` a confirmé que le runtime déployable contient Prisma et ses dépendances de production.
+
+---
+
+## 3. Prochaine action recommandée
+
+La vague 0 est techniquement terminée. La prochaine séquence du plan est la **Vague 1 — chaîne d’entrée** : domaine et délivrabilité email (`E-01`), envoi transactionnel et gabarits (`E-02`), import CSV/XLSX et invitations (`E-03` à `E-09`), puis profil et onboarding (`E-12` à `E-15`).
+
+Avant le premier déploiement de recette, effectuer les opérations d’exploitation suivantes :
+
+| Action | Pourquoi | État |
 |---|---|---|
-| **Corriger le répertoire racine Vercel** → `apps/web` | Le projet pointe encore sur `frontend/`. Le prochain déploiement échouera. Action manuelle, hors dépôt. | Yonni |
-| **Enregistrer le domaine `.mg`** | Démarches locales via le registre national, délai incompressible. La délivrabilité email en dépend. | Yonni |
-| **Obtenir un vrai fichier d'étudiants de l'ESP-Antsiranana** | Risque `R2` : les fichiers réels ne ressemblent jamais aux hypothèses. À tester avant d'écrire le parseur. | Rino |
-| **3 entretiens de validation partenaires** | Hypothèses `H1` et `H4` — les deux qui peuvent tuer le projet. | CEO |
+| Renseigner les secrets de l’environnement GitHub `production` | Autoriser publication GHCR et déploiement SSH | ⬜ À faire |
+| Créer `/srv/cofound/deploy/.env` sur le VPS | Fournir `DATABASE_URL`, `JWT_SECRET`, R2, backup et Sentry | ⬜ À faire |
+| Renseigner `apps/api/.env` localement si nécessaire | Connecter un environnement local à Neon sans commiter le secret | ⬜ À faire |
+| Vérifier le domaine Caddy et les enregistrements DNS | Obtenir le certificat TLS automatique | ⬜ À faire |
+| Exécuter une sauvegarde puis `restore-test` | Vérifier la restauration avant la production | ⬜ À faire |
+| Configurer SPF, DKIM et DMARC | Réduire le risque critique `R1` avant les invitations | ⬜ À faire |
 
 ---
 
-## 4. Questions ouvertes
+## 4. Points de vigilance actifs
+
+- **Le transport email de F-15 est volontairement provisoire** : la queue et le worker sont prêts, mais le fournisseur et les gabarits transactionnels relèvent de `E-02`. Les jobs de réinitialisation sont publiés sans jamais renvoyer le jeton brut par l’API.
+- **La clé `BACKUP_ENCRYPTION_KEY` doit être distincte de `JWT_SECRET`**, conservée hors Git et récupérable lors d’une restauration. `RESTORE_DATABASE_URL` doit toujours pointer vers une base jetable.
+- **Sentry est activé uniquement si `SENTRY_DSN` est défini**. Pino reste actif et redacted les cookies, Authorization, mots de passe et jetons.
+- **Le healthcheck `/api/v1/health` dépend de PostgreSQL**. Une base indisponible doit empêcher le service API d’être considéré comme prêt.
+- **Le budget actuel est un cliquet architectural**, pas encore l’objectif final de 200 Ko gzip. La baisse progressive reste à traiter dans `S-10`.
+- **Ne jamais faire de `chmod -R` sur le dépôt.** Une copie antérieure depuis un support FAT/NTFS avait produit des modifications de mode sans changement de contenu.
+
+---
+
+## 5. Questions ouvertes
 
 | # | Question | Bloque quoi | Pour qui |
 |---|---|---|---|
 | Q-1 | Montants des formules partenaires | Le business plan, pas le développement | CEO |
-| Q-2 | `CoFound.mg` ou `CoFounder.mg` ? Les deux apparaissent dans les documents | Domaine, marque, tous les supports | CEO |
-| Q-3 | Statut juridique de l'entité et échéance | Contrats institutionnels | CEO |
-| Q-4 | Quel établissement pilote en premier, et quand ? | Le calendrier de lancement | CEO + Yonni |
-| Q-5 | Fournisseur de base managée (Neon / Supabase / Aiven) | Tickets `F-02` et `F-16` | Yonni |
-
----
-
-## 5. Points de vigilance actifs
-
-- **Bundle à 959 Ko (293 Ko gzip)** contre un budget de 200 Ko. Causes : aucun découpage de
-  code, `recharts` et `framer-motion` chargés d'emblée. Ticket `S-10`. Voir §2 pour le
-  contournement retenu en attendant.
-- **Le prototype n'a jamais eu `strict` activé.** Il l'est depuis `F-01`, et six erreurs
-  préexistantes rendaient déjà le build rouge avant cette session. Tout nouveau code repris
-  du prototype peut en révéler d'autres — le typecheck avant commit n'est pas optionnel.
-- **Ne jamais faire de `chmod -R` sur le dépôt.** Une copie antérieure depuis un support
-  FAT/NTFS avait passé 218 fichiers en `755`, produisant 218 fichiers « modifiés » sans un
-  seul changement de contenu. Si ça se reproduit :
-  `git ls-files -s | awk -F'\t' '$1 ~ /^100644/ {print $2}' | tr '\n' '\0' | xargs -0 chmod 644`
-- **Corrections à appliquer au prototype** au ticket `F-13` :
-  - `C1` — retirer `isFemale` et `FemaleBadge` **des profils de personnes** (garder
-    `isFemaleImpact` sur les projets)
-  - `C2` — unifier le pseudonymat dans les feeds (`ProjectCard` affiche encore le nom en clair)
-  - `C3` — sortir le type `sector` du code, le mettre en base
-  - `C4` — supprimer `SignupPage` (il n'y a plus d'inscription)
-  - `C5` — passer `SchoolLeaderboard` en vue privée
-- **`R1` — délivrabilité des invitations** : risque numéro un du produit. SPF, DKIM et DMARC
-  configurés **avant** le premier envoi. Repli : l'établissement distribue une liste de liens
-  d'activation générée depuis sa console.
+| Q-2 | `CoFound.mg` ou `CoFounder.mg` ? | Domaine, marque et supports | CEO |
+| Q-3 | Statut juridique de l’entité | Contrats institutionnels | CEO |
+| Q-4 | Établissement pilote et calendrier | Import réel et recette | CEO + Yonni |
+| Q-5 | Fournisseur email transactionnel et configuration SPF/DKIM/DMARC | `E-01` et `E-02` | Yonni |
 
 ---
 
@@ -114,6 +102,8 @@ Ces trois-là ont un délai externe et doivent partir avant le code.
 |---|---|---|
 | **Yonni** (CTO) | Socle transversal, infrastructure, auth/RBAC/privacy/audit, messagerie, notifications | 42 j |
 | **Rino** | Import, invitations, profil et onboarding, Dream-Match, console établissement, modération | 38,5 j |
-| **Norman** | Design system (**référent frontend**), feeds, recherche, espace projet, console partenaire | 50 j |
+| **Norman** | Design system, feeds, recherche, espace projet, console partenaire | 50 j |
 
-Total : **130,5 jours-homme**, soit ~9 à 11 semaines à trois à temps plein.
+Total : **130,5 jours-homme**, soit environ 9 à 11 semaines à trois personnes à temps plein.
+
+Backlog complet : [`docs/plan-de-developpement.md`](docs/plan-de-developpement.md).

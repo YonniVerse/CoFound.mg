@@ -1,0 +1,5 @@
+# Sauvegarde quotidienne à 02:15 UTC.
+15 2 * * * cd /srv/cofound && docker compose --env-file deploy/.env -f deploy/compose.production.yml --profile backup run --rm backup >> /var/log/cofound-backup.log 2>&1
+
+# Exemple de restauration manuelle vers RESTORE_DATABASE_URL (jamais DATABASE_URL).
+# cd /srv/cofound && docker compose --env-file deploy/.env -f deploy/compose.production.yml --profile restore-test run --rm restore-test

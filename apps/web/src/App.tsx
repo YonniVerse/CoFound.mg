@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import LandingPage from "@/pages/LandingPage";
-import SignupPage from "@/pages/SignupPage";
 import OnboardingPage from "@/pages/OnboardingPage";
 import FeedPage from "@/pages/FeedPage";
 import ProjectDetailPage from "@/pages/ProjectDetailPage";
@@ -26,7 +25,6 @@ function App() {
         </Route>
 
         {/* Routes Plein Écran (Auth & Onboarding) */}
-        <Route path="/signup" element={<SignupPage />} />
         <Route path="/onboarding" element={<OnboardingPage />} />
         
         {/* Applicatif (Dashboard) */}

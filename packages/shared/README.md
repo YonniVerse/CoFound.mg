@@ -12,14 +12,14 @@ divergeraient. Voir `docs/stack-technique-et-justifications.md` §13.
 | Contenu | Ticket | État |
 |---|---|---|
 | Énumérations du domaine | `F-01` | ✅ |
-| Schémas de validation Zod | `F-11` | ⬜ |
-| Codes d'erreur | `F-11` | ⬜ |
+| Schémas de validation Zod | `F-11` | ✅ |
+| Codes d'erreur | `F-11` | ✅ |
 
 ## Convention
 
 Le paquet **exporte ses sources TypeScript**, sans étape de compilation. Les consommateurs
-les transpilent (Vite le fait nativement). Quand `apps/api` sera initialisé au ticket
-`F-05`, sa configuration de compilation devra inclure ce paquet.
+les transpilent (Vite le fait nativement). Quand `apps/api` est compilée, sa configuration inclut ce paquet et conserve les mêmes règles
+de validation au bord de l’API.
 
 ## Règle
 

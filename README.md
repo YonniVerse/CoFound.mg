@@ -97,7 +97,17 @@ pnpm install
 pnpm dev            # web : http://localhost:5173
 ```
 
-Le backend n'existe pas encore : les données proviennent de modules simulés
+Pour lancer l’environnement complet avec Postgres et les trois services conteneurisés :
+
+```bash
+docker compose up --build
+```
+
+Le web est disponible sur `http://localhost:5173`, l’API NestJS répond sur
+`http://localhost:3000/api/v1/health` et Postgres écoute sur `localhost:5432`. Le serveur API NestJS est initialisé au ticket `F-05`; les modules métier et les garanties
+transversales arrivent dans les tickets suivants de la vague 0.
+
+Le backend métier n'existe pas encore : les données du prototype proviennent de modules simulés
 (`apps/web/src/data/*Api.ts`), exposés derrière la même interface que la future API. Le
 branchement se fera au ticket `F-14`, en remplaçant ces modules — sans toucher aux
 composants.

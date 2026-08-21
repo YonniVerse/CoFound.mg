@@ -181,7 +181,7 @@ export default function OnboardingPage() {
                 <p className="text-sm text-muted-foreground font-medium">Aidez-nous à rendre l'écosystème plus paritaire.</p>
               </div>
 
-              <div className="space-y-4 bg-female-light/30 border border-female/20 p-5 rounded-xl">
+              <div className="space-y-4 bg-primary-light/30 border border-primary/20 p-5 rounded-xl">
                 <Label className="text-foreground font-semibold">Quel est votre genre ? (Optionnel)</Label>
                 <p className="text-xs text-muted-foreground font-medium mb-3">Ces données sont anonymisées et alimentent notre Dashboard de Parité public.</p>
                 <RadioGroup value={gender} onValueChange={setGender} className="flex flex-wrap gap-4">
@@ -200,12 +200,12 @@ export default function OnboardingPage() {
                 </RadioGroup>
 
                 {gender === "woman" && (
-                  <div className="pt-4 border-t border-female/20 mt-4 animate-in fade-in slide-in-from-top-2 duration-300 flex items-center justify-between gap-4">
+                  <div className="pt-4 border-t border-primary/20 mt-4 animate-in fade-in slide-in-from-top-2 duration-300 flex items-center justify-between gap-4">
                     <div className="space-y-0.5 flex-1">
-                      <Label className="font-semibold text-female">Activer l'Espace Sécurisé</Label>
+                      <Label className="font-semibold text-primary">Activer l'Espace Sécurisé</Label>
                       <p className="text-xs font-medium text-muted-foreground">Rendre mon profil visible uniquement aux femmes en premier.</p>
                     </div>
-                    <Switch checked={femalePriority} onCheckedChange={setFemalePriority} className="data-[state=checked]:bg-female" />
+                    <Switch checked={femalePriority} onCheckedChange={setFemalePriority} className="data-[state=checked]:bg-primary" />
                   </div>
                 )}
               </div>
@@ -246,7 +246,7 @@ export default function OnboardingPage() {
                 Suivant
               </Button>
             ) : (
-              <Button onClick={handleFinish} size="md" disabled={isLoading} className="bg-female hover:bg-female/90 text-white">
+              <Button onClick={handleFinish} size="md" disabled={isLoading} className="bg-primary hover:bg-primary/90 text-white">
                 {isLoading ? "Finalisation..." : "Terminer et Explorer"}
               </Button>
             )}

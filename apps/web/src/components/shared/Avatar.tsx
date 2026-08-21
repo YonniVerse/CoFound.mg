@@ -25,7 +25,7 @@ function getSemanticThemeColor(name: string): string {
   const designSystemCombos = [
     "bg-primary-light text-primary border border-primary/10",
     "bg-secondary-light text-secondary border border-secondary/10",
-    "bg-female-light text-female border border-female/10",
+    "bg-secondary-light text-secondary border border-secondary/10",
     "bg-muted text-foreground border border-border",
     "bg-accent text-accent-foreground border border-border/50",
   ] as const;
