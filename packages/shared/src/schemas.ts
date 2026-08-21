@@ -387,3 +387,41 @@ export const openPositionResponseSchema = z.object({
 export const projectPositionsResponseSchema = z.object({ projectId: idSchema, positions: z.array(openPositionResponseSchema) })
 export type OpenPositionCreateInput = z.infer<typeof openPositionCreateSchema>
 export type OpenPositionPatchInput = z.infer<typeof openPositionPatchSchema>
+
+// ─── Tâches projet (P-09) ───────────────────────────────────────────────────────
+
+export const taskStatusSchema = z.enum(['TODO', 'DOING', 'BLOCKED', 'DONE'])
+
+export const createProjectTaskSchema = z.object({
+  title: z.string().trim().min(1).max(160),
+  description: z.string().trim().max(4_000).optional().nullable(),
+  assigneeId: idSchema.optional().nullable(),
+  dueDate: z.coerce.date().optional().nullable(),
+  status: taskStatusSchema.optional(),
+})
+
+export const updateProjectTaskSchema = createProjectTaskSchema.partial()
+
+export const projectTaskSchema = z.object({
+  id: idSchema,
+  projectId: idSchema,
+  title: z.string(),
+  description: z.string().nullable(),
+  assigneeId: idSchema.nullable(),
+  assigneePseudonym: z.string().nullable(),
+  dueDate: z.coerce.date().nullable(),
+  status: taskStatusSchema,
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export const projectTasksResponseSchema = z.object({
+  projectId: idSchema,
+  tasks: z.array(projectTaskSchema),
+})
+
+export type TaskStatusInput = z.infer<typeof taskStatusSchema>
+export type CreateProjectTaskInput = z.infer<typeof createProjectTaskSchema>
+export type UpdateProjectTaskInput = z.infer<typeof updateProjectTaskSchema>
+export type ProjectTask = z.infer<typeof projectTaskSchema>
+export type ProjectTasksResponse = z.infer<typeof projectTasksResponseSchema>

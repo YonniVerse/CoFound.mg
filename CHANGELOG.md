@@ -10,6 +10,27 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-21 — Démarrage de P-09 : gestion des tâches projet
+
+### Décidé
+
+- Les tâches sont visibles uniquement par les membres actifs du projet, car le travail d’équipe doit rester dans l’espace projet privé.
+- L’assignation est limitée aux membres actifs et les mutations passent par une transaction Prisma, afin d’éviter les responsables orphelins et les écritures partielles.
+
+### Ajouté
+
+- Schémas partagés P-09 pour les statuts, la création, la mise à jour et la réponse des tâches.
+- `ProjectTasksService` et `ProjectTasksController` avec CRUD REST, échéance, statut et responsable pseudonymisé.
+- Tests unitaires et tests HTTP ciblés P-09 : **5/5 réussis**.
+- Écran lazy `/projects/:id/tasks` et appels CRUD réels dans `projectApi`.
+
+### En cours
+
+- La branche `P-09` doit encore être commitée, poussée et publiée en PR vers `dev`.
+- La dépendance M-10 doit être confirmée avant la fusion finale de la chaîne de la Vague 3.
+
+---
+
 ## 2026-08-21 — Finalisation technique de P-08 : intégration HTTP et UI-29 réelle
 
 ### Ajouté
