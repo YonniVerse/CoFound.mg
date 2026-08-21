@@ -1,23 +1,29 @@
 # Context Handoff — Reprise de session CoFound.mg
 
-> Lire ce fichier en premier à chaque nouvelle session. Source de vérité : `docs/plan-de-developpement.md`.
+> Lire ce fichier en premier à chaque nouvelle session. Sources de vérité : le dépôt et `docs/plan-de-developpement.md`.
 
-## État actuel
+## 1. État actuel
 
-La Vague 3 — Projet est avancée jusqu’à P-13. P-09 a été fusionné via la PR #51 au commit `cc479101`. P-11 a été fusionné via la PR #52 au commit `4016380`. P-12 et P-13 ont été fusionnés via la PR #53 au commit `2df0dfb`.
+La branche active est `M-09`, basée sur `origin/dev`. M-09, M-10, M-11 et l’intégration P-10 sont implémentés localement et doivent être poussés dans la PR #55 vers `dev`. P-10 est fonctionnel localement, mais n’est pas encore fusionné dans `dev`.
 
-P-10 reste bloqué par M-11, lui-même dépendant de M-10. L’audit GitHub et du code ne trouve aucun service ou contrôleur M-10/M-11 dans `origin/dev`; les modèles Prisma existent, mais l’implémentation métier doit être fournie par Yonni, propriétaire indiqué par le backlog. Le mock P-10 reste disponible sur sa branche dédiée.
+## 2. Livrables de cette session
 
-## Livrables
+M-09 expose la création, la liste des demandes entrantes et la décision accepter/refuser, avec quota mensuel de cinq demandes, refus silencieux de doublon pendant l’état `PENDING` et écritures transactionnelles. M-10 crée une connexion idempotente à partir d’une demande acceptée, normalise la paire d’identifiants et fournit les lectures limitées aux membres. M-11 fournit l’ouverture d’une conversation directe depuis une connexion, la liste des conversations, la lecture et l’envoi de messages.
 
-P-08 et P-09 couvrent les membres, rôles, tâches, responsables, échéances et statuts avec contrôle des membres actifs et mutations transactionnelles. P-11 couvre les publications projet et leur écran frontend. P-12 couvre l’export JSON réservé au propriétaire. P-13 couvre le détail public avec filtrage des blocs BMC privés, postes fermés, publications expirées et identités civiles.
+Les fichiers principaux sont `apps/api/src/connection/connection-request.service.ts`, `apps/api/src/connection/connection-request.controller.ts`, `apps/api/src/connection/connection.service.ts`, `apps/api/src/connection/connection.controller.ts`, `apps/api/src/connection/connection.module.ts`, `apps/api/src/messaging/messaging.service.ts`, `apps/api/src/messaging/messaging.controller.ts`, `apps/api/src/messaging/messaging.module.ts`, `apps/api/src/app.module.ts` et `packages/shared/src/schemas.ts`.
 
-## Validation finale après fusions
+## 3. Validation exécutée
 
-La suite API complète sur `origin/dev` passe avec **92/92 tests réussis**. Les tests HTTP P-11, P-12 et P-13 passent avec **4/4 réussis**. Le typecheck API/frontend, le lint frontend et le build frontend sont réussis. La validation avec Prisma réel/Neon et un parcours authentifié reste à effectuer si l’environnement de recette est disponible.
+Les tests API passent avec **92/92 réussis**. Le lint, le typecheck complet et le build complet du monorepo passent également. Le build frontend produit notamment un chunk principal de 431,68 kB, inférieur au seuil d’avertissement de 500 kB.
 
-## Prochaine action
+## 4. Décisions techniques
 
-Confirmer avec Yonni l’état de M-10 et M-11. Dès que M-11 est disponible, remplacer le mock P-10 par l’API réelle de conversation et ajouter ses tests de permissions, participants, lecture incrémentale et envoi de messages. Ne pas déclarer P-10 terminé avant cette intégration.
+Les routes de messagerie exigent `message:send` et vérifient l’appartenance à la conversation avant toute lecture ou écriture. Les réponses de messages exposent uniquement `TalentProfile.pseudonym` sous le champ `authorPseudonym`; aucune relation `TalentIdentity` n’est chargée. Les créations de connexion et de conversation utilisent des transactions Prisma et des clés uniques pour l’idempotence.
 
-Les fichiers hérités non suivis du workspace ne doivent pas être ajoutés aux commits.
+## 5. Vigilance et travaux restants
+
+Les tests ciblés M-09/M-10/M-11/P-10 sont ajoutés et la suite compte 99 tests réussis. P-10 dispose maintenant de l’écran `/projects/:id/channel`, du client API et d’un canal `PROJECT` réservé aux membres actifs. La PR #55 doit être revue avant fusion. L’audit détaillé des Vagues 2 et 3 est disponible dans `audit-vagues-2-3.md`. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
+
+## 6. Prochaine action
+
+Pousser les changements P-10 dans la PR #55, vérifier les contrôles GitHub, puis fusionner vers `dev`; ensuite exécuter la démonstration de recette authentifiée avant de clôturer Vague 3.

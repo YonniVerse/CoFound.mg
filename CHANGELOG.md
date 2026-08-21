@@ -10,6 +10,66 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Finalisation locale de P-10
+
+### Ajouté
+
+- Canal de discussion projet `/projects/:id/channel` avec client API, rafraîchissement périodique et affichage pseudonymisé.
+- Endpoint transactionnel d’ouverture/réutilisation du canal `ConversationType.PROJECT`, réservé aux membres actifs.
+- Contrat partagé de réponse des messages et tests P-10 d’accès membre et de création des participants.
+
+### Modifié
+
+- La lecture M-11 retourne désormais `{ items }`, conforme au contrat consommé par le frontend.
+- Validation complète réussie : 99 tests, lint, typecheck et build.
+
+### En cours
+
+- Les changements P-10 restent sur la branche M-09 et doivent être poussés puis revus dans la PR #55 avant fusion vers `dev`.
+
+---
+
+## 2026-08-22 — Audit des Vagues 2 et 3
+
+### Ajouté
+
+- `audit-vagues-2-3.md` : état comparatif du backlog officiel, des branches, des PR, des dépendances, des validations et des risques résiduels.
+
+### Décidé
+
+- V2 est considérée non intégrée dans `dev` tant que les branches M-01 à M-04 ne sont pas fusionnées et que M-05 à M-08, M-12 à M-16 ne disposent pas de livrables vérifiables, car la démonstration de rencontre n’est pas encore bout en bout.
+- V3 reste non terminée tant que P-10 n’est pas raccordé au frontend et que M-11 n’est pas fusionné, car le canal projet est le dernier maillon de sa démonstration.
+
+---
+
+## 2026-08-22 — Implémentation locale de la chaîne M-09 à M-11
+
+### Ajouté
+
+- M-09 : demandes de contact avec quota mensuel, doublon `PENDING` idempotent et décisions transactionnelles.
+- M-10 : connexion idempotente après acceptation, paire d’utilisateurs normalisée et accès limité aux membres.
+- M-11 : conversations directes liées aux connexions, participants obligatoires et API de messages.
+- Contrats Zod partagés pour demandes, connexions, conversations et messages.
+
+### Décidé
+
+- Les messages ne chargent que `TalentProfile.pseudonym`, afin de préserver la pseudonymité et de ne jamais exposer `TalentIdentity`.
+- Toutes les créations et transitions sociales critiques sont encapsulées dans une transaction Prisma, afin d’éviter les états partiels.
+
+### Modifié
+
+- Le module racine NestJS enregistre les modules `ConnectionModule` et `MessagingModule`.
+- L’acceptation `ACCEPTED` passe désormais par un workflow M-10 unique qui crée ou réutilise la connexion.
+- L’ouverture concurrente d’une conversation récupère la conversation gagnante après une collision Prisma `P2002`.
+- Les validations complètes passent : 97 tests API, lint, typecheck et build du monorepo.
+
+### En cours
+
+- Les corrections sont prêtes à être publiées sur la branche `M-09`; la PR #55 vers `dev` reste ouverte.
+- P-10 reste à intégrer au frontend réel, car le point d’entrée du mock n’a pas encore été localisé.
+
+---
+
 ## 2026-08-21 — Fusion de la chaîne P-09 à P-13
 
 ### Modifié
