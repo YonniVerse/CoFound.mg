@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { Mail, ArrowLeft, Send, CheckCircle2 } from 'lucide-react'
+import { Mail, ArrowLeft, Send, CheckCircle2, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -24,8 +24,8 @@ export default function ForgotPasswordPage() {
         email: email.trim(),
       })
     } catch {
-      /* On ne distingue pas « adresse inconnue » de « adresse connue »
-         pour ne pas révéler l'existence d'un compte. */
+      /* Protection contre l'énumération de comptes :
+         Affichage identique du succès que l'email existe ou non. */
     }
 
     setIsSuccess(true)
@@ -33,105 +33,137 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      {/* Top bar */}
-      <header className="flex items-center justify-between px-6 py-4">
+    <div className="min-h-screen flex flex-col justify-between bg-background relative overflow-hidden font-sans">
+      {/* Background Geometric Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-50 pointer-events-none" />
+
+      {/* Top Header */}
+      <header className="flex items-center justify-between px-6 sm:px-10 py-6 relative z-10">
         <Link
           to="/connexion"
-          className="flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors group"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
           {t('auth.forgotPassword.backToLogin')}
         </Link>
         <LanguageSwitcher />
       </header>
 
-      {/* Centered card */}
-      <main className="flex-1 flex items-center justify-center px-4 pb-12">
-        <div className="w-full max-w-md">
-          {/* Logo */}
-          <div className="flex justify-center mb-8">
+      {/* Main Centered Card Container */}
+      <main className="flex-1 flex items-center justify-center px-4 py-8 relative z-10">
+        <div className="w-full max-w-md space-y-6">
+          {/* Brand Logo */}
+          <div className="flex justify-center">
             <Link to="/" aria-label="CoFound.mg">
-              <LogoSVG className="h-10 w-auto" />
+              <LogoSVG className="h-11 w-auto" />
             </Link>
           </div>
 
           {/* Card */}
-          <div className="rounded-2xl border border-border bg-card shadow-lg p-8 space-y-6">
-            {/* Heading */}
-            <div className="text-center space-y-1.5">
-              <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground">
-                {t('auth.forgotPassword.title')}
-              </h1>
-              <p className="text-sm text-muted-foreground max-w-xs mx-auto">
-                {t('auth.forgotPassword.subtitle')}
-              </p>
-            </div>
-
+          <div className="rounded-2xl border border-border bg-card shadow-xl p-8 sm:p-10 space-y-6">
             {isSuccess ? (
-              /* Success state */
-              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex flex-col items-center gap-4 py-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                    <CheckCircle2 className="h-6 w-6 text-primary" />
-                  </div>
-                  <p className="text-sm text-muted-foreground text-center max-w-xs">
+              /* Success State */
+              <div className="space-y-6 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 mx-auto text-primary">
+                  <CheckCircle2 className="h-7 w-7" />
+                </div>
+
+                <div className="space-y-2">
+                  <h1 className="font-heading text-2xl font-bold text-foreground">
+                    {t('auth.forgotPassword.successTitle')}
+                  </h1>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     {t('auth.forgotPassword.success')}
                   </p>
                 </div>
-                <Button variant="outline" size="md" asChild className="w-full">
-                  <Link to="/connexion">
-                    <ArrowLeft className="h-4 w-4" />
-                    {t('auth.forgotPassword.backToLogin')}
-                  </Link>
-                </Button>
+
+                <div className="pt-2">
+                  <Button size="lg" asChild className="w-full h-12 rounded-xl font-semibold gap-2">
+                    <Link to="/connexion">
+                      <ArrowLeft className="h-4 w-4" />
+                      {t('auth.forgotPassword.backToLogin')}
+                    </Link>
+                  </Button>
+                </div>
               </div>
             ) : (
-              /* Form */
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="space-y-2">
-                  <Label htmlFor="forgot-email">
-                    {t('auth.forgotPassword.email')}
-                  </Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                    <Input
-                      id="forgot-email"
-                      type="email"
-                      autoComplete="email"
-                      autoFocus
-                      required
-                      placeholder={t('auth.forgotPassword.emailPlaceholder')}
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="pl-10 h-11"
-                    />
-                  </div>
+              /* Form State */
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+                    {t('auth.forgotPassword.title')}
+                  </h1>
+                  <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
+                    {t('auth.forgotPassword.subtitle')}
+                  </p>
                 </div>
 
-                <Button
-                  type="submit"
-                  size="md"
-                  disabled={isSubmitting}
-                  className="w-full gap-2"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-                      {t('auth.forgotPassword.loading')}
-                    </>
-                  ) : (
-                    <>
-                      <Send className="h-4 w-4" />
-                      {t('auth.forgotPassword.submit')}
-                    </>
-                  )}
-                </Button>
-              </form>
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="space-y-2">
+                    <Label htmlFor="forgot-email" className="text-sm font-semibold text-foreground">
+                      {t('auth.forgotPassword.email')}
+                    </Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                      <Input
+                        id="forgot-email"
+                        type="email"
+                        autoComplete="email"
+                        autoFocus
+                        required
+                        placeholder={t('auth.forgotPassword.emailPlaceholder')}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="pl-10 h-12 text-sm rounded-xl border-border bg-card shadow-2xs focus-visible:ring-2 focus-visible:ring-primary"
+                      />
+                    </div>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    size="lg"
+                    disabled={isSubmitting}
+                    className="w-full h-12 rounded-xl text-base font-semibold shadow-md hover:shadow-lg transition-all duration-200 gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                        {t('auth.forgotPassword.loading')}
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" />
+                        {t('auth.forgotPassword.submit')}
+                      </>
+                    )}
+                  </Button>
+                </form>
+
+                <div className="pt-2 text-center border-t border-border">
+                  <Link
+                    to="/connexion"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <ArrowLeft className="h-3.5 w-3.5" />
+                    {t('auth.forgotPassword.backToLogin')}
+                  </Link>
+                </div>
+              </div>
             )}
+          </div>
+
+          {/* Security Note */}
+          <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+            <ShieldCheck className="h-4 w-4 text-primary" />
+            <span>Procédure de récupération sécurisée CoFound.mg</span>
           </div>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="text-xs text-muted-foreground/70 text-center py-6 relative z-10">
+        © {new Date().getFullYear()} CoFound.mg · Écosystème Entrepreneurial Étudiant
+      </footer>
     </div>
   )
 }
