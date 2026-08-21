@@ -75,6 +75,7 @@ export default function ImportMappingPage() {
       const payload = importColumnMappingSchema.parse({ columns: mapping })
       if (importId) await apiClient.patch(`/institution/imports/${importId}`, payload)
       setSubmitted(true)
+      navigate(importId ? `/institution/imports/${importId}/preview` : '/institution/imports/preview')
     } catch {
       setSaveError('Le mapping n’a pas pu être enregistré. Vérifiez votre connexion puis réessayez.')
     } finally {

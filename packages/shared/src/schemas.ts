@@ -105,8 +105,27 @@ export const importColumnMappingSchema = z.object({
   columns: z.record(z.string().trim().min(1), importFieldSchema.nullable()),
 })
 
+export const importPreviewResultSchema = z.enum(['CREATED', 'UPDATED', 'SKIPPED_DUPLICATE', 'ERROR'])
+
+export const importPreviewRowSchema = z.object({
+  lineNumber: z.number().int().positive(),
+  displayName: z.string().min(1),
+  email: z.string().min(1),
+  result: importPreviewResultSchema,
+  errorMessage: z.string().min(1).nullable(),
+})
+
+export const importPreviewSchema = z.object({
+  batchId: idSchema,
+  fileName: z.string().min(1),
+  rows: z.array(importPreviewRowSchema),
+})
+
 export type ImportField = z.infer<typeof importFieldSchema>
 export type ImportColumnMapping = z.infer<typeof importColumnMappingSchema>
+export type ImportPreviewResult = z.infer<typeof importPreviewResultSchema>
+export type ImportPreviewRow = z.infer<typeof importPreviewRowSchema>
+export type ImportPreview = z.infer<typeof importPreviewSchema>
 
 export type LoginInput = z.infer<typeof loginInputSchema>
 export type ActivationInput = z.infer<typeof activationInputSchema>
