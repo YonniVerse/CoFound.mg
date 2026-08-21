@@ -4,42 +4,20 @@
 
 ## État actuel
 
-- Vague 3 — Projet.
-- P-09 est fusionné dans `dev` via la PR #51, commit `cc479101`.
-- P-11 est implémenté et publié dans la PR #52.
-- P-12 et P-13 sont implémentés sur la branche `P-12` et publiés dans la PR #53.
-- M-10 et M-11 restent absents de l’implémentation API identifiable dans `origin/dev`; ils sont attribués à Yonni et M-11 dépend de M-10.
+La Vague 3 — Projet est avancée jusqu’à P-13. P-09 a été fusionné via la PR #51 au commit `cc479101`. P-11 a été fusionné via la PR #52 au commit `4016380`. P-12 et P-13 ont été fusionnés via la PR #53 au commit `2df0dfb`.
 
-## Livrables P-11 à P-13
+P-10 reste bloqué par M-11, lui-même dépendant de M-10. L’audit GitHub et du code ne trouve aucun service ou contrôleur M-10/M-11 dans `origin/dev`; les modèles Prisma existent, mais l’implémentation métier doit être fournie par Yonni, propriétaire indiqué par le backlog. Le mock P-10 reste disponible sur sa branche dédiée.
 
-P-11 fournit les contrats partagés, le CRUD transactionnel des publications projet, l’auteur pseudonymisé et l’écran `/projects/:id/posts` connecté à l’API réelle.
+## Livrables
 
-P-12 fournit l’export JSON transactionnel réservé au propriétaire, avec projet, BMC, membres pseudonymisés, postes, tâches et publications. L’écran `/projects/:id/export` déclenche le téléchargement local de l’archive.
+P-08 et P-09 couvrent les membres, rôles, tâches, responsables, échéances et statuts avec contrôle des membres actifs et mutations transactionnelles. P-11 couvre les publications projet et leur écran frontend. P-12 couvre l’export JSON réservé au propriétaire. P-13 couvre le détail public avec filtrage des blocs BMC privés, postes fermés, publications expirées et identités civiles.
 
-P-13 fournit le détail public `/projects/:id/public`. Les blocs BMC privés, les postes fermés et les publications expirées sont filtrés ; les membres sont présentés uniquement par pseudonyme.
+## Validation finale après fusions
 
-## Fichiers importants
-
-- `apps/api/src/project/project-posts.*.ts` — API P-11.
-- `apps/api/src/project/project-export.*.ts` — API P-12.
-- `apps/api/src/project/project-public.*.ts` — API P-13.
-- `apps/api/test/project-posts.integration.test.ts` — tests HTTP P-11.
-- `apps/api/test/project-export.integration.test.ts` — test HTTP P-12.
-- `apps/api/test/project-public.integration.test.ts` — test HTTP P-13.
-- `apps/web/src/pages/ProjectPostsPage.tsx` — UI P-11.
-- `apps/web/src/pages/ProjectExportPage.tsx` — UI P-12.
-- `apps/web/src/pages/ProjectPublicPage.tsx` — UI P-13.
-
-## Validation
-
-- Tests HTTP P-11 : 2/2 réussis.
-- Tests HTTP P-12/P-13 : 2/2 réussis.
-- Suite API complète exécutée après P-09 : 84/84 réussis.
-- Typecheck API/frontend, lint frontend et build frontend réussis après ajout des vues P-12/P-13.
-- Les tests avec Prisma réel/Neon restent à effectuer séparément ; les tests HTTP utilisent des services substitués.
+La suite API complète sur `origin/dev` passe avec **92/92 tests réussis**. Les tests HTTP P-11, P-12 et P-13 passent avec **4/4 réussis**. Le typecheck API/frontend, le lint frontend et le build frontend sont réussis. La validation avec Prisma réel/Neon et un parcours authentifié reste à effectuer si l’environnement de recette est disponible.
 
 ## Prochaine action
 
-Relancer la suite API complète après P-11/P-12/P-13, stabiliser les contrôles CI des PR #52 et #53, puis faire relire et fusionner dans l’ordre des dépendances. Confirmer avec Yonni l’état de M-10/M-11 avant toute implémentation réelle de P-10.
+Confirmer avec Yonni l’état de M-10 et M-11. Dès que M-11 est disponible, remplacer le mock P-10 par l’API réelle de conversation et ajouter ses tests de permissions, participants, lecture incrémentale et envoi de messages. Ne pas déclarer P-10 terminé avant cette intégration.
 
-Ne pas ajouter les fichiers hérités non suivis du workspace.
+Les fichiers hérités non suivis du workspace ne doivent pas être ajoutés aux commits.

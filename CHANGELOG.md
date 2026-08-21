@@ -10,6 +10,20 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-21 — Fusion de la chaîne P-09 à P-13
+
+### Modifié
+
+- P-09, P-11, P-12 et P-13 sont fusionnés dans `dev` via les PR #51, #52 et #53.
+- La suite API finale passe avec **92/92 tests réussis**.
+- Les validations frontend typecheck, lint et build sont réussies.
+
+### Bloqué
+
+- P-10 reste bloqué par M-11/M-10 : les modèles Prisma existent, mais aucun service/API de ces tickets n’est identifiable dans `origin/dev`. Une confirmation de Yonni est nécessaire avant d’implémenter le service réel.
+
+---
+
 ## 2026-08-21 — Implémentation P-11 à P-13
 
 ### Ajouté
