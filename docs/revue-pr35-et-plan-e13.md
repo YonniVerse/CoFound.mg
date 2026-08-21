@@ -2,29 +2,29 @@
 
 **Branche examinée** : `E-12`  
 **PR** : [#35](https://github.com/YonniVerse/CoFound.mg/pull/35)  
-**Commit examiné** : `79a0e91`  
+**Commits examinés** : `79a0e91`, `301d5bb` et correctifs locaux en cours de PR  
 **Date** : 2026-08-21
 
 ## Synthèse de la revue
 
-La PR #35 apporte un premier socle cohérent pour l’API privée du profil. Elle réutilise le schéma partagé `talentProfileInputSchema`, encapsule la création et la mise à jour dans une transaction Prisma, sépare les données d’identité de la vue publique et ajoute des tests unitaires ainsi qu’un test HTTP de routage. Les validations locales passent avec **37 tests API**, le lint et le typecheck de l’API.
+La PR #35 apporte un premier socle cohérent pour l’API privée du profil. Elle réutilise le schéma partagé `talentProfileInputSchema`, encapsule la création et la mise à jour dans une transaction Prisma, sépare les données d’identité de la vue publique et ajoute des tests unitaires ainsi qu’un test HTTP d’intégration. Les validations locales passent avec **40 tests API**, le lint et le typecheck de l’API.
 
-La PR ne doit toutefois pas être considérée comme définitivement prête à fusion avant traitement des points suivants. Deux risques fonctionnels concernent directement les invariants produit : la visibilité dans le feed peut être activée sous le seuil minimal de complétion, et les références `fieldId` ne sont pas validées explicitement avant écriture. Un troisième point concerne le contrat HTTP : les erreurs Zod levées depuis le service risquent d’être transformées en réponse 500 au lieu d’une réponse 400 structurée.
+Les trois risques prioritaires identifiés ont été corrigés dans les derniers changements de la branche : la visibilité est maintenant conditionnée au seuil minimal de complétion, les référentiels actifs sont vérifiés dans la transaction et les erreurs de validation sont converties en `BadRequestException` structurée.
 
 ## Constats prioritaires
 
 | Priorité | Zone | Constat | Impact | Action recommandée |
 |---|---|---|---|---|
-| Haute | `ProfileService.updateMine` | `visibleInTalentFeed` est accepté indépendamment de `completion`. | Un profil incomplet peut devenir visible dans le matching/feed malgré `MIN_PROFILE_COMPLETION = 60`. | Refuser l’activation sous 60 % ou forcer la valeur à `false`, puis tester les deux branches. |
-| Haute | Gestion des erreurs | `talentProfileInputSchema.parse()` est appelé dans le service et aucune conversion explicite en `BadRequestException` n’est visible dans le contrôleur. | Une entrée invalide peut produire une réponse HTTP 500 au lieu de 400 avec contrat `ApiError`. | Ajouter un parseur contrôlé ou un pipe DTO/Zod qui convertit les erreurs en `ApiErrorCode.VALIDATION_ERROR`. |
-| Moyenne | Référentiel | `fieldId` est envoyé à Prisma sans vérification d’existence et `sectorIds` est stocké dans un JSON sans validation des secteurs actifs. | Erreurs de clé étrangère ou références inactives/inexistantes stockées dans le profil. | Vérifier les `Field` et `Sector` actifs dans la même transaction, avec tests d’échec atomique. |
+| Résolu | `ProfileService.updateMine` | `visibleInTalentFeed` est maintenant forcé à `false` sous `MIN_PROFILE_COMPLETION`. | Risque de visibilité prématurée supprimé. | Tests ajoutés pour un profil à 13 %. |
+| Résolu | Gestion des erreurs | Le service utilise `safeParse` et lève `BadRequestException` avec `VALIDATION_FAILED`. | Les entrées invalides sont distinguées des erreurs internes. | Test ajouté sur le code et le `messageKey`. |
+| Résolu | Référentiel | `Field` et `Sector` sont vérifiés comme actifs dans la transaction avant écriture. | Les références inactives sont rejetées sans création de profil. | Tests ajoutés pour filière et secteur invalides. |
 | Moyenne | Contrat PATCH | Le endpoint est nommé `PATCH`, mais le schéma exige toujours `pseudonym` et remplace toute la collection `goals`/`sectorIds`. | Les mises à jour partielles peuvent être rejetées ou écraser des champs non envoyés par un client futur. | Décider explicitement entre `PUT` complet et `PATCH` partiel ; si PATCH est retenu, créer un schéma `.partial()` et fusionner côté service. |
 | Moyenne | Tests d’intégration | Le test HTTP injecte directement un utilisateur fictif par middleware et ne passe pas par `AccessTokenGuard`, `PermissionGuard` ni Prisma réel. | Le routage est validé, mais pas l’authentification, l’autorisation ou la persistance réelle. | Ajouter une suite avec guards actifs et une base de test/Prisma mocké au niveau module, puis couvrir 401/403/400/200. |
 | Faible | Cohérence de réponse | `getMine` renvoie `minimumCompletion`, mais aucun contrat Zod de réponse E-12 n’est partagé. | Les clients web ne disposent pas d’un contrat de parsing aussi strict que pour les imports. | Ajouter `privateTalentProfileSchema` et `profileUpdateResponseSchema` dans `packages/shared`. |
 
 ## Décision de revue proposée
 
-La PR peut être conservée ouverte comme **premier incrément E-12**, mais la fusion devrait attendre au minimum la correction du seuil `MIN_PROFILE_COMPLETION`, la conversion des erreurs de validation en 400 et la validation des références de référentiel. Le test HTTP actuel est utile comme test de câblage ; il ne doit pas être présenté comme une intégration complète de l’authentification et de la base.
+Après ces corrections, E-12 est fonctionnellement prêt pour une dernière revue. Le test HTTP valide le routage et le câblage avec un service contrôlé ; il ne remplace pas encore une intégration avec PostgreSQL réel ni une exécution des guards de production.
 
 ## Préparation de E-13 — onboarding progressif
 
@@ -49,4 +49,4 @@ Il faut confirmer si la progression est une propriété du `TalentProfile` ou un
 
 ## Validation exécutée
 
-La commande `pnpm --filter @cofound/api test` passe avec **37 tests**. Les commandes `pnpm --filter @cofound/api typecheck` et `pnpm --filter @cofound/api lint` passent également. Le test d’intégration HTTP E-12 vérifie le routage et l’appel des handlers `GET` et `PATCH` sous `/api/v1/me/profile` avec un service contrôlé.
+La commande `pnpm --filter @cofound/api test` passe avec **40 tests**. Les commandes `pnpm --filter @cofound/api typecheck` et `pnpm --filter @cofound/api lint` passent également. Le test d’intégration HTTP E-12 vérifie le routage et l’appel des handlers `GET` et `PATCH` sous `/api/v1/me/profile` avec un service contrôlé.

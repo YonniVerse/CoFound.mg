@@ -19,3 +19,17 @@ export class ProfileController {
     return this.profileService.updateMine(request.user!.userId, body)
   }
 }
+
+@Controller('me/identity')
+@RequirePermissions(Permission.TALENT_READ)
+export class ProfileIdentityController {
+  constructor(@Inject(ProfileService) private readonly profileService: ProfileService) {}
+  @Get()
+  getIdentity(@Req() request: AuthenticatedRequest) {
+    return this.profileService.getIdentity(request.user!.userId)
+  }
+  @Patch()
+  updateIdentity(@Req() request: AuthenticatedRequest, @Body() body: unknown) {
+    return this.profileService.updateIdentity(request.user!.userId, body)
+  }
+}

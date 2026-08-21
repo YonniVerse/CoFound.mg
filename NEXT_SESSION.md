@@ -7,7 +7,7 @@
 **Dernière mise à jour** : 2026-08-21
 **Phase** : Vague 1 — implémentation de E-12
 **Branche** : `E-12`, issue de `dev` après fusion de la PR #34
-**État du workspace** : API E-12 et test HTTP d’intégration ajoutés ; revue PR #35 et plan E-13 documentés
+**État du workspace** : audit des tickets Rino ajouté ; E-12 en revue dans la PR #35 ; E-13 identifié comme prochain ticket
 
 ---
 
@@ -29,7 +29,7 @@
 
 ## 2. Validation avant E-12
 
-La PR #34 (E-08 backend + UI-36) est fusionnée dans `dev`. La branche E-12 est issue de ce `dev` synchronisé. Les tests API passent avec 37 tests, dont un test HTTP d’intégration des routes `GET` et `PATCH /api/v1/me/profile`. La revue et le plan E-13 sont dans `docs/revue-pr35-et-plan-e13.md`.
+La PR #34 (E-08 backend + UI-36) est fusionnée dans `dev`. La branche E-12 est issue de ce `dev` synchronisé. Les tests API passent avec 37 tests, dont un test HTTP d’intégration des routes `GET` et `PATCH /api/v1/me/profile`. La revue et le plan E-13 sont dans `docs/revue-pr35-et-plan-e13.md`. Le bilan exhaustif des tickets de Rino est dans `docs/audit-tickets-rino.md`.
 
 ---
 
@@ -61,4 +61,4 @@ Le détail doit présenter les compteurs créés, mis à jour, ignorés, erreurs
 
 ## 5. Prochaine action
 
-Corriger les points prioritaires de la revue PR #35 — seuil de complétion, erreurs 400 et validation des référentiels — puis fusionner E-12. E-13 pourra ensuite commencer avec la définition des étapes, la persistance de progression et les endpoints d’onboarding.
+Corriger les points prioritaires de la revue PR #35 — seuil de complétion, erreurs 400 et validation des référentiels — puis fusionner E-12. Créer ensuite E-13 depuis `dev` avec la définition des étapes, la persistance de progression et les endpoints d’onboarding.
