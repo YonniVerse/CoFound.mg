@@ -7,6 +7,7 @@ import { ParityWidget } from "@/components/feed/ParityWidget";
 import { SuggestedProfilesWidget } from "@/components/feed/SuggestedProfilesWidget";
 import { TalentCard } from "@/components/feed/TalentCard";
 import { TalentCardSkeleton } from "@/components/feed/TalentCardSkeleton";
+import { FeedErrorWidget } from "@/components/feed/FeedErrorWidget";
 import { useFeedData } from "@/hooks/useFeedData";
 import { useTalentFeedData } from "@/hooks/useTalentFeedData";
 import { Users } from "lucide-react";
@@ -24,6 +25,7 @@ export default function FeedPage() {
     search,
     setSearch,
     loadMore: loadMoreTalents,
+    retry,
   } = useTalentFeedData();
 
   const showProjects = filter === "all" || filter === "projects";
@@ -84,9 +86,10 @@ export default function FeedPage() {
           )}
 
           {error && (
-            <div className="text-center py-16 text-destructive font-medium border border-destructive/20 bg-destructive/10 rounded-xl p-6">
-              {error}
-            </div>
+            <FeedErrorWidget
+              message={error}
+              onRetry={retry}
+            />
           )}
 
           {!isLoading && !error && (

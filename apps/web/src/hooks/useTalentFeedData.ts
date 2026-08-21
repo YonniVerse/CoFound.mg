@@ -66,6 +66,13 @@ export function useTalentFeedData() {
     );
   }, [fetchTalents, nextCursor, isLoadingMore, search]);
 
+  const retry = useCallback(() => {
+    fetchTalents({
+      search: search || undefined,
+      limit: 12,
+    });
+  }, [fetchTalents, search]);
+
   return {
     talents,
     isLoading,
@@ -75,5 +82,6 @@ export function useTalentFeedData() {
     search,
     setSearch,
     loadMore,
+    retry,
   };
 }
