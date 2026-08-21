@@ -10,6 +10,34 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Implémentation locale de la chaîne M-09 à M-11
+
+### Ajouté
+
+- M-09 : demandes de contact avec quota mensuel, doublon `PENDING` idempotent et décisions transactionnelles.
+- M-10 : connexion idempotente après acceptation, paire d’utilisateurs normalisée et accès limité aux membres.
+- M-11 : conversations directes liées aux connexions, participants obligatoires et API de messages.
+- Contrats Zod partagés pour demandes, connexions, conversations et messages.
+
+### Décidé
+
+- Les messages ne chargent que `TalentProfile.pseudonym`, afin de préserver la pseudonymité et de ne jamais exposer `TalentIdentity`.
+- Toutes les créations et transitions sociales critiques sont encapsulées dans une transaction Prisma, afin d’éviter les états partiels.
+
+### Modifié
+
+- Le module racine NestJS enregistre les modules `ConnectionModule` et `MessagingModule`.
+- L’acceptation `ACCEPTED` passe désormais par un workflow M-10 unique qui crée ou réutilise la connexion.
+- L’ouverture concurrente d’une conversation récupère la conversation gagnante après une collision Prisma `P2002`.
+- Les validations complètes passent : 97 tests API, lint, typecheck et build du monorepo.
+
+### En cours
+
+- Les corrections sont prêtes à être publiées sur la branche `M-09`; la PR #55 vers `dev` reste ouverte.
+- P-10 reste à intégrer au frontend réel, car le point d’entrée du mock n’a pas encore été localisé.
+
+---
+
 ## 2026-08-21 — Fusion de la chaîne P-09 à P-13
 
 ### Modifié

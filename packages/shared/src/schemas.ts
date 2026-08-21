@@ -467,3 +467,56 @@ export const publicProjectDetailSchema = z.object({
   posts: z.array(z.object({ id: idSchema, type: z.string(), content: z.string(), createdAt: z.coerce.date() })),
 })
 export type PublicProjectDetail = z.infer<typeof publicProjectDetailSchema>
+
+// ─── Mise en relation et messagerie (M-09 à M-11) ─────────────────────────────
+export const contactRequestCreateSchema = z.object({
+  toUserId: idSchema,
+  message: z.string().trim().min(1).max(2_000),
+})
+export const contactRequestDecisionSchema = z.object({
+  decision: z.enum(['ACCEPTED', 'DECLINED']),
+})
+export const contactRequestSchema = z.object({
+  id: idSchema,
+  fromUserId: idSchema,
+  toUserId: idSchema,
+  message: z.string(),
+  status: z.enum(['PENDING', 'ACCEPTED', 'DECLINED', 'EXPIRED']),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+export const connectionSchema = z.object({
+  id: idSchema,
+  userAId: idSchema,
+  userBId: idSchema,
+  revealedAt: z.coerce.date().nullable(),
+  source: z.enum(['MATCH', 'PROJECT']),
+  conversationId: idSchema.nullable(),
+})
+export const conversationSchema = z.object({
+  id: idSchema,
+  type: z.enum(['DIRECT', 'PROJECT']),
+  projectId: idSchema.nullable(),
+  createdAt: z.coerce.date(),
+})
+export const conversationMessageCreateSchema = z.object({
+  body: z.string().trim().min(1).max(4_000),
+  attachmentKey: z.string().trim().max(500).optional().nullable(),
+})
+export const conversationMessageSchema = z.object({
+  id: idSchema,
+  conversationId: idSchema,
+  authorId: idSchema,
+  authorPseudonym: z.string(),
+  body: z.string(),
+  attachmentKey: z.string().nullable(),
+  createdAt: z.coerce.date(),
+})
+export type ContactRequestCreateInput = z.infer<typeof contactRequestCreateSchema>
+export type ContactRequestDecisionInput = z.infer<typeof contactRequestDecisionSchema>
+export type ContactRequest = z.infer<typeof contactRequestSchema>
+export type ConnectionView = z.infer<typeof connectionSchema>
+export type ConversationView = z.infer<typeof conversationSchema>
+export type ConversationMessageCreateInput = z.infer<typeof conversationMessageCreateSchema>
+export type ConversationMessage = z.infer<typeof conversationMessageSchema>
+
