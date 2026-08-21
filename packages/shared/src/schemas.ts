@@ -48,6 +48,40 @@ export const talentProfileInputSchema = z.object({
   sectorIds: z.array(idSchema).max(10).default([]),
   visibleInTalentFeed: z.boolean().default(false),
 })
+export const talentProfilePatchSchema = talentProfileInputSchema.partial()
+export const talentIdentityInputSchema = z.object({
+  firstName: z.string().trim().min(1).max(80),
+  lastName: z.string().trim().min(1).max(80),
+  photoKey: z.string().trim().max(255).nullable().optional(),
+  phone: z.string().trim().max(40).nullable().optional(),
+  regionId: idSchema.nullable().optional(),
+  gender: z.string().trim().max(80).nullable().optional(),
+})
+
+export const talentProfileSchema = z.object({
+  id: idSchema,
+  userId: idSchema,
+  pseudonym: z.string(),
+  avatarSeed: z.string(),
+  headline: z.string().nullable(),
+  bio: z.string().nullable(),
+  fieldId: idSchema.nullable(),
+  field: z.object({ id: idSchema, slug: z.string(), labelKey: z.string() }).nullable(),
+  cohortYear: z.number().int().nullable(),
+  level: z.string().nullable(),
+  availabilityHours: z.number().int().nullable(),
+  goals: z.array(z.string()),
+  sectorIds: z.array(idSchema),
+  completion: z.number().int().min(0).max(100),
+  visibleInTalentFeed: z.boolean(),
+})
+export const privateTalentProfileSchema = z.object({
+  user: z.object({ id: idSchema, email: z.string().email(), locale: localeSchema }),
+  identity: z.object({ firstName: z.string(), lastName: z.string(), photoKey: z.string().nullable(), phone: z.string().nullable(), regionId: idSchema.nullable() }).nullable(),
+  profile: talentProfileSchema.nullable(),
+  minimumCompletion: z.number().int().min(0).max(100),
+})
+export const profileUpdateResponseSchema = z.object({ profile: talentProfileSchema, minimumCompletion: z.number().int().min(0).max(100) })
 
 export const publicTalentViewSchema = z.object({
   revealed: z.literal(false),
@@ -146,6 +180,8 @@ export type ActivationInput = z.infer<typeof activationInputSchema>
 export type PasswordResetRequest = z.infer<typeof passwordResetRequestSchema>
 export type PasswordResetInput = z.infer<typeof passwordResetInputSchema>
 export type TalentProfileInput = z.infer<typeof talentProfileInputSchema>
+export type TalentProfilePatchInput = z.infer<typeof talentProfilePatchSchema>
+export type TalentIdentityInput = z.infer<typeof talentIdentityInputSchema>
 export type TalentView = z.infer<typeof talentViewSchema>
 export type ProjectSummary = z.infer<typeof projectSummarySchema>
 export type ApiError = z.infer<typeof apiErrorSchema>
