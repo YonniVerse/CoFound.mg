@@ -97,7 +97,7 @@ export default function ResetPasswordPage() {
       {/* Top Header */}
       <header className="flex items-center justify-between px-6 sm:px-10 py-6 relative z-10">
         <Link
-          to="/connexion"
+          to="/login"
           className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors group"
         >
           <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
@@ -135,7 +135,7 @@ export default function ResetPasswordPage() {
                 </div>
 
                 <div className="pt-2">
-                  <Button onClick={() => navigate('/connexion')} className="w-full h-10 rounded-xl text-sm font-semibold gap-2">
+                  <Button onClick={() => navigate('/login')} className="w-full h-10 rounded-xl text-sm font-semibold gap-2">
                     {t('auth.resetPassword.backToLogin')}
                   </Button>
                 </div>
@@ -164,7 +164,7 @@ export default function ResetPasswordPage() {
                     </div>
                     {error === t('auth.resetPassword.error.invalidToken') && (
                       <Link
-                        to="/mot-de-passe-oublie"
+                        to="/forgot-password"
                         className="text-xs font-bold underline hover:no-underline ml-6 transition-colors"
                       >
                         Demander un nouveau lien de réinitialisation

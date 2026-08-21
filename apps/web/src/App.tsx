@@ -39,9 +39,9 @@ function App() {
             </Route>
 
             {/* Routes Plein Écran (Auth & Onboarding) */}
-            <Route path="/connexion" element={<LoginPage />} />
-            <Route path="/mot-de-passe-oublie" element={<ForgotPasswordPage />} />
-            <Route path="/reinitialisation/:token" element={<ResetPasswordPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
             <Route path="/onboarding" element={<OnboardingPage />} />
 
             {/* Applicatif (Dashboard) */}

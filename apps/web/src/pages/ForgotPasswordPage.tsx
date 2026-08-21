@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
       {/* Top Header */}
       <header className="flex items-center justify-between px-6 sm:px-10 py-6 relative z-10">
         <Link
-          to="/connexion"
+          to="/login"
           className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors group"
         >
           <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
@@ -79,7 +79,7 @@ export default function ForgotPasswordPage() {
 
                 <div className="pt-2">
                   <Button asChild className="w-full h-10 rounded-xl text-sm font-semibold gap-2">
-                    <Link to="/connexion">
+                    <Link to="/login">
                       <ArrowLeft className="h-4 w-4" />
                       {t('auth.forgotPassword.backToLogin')}
                     </Link>
@@ -140,7 +140,7 @@ export default function ForgotPasswordPage() {
 
                 <div className="pt-2 text-center border-t border-border">
                   <Link
-                    to="/connexion"
+                    to="/login"
                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <ArrowLeft className="h-3.5 w-3.5" />

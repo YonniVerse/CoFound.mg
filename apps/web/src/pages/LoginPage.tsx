@@ -124,7 +124,7 @@ export default function LoginPage() {
                   {t('auth.login.password')}
                 </Label>
                 <Link
-                  to="/mot-de-passe-oublie"
+                  to="/forgot-password"
                   className="text-xs font-semibold text-primary hover:text-primary-dark transition-colors"
                 >
                   {t('auth.login.forgotPassword')}
@@ -173,14 +173,11 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Invitation Info Box (Decision D1) */}
-          <div className="rounded-xl bg-muted/50 border border-border p-3.5 space-y-1.5">
-            <div className="flex items-center gap-2 text-xs font-bold text-foreground uppercase tracking-wider">
-              <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-              <span>{t('auth.login.noAccount')}</span>
-            </div>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              {t('auth.login.noAccountHint')}
+          {/* Subtle SaaS Access Note */}
+          <div className="pt-4 border-t border-border/60 flex items-start gap-2.5 text-xs text-muted-foreground">
+            <ShieldCheck className="h-4 w-4 text-muted-foreground/70 shrink-0 mt-0.5" />
+            <p className="leading-relaxed">
+              <span className="font-medium text-foreground">{t('auth.login.noAccount')}</span> — {t('auth.login.noAccountHint')}
             </p>
           </div>
         </main>
@@ -191,9 +188,12 @@ export default function LoginPage() {
         </footer>
       </div>
 
-      {/* RIGHT COLUMN: Image Area (Desktop only) - ONLY THE IMAGE */}
-      <div className="hidden lg:block lg:col-span-6 xl:col-span-7 relative p-4 sm:p-6 lg:p-8 bg-slate-950/20">
-        <div className="w-full h-full rounded-2xl overflow-hidden relative border border-border/50 shadow-md">
+      {/* RIGHT COLUMN: Image Area (Desktop only) with same Geometric Grid Background as Forgot Password */}
+      <div className="hidden lg:flex lg:col-span-6 xl:col-span-7 relative p-6 sm:p-8 lg:p-10 bg-background items-center justify-center overflow-hidden border-l border-border">
+        {/* Background Geometric Grid Pattern (Same as Forgot Password) */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-50 pointer-events-none" />
+
+        <div className="w-full h-full rounded-2xl overflow-hidden relative border border-border/80 shadow-sm z-10">
           <img
             src="/images/auth-hero.png"
             alt="CoFound.mg Innovation & Collaboration"
