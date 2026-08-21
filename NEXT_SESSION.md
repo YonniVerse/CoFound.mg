@@ -5,9 +5,9 @@
 > dans `CLAUDE.md`, le détail dans `docs/`.
 
 **Dernière mise à jour** : 2026-08-21
-**Phase** : Vague 1 — implémentation de E-13
-**Branche** : `E-13`, issue de `dev` après fusion de la PR #35
-**État du workspace** : E-12 finalisé et fusionné ; E-13 implémenté, PR #36 en revue ; dépendances directes F-13 et E-12 vérifiées comme livrées
+**Phase** : Vague 1 — implémentation de E-15
+**Branche** : `E-15`, issue de `dev` après fusion de la PR #36
+**État du workspace** : E-12 et E-13 finalisés et fusionnés ; E-15 initialisé avec contrats et routes API de consentements
 
 ---
 
@@ -61,4 +61,4 @@ Le détail doit présenter les compteurs créés, mis à jour, ignorés, erreurs
 
 ## 5. Prochaine action
 
-La PR #36 est en revue. Points bloquants à corriger avant fusion : transaction unique pour les données et la progression, interdiction de sauter les étapes, tests HTTP E-13 et hydratation des données à la reprise. L’audit détaillé est dans `docs/revue-pr36-dependances-rino.md`. F-13 (PR #19) et les autres dépendances directes vérifiées sont déjà livrés ; aucune dépendance externe n’est à réimplémenter actuellement.
+F-12 est confirmé terminé via la PR #18 fusionnée ; le provider i18n est présent dans `apps/web/src/i18n.tsx`. E-15 est initialisé sur sa branche dédiée avec les contrats partagés, `ConsentModule`, les routes `GET /me/consents`, `POST /me/consents/:purpose` et `DELETE /me/consents/:purpose`, ainsi que les premiers tests unitaires. Les validations API passent avec 48 tests. La suite consiste à ajouter l’intégration HTTP et l’onglet Confidentialité de `/settings`.

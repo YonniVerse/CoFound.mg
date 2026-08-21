@@ -86,6 +86,15 @@ export const onboardingProgressSchema = z.object({
   stepName: onboardingStepNameSchema,
 })
 export const onboardingStepResponseSchema = z.object({ progress: onboardingProgressSchema, profile: z.object({ id: idSchema, completion: z.number().int().min(0).max(100) }).nullable() })
+export const consentPurposeSchema = z.enum(['PROFILE_VISIBILITY', 'TALENT_MATCHING', 'PARTNER_CONTACT', 'AGGREGATED_ANALYTICS'])
+export const consentGrantSchema = z.object({ policyVersion: z.string().trim().min(1).max(40) })
+export const consentRevokeSchema = z.object({ confirm: z.literal(true) })
+export const consentRecordSchema = z.object({ id: idSchema, purpose: consentPurposeSchema, policyVersion: z.string(), grantedAt: z.coerce.date(), revokedAt: z.coerce.date().nullable(), active: z.boolean() })
+export const consentRegistrySchema = z.object({ consents: z.array(consentRecordSchema) })
+export type ConsentPurpose = z.infer<typeof consentPurposeSchema>
+export type ConsentGrantInput = z.infer<typeof consentGrantSchema>
+export type ConsentRevokeInput = z.infer<typeof consentRevokeSchema>
+export type ConsentRecord = z.infer<typeof consentRecordSchema>
 
 export const privateTalentProfileSchema = z.object({
   user: z.object({ id: idSchema, email: z.string().email(), locale: localeSchema }),
