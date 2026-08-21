@@ -10,6 +10,25 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Reprise de M-04 Feed Talents
+
+### Modifié
+
+- La branche `feat/M-04-feed-talents` est rebasée sur `dev` après les fusions de M-01, M-02 et M-03.
+- La PR #59 est ouverte vers `dev`.
+- Le feed talents applique l’opt-in, le pseudonymat, la recherche et la pagination.
+
+### Validation
+
+- 102/102 tests API réussis.
+- Lint API/frontend, typecheck API/frontend et build frontend réussis.
+
+### En cours
+
+- Revue et fusion de la PR #59, puis préparation de M-05.
+
+---
+
 ## 2026-08-22 — Démarrage de M-03 — Interface Feed Projets
 
 ### Modifié

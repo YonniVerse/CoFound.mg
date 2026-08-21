@@ -4,7 +4,7 @@
 
 ## 1. État actuel
 
-La PR #56 de M-01 et la PR #57 de M-02 sont fusionnées dans `dev` via les commits `29f18e4` et `7f26b60`. La branche active est `M-03` et la PR #58 est ouverte vers `dev`. M-03 est implémenté sur le Feed Projets.
+Les PR #56, #57 et #58 sont fusionnées dans `dev` via M-01, M-02 et M-03. La branche active est `M-04` et la PR #59 est ouverte vers `dev`. M-04 implémente le Feed Talents pseudonymisé.
 
 ## 2. Livrables de cette session
 
@@ -22,8 +22,8 @@ Les routes de messagerie exigent `message:send` et vérifient l’appartenance �
 
 ## 5. Vigilance et travaux restants
 
-Les tests API comptent 99 réussites sur l’état M-02/M-03. M-01 et M-02 sont fusionnés. M-03 ajoute le Feed Projets connecté à M-02, les filtres, la recherche, la pagination infinie, les skeletons et les cartes pseudonymisées. Le build frontend ne signale plus de chunk supérieur à 500 kB : `vendor-react` 217,50 kB, `vendor-ui` 232,92 kB et `vendor-data` 363,98 kB. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
+Les tests API comptent 102 réussites sur M-04. Le lint, le typecheck et le build frontend passent. M-04 limite le feed aux profils opt-in, expose uniquement pseudonyme/avatarSeed et fournit recherche, pagination, cartes, skeletons et fallback de démonstration. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
 
 ## 6. Prochaine action
 
-Revoir et fusionner la PR #58 après les contrôles GitHub, puis préparer M-04 — Feed Talents pseudonymisé — depuis le dev synchronisé.
+Revoir la PR #59, vérifier les contrôles GitHub et fusionner M-04 dans `dev` si les validations restent vertes. Ensuite préparer M-05 — formulaire Dream-Match.
