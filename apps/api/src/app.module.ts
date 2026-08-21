@@ -14,6 +14,7 @@ import { BounceModule } from './import/bounce.module.js'
 import { ImportModule } from './import/import.module.js'
 import { ProfileModule } from './profile/profile.module.js'
 import { OnboardingModule } from './onboarding/onboarding.module.js'
+<<<<<<< HEAD
 import { ConsentModule } from './consent/consent.module.js'
 import { InstitutionModule } from './institution/institution.module.js'
 import { ApplicationsModule } from './applications/applications.module.js'
@@ -24,6 +25,13 @@ import { SearchModule } from './search/search.module.js'
 
 @Module({
   imports: [SentryModule.forRoot(), PrismaModule, AuthModule, PrivacyModule, AuditModule, BounceModule, ImportModule, ProfileModule, OnboardingModule, ConsentModule, InstitutionModule, ApplicationsModule, ProjectModule, ConnectionModule, MessagingModule, SearchModule],
+=======
+import { ProjectsModule } from './projects/projects.module.js'
+
+@Module({
+  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, PrivacyModule, AuditModule, BounceModule, ImportModule, ProfileModule, OnboardingModule, ProjectsModule],
+
+>>>>>>> fdf7a4d (feat(api): implémenter l'API Feed Projets avec filtres et pagination M-02)
   controllers: [HealthController, MeController],
   providers: [
     { provide: APP_FILTER, useClass: SentryGlobalFilter },
