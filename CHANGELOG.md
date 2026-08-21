@@ -10,6 +10,26 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-21 — Implémentation P-11 à P-13
+
+### Ajouté
+
+- P-11 : publications projet, API CRUD, auteur pseudonymisé et écran `/projects/:id/posts`.
+- P-12 : export JSON transactionnel réservé au propriétaire et écran de téléchargement.
+- P-13 : détail public filtré avec BMC public, postes ouverts, publications actives et équipe pseudonymisée.
+- Tests HTTP P-11, P-12 et P-13 : **4/4 réussis**.
+
+### Validation
+
+- Typecheck API/frontend, lint frontend et build frontend réussis après ajout des écrans P-12/P-13.
+- Les tests de production avec Prisma réel et Neon restent distincts des tests HTTP substitués.
+
+### Bloqué
+
+- P-10 reste dépendant de M-11, lui-même dépendant de M-10, dont le service API n’est pas identifiable dans `origin/dev`.
+
+---
+
 ## 2026-08-21 — Fusion de P-08 et préparation de P-10
 
 ### Modifié
