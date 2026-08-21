@@ -20,16 +20,16 @@ test('P-02 calcule la complétion à partir des blocs enregistrés', async () =>
 
 test('P-02 met à jour un bloc dans une transaction et recalcule la complétion', async () => {
   let transactionCalled = false
-  let updateData: any
+  let updateData: { create: { blocks: Record<string, unknown> } } | undefined
   const prisma = {
     project: { findUnique: async () => ({ id: 'p1', members: [member] }) },
     businessModelCanvas: { findUnique: async () => null },
-    $transaction: async (callback: (tx: any) => Promise<unknown>) => { transactionCalled = true; return callback({ businessModelCanvas: { findUnique: async () => null, upsert: async (args: any) => { updateData = args; return { projectId: 'p1', blocks: args.create.blocks, completion: 11, updatedAt: new Date(), updatedById: 'u1' } } } }) },
+    $transaction: async (callback: (tx: unknown) => Promise<unknown>) => { transactionCalled = true; return callback({ businessModelCanvas: { findUnique: async () => null, upsert: async (args: unknown) => { const typed = args as { create: { blocks: Record<string, unknown> } }; updateData = typed; return { projectId: 'p1', blocks: typed.create.blocks, completion: 11, updatedAt: new Date(), updatedById: 'u1' } } } }) },
   } as unknown as PrismaService
   const response = await new BmcService(prisma).patch('u1', 'p1', { block: 'valuePropositions', value: { content: 'Stockage partagé', isPublic: false } })
   assert.equal(transactionCalled, true)
   assert.equal(response.completion, 11)
-  assert.equal((updateData.create.blocks as any).valuePropositions.content, 'Stockage partagé')
+  assert.equal((updateData?.create.blocks.valuePropositions as { content: string }).content, 'Stockage partagé')
 })
 
 test('P-02 refuse le BMC aux utilisateurs qui ne sont pas membres', async () => {
