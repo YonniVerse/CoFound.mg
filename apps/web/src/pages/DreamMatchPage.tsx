@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Check, HeartHandshake, Loader2 } from 'lucide-react'
-import { getDreamMatchProfile, saveDreamMatchProfile } from '@/data/dreamMatchApi'
-import type { DreamMatchUpsertRequest } from '@cofound/shared'
+import { Check, HeartHandshake, Loader2, Sparkles } from 'lucide-react'
+import { getDreamMatchProfile, getDreamMatchSuggestions, saveDreamMatchProfile } from '@/data/dreamMatchApi'
+import type { DreamMatchSuggestionsResponse, DreamMatchUpsertRequest } from '@cofound/shared'
 
 const emptyForm: Omit<DreamMatchUpsertRequest, 'consent'> = {
   minAvailability: null,
@@ -12,25 +12,37 @@ const emptyForm: Omit<DreamMatchUpsertRequest, 'consent'> = {
   skills: [],
 }
 
+const factorLabels = [
+  { key: 'skillComplementarity', label: 'Compétences complémentaires', maximum: 50 },
+  { key: 'sectorOverlap', label: 'Secteur partagé', maximum: 25 },
+  { key: 'availability', label: 'Disponibilité compatible', maximum: 25 },
+] as const
+
 export default function DreamMatchPage() {
   const [form, setForm] = useState(emptyForm)
   const [consent, setConsent] = useState(false)
+  const [suggestions, setSuggestions] = useState<DreamMatchSuggestionsResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [suggestionsError, setSuggestionsError] = useState<string | null>(null)
 
   useEffect(() => {
     getDreamMatchProfile()
-      .then(({ profile }) => {
-        if (profile) {
-          setForm({
-            minAvailability: profile.minAvailability,
-            preferredTeamSize: profile.preferredTeamSize,
-            institutionPref: profile.institutionPref,
-            sectors: profile.sectors,
-            skills: profile.skills,
-          })
+      .then(async ({ profile }) => {
+        if (!profile) return
+        setForm({
+          minAvailability: profile.minAvailability,
+          preferredTeamSize: profile.preferredTeamSize,
+          institutionPref: profile.institutionPref,
+          sectors: profile.sectors,
+          skills: profile.skills,
+        })
+        try {
+          setSuggestions(await getDreamMatchSuggestions({ limit: 10 }))
+        } catch {
+          setSuggestionsError('Les suggestions seront disponibles après validation de vos préférences.')
         }
       })
       .catch(() => setError('Impossible de charger votre profil Dream-Match.'))
@@ -48,7 +60,9 @@ export default function DreamMatchPage() {
     setSaved(false)
     try {
       await saveDreamMatchProfile({ ...form, consent: true })
+      setSuggestions(await getDreamMatchSuggestions({ limit: 10 }))
       setSaved(true)
+      setSuggestionsError(null)
     } catch {
       setError('Impossible d’enregistrer vos préférences pour le moment.')
     } finally {
@@ -61,7 +75,7 @@ export default function DreamMatchPage() {
   }
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12">
+    <main className="mx-auto max-w-4xl px-6 py-12">
       <div className="mb-8 flex items-start gap-4">
         <div className="rounded-2xl bg-primary/10 p-3 text-primary"><HeartHandshake className="h-6 w-6" /></div>
         <div>
@@ -91,6 +105,41 @@ export default function DreamMatchPage() {
         {saved && <p role="status" className="flex items-center gap-2 rounded-xl bg-emerald-500/10 p-3 text-sm text-emerald-700"><Check className="h-4 w-4" />Préférences enregistrées.</p>}
         <button type="submit" disabled={isSaving} className="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-60">{isSaving ? 'Enregistrement…' : 'Enregistrer mes préférences'}</button>
       </form>
+
+      <section aria-labelledby="suggestions-title" className="mt-10 space-y-4">
+        <div className="flex items-center gap-3">
+          <Sparkles className="h-5 w-5 text-primary" />
+          <div>
+            <h2 id="suggestions-title" className="text-xl font-semibold">Pourquoi ces profils vous sont proposés</h2>
+            <p className="text-sm text-muted-foreground">Les facteurs sont expliqués sans score numérique et sans identité civile.</p>
+          </div>
+        </div>
+        {suggestionsError && <p className="rounded-xl border border-dashed p-4 text-sm text-muted-foreground">{suggestionsError}</p>}
+        {!suggestionsError && suggestions?.items.length === 0 && <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">Aucune suggestion pour le moment. Complétez vos préférences pour élargir la recherche.</p>}
+        <div className="grid gap-4 md:grid-cols-2">
+          {suggestions?.items.map((suggestion) => (
+            <article key={suggestion.talentId} className="rounded-3xl border bg-card p-5 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 font-semibold text-primary" aria-hidden="true">{suggestion.pseudonym.slice(0, 1).toUpperCase()}</div>
+                <div className="min-w-0">
+                  <h3 className="font-semibold">{suggestion.pseudonym}</h3>
+                  {suggestion.headline && <p className="text-sm text-muted-foreground">{suggestion.headline}</p>}
+                </div>
+              </div>
+              {suggestion.bio && <p className="mt-4 line-clamp-3 text-sm text-muted-foreground">{suggestion.bio}</p>}
+              <div className="mt-5 space-y-3" aria-label={`Facteurs explicatifs pour ${suggestion.pseudonym}`}>
+                {factorLabels.map(({ key, label, maximum }) => {
+                  const value = suggestion.factors[key]
+                  return <div key={key}>
+                    <div className="mb-1 flex justify-between text-xs font-medium"><span>{label}</span><span className="text-muted-foreground">{value > 0 ? 'Présent' : 'Non déterminant'}</span></div>
+                    <div className="h-2 overflow-hidden rounded-full bg-muted"><div className="h-full rounded-full bg-primary transition-[width]" style={{ width: `${Math.min(100, (value / maximum) * 100)}%` }} /></div>
+                  </div>
+                })}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
     </main>
   )
 }
