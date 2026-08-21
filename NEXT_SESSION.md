@@ -5,7 +5,7 @@
 > dans `CLAUDE.md`, le détail dans `docs/`.
 
 **Dernière mise à jour** : 2026-08-21
-**Phase** : Vague 1 — implémentation de E-15
+**Phase** : Vague 1 — finalisation de E-15
 **Branche** : `E-15`, issue de `dev` après fusion de la PR #36
 **État du workspace** : E-12 et E-13 finalisés et fusionnés ; E-15 initialisé avec contrats et routes API de consentements
 
@@ -61,4 +61,4 @@ Le détail doit présenter les compteurs créés, mis à jour, ignorés, erreurs
 
 ## 5. Prochaine action
 
-F-12 est confirmé terminé via la PR #18 fusionnée ; le provider i18n est présent dans `apps/web/src/i18n.tsx`. E-15 est initialisé sur sa branche dédiée avec les contrats partagés, `ConsentModule`, les routes `GET /me/consents`, `POST /me/consents/:purpose` et `DELETE /me/consents/:purpose`, ainsi que les premiers tests unitaires. Les validations API passent avec 48 tests. La suite consiste à ajouter l’intégration HTTP et l’onglet Confidentialité de `/settings`.
+F-12 est confirmé terminé via la PR #18 fusionnée ; le provider i18n est présent dans `apps/web/src/i18n.tsx`. E-15 est initialisé sur sa branche dédiée avec les contrats partagés, `ConsentModule`, les routes `GET /me/consents`, `POST /me/consents/:purpose` et `DELETE /me/consents/:purpose`, ainsi que les premiers tests unitaires. Les validations API passent avec 49 tests, dont l’intégration HTTP E-15. L’onglet Confidentialité de `/settings` est maintenant implémenté avec lecture, octroi, retrait confirmé et i18n français/malgache. La prochaine action est la revue et la fusion de la PR E-15.

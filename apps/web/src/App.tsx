@@ -5,6 +5,7 @@ import FeedPage from "@/pages/FeedPage";
 import ProjectDetailPage from "@/pages/ProjectDetailPage";
 import ImpactPage from "@/pages/ImpactPage";
 import ComingSoonPage from "@/pages/ComingSoonPage";
+import SettingsPage from "@/pages/SettingsPage";
 import ImportMappingPage from "@/pages/ImportMappingPage";
 import ImportPreviewPage from "@/pages/ImportPreviewPage";
 import ImportBatchesPage from "@/pages/ImportBatchesPage";
@@ -45,7 +46,7 @@ function App() {
         <Route path="/profiles" element={<ComingSoonPage />} />
         <Route path="/messages" element={<ComingSoonPage />} />
         <Route path="/profile/me" element={<ComingSoonPage />} />
-        <Route path="/settings" element={<ComingSoonPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
       </Routes>
     </BrowserRouter>
   );
