@@ -4,7 +4,7 @@
 
 ## 1. État actuel
 
-Les PR #56, #57 et #58 sont fusionnées dans `dev` via M-01, M-02 et M-03. La branche active est `M-04` et la PR #59 est ouverte vers `dev`. M-04 implémente le Feed Talents pseudonymisé.
+Les PR #56 à #59 sont fusionnées dans `dev`. La branche active est `feat/M-05-dream-match-form`, créée depuis `origin/dev`, avec le commit `bef3b06`. M-05 est commencé et n’a pas encore de PR.
 
 ## 2. Livrables de cette session
 
@@ -22,8 +22,8 @@ Les routes de messagerie exigent `message:send` et vérifient l’appartenance �
 
 ## 5. Vigilance et travaux restants
 
-Les tests API comptent 102 réussites sur M-04. Le lint, le typecheck et le build frontend passent. M-04 limite le feed aux profils opt-in, expose uniquement pseudonyme/avatarSeed et fournit recherche, pagination, cartes, skeletons et fallback de démonstration. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
+M-05 fournit les contrats Zod Dream-Match, les routes `GET/PATCH /me/dream-match`, l’upsert transactionnel avec validation des compétences et secteurs actifs, ainsi que l’écran `/dream-match`. Les tests API comptent 105 réussites, le lint et le typecheck backend/frontend passent, et le build frontend passe. Le consentement explicite est obligatoire ; aucune identité civile ni genre n’est exposé. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
 
 ## 6. Prochaine action
 
-Revoir la PR #59, vérifier les contrôles GitHub et fusionner M-04 dans `dev` si les validations restent vertes. Ensuite préparer M-05 — formulaire Dream-Match.
+Finaliser M-05 avec revue du contrat, tests HTTP et éventuellement une PR, puis préparer M-06 — scoring Dream-Match — uniquement après validation du formulaire.
