@@ -6,6 +6,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 const OnboardingPage = lazy(() => import("@/pages/OnboardingPage"));
 const FeedPage = lazy(() => import("@/pages/FeedPage"));
 const ProjectDetailPage = lazy(() => import("@/pages/ProjectDetailPage"));
+const ProjectCreatePage = lazy(() => import("@/pages/ProjectCreatePage"));
 const ImpactPage = lazy(() => import("@/pages/ImpactPage"));
 const ComingSoonPage = lazy(() => import("@/pages/ComingSoonPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
@@ -23,6 +24,7 @@ function App() {
     <Route element={<LayoutWrapper />}><Route path="/" element={<LandingPage />} /></Route>
     <Route path="/onboarding" element={<OnboardingPage />} />
     <Route path="/feed" element={<FeedPage />} />
+    <Route path="/projects/new" element={<ProjectCreatePage />} />
     <Route path="/projects/:id" element={<ProjectDetailPage />} />
     <Route path="/impact" element={<ImpactPage />} />
     <Route path="/institution" element={<InstitutionOverviewPage />} />

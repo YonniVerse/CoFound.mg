@@ -147,6 +147,14 @@ export const talentViewSchema = z.discriminatedUnion('revealed', [
   revealedTalentViewSchema,
 ])
 
+export const projectCreateSchema = z.object({
+  title: z.string().trim().min(3).max(120),
+  pitch: z.string().trim().min(10).max(2_000),
+  sectorId: idSchema.optional(),
+  regionId: idSchema.optional(),
+})
+export type ProjectCreateInput = z.infer<typeof projectCreateSchema>
+
 export const projectSummarySchema = z.object({
   id: idSchema,
   title: z.string(),
