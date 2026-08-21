@@ -22,9 +22,10 @@ import { MessagingModule } from './messaging/messaging.module.js'
 import { SearchModule } from './search/search.module.js'
 import { ProjectsModule } from './projects/projects.module.js'
 import { TalentsModule } from './talents/talents.module.js'
+import { DreamMatchModule } from './dream-match/dream-match.module.js'
 
 @Module({
-  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, PrivacyModule, AuditModule, BounceModule, ImportModule, ProfileModule, OnboardingModule, ConsentModule, InstitutionModule, ApplicationsModule, ProjectModule, ConnectionModule, MessagingModule, SearchModule, ProjectsModule, TalentsModule],
+  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, PrivacyModule, AuditModule, BounceModule, ImportModule, ProfileModule, OnboardingModule, ConsentModule, InstitutionModule, ApplicationsModule, ProjectModule, ConnectionModule, MessagingModule, SearchModule, ProjectsModule, TalentsModule, DreamMatchModule],
   controllers: [HealthController, MeController],
   providers: [
     { provide: APP_FILTER, useClass: SentryGlobalFilter },

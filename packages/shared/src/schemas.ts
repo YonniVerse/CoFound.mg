@@ -627,3 +627,44 @@ export type ProjectFeedResponse = z.infer<typeof projectFeedResponseSchema>
 export type TalentFeedQuery = z.infer<typeof talentFeedQuerySchema>
 export type TalentFeedCard = z.infer<typeof talentFeedCardSchema>
 export type TalentFeedResponse = z.infer<typeof talentFeedResponseSchema>
+
+// ─── Dream-Match (M-05) ───────────────────────────────────────────────────────
+
+export const dreamMatchSkillInputSchema = z.object({
+  skillId: idSchema,
+  importance: z.number().int().min(1).max(5).default(1),
+})
+
+export const dreamMatchProfileUpsertSchema = z.object({
+  minAvailability: z.number().int().min(0).max(168).nullable().optional(),
+  preferredTeamSize: z.number().int().min(2).max(20).nullable().optional(),
+  institutionPref: z.string().trim().max(160).nullable().optional(),
+  sectors: z.array(idSchema).max(20).default([]),
+  skills: z.array(dreamMatchSkillInputSchema).max(30).default([]),
+})
+
+export const dreamMatchProfileSchema = z.object({
+  id: idSchema,
+  talentId: idSchema,
+  minAvailability: z.number().int().nullable(),
+  preferredTeamSize: z.number().int().nullable(),
+  institutionPref: z.string().nullable(),
+  sectors: z.array(idSchema),
+  skills: z.array(dreamMatchSkillInputSchema),
+})
+
+export const dreamMatchProfileResponseSchema = z.object({ profile: dreamMatchProfileSchema.nullable() })
+export type DreamMatchSkillInput = z.infer<typeof dreamMatchSkillInputSchema>
+export type DreamMatchProfileUpsertInput = z.infer<typeof dreamMatchProfileUpsertSchema>
+export type DreamMatchProfile = z.infer<typeof dreamMatchProfileSchema>
+export type DreamMatchProfileResponse = z.infer<typeof dreamMatchProfileResponseSchema>
+
+export const dreamMatchConsentSchema = z.object({ consent: z.literal(true) })
+export type DreamMatchConsentInput = z.infer<typeof dreamMatchConsentSchema>
+
+export const dreamMatchUpsertRequestSchema = dreamMatchProfileUpsertSchema.extend({ consent: z.literal(true) })
+export type DreamMatchUpsertRequest = z.infer<typeof dreamMatchUpsertRequestSchema>
+
+export const dreamMatchUpsertResponseSchema = z.object({ profile: dreamMatchProfileSchema })
+export type DreamMatchUpsertResponse = z.infer<typeof dreamMatchUpsertResponseSchema>
+
