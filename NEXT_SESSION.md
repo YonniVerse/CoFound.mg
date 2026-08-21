@@ -7,7 +7,7 @@
 **Dernière mise à jour** : 2026-08-21
 **Phase** : Vague 1 — implémentation de E-13
 **Branche** : `E-13`, issue de `dev` après fusion de la PR #35
-**État du workspace** : E-12 finalisé et fusionné ; préparation de l’onboarding progressif E-13
+**État du workspace** : E-12 finalisé et fusionné ; API, migration, contrats et UI initiale E-13 implémentés
 
 ---
 
@@ -61,4 +61,4 @@ Le détail doit présenter les compteurs créés, mis à jour, ignorés, erreurs
 
 ## 5. Prochaine action
 
-Démarrer E-13 par la définition des six étapes d’onboarding, le choix de la persistance de progression et les contrats Zod par étape. Implémenter ensuite `GET /me/onboarding` et la sauvegarde progressive via `PATCH /me/profile`, en préservant la séparation entre identité privée et profil public.
+E-13 est implémenté sur la branche dédiée : migration de progression, contrats Zod, `GET /me/onboarding`, `PATCH /me/onboarding/steps/:step`, persistance des compétences et écran `/onboarding`. Relancer les validations complètes, corriger les éventuels points de revue, puis publier la PR E-13.

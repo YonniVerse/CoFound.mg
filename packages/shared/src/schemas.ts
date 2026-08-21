@@ -57,7 +57,6 @@ export const talentIdentityInputSchema = z.object({
   regionId: idSchema.nullable().optional(),
   gender: z.string().trim().max(80).nullable().optional(),
 })
-
 export const talentProfileSchema = z.object({
   id: idSchema,
   userId: idSchema,
@@ -75,6 +74,19 @@ export const talentProfileSchema = z.object({
   completion: z.number().int().min(0).max(100),
   visibleInTalentFeed: z.boolean(),
 })
+export const onboardingStepSchema = z.number().int().min(1).max(6)
+export const onboardingStepNameSchema = z.enum(['identity', 'journey', 'skills', 'goals', 'availability', 'visibility'])
+export const onboardingStepRequestSchema = z.object({ step: onboardingStepSchema, data: z.record(z.string(), z.unknown()) })
+export const onboardingProgressSchema = z.object({
+  currentStep: onboardingStepSchema,
+  completedSteps: z.array(onboardingStepSchema),
+  completion: z.number().int().min(0).max(100),
+  minimumCompletion: z.number().int().min(0).max(100),
+  isComplete: z.boolean(),
+  stepName: onboardingStepNameSchema,
+})
+export const onboardingStepResponseSchema = z.object({ progress: onboardingProgressSchema, profile: z.object({ id: idSchema, completion: z.number().int().min(0).max(100) }).nullable() })
+
 export const privateTalentProfileSchema = z.object({
   user: z.object({ id: idSchema, email: z.string().email(), locale: localeSchema }),
   identity: z.object({ firstName: z.string(), lastName: z.string(), photoKey: z.string().nullable(), phone: z.string().nullable(), regionId: idSchema.nullable() }).nullable(),
@@ -182,6 +194,8 @@ export type PasswordResetInput = z.infer<typeof passwordResetInputSchema>
 export type TalentProfileInput = z.infer<typeof talentProfileInputSchema>
 export type TalentProfilePatchInput = z.infer<typeof talentProfilePatchSchema>
 export type TalentIdentityInput = z.infer<typeof talentIdentityInputSchema>
+export type OnboardingStepRequest = z.infer<typeof onboardingStepRequestSchema>
+export type OnboardingProgress = z.infer<typeof onboardingProgressSchema>
 export type TalentView = z.infer<typeof talentViewSchema>
 export type ProjectSummary = z.infer<typeof projectSummarySchema>
 export type ApiError = z.infer<typeof apiErrorSchema>
