@@ -53,6 +53,8 @@ export class ProjectMembersService {
   async add(projectId: string, ownerId: string, userId: string, role: ProjectRoleInput = 'MEMBER') {
     const owner = await this.requireProjectAccess(projectId, ownerId)
     if (owner.role !== ProjectRole.OWNER) throw new NotFoundException({ code: 'PROJECT_NOT_FOUND', messageKey: 'errors.projectNotFound' })
+    const targetUser = await this.prisma.user.findUnique({ where: { id: userId }, select: { id: true } })
+    if (!targetUser) throw new NotFoundException({ code: 'USER_NOT_FOUND', messageKey: 'errors.userNotFound' })
     const existing = await this.prisma.projectMember.findUnique({ where: { projectId_userId: { projectId, userId } } })
     if (existing?.leftAt === null) throw new BadRequestException({ code: 'MEMBER_ALREADY_ACTIVE', messageKey: 'errors.memberAlreadyActive' })
     return this.prisma.projectMember.upsert({

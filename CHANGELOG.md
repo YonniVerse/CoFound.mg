@@ -10,6 +10,28 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-21 — Finalisation technique de P-08 : intégration HTTP et UI-29 réelle
+
+### Ajouté
+
+- Test d’intégration HTTP du `ProjectMembersController` couvrant `GET`, `POST`, `PATCH` et `DELETE` sous `/api/v1/projects/:projectId/members`.
+- Conversion des erreurs de validation des schémas membres en réponse HTTP `400`.
+- Appels `projectApi` réels pour charger, ajouter, modifier et quitter une équipe.
+
+### Modifié
+
+- UI-29 `/projects/:id/team` ne dépend plus de données de démonstration : elle utilise `apiClient`, gère les états de chargement, erreur, vide et mutation, et respecte la règle du dernier `OWNER`.
+- Le service P-08 vérifie l’existence du compte cible avant ajout.
+- Le test BMC réintégré a été typé sans `any` pour maintenir le lint strict.
+
+### Validation
+
+- Suite API complète : **83/83 tests réussis**.
+- Typecheck et lint API/frontend réussis.
+- Build frontend réussi.
+
+---
+
 ## 2026-08-21 — Publication P-07 et démarrage P-08 membres & rôles
 
 ### Décidé

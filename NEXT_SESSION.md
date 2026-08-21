@@ -10,7 +10,7 @@
 
 - **Dernière mise à jour** : 2026-08-21.
 - **Vague** : Vague 3 — Projet.
-- **Ticket courant** : **P-08 — Membres & rôles**, en cours.
+- **Ticket courant** : **P-08 — Membres & rôles**, finalisation technique effectuée, publication du correctif en attente.
 - **Branche Git** : `P-08`.
 - **PR P-07** : [#49](https://github.com/YonniVerse/CoFound.mg/pull/49), ouverte vers `dev`.
 - **PR P-06** : [#48](https://github.com/YonniVerse/CoFound.mg/pull/48), ouverte vers `dev`.
@@ -27,13 +27,13 @@
 | P-05 | Terminé sur branche dédiée | Candidature candidat |
 | P-06 | Implémenté, PR ouverte | File porteur, acceptation/refus pseudonymisés |
 | P-07 | Implémenté, PR #49 ouverte | Relance périodique idempotente |
-| P-08 | En cours | Membres, rôles et UI-29 |
+| P-08 | Finalisation technique | Membres, rôles, intégration HTTP et UI-29 connecté à l’API |
 
 ## 3. Travail réalisé cette session
 
 Le ticket P-07 a été poussé et publié dans la PR #49. La branche P-08 a ensuite été reconstruite avec les commits projet P-01 à P-04 nécessaires à sa compilation. L’API P-08 contient maintenant `ProjectMembersService` et `ProjectMembersController` avec les routes de liste, ajout, changement de rôle et retrait. Les contrôles d’accès passent par `PROJECT_READ` et `PROJECT_MANAGE`; les mutations de rôle et de retrait utilisent une transaction Prisma afin de protéger le dernier `OWNER`.
 
-Les contrats partagés P-08 couvrent les rôles et la réponse équipe. La liste révèle l’identité uniquement dans l’espace des membres actifs et n’expose pas le genre. UI-29 existe à `/projects/:id/team`, est chargée avec `React.lazy`, permet une gestion visuelle des rôles et bloque localement la rétrogradation ou le retrait du dernier porteur. Cette interface utilise encore des données locales de démonstration et doit être branchée au client API réel.
+Les contrats partagés P-08 couvrent les rôles et la réponse équipe. La liste révèle l’identité uniquement dans l’espace des membres actifs et n’expose pas le genre. UI-29 existe à `/projects/:id/team`, est chargée avec `React.lazy` et utilise désormais `projectApi`/`apiClient` pour charger l’équipe, ajouter un membre, modifier un rôle et quitter le projet. Les états de chargement, erreur, vide et mutation sont gérés dans l’écran.
 
 ## 4. Fichiers importants
 
@@ -42,6 +42,7 @@ Les contrats partagés P-08 couvrent les rôles et la réponse équipe. La liste
 - `apps/api/src/project/project.module.ts` — enregistrement des contrôleurs/services projet, BMC, postes et membres.
 - `packages/shared/src/schemas.ts` — contrats P-04 à P-08 fusionnés.
 - `apps/api/test/project-members.test.ts` — tests ciblés P-08.
+- `apps/api/test/project-members.integration.test.ts` — tests HTTP du contrôleur P-08.
 - `apps/web/src/pages/ProjectTeamPage.tsx` — écran UI-29 actuel.
 - `apps/web/src/App.tsx` — route lazy `/projects/:id/team`.
 - `apps/api/src/applications/application-reminder.service.ts` — relance P-07.
@@ -50,12 +51,12 @@ Les contrats partagés P-08 couvrent les rôles et la réponse équipe. La liste
 
 - `pnpm --filter @cofound/shared build` : réussi.
 - `pnpm --filter @cofound/api typecheck` : réussi.
-- Tests API ciblés/projet : **81/81 réussis**.
+- Suite API complète : **83/83 réussis**, dont les deux tests HTTP P-08.
 - `pnpm --filter @cofound/web typecheck`, lint et build : réussis ; le chunk initial reste conforme au budget observé.
-- Le test P-08 doit encore être complété par des tests HTTP/intégration sur les quatre routes et par un test concurrent du dernier `OWNER` avec Prisma réel.
-- Le service `add` doit encore valider explicitement l’existence et l’éligibilité du `userId` avant son upsert.
+- Les tests HTTP P-08 couvrent les quatre routes et la validation d’un rôle invalide avec un serveur NestJS réel et un service substitué.
+- Un test concurrent avec Prisma réel reste une amélioration ultérieure ; la protection applicative du dernier `OWNER` est déjà transactionnelle.
 - Ne pas ajouter au commit les fichiers hérités non suivis : `analyse-backlog-vagues.md`, `guide-collaboration-CoFound.md`, `plan-tickets-utilisateur.md`, `rapport-analyse-attributions.md`, `pr-e*-body.md` et `apps/api/test/email-chain.test.ts`.
 
 ## 6. Prochaine action
 
-**Finaliser P-08 API** : connecter l’écran `apps/web/src/pages/ProjectTeamPage.tsx` à un client `projectApi` réel, ajouter les tests HTTP/intégration de `ProjectMembersController`, puis lancer `pnpm --filter @cofound/api test`, `pnpm --filter @cofound/api typecheck` et `pnpm --filter @cofound/web build` avant tout commit.
+**Publier la finalisation P-08** : lancer `git diff --check`, committer les fichiers P-08, pousser `P-08` et mettre à jour la PR #50 avec les tests HTTP et le branchement API réel.
