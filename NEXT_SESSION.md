@@ -4,7 +4,7 @@
 
 ## 1. État actuel
 
-Les PR #56 à #59 sont fusionnées dans `dev`. La branche active est `feat/M-05-dream-match-form`, créée depuis `origin/dev`, avec le commit `bef3b06`. M-05 est commencé et n’a pas encore de PR.
+La PR #60 de M-05 est fusionnée dans `dev` via le commit `773a9ed`. La branche active est `feat/M-06-dream-match-scoring`, créée depuis `origin/dev`. M-06 est commencé et n’a pas encore de PR.
 
 ## 2. Livrables de cette session
 
@@ -22,8 +22,8 @@ Les routes de messagerie exigent `message:send` et vérifient l’appartenance �
 
 ## 5. Vigilance et travaux restants
 
-M-05 fournit les contrats Zod Dream-Match, les routes `GET/PATCH /me/dream-match`, l’upsert transactionnel avec validation des compétences et secteurs actifs, ainsi que l’écran `/dream-match`. Les tests API comptent 105 réussites, le lint et le typecheck backend/frontend passent, et le build frontend passe. Le consentement explicite est obligatoire ; aucune identité civile ni genre n’est exposé. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
+M-05 est intégré dans `dev` après 106 tests API et un test HTTP GET/PATCH. M-06 ajoute les contrats de suggestions, le service de scoring SQL pondéré par compétences, secteurs et disponibilité, l’endpoint `GET /me/dream-match/suggestions` et des tests unitaires. Les tests API comptent 108 réussites ; lint et typecheck backend passent. Les résultats restent pseudonymisés et aucune identité civile ni genre n’est exposé. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
 
 ## 6. Prochaine action
 
-Finaliser M-05 avec revue du contrat, tests HTTP et éventuellement une PR, puis préparer M-06 — scoring Dream-Match — uniquement après validation du formulaire.
+Finaliser M-06 avec une validation SQL sur base de recette, ajouter les tests HTTP de suggestions, puis ouvrir la PR suivante. M-07 et M-08 restent bloqués jusqu’à validation du scoring.

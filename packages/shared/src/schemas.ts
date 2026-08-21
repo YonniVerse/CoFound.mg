@@ -668,3 +668,38 @@ export type DreamMatchUpsertRequest = z.infer<typeof dreamMatchUpsertRequestSche
 export const dreamMatchUpsertResponseSchema = z.object({ profile: dreamMatchProfileSchema })
 export type DreamMatchUpsertResponse = z.infer<typeof dreamMatchUpsertResponseSchema>
 
+
+// ─── Dream-Match scoring (M-06) ───────────────────────────────────────────────
+
+export const dreamMatchFactorSchema = z.object({
+  skillComplementarity: z.number().min(0).max(50),
+  sectorOverlap: z.number().min(0).max(25),
+  availability: z.number().min(0).max(25),
+})
+
+export const dreamMatchSuggestionSchema = z.object({
+  talentId: idSchema,
+  pseudonym: z.string(),
+  avatarSeed: z.string(),
+  headline: z.string().nullable(),
+  bio: z.string().nullable(),
+  score: z.number().min(0).max(100),
+  factors: dreamMatchFactorSchema,
+})
+
+export const dreamMatchSuggestionsResponseSchema = z.object({
+  items: z.array(dreamMatchSuggestionSchema),
+  nextCursor: z.string().nullable(),
+  hasMore: z.boolean(),
+})
+
+export const dreamMatchSuggestionsQuerySchema = z.object({
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+})
+
+export type DreamMatchFactor = z.infer<typeof dreamMatchFactorSchema>
+export type DreamMatchSuggestion = z.infer<typeof dreamMatchSuggestionSchema>
+export type DreamMatchSuggestionsResponse = z.infer<typeof dreamMatchSuggestionsResponseSchema>
+export type DreamMatchSuggestionsQuery = z.infer<typeof dreamMatchSuggestionsQuerySchema>
+

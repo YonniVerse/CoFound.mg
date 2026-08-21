@@ -10,6 +10,27 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Démarrage de M-06 Scoring Dream-Match
+
+### Ajouté
+
+- Branche `feat/M-06-dream-match-scoring` créée depuis `origin/dev` après fusion de M-05.
+- Contrats Zod des suggestions et facteurs de scoring.
+- Endpoint `GET /me/dream-match/suggestions` avec pagination.
+- Scoring SQL pondéré par complémentarité de compétences, secteurs et disponibilité.
+- Tests unitaires du score, de la pagination et du pseudonymat.
+
+### Validation
+
+- 108/108 tests API réussis.
+- Lint API et typecheck API réussis.
+
+### En cours
+
+- Validation SQL sur base de recette et tests HTTP avant PR M-06.
+
+---
+
 ## 2026-08-22 — Reprise de M-04 Feed Talents
 
 ### Modifié
