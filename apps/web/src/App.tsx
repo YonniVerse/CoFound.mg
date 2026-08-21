@@ -23,6 +23,7 @@ const ProjectPostsPage = lazy(() => import("@/pages/ProjectPostsPage"));
 const ProjectChannelPage = lazy(() => import("@/pages/ProjectChannelPage"));
 const ProjectExportPage = lazy(() => import("@/pages/ProjectExportPage"));
 const ProjectPublicPage = lazy(() => import("@/pages/ProjectPublicPage"));
+const SearchPage = lazy(() => import("@/pages/SearchPage"));
 
 const LayoutWrapper = () => <MainLayout><Outlet /></MainLayout>;
 const Loading = () => <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">Chargement…</div>;
@@ -32,6 +33,7 @@ function App() {
     <Route element={<LayoutWrapper />}><Route path="/" element={<LandingPage />} /></Route>
     <Route path="/onboarding" element={<OnboardingPage />} />
     <Route path="/feed" element={<FeedPage />} />
+    <Route path="/search" element={<SearchPage />} />
     <Route path="/projects/new" element={<ProjectCreatePage />} />
     <Route path="/projects/:id" element={<ProjectDetailPage />} />
     <Route path="/projects/:id/applications" element={<ProjectApplicationsPage />} />
