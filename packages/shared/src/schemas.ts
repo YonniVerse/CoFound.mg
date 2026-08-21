@@ -84,6 +84,39 @@ export const projectSummarySchema = z.object({
 
 export const accountStatusSchema = z.nativeEnum(AccountStatus)
 
+export const searchTypeSchema = z.enum(['all', 'projects', 'talents', 'opportunities'])
+
+export const searchQuerySchema = z.object({
+  q: z.string().trim().min(1).max(100),
+  type: searchTypeSchema.default('all'),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+})
+
+export const projectSearchResultSchema = projectSummarySchema
+
+export const talentSearchResultSchema = publicTalentViewSchema
+
+export const opportunitySearchResultSchema = z.object({
+  id: idSchema,
+  title: z.string(),
+  description: z.string(),
+  opportunityType: z.string(),
+  organizationName: z.string().optional(),
+  createdAt: z.coerce.date(),
+})
+
+export const searchResponseSchema = z.object({
+  query: z.string(),
+  projects: z.array(projectSearchResultSchema),
+  talents: z.array(talentSearchResultSchema),
+  opportunities: z.array(opportunitySearchResultSchema),
+  counts: z.object({
+    projects: z.number().int().nonnegative(),
+    talents: z.number().int().nonnegative(),
+    opportunities: z.number().int().nonnegative(),
+  }),
+})
+
 export const apiErrorSchema = z.object({
   code: z.nativeEnum(ApiErrorCode),
   messageKey: z.string().min(1),
@@ -97,4 +130,10 @@ export type PasswordResetInput = z.infer<typeof passwordResetInputSchema>
 export type TalentProfileInput = z.infer<typeof talentProfileInputSchema>
 export type TalentView = z.infer<typeof talentViewSchema>
 export type ProjectSummary = z.infer<typeof projectSummarySchema>
+export type SearchType = z.infer<typeof searchTypeSchema>
+export type SearchQuery = z.infer<typeof searchQuerySchema>
+export type ProjectSearchResult = z.infer<typeof projectSearchResultSchema>
+export type TalentSearchResult = z.infer<typeof talentSearchResultSchema>
+export type OpportunitySearchResult = z.infer<typeof opportunitySearchResultSchema>
+export type SearchResponse = z.infer<typeof searchResponseSchema>
 export type ApiError = z.infer<typeof apiErrorSchema>
