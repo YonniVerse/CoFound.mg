@@ -70,7 +70,28 @@ Retiré · En cours · Bloqué**.
 
 ---
 
-## 2026-08-22 — Fusion de M-09 à M-11 et P-10 dans dev
+## 2026-08-22 — Démarrage de M-05 Dream-Match
+
+### Ajouté
+
+- Branche `feat/M-05-dream-match-form` créée depuis `origin/dev`.
+- Contrats Zod, API `GET/PATCH /me/dream-match` et upsert transactionnel des préférences.
+- Écran `/dream-match` avec consentement explicite obligatoire.
+- Tests de consentement, pseudonymat et enregistrement transactionnel.
+
+### Validation
+
+- 105/105 tests API réussis.
+- Lint et typecheck API/frontend réussis.
+- Build frontend réussi.
+
+### En cours
+
+- Revue finale du formulaire, tests HTTP et ouverture d’une PR M-05.
+
+---
+
+## 2026-08-22 — Fusion de M-04 et audit Vague 2t P-10 dans dev
 
 ### Modifié
 
