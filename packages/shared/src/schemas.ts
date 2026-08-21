@@ -155,6 +155,56 @@ export const projectCreateSchema = z.object({
 })
 export type ProjectCreateInput = z.infer<typeof projectCreateSchema>
 
+export const BMC_BLOCK_KEYS = [
+  'customerSegments',
+  'valuePropositions',
+  'channels',
+  'customerRelationships',
+  'revenueStreams',
+  'keyResources',
+  'keyActivities',
+  'keyPartners',
+  'costStructure',
+] as const
+
+export const bmcBlockKeySchema = z.enum(BMC_BLOCK_KEYS)
+export const bmcBlockSchema = z.object({
+  content: z.string().trim().max(4_000),
+  isPublic: z.boolean().default(false),
+})
+export const bmcBlocksSchema = z.object(Object.fromEntries(BMC_BLOCK_KEYS.map((key) => [key, bmcBlockSchema])) as Record<typeof BMC_BLOCK_KEYS[number], typeof bmcBlockSchema>)
+export const bmcPatchSchema = z.object({ block: bmcBlockKeySchema, value: bmcBlockSchema })
+export const bmcResponseSchema = z.object({
+  projectId: idSchema,
+  blocks: bmcBlocksSchema,
+  completion: z.number().int().min(0).max(100),
+  completedBlocks: z.number().int().min(0).max(9),
+  updatedAt: z.coerce.date().nullable(),
+  updatedById: idSchema.nullable(),
+})
+export type BmcBlockKey = (typeof BMC_BLOCK_KEYS)[number]
+export type BmcBlocks = z.infer<typeof bmcBlocksSchema>
+export type BmcPatchInput = z.infer<typeof bmcPatchSchema>
+
+export const openPositionCreateSchema = z.object({
+  title: z.string().trim().min(2).max(120),
+  description: z.string().trim().max(2_000).optional().nullable(),
+  expectedHours: z.number().int().min(1).max(168).optional().nullable(),
+  skillIds: z.array(idSchema).min(1).max(8).refine((ids) => new Set(ids).size === ids.length, 'Compétences dupliquées.'),
+})
+export const openPositionPatchSchema = openPositionCreateSchema.partial().extend({ isOpen: z.boolean().optional() })
+export const openPositionResponseSchema = z.object({
+  id: idSchema,
+  projectId: idSchema,
+  title: z.string(),
+  description: z.string().nullable(),
+  expectedHours: z.number().int().nullable(),
+  isOpen: z.boolean(),
+  skills: z.array(z.object({ id: idSchema, name: z.string() })),
+})
+export const projectPositionsResponseSchema = z.object({ projectId: idSchema, positions: z.array(openPositionResponseSchema) })
+export type OpenPositionCreateInput = z.infer<typeof openPositionCreateSchema>
+export type OpenPositionPatchInput = z.infer<typeof openPositionPatchSchema>
 export const projectSummarySchema = z.object({
   id: idSchema,
   title: z.string(),
