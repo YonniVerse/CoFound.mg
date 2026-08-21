@@ -5,9 +5,9 @@
 > dans `CLAUDE.md`, le détail dans `docs/`.
 
 **Dernière mise à jour** : 2026-08-21
-**Phase** : Vague 1 — implémentation de E-08
-**Branche** : `E-08`, issue de `dev` après fusion des PR #31, #32, #33, #26, #29 et #30
-**État du workspace** : backend E-08 implémenté et validé ; rapports Markdown d’analyse non suivis conservés hors commit
+**Phase** : Vague 1 — implémentation de E-12
+**Branche** : `E-12`, issue de `dev` après fusion de la PR #34
+**État du workspace** : squelette API E-12 implémenté et testé ; rapports Markdown d’analyse non suivis conservés hors commit
 
 ---
 
@@ -27,13 +27,13 @@
 
 ---
 
-## 2. Validation avant E-08
+## 2. Validation avant E-12
 
-Les tests API, le lint, le typecheck et le build passent sur la chaîne cumulée E-01 à E-07. La branche E-08 est issue du `dev` contenant ces fusions. Les rapports d’analyse locaux ne sont pas suivis par Git et ne doivent pas être inclus dans un commit métier.
+La PR #34 (E-08 backend + UI-36) est fusionnée dans `dev`. La branche E-12 est issue de ce `dev` synchronisé. Les tests API E-12 passent avec 36 tests au total ; les rapports d’analyse locaux ne sont pas suivis par Git et ne doivent pas être inclus dans un commit métier.
 
 ---
 
-## 3. Ticket livré — E-08
+## 3. Ticket livré — E-08 et ticket courant — E-12
 
 **Objectif** : permettre à un établissement de suivre ses lots, d’annuler un lot admissible et de relancer uniquement les invitations non activées.
 
@@ -61,4 +61,4 @@ Le détail doit présenter les compteurs créés, mis à jour, ignorés, erreurs
 
 ## 5. Prochaine action
 
-La PR backend E-08 est ouverte (#34) et UI-36 est intégrée dans `apps/web` avec liste, détail, compteurs, filtres et actions. Après revue et fusion de l’ensemble E-08, passer à **E-12 — API et modèle de profil**.
+Compléter E-12 avec les validations métier de profil, puis préparer la PR : vérifier la visibilité publique/privée, l’édition transactionnelle et la compatibilité avec E-13 (onboarding progressif).
