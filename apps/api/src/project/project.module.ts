@@ -8,10 +8,12 @@ import { PositionController } from './position.controller.js'
 import { PositionService } from './position.service.js'
 import { ProjectMembersController } from './project-members.controller.js'
 import { ProjectMembersService } from './project-members.service.js'
+import { ProjectTasksController } from './project-tasks.controller.js'
+import { ProjectTasksService } from './project-tasks.service.js'
 
 @Module({
   imports: [PrismaModule],
-  controllers: [ProjectController, BmcController, PositionController, ProjectMembersController],
-  providers: [ProjectService, BmcService, PositionService, ProjectMembersService],
+  controllers: [ProjectController, BmcController, PositionController, ProjectMembersController, ProjectTasksController],
+  providers: [ProjectService, BmcService, PositionService, ProjectMembersService, ProjectTasksService],
 })
 export class ProjectModule {}

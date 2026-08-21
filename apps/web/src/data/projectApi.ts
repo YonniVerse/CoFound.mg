@@ -38,3 +38,21 @@ export function leaveProject(projectId: string) {
 export function addProjectMember(projectId: string, input: { userId: string; role: ProjectRoleInput }) {
   return apiClient.post(`/projects/${projectId}/members`, input);
 }
+
+import { projectTasksResponseSchema, type CreateProjectTaskInput, type UpdateProjectTaskInput } from "@cofound/shared";
+
+export function getProjectTasks(projectId: string) {
+  return apiClient.get(`/projects/${projectId}/tasks`, projectTasksResponseSchema);
+}
+
+export function createProjectTask(projectId: string, input: CreateProjectTaskInput) {
+  return apiClient.post(`/projects/${projectId}/tasks`, input, undefined);
+}
+
+export function updateProjectTask(projectId: string, taskId: string, input: UpdateProjectTaskInput) {
+  return apiClient.patch(`/projects/${projectId}/tasks/${taskId}`, input, undefined);
+}
+
+export function deleteProjectTask(projectId: string, taskId: string) {
+  return apiClient.request(`/projects/${projectId}/tasks/${taskId}`, { method: "DELETE" });
+}

@@ -1,6 +1,6 @@
 # Context Handoff — Reprise de session CoFound.mg
 
-> **Fichier de reprise de contexte**. Lire ce fichier en premier à chaque nouvelle session.
+> **Lire ce fichier en premier à chaque nouvelle session.**
 > **Périmètre développeur** : Rinoh / Roédrino — Vague 3, domaine Projet.
 > **Source de vérité du backlog** : [`docs/plan-de-developpement.md`](docs/plan-de-developpement.md).
 
@@ -10,53 +10,53 @@
 
 - **Dernière mise à jour** : 2026-08-21.
 - **Vague** : Vague 3 — Projet.
-- **Ticket courant** : **P-08 — Membres & rôles**, finalisé techniquement, PR ouverte.
-- **Branche Git** : `P-08`.
-- **PR P-07** : [#49](https://github.com/YonniVerse/CoFound.mg/pull/49), ouverte vers `dev`.
-- **PR P-06** : [#48](https://github.com/YonniVerse/CoFound.mg/pull/48), ouverte vers `dev`.
-- **État Git** : branche P-08 synchronisée avec `origin/P-08` au commit `2fcd742`; seuls des fichiers hérités non suivis restent dans le workspace et ne doivent pas être ajoutés.
+- **Ticket courant** : **P-09 — Tâches**, implémenté, PR ouverte vers `dev`.
+- **Branche Git** : `P-09`, créée depuis `P-08`.
+- **PR P-08** : [#50](https://github.com/YonniVerse/CoFound.mg/pull/50), fusionnée vers `dev` au commit `0095044`.
+- **PR P-09** : [#51](https://github.com/YonniVerse/CoFound.mg/pull/51), ouverte vers `dev`.
+- **Dépendance M-10** : aucun commit/PR explicitement identifié dans l’historique `origin/dev`; à confirmer avec Yonni avant fusion globale.
+- **État Git** : branche P-09 synchronisée avec `origin/P-09` au commit de merge `c3f2b23`; seuls les fichiers hérités non suivis restent exclus.
 
 ## 2. Tickets réalisés et en cours
 
 | Ticket | État | Référence |
 |---|---|---|
-| P-01 | Intégré dans la base P-08 | Création projet brouillon |
-| P-02 | Intégré dans la base P-08 | BMC guidé et autosave côté équipe |
-| P-03 | Intégré dans la base P-08 | Publication transactionnelle |
-| P-04 | Intégré dans la base P-08 | Postes ouverts et compétences |
-| P-05 | Terminé sur branche dédiée | Candidature candidat |
-| P-06 | Implémenté, PR ouverte | File porteur, acceptation/refus pseudonymisés |
-| P-07 | Implémenté, PR #49 ouverte | Relance périodique idempotente |
-| P-08 | Finalisation technique | Membres, rôles, intégration HTTP et UI-29 connecté à l’API |
+| P-01 à P-07 | Implémentés dans l’historique de la branche | Projet, BMC, postes, candidatures, relances |
+| P-08 | Implémenté, PR ouverte | Membres, rôles, dévoilement pseudonymisé, UI-29 |
+| P-09 | Implémenté, PR #51 ouverte et synchronisée | CRUD des tâches, responsable, échéance, statut |
+| P-10 | Préparé, bloqué par M-11 | Canal de discussion projet |
+| P-11 à P-13 | À faire | Publications, export, détail public/privé |
 
 ## 3. Travail réalisé cette session
 
-Le ticket P-07 a été poussé et publié dans la PR #49. La branche P-08 a ensuite été reconstruite avec les commits projet P-01 à P-04 nécessaires à sa compilation. L’API P-08 contient maintenant `ProjectMembersService` et `ProjectMembersController` avec les routes de liste, ajout, changement de rôle et retrait. Les contrôles d’accès passent par `PROJECT_READ` et `PROJECT_MANAGE`; les mutations de rôle et de retrait utilisent une transaction Prisma afin de protéger le dernier `OWNER`.
+P-09 dispose maintenant de contrats Zod partagés pour les statuts `TODO`, `DOING`, `BLOCKED` et `DONE`, la création, la mise à jour et la réponse de liste. `ProjectTasksService` implémente la liste, création, mise à jour et suppression avec accès réservé aux membres actifs. Les mutations sont transactionnelles et un responsable doit appartenir à l’équipe active du projet. Les réponses ne renvoient qu’un pseudonyme de responsable.
 
-Les contrats partagés P-08 couvrent les rôles et la réponse équipe. La liste révèle l’identité uniquement dans l’espace des membres actifs et n’expose pas le genre. UI-29 existe à `/projects/:id/team`, est chargée avec `React.lazy` et utilise désormais `projectApi`/`apiClient` pour charger l’équipe, ajouter un membre, modifier un rôle et quitter le projet. Les états de chargement, erreur, vide et mutation sont gérés dans l’écran.
+`ProjectTasksController` expose les routes REST sous `/api/v1/projects/:projectId/tasks`. L’écran lazy `/projects/:id/tasks` permet de créer une tâche, modifier son statut, afficher la description, le responsable et l’échéance, et supprimer une tâche via `apiClient`.
 
 ## 4. Fichiers importants
 
-- `apps/api/src/project/project-members.service.ts` — logique métier et transactions P-08.
-- `apps/api/src/project/project-members.controller.ts` — routes REST P-08.
-- `apps/api/src/project/project.module.ts` — enregistrement des contrôleurs/services projet, BMC, postes et membres.
-- `packages/shared/src/schemas.ts` — contrats P-04 à P-08 fusionnés.
-- `apps/api/test/project-members.test.ts` — tests ciblés P-08.
-- `apps/api/test/project-members.integration.test.ts` — tests HTTP du contrôleur P-08.
-- `apps/web/src/pages/ProjectTeamPage.tsx` — écran UI-29 actuel.
-- `apps/web/src/App.tsx` — route lazy `/projects/:id/team`.
-- `apps/api/src/applications/application-reminder.service.ts` — relance P-07.
+- `packages/shared/src/schemas.ts` — contrats et types P-09.
+- `apps/api/src/project/project-tasks.service.ts` — logique métier et transactions.
+- `apps/api/src/project/project-tasks.controller.ts` — routes CRUD P-09.
+- `apps/api/src/project/project.module.ts` — enregistrement du module P-09.
+- `apps/api/test/project-tasks.test.ts` — tests unitaires du service.
+- `apps/api/test/project-tasks.integration.test.ts` — tests HTTP du contrôleur.
+- `apps/web/src/data/projectApi.ts` — appels API des tâches.
+- `apps/web/src/pages/ProjectTasksPage.tsx` — écran P-09.
+- `apps/web/src/App.tsx` — route lazy P-09.
 
 ## 5. Validation et points de vigilance
 
-- `pnpm --filter @cofound/shared build` : réussi.
-- `pnpm --filter @cofound/api typecheck` : réussi.
-- Suite API complète : **83/83 réussis**, dont les deux tests HTTP P-08.
-- `pnpm --filter @cofound/web typecheck`, lint et build : réussis ; le chunk initial reste conforme au budget observé.
-- Les tests HTTP P-08 couvrent les quatre routes et la validation d’un rôle invalide avec un serveur NestJS réel et un service substitué.
-- Un test concurrent avec Prisma réel reste une amélioration ultérieure ; la protection applicative du dernier `OWNER` est déjà transactionnelle.
-- Ne pas ajouter au commit les fichiers hérités non suivis : `analyse-backlog-vagues.md`, `guide-collaboration-CoFound.md`, `plan-tickets-utilisateur.md`, `rapport-analyse-attributions.md`, `pr-e*-body.md` et `apps/api/test/email-chain.test.ts`.
+- Package shared build et typecheck API : réussis.
+- Tests ciblés P-09 : **5/5 réussis**.
+- Suite API complète : réussie lors de la validation précédente ; elle doit être relancée après le commit final.
+- Lint et build frontend : réussis lors de la validation P-09.
+- Le CRUD P-09 impose actuellement `PROJECT_READ` pour la lecture et `PROJECT_MANAGE` pour les mutations.
+- La validation avec Prisma réel et la démonstration recette restent à effectuer.
+- P-09 est maintenant synchronisé avec `dev` après fusion de P-08 ; la PR #51 reste en attente de revue et de fusion.
+- P-10 dépend de M-11. Le schéma Prisma `Conversation` existe, mais aucun service/API M-11 n’a été identifié dans `origin/dev`; ne pas dupliquer ce ticket sans confirmation de Yonni.
+- Ne pas ajouter les fichiers hérités non suivis : `analyse-backlog-vagues.md`, `guide-collaboration-CoFound.md`, `plan-tickets-utilisateur.md`, `rapport-analyse-attributions.md`, `pr-e*-body.md` et `apps/api/test/email-chain.test.ts`.
 
 ## 6. Prochaine action
 
-**Faire relire puis fusionner la PR #50** : vérifier les commentaires CI/revue sur https://github.com/YonniVerse/CoFound.mg/pull/50, puis fusionner vers `dev` après validation humaine.
+**Faire relire puis fusionner la PR #51** : vérifier les contrôles CI et la revue humaine, puis confirmer avec Yonni l’état de M-11 avant de démarrer l’implémentation de P-10.
