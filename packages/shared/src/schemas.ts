@@ -117,6 +117,7 @@ export const affiliationStatusSchema = z.enum(['ACTIVE', 'LEAVING', 'ALUMNI', 'S
 export const affiliationFiltersSchema = z.object({ cohortYear: z.coerce.number().int().optional(), fieldId: idSchema.optional(), status: affiliationStatusSchema.optional() })
 export const affiliationUpdateSchema = z.object({ status: affiliationStatusSchema })
 export const affiliationBulkStatusSchema = z.object({ affiliationIds: z.array(idSchema).min(1).max(1000), status: affiliationStatusSchema, confirmation: z.string().min(1) })
+export const institutionDirectoryQuerySchema = z.object({ organizationId: idSchema, search: z.string().trim().min(1).optional(), cohortYear: z.coerce.number().int().optional(), status: z.string().min(1).optional() })
 
 export const privateTalentProfileSchema = z.object({
   user: z.object({ id: idSchema, email: z.string().email(), locale: localeSchema }),

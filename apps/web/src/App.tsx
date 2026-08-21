@@ -15,6 +15,7 @@ const ImportBatchesPage = lazy(() => import("@/pages/ImportBatchesPage"));
 const InstitutionOverviewPage = lazy(() => import("@/pages/InstitutionOverviewPage"));
 const InstitutionMembersPage = lazy(() => import("@/pages/InstitutionMembersPage"));
 const InstitutionAffiliationsPage = lazy(() => import("@/pages/InstitutionAffiliationsPage"));
+const InstitutionDirectoryPage = lazy(() => import("@/pages/InstitutionDirectoryPage"));
 
 const LayoutWrapper = () => <MainLayout><Outlet /></MainLayout>;
 const Loading = () => <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">Chargement…</div>;
@@ -29,6 +30,7 @@ function App() {
     <Route path="/institution" element={<InstitutionOverviewPage />} />
     <Route path="/institution/members" element={<InstitutionMembersPage />} />
     <Route path="/institution/affiliations" element={<InstitutionAffiliationsPage />} />
+    <Route path="/institution/directory" element={<InstitutionDirectoryPage />} />
     <Route path="/institution/imports" element={<ImportBatchesPage />} />
     <Route path="/institution/imports/:id" element={<ImportBatchesPage />} />
     <Route path="/institution/imports/new" element={<ImportMappingPage />} />
