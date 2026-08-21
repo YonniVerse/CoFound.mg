@@ -1,11 +1,29 @@
 import { Injectable } from '@nestjs/common'
+import type { OnModuleDestroy, OnModuleInit } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service.js'
 
 const DEFAULT_REMINDER_DAYS = 3
 const REMINDER_TYPE = 'APPLICATION_REMINDER'
 
 @Injectable()
-export class ApplicationReminderService {
+export class ApplicationReminderService implements OnModuleInit, OnModuleDestroy {
+  private timer: NodeJS.Timeout | undefined
+
+  onModuleInit(): void {
+    if (process.env.APPLICATION_REMINDER_ENABLED === 'false') return
+    const intervalMs = Number(process.env.APPLICATION_REMINDER_INTERVAL_MS ?? 900_000)
+    this.timer = setInterval(() => {
+      void this.runOnce().catch((error: unknown) => {
+        console.error('[application-reminder] scan failed', error)
+      })
+    }, intervalMs)
+    this.timer.unref()
+  }
+
+  onModuleDestroy(): void {
+    if (this.timer) clearInterval(this.timer)
+    this.timer = undefined
+  }
   constructor(private readonly prisma: PrismaService) {}
 
   async runOnce(now = new Date()): Promise<{ created: number; skipped: number }> {

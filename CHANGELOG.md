@@ -270,3 +270,9 @@ Les tests ciblés de la file porteur couvrent désormais la lecture pseudonymis�
 La branche `feat/P-06-file-candidatures-porteur` a été publiée et la Pull Request #48 a été ouverte vers `dev`. La validation complète des modules présents a réussi avec 62 tests API passants, typechecks, lint, build et contrôle bundle.
 
 Le premier lot P-07 ajoute `ApplicationReminderService`, configurable par `APPLICATION_REMINDER_DAYS`, qui regroupe les candidatures `PENDING` dépassant le seuil et crée une notification in-app idempotente par porteur et projet. Le déclenchement planifié, les tests ciblés et l’interface de notification restent à finaliser.
+
+## 2026-08-21 — Finalisation locale de P-07
+
+Le service de relance du porteur dispose maintenant d’un déclenchement périodique configurable par `APPLICATION_REMINDER_ENABLED` et `APPLICATION_REMINDER_INTERVAL_MS`. Le timer est non bloquant et s’arrête proprement avec le module NestJS. Les relances restent in-app et sont idempotentes par porteur et projet.
+
+Trois tests ciblés couvrent le seuil temporel, le regroupement de plusieurs candidatures d’un même projet et l’absence de doublon. La suite API compte 65 tests passants ; le typecheck API et le lint global sont également réussis.
