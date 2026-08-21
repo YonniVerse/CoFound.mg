@@ -5,6 +5,7 @@ import FeedPage from "@/pages/FeedPage";
 import ProjectDetailPage from "@/pages/ProjectDetailPage";
 import ImpactPage from "@/pages/ImpactPage";
 import ComingSoonPage from "@/pages/ComingSoonPage";
+import ImportMappingPage from "@/pages/ImportMappingPage";
 import { MainLayout } from "@/components/layout/MainLayout";
 
 const LayoutWrapper = () => {
@@ -31,6 +32,7 @@ function App() {
         <Route path="/feed" element={<FeedPage />} />
         <Route path="/projects/:id" element={<ProjectDetailPage />} />
         <Route path="/impact" element={<ImpactPage />} />
+        <Route path="/institution/imports/new" element={<ImportMappingPage />} />
 
         {/* Routes MVP non implémentées (Coming Soon) */}
         <Route path="/projects" element={<ComingSoonPage />} />

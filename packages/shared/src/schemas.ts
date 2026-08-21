@@ -90,6 +90,24 @@ export const apiErrorSchema = z.object({
   details: z.record(z.string(), z.unknown()).optional(),
 })
 
+export const importFieldSchema = z.enum([
+  'email',
+  'firstName',
+  'lastName',
+  'fieldOfStudy',
+  'level',
+  'entryYear',
+  'gender',
+  'studentNumber',
+])
+
+export const importColumnMappingSchema = z.object({
+  columns: z.record(z.string().trim().min(1), importFieldSchema.nullable()),
+})
+
+export type ImportField = z.infer<typeof importFieldSchema>
+export type ImportColumnMapping = z.infer<typeof importColumnMappingSchema>
+
 export type LoginInput = z.infer<typeof loginInputSchema>
 export type ActivationInput = z.infer<typeof activationInputSchema>
 export type PasswordResetRequest = z.infer<typeof passwordResetRequestSchema>
