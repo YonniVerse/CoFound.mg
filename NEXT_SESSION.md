@@ -2,11 +2,11 @@
 > L’état vivant est ici ; l’historique détaillé est dans `CHANGELOG.md`.
 
 **Dernière mise à jour** : 2026-08-21
-**Phase** : Vague 3 — P-03 implémenté, prêt à publier
-**Branche** : `P-03`, créée depuis `dev` après fusion de P-02
+**Phase** : Vague 3 — P-03 publié, en attente de revue
+**Branche** : `P-03`, publiée sur `origin/P-03`
 **Ticket courant** : P-03 — Transition Brouillon → Recrutement
 **Vague** : Vague 3 — Le projet
-**État du workspace** : modifications P-03 et handoff non committées ; aucun secret Neon ajouté
+**État du workspace** : commit `121fc68` publié ; PR #46 ouverte vers `dev` ; aucun secret Neon ajouté
 
 ---
 ## 1. Tickets Vague 3
@@ -53,4 +53,4 @@ Les neuf blocs sont : segments clients, propositions de valeur, canaux, relation
 ---
 ## 6. Prochaine action
 
-Lancer `git diff --check`, committer les changements P-03 avec un message conventionnel français, pousser `origin/P-03` et ouvrir sa PR vers `dev`. La PR devra être relue avant fusion. Vigilances restantes : file offline persistante, conflit avec historique et lecture publique bloc par bloc à vérifier dans les tickets concernés.
+Revoir et fusionner la PR #46 (`P-03`) après les contrôles CI ; ensuite créer la branche P-04 depuis `dev` et implémenter les postes ouverts avec compétences requises. Vigilances restantes : file offline persistante, conflit avec historique et lecture publique bloc par bloc à vérifier dans les tickets concernés.
