@@ -8,7 +8,12 @@ import ComingSoonPage from "@/pages/ComingSoonPage";
 import ImportMappingPage from "@/pages/ImportMappingPage";
 import ImportPreviewPage from "@/pages/ImportPreviewPage";
 import ImportBatchesPage from "@/pages/ImportBatchesPage";
+import LoginPage from "@/pages/LoginPage";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
+import ActivationPage from "@/pages/ActivationPage";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { AuthProvider } from "@/hooks/useAuth";
 
 const LayoutWrapper = () => {
   return (
@@ -20,15 +25,21 @@ const LayoutWrapper = () => {
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Routes avec Layout Global */}
-        <Route element={<LayoutWrapper />}>
-          <Route path="/" element={<LandingPage />} />
-        </Route>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Routes avec Layout Global */}
+          <Route element={<LayoutWrapper />}>
+            <Route path="/" element={<LandingPage />} />
+          </Route>
 
-        {/* Routes Plein Écran (Auth & Onboarding) */}
-        <Route path="/onboarding" element={<OnboardingPage />} />
+          {/* Routes Plein Écran (Auth & Onboarding) */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+          <Route path="/activation/:token" element={<ActivationPage />} />
+          <Route path="/onboarding" element={<OnboardingPage />} />
+
         
         {/* Applicatif (Dashboard) */}
         <Route path="/feed" element={<FeedPage />} />
@@ -48,6 +59,7 @@ function App() {
         <Route path="/settings" element={<ComingSoonPage />} />
       </Routes>
     </BrowserRouter>
+    </AuthProvider>
   );
 }
 
