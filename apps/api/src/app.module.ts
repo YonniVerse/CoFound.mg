@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 import { APP_FILTER, APP_GUARD } from '@nestjs/core'
-import { SentryModule } from '@sentry/nestjs/setup'
-import { SentryGlobalFilter } from '@sentry/nestjs/setup'
+import { SentryModule, SentryGlobalFilter } from '@sentry/nestjs/setup'
 import { AuditModule } from './audit/audit.module.js'
 import { AuthModule } from './auth/auth.module.js'
 import { HealthController } from './health/health.controller.js'
@@ -21,9 +20,10 @@ import { ProjectModule } from './project/project.module.js'
 import { ConnectionModule } from './connection/connection.module.js'
 import { MessagingModule } from './messaging/messaging.module.js'
 import { SearchModule } from './search/search.module.js'
+import { ProjectsModule } from './projects/projects.module.js'
 
 @Module({
-  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, PrivacyModule, AuditModule, BounceModule, ImportModule, ProfileModule, OnboardingModule, ConsentModule, InstitutionModule, ApplicationsModule, ProjectModule, ConnectionModule, MessagingModule, SearchModule],
+  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, PrivacyModule, AuditModule, BounceModule, ImportModule, ProfileModule, OnboardingModule, ConsentModule, InstitutionModule, ApplicationsModule, ProjectModule, ConnectionModule, MessagingModule, SearchModule, ProjectsModule],
   controllers: [HealthController, MeController],
   providers: [
     { provide: APP_FILTER, useClass: SentryGlobalFilter },

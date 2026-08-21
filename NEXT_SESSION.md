@@ -4,7 +4,7 @@
 
 ## 1. État actuel
 
-La PR #55 est fusionnée dans `dev` via le commit `65de65f`. M-09, M-10, M-11 et P-10 sont maintenant intégrés dans `origin/dev`. La branche locale de reprise reste `M-09`; créer ou synchroniser une branche de travail dédiée avant le prochain ticket.
+La PR #56 de M-01 est fusionnée dans `dev` via le commit `29f18e4`. La branche active est `M-02` et la PR #57 est ouverte vers `dev`. M-02 est implémenté localement avec l’optimisation des chunks frontend.
 
 ## 2. Livrables de cette session
 
@@ -22,8 +22,8 @@ Les routes de messagerie exigent `message:send` et vérifient l’appartenance �
 
 ## 5. Vigilance et travaux restants
 
-Les tests ciblés M-09/M-10/M-11/P-10 sont ajoutés et la suite compte 99 tests réussis. P-10 dispose maintenant de l’écran `/projects/:id/channel`, du client API et d’un canal `PROJECT` réservé aux membres actifs. La PR #55 est fusionnée. La démonstration authentifiée sur l’environnement de recette reste à exécuter avant de clôturer officiellement Vague 3. L’audit détaillé des Vagues 2 et 3 est disponible dans `audit-vagues-2-3.md`. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
+Les tests ciblés M-09/M-10/M-11/P-10 sont ajoutés et la suite compte 99 tests réussis. P-10 dispose maintenant de l’écran `/projects/:id/channel`, du client API et d’un canal `PROJECT` réservé aux membres actifs. M-01 est fusionné et M-02 est en revue dans la PR #57. Le build frontend ne signale plus de chunk supérieur à 500 kB : `vendor-react` 217,50 kB, `vendor-ui` 232,78 kB et `vendor-data` 363,98 kB. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
 
 ## 6. Prochaine action
 
-Synchroniser une branche de travail depuis `origin/dev`, puis exécuter la démonstration de recette authentifiée de Vague 3 avec Neon et vérifier le canal P-10 en tant que membre actif et utilisateur non membre.
+Revoir et fusionner la PR #57 après contrôles GitHub, puis commencer M-03 sur `origin/dev` avec les composants du Feed Projets.

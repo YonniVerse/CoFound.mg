@@ -560,4 +560,38 @@ export type ConversationMessageCreateInput = z.infer<typeof conversationMessageC
 export type ConversationMessage = z.infer<typeof conversationMessageSchema>
 export const conversationMessagesResponseSchema = z.object({ items: z.array(conversationMessageSchema) })
 export type ConversationMessagesResponse = z.infer<typeof conversationMessagesResponseSchema>
+export const projectFeedQuerySchema = z.object({
+  status: z.nativeEnum(ProjectStatus).optional(),
+  sectorId: idSchema.optional(),
+  regionId: idSchema.optional(),
+  search: z.string().trim().max(100).optional(),
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+})
+
+export const projectFeedCardSchema = z.object({
+  id: idSchema,
+  title: z.string(),
+  pitch: z.string(),
+  status: z.nativeEnum(ProjectStatus),
+  createdAt: z.coerce.date(),
+  sector: z.object({ id: idSchema, slug: z.string(), labelKey: z.string() }).nullable(),
+  region: z.object({ id: idSchema, slug: z.string(), labelKey: z.string() }).nullable(),
+  openPositionsCount: z.number().int().min(0),
+  membersCount: z.number().int().min(0),
+  owner: z.object({
+    pseudonym: z.string(),
+    avatarSeed: z.string(),
+  }).nullable(),
+})
+
+export const projectFeedResponseSchema = z.object({
+  items: z.array(projectFeedCardSchema),
+  nextCursor: z.string().nullable(),
+  hasMore: z.boolean(),
+})
+
+export type ProjectFeedQuery = z.infer<typeof projectFeedQuerySchema>
+export type ProjectFeedCard = z.infer<typeof projectFeedCardSchema>
+export type ProjectFeedResponse = z.infer<typeof projectFeedResponseSchema>
 
