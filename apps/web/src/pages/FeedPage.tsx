@@ -68,7 +68,7 @@ export default function FeedPage() {
         setSearch={setSearch}
       />
 
-      <div className="flex px-6 sm:px-10 py-8 gap-8 max-w-[1400px] mx-auto">
+      <div className="flex px-6 sm:px-10 py-8 gap-6 max-w-[1400px] mx-auto">
         {/* Main Column: Project Feed */}
         <div className="flex-1 max-w-3xl flex flex-col gap-6">
           {isLoading && (
