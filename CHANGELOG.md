@@ -239,3 +239,24 @@ Dépôt `YonniVerse/CoFound.mg`, branche `dev`, commit `2c7999e`.
 - Montants des formules partenaires
 - Arbitrage de marque : `CoFound.mg` vs `CoFounder.mg`
 - Choix de l'établissement pilote
+
+## 2026-08-21 — Démarrage de P-06
+
+### Ajouté
+
+- Contrats partagés pour la file porteur et le refus motivé.
+- Routes de lecture, acceptation et refus des candidatures reçues.
+- Décisions protégées par la propriété du projet et exécutées dans une transaction Prisma.
+- Écran UI-28 `/projects/:id/applications` avec filtres par statut, pseudonymat du candidat et actions accepter/refuser.
+
+### Validé
+
+- 58 tests API passants.
+- Typecheck partagé, API et frontend réussi.
+- Lint global réussi.
+- Build frontend réussi.
+
+### À poursuivre
+
+- Ajouter les tests ciblés d’intégration HTTP P-06.
+- Finaliser les états UI et préparer la Pull Request.

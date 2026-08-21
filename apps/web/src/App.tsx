@@ -15,6 +15,7 @@ const ImportBatchesPage = lazy(() => import("@/pages/ImportBatchesPage"));
 const InstitutionOverviewPage = lazy(() => import("@/pages/InstitutionOverviewPage"));
 const InstitutionMembersPage = lazy(() => import("@/pages/InstitutionMembersPage"));
 const MyApplicationsPage = lazy(() => import("@/pages/MyApplicationsPage"));
+const ProjectApplicationsPage = lazy(() => import("@/pages/ProjectApplicationsPage"));
 
 const LayoutWrapper = () => <MainLayout><Outlet /></MainLayout>;
 const Loading = () => <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">Chargement…</div>;
@@ -25,6 +26,7 @@ function App() {
     <Route path="/onboarding" element={<OnboardingPage />} />
     <Route path="/feed" element={<FeedPage />} />
     <Route path="/projects/:id" element={<ProjectDetailPage />} />
+    <Route path="/projects/:id/applications" element={<ProjectApplicationsPage />} />
     <Route path="/my-applications" element={<MyApplicationsPage />} />
     <Route path="/impact" element={<ImpactPage />} />
     <Route path="/institution" element={<InstitutionOverviewPage />} />

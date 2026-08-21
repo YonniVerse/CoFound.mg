@@ -15,6 +15,10 @@ import {
   createApplicationInputSchema,
   type ApplicationItem,
   type MyApplicationsResponse,
+  ownerApplicationsResponseSchema,
+  rejectApplicationInputSchema,
+  type OwnerApplicationsResponse,
+  type RejectApplicationInput,
 } from '@cofound/shared'
 
 @Controller('applications')
@@ -39,6 +43,33 @@ export class ApplicationsController {
   ): Promise<MyApplicationsResponse> {
     const userId = req.user!.userId
     return this.applicationsService.getMyApplications(userId)
+  }
+
+  @Get('project/:projectId')
+  @RequirePermissions(Permission.PROJECT_MANAGE)
+  async getProjectApplications(
+    @Req() req: AuthenticatedRequest,
+    @Param('projectId') projectId: string,
+  ): Promise<OwnerApplicationsResponse> {
+    const response = await this.applicationsService.getProjectApplications(projectId, req.user!.userId)
+    return ownerApplicationsResponseSchema.parse(response)
+  }
+
+  @Patch(':id/accept')
+  @RequirePermissions(Permission.PROJECT_MANAGE)
+  async accept(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
+    return this.applicationsService.accept(req.user!.userId, id)
+  }
+
+  @Patch(':id/reject')
+  @RequirePermissions(Permission.PROJECT_MANAGE)
+  async reject(
+    @Req() req: AuthenticatedRequest,
+    @Param('id') id: string,
+    @Body() body: Record<string, unknown>,
+  ) {
+    const input: RejectApplicationInput = rejectApplicationInputSchema.parse(body)
+    return this.applicationsService.reject(req.user!.userId, id, input)
   }
 
   @Patch(':id/withdraw')

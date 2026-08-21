@@ -11,6 +11,9 @@ import {
   type CreateApplicationInput,
   type ApplicationItem,
   type MyApplicationsResponse,
+  type OwnerApplicationItem,
+  type OwnerApplicationsResponse,
+  type RejectApplicationInput,
 } from '@cofound/shared'
 
 @Injectable()
@@ -151,6 +154,104 @@ export class ApplicationsService {
     }))
 
     return { items }
+  }
+
+  private async assertProjectOwner(projectId: string, ownerId: string) {
+    const project = await this.prisma.project.findUnique({
+      where: { id: projectId },
+      select: { id: true, createdById: true },
+    })
+    if (!project || project.createdById !== ownerId) {
+      throw new NotFoundException({ code: 'NOT_FOUND', messageKey: 'errors.projectNotFound' })
+    }
+    return project
+  }
+
+  private toOwnerItem(application: {
+    id: string
+    projectId: string
+    positionId: string | null
+    applicantId: string
+    message: string
+    status: string
+    rejectionReason: string | null
+    decidedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    project: { id: string; title: string; pitch: string; status: string }
+    position: { id: string; title: string; description: string | null } | null
+    applicant: { talentProfile: { pseudonym: string; avatarSeed: string; headline: string | null } | null }
+  }): OwnerApplicationItem {
+    return {
+      id: application.id,
+      projectId: application.projectId,
+      positionId: application.positionId,
+      applicantId: application.applicantId,
+      message: application.message,
+      status: application.status as ApplicationStatus,
+      rejectionReason: application.rejectionReason,
+      decidedAt: application.decidedAt,
+      createdAt: application.createdAt,
+      updatedAt: application.updatedAt,
+      project: { ...application.project, status: application.project.status as ProjectStatus },
+      position: application.position,
+      candidate: application.applicant.talentProfile ?? {
+        pseudonym: 'Profil indisponible',
+        avatarSeed: 'default',
+        headline: null,
+      },
+    }
+  }
+
+  async getProjectApplications(projectId: string, ownerId: string): Promise<OwnerApplicationsResponse> {
+    await this.assertProjectOwner(projectId, ownerId)
+    const applications = await this.prisma.application.findMany({
+      where: { projectId },
+      include: { project: true, position: true, applicant: { include: { talentProfile: true } } },
+      orderBy: { createdAt: 'desc' },
+    })
+    return { items: applications.map((application) => this.toOwnerItem(application)) }
+  }
+
+  async accept(ownerId: string, applicationId: string): Promise<OwnerApplicationItem> {
+    return this.decide(ownerId, applicationId, ApplicationStatus.ACCEPTED)
+  }
+
+  async reject(ownerId: string, applicationId: string, input: RejectApplicationInput): Promise<OwnerApplicationItem> {
+    return this.decide(ownerId, applicationId, ApplicationStatus.REJECTED, input.rejectionReason)
+  }
+
+  private async decide(
+    ownerId: string,
+    applicationId: string,
+    status: 'ACCEPTED' | 'REJECTED',
+    rejectionReason: string | null = null,
+  ): Promise<OwnerApplicationItem> {
+    const application = await this.prisma.application.findUnique({
+      where: { id: applicationId },
+      include: { project: true, position: true, applicant: { include: { talentProfile: true } } },
+    })
+    if (!application) {
+      throw new NotFoundException({ code: 'NOT_FOUND', messageKey: 'errors.applicationNotFound' })
+    }
+    await this.assertProjectOwner(application.projectId, ownerId)
+    if (application.status !== ApplicationStatus.PENDING) {
+      throw new BadRequestException({ code: 'APPLICATION_ALREADY_DECIDED', messageKey: 'errors.applicationAlreadyDecided' })
+    }
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const result = await tx.application.updateMany({
+        where: { id: applicationId, status: ApplicationStatus.PENDING },
+        data: { status, rejectionReason, decidedAt: new Date(), decidedById: ownerId },
+      })
+      if (result.count !== 1) {
+        throw new BadRequestException({ code: 'APPLICATION_ALREADY_DECIDED', messageKey: 'errors.applicationAlreadyDecided' })
+      }
+      return tx.application.findUniqueOrThrow({
+        where: { id: applicationId },
+        include: { project: true, position: true, applicant: { include: { talentProfile: true } } },
+      })
+    })
+    return this.toOwnerItem(updated)
   }
 
   async withdraw(

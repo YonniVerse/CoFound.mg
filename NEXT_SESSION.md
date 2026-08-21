@@ -9,9 +9,9 @@
 ## 1. État Actuel du Projet
 
 - **Dernière mise à jour** : 2026-08-21
-- **Vague actuelle** : Vague 3 (Le projet) — **P-01, P-02, P-03, P-04 (réalisés par l'équipe), P-05 (réalisé)**
-- **Branche Git actuelle** : `P-05` (issue de `origin/feat/P-05-candidatures-candidat`)
-- **Tests automatisés** : 58/58 tests backend validés (`pnpm test` dans `apps/api`)
+- **Vague actuelle** : Vague 3 (Le projet) — **P-01 à P-05 réalisés, P-06 en cours**
+- **Branche Git actuelle** : `P-06` (issue de `origin/feat/P-05-candidatures-candidat`)
+- **Tests automatisés** : 58/58 tests backend validés (`pnpm test` dans `apps/api`) ; validations P-06 en cours
 - **Build Web** : Validé sans aucune erreur (`pnpm --filter web build`)
 
 ---
@@ -28,7 +28,7 @@
 | **M-04** | API + interface Feed Talents (opt-in, cartes pseudonymisées) | `feat/M-04-feed-talents` | ✅ **TERMINÉ** |
 | **P-01 à P-04** | Création projet, BMC guidé, transition statut, postes ouverts | - | ✅ **TERMINÉS PAR L'ÉQUIPE** |
 | **P-05** | Candidature : API + écran candidat + modal postulation + tableau de bord candidat `/my-applications` | `feat/P-05-candidatures-candidat` | ✅ **TERMINÉ** |
-| **P-06** | File de candidatures côté porteur, accepter / refuser avec motif | `feat/P-06-file-candidatures-porteur` | ➡️ **PROCHAIN TICKET** |
+| **P-06** | File de candidatures côté porteur, accepter / refuser avec motif | `P-06` | 🔄 **EN COURS — API et UI-28 ajoutées** |
 
 ---
 
@@ -42,7 +42,11 @@
 - `apps/web/src/hooks/useMyApplications.ts` : Hook React connecté à l'API `/applications/me` avec fallback démo et chargement initial différé pour respecter le lint React.
 - `apps/web/src/components/applications/ApplyModal.tsx` : Modal de postulation à un projet avec message et sélection de poste.
 - `apps/web/src/pages/MyApplicationsPage.tsx` : Page candidat `/my-applications` avec filtres de statut (`En attente`, `Acceptée`, `Refusée`, `Retirée`), motif de refus et bouton de retrait.
-- `apps/web/src/App.tsx` : Enregistrement de la route lazy `/my-applications`.
+- `apps/web/src/App.tsx` : Enregistrement des routes lazy `/my-applications` et `/projects/:id/applications`.
+- `apps/web/src/pages/ProjectApplicationsPage.tsx` : Écran UI-28 de file porteur, filtres par statut, pseudonymat et actions accepter/refuser.
+- `apps/api/src/applications/applications.controller.ts` : Routes porteur de lecture, acceptation et refus motivé.
+- `apps/api/src/applications/applications.service.ts` : Autorisation propriétaire et décisions transactionnelles P-06.
+- `apps/api/src/rbac/permissions.ts` : Permission `project:manage` disponible pour les comptes Talent, avec propriété vérifiée au niveau service.
 
 ---
 
@@ -57,9 +61,11 @@
 
 ## 5. Instructions de Reprise (À faire ensuite)
 
+P-06 est en cours : le premier lot API/UI est typé et validé par build/lint. Il reste à ajouter les tests ciblés d’intégration HTTP, finaliser les textes et états UI-28, puis préparer la PR.
+
 Pour la prochaine session :
 1. Lire ce fichier (`NEXT_SESSION.md`) et vérifier la branche Git courante.
-2. Basculer sur `dev`, la synchroniser, puis créer la branche **`feat/P-06-file-candidatures-porteur`**.
-3. Réaliser le ticket **P-06 — File de candidatures côté porteur, accepter / refuser avec motif** :
+2. Rester sur `P-06` et vérifier le diff avant toute modification.
+3. Finaliser le ticket **P-06 — File de candidatures côté porteur, accepter / refuser avec motif** :
    - Endpoints backend pour le porteur de projet : lister les candidatures reçues par projet (`GET /projects/:id/applications`), accepter (`PATCH /applications/:id/accept`), refuser avec motif obligatoire (`PATCH /applications/:id/reject`).
    - Interface Web de gestion des candidatures reçues pour le porteur de projet dans l'espace projet.

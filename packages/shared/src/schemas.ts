@@ -269,3 +269,25 @@ export type CreateApplicationInput = z.infer<typeof createApplicationInputSchema
 export type ApplicationItem = z.infer<typeof applicationItemSchema>
 export type MyApplicationsResponse = z.infer<typeof myApplicationsResponseSchema>
 
+
+// ─── Applications porteur (P-06) ───────────────────────────────────────────────
+
+export const rejectApplicationInputSchema = z.object({
+  rejectionReason: z.string().trim().min(3).max(500),
+})
+
+export const ownerApplicationItemSchema = applicationItemSchema.extend({
+  candidate: z.object({
+    pseudonym: z.string(),
+    avatarSeed: z.string(),
+    headline: z.string().nullable(),
+  }),
+})
+
+export const ownerApplicationsResponseSchema = z.object({
+  items: z.array(ownerApplicationItemSchema),
+})
+
+export type RejectApplicationInput = z.infer<typeof rejectApplicationInputSchema>
+export type OwnerApplicationItem = z.infer<typeof ownerApplicationItemSchema>
+export type OwnerApplicationsResponse = z.infer<typeof ownerApplicationsResponseSchema>
