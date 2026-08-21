@@ -4,7 +4,7 @@
 
 ## 1. État actuel
 
-La branche active est `M-09`, basée sur `origin/dev`. M-09, M-10, M-11 et l’intégration P-10 sont implémentés localement et doivent être poussés dans la PR #55 vers `dev`. P-10 est fonctionnel localement, mais n’est pas encore fusionné dans `dev`.
+La PR #55 est fusionnée dans `dev` via le commit `65de65f`. M-09, M-10, M-11 et P-10 sont maintenant intégrés dans `origin/dev`. La branche locale de reprise reste `M-09`; créer ou synchroniser une branche de travail dédiée avant le prochain ticket.
 
 ## 2. Livrables de cette session
 
@@ -22,8 +22,8 @@ Les routes de messagerie exigent `message:send` et vérifient l’appartenance �
 
 ## 5. Vigilance et travaux restants
 
-Les tests ciblés M-09/M-10/M-11/P-10 sont ajoutés et la suite compte 99 tests réussis. P-10 dispose maintenant de l’écran `/projects/:id/channel`, du client API et d’un canal `PROJECT` réservé aux membres actifs. La PR #55 doit être revue avant fusion. L’audit détaillé des Vagues 2 et 3 est disponible dans `audit-vagues-2-3.md`. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
+Les tests ciblés M-09/M-10/M-11/P-10 sont ajoutés et la suite compte 99 tests réussis. P-10 dispose maintenant de l’écran `/projects/:id/channel`, du client API et d’un canal `PROJECT` réservé aux membres actifs. La PR #55 est fusionnée. La démonstration authentifiée sur l’environnement de recette reste à exécuter avant de clôturer officiellement Vague 3. L’audit détaillé des Vagues 2 et 3 est disponible dans `audit-vagues-2-3.md`. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
 
 ## 6. Prochaine action
 
-Pousser les changements P-10 dans la PR #55, vérifier les contrôles GitHub, puis fusionner vers `dev`; ensuite exécuter la démonstration de recette authentifiée avant de clôturer Vague 3.
+Synchroniser une branche de travail depuis `origin/dev`, puis exécuter la démonstration de recette authentifiée de Vague 3 avec Neon et vérifier le canal P-10 en tant que membre actif et utilisateur non membre.

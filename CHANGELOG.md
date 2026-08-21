@@ -10,6 +10,19 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Fusion de M-09 à M-11 et P-10 dans dev
+
+### Modifié
+
+- La PR #55 est fusionnée dans `dev` via le commit `65de65f`.
+- M-09, M-10, M-11 et le canal projet P-10 sont intégrés dans `origin/dev`.
+
+### En cours
+
+- La démonstration authentifiée avec Neon reste à exécuter avant la clôture officielle de la Vague 3.
+
+---
+
 ## 2026-08-22 — Finalisation locale de P-10
 
 ### Ajouté
