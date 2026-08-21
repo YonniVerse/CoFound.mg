@@ -425,3 +425,30 @@ export type CreateProjectTaskInput = z.infer<typeof createProjectTaskSchema>
 export type UpdateProjectTaskInput = z.infer<typeof updateProjectTaskSchema>
 export type ProjectTask = z.infer<typeof projectTaskSchema>
 export type ProjectTasksResponse = z.infer<typeof projectTasksResponseSchema>
+
+// ─── Publications projet (P-11) ───────────────────────────────────────────────
+export const projectPostTypeSchema = z.enum(['SEEKING_COLLABORATOR', 'SEEKING_MENTORSHIP', 'SEEKING_FUNDING', 'UPDATE'])
+export const projectPostCreateSchema = z.object({
+  type: projectPostTypeSchema,
+  content: z.string().trim().min(1).max(2000),
+  sectorId: idSchema.nullable().optional(),
+  expiresAt: z.coerce.date().nullable().optional(),
+})
+export const projectPostUpdateSchema = projectPostCreateSchema.partial()
+export const projectPostSchema = z.object({
+  id: idSchema,
+  projectId: idSchema,
+  authorId: idSchema,
+  authorPseudonym: z.string(),
+  type: projectPostTypeSchema,
+  content: z.string(),
+  sectorId: idSchema.nullable(),
+  expiresAt: z.coerce.date().nullable(),
+  createdAt: z.coerce.date(),
+})
+export const projectPostsResponseSchema = z.object({ projectId: idSchema, posts: z.array(projectPostSchema) })
+export type ProjectPostType = z.infer<typeof projectPostTypeSchema>
+export type ProjectPostCreateInput = z.infer<typeof projectPostCreateSchema>
+export type ProjectPostUpdateInput = z.infer<typeof projectPostUpdateSchema>
+export type ProjectPost = z.infer<typeof projectPostSchema>
+export type ProjectPostsResponse = z.infer<typeof projectPostsResponseSchema>

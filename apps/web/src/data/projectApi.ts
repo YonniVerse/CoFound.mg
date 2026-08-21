@@ -56,3 +56,21 @@ export function updateProjectTask(projectId: string, taskId: string, input: Upda
 export function deleteProjectTask(projectId: string, taskId: string) {
   return apiClient.request(`/projects/${projectId}/tasks/${taskId}`, { method: "DELETE" });
 }
+
+import { projectPostsResponseSchema, type ProjectPostCreateInput, type ProjectPostUpdateInput } from "@cofound/shared";
+
+export function getProjectPosts(projectId: string) {
+  return apiClient.get(`/projects/${projectId}/posts`, projectPostsResponseSchema);
+}
+
+export function createProjectPost(projectId: string, input: ProjectPostCreateInput) {
+  return apiClient.post(`/projects/${projectId}/posts`, input, undefined);
+}
+
+export function updateProjectPost(projectId: string, postId: string, input: ProjectPostUpdateInput) {
+  return apiClient.patch(`/projects/${projectId}/posts/${postId}`, input, undefined);
+}
+
+export function deleteProjectPost(projectId: string, postId: string) {
+  return apiClient.request(`/projects/${projectId}/posts/${postId}`, { method: "DELETE" });
+}
