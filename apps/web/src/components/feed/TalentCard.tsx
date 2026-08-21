@@ -2,76 +2,57 @@ import type { TalentFeedCard } from "@cofound/shared";
 import { Avatar } from "@/components/shared/Avatar";
 import { SkillTag } from "@/components/shared/SkillTag";
 import { Button } from "@/components/ui/button";
-import {
-  Clock,
-  GraduationCap,
-  Target,
-  Eye,
-  MessageSquare,
-  ShieldCheck,
-  Wrench,
-  Sparkles,
-} from "lucide-react";
+import { Clock, GraduationCap, Target, Eye, Sparkles, MessageSquare, Wrench } from "lucide-react";
 
 interface TalentCardProps {
   talent: TalentFeedCard;
 }
 
 export function TalentCard({ talent }: TalentCardProps) {
-  const fieldLabel = talent.field?.labelKey ?? "Domaine non spécifié";
+  const fieldLabel = talent.field?.labelKey ?? null;
   const availabilityLabel = talent.availabilityHours
     ? `${talent.availabilityHours}h / semaine`
-    : "Temps flexible";
+    : "Non renseignée";
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-6 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col gap-5 group">
-      {/* Header: Pseudonymized Avatar + Pseudonym + Field & Verification */}
+    <div className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-2xs hover:shadow-md hover:border-primary/30 transition-all duration-200 flex flex-col gap-4 group">
+      {/* Header: Pseudonymized Avatar + Pseudonym + Field & Cohort */}
       <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3.5">
           <Avatar
             name={talent.pseudonym}
             src={null}
             size="lg"
-            className="h-14 w-14 border-2 border-primary/20 shadow-xs ring-2 ring-background"
+            className="h-12 w-12 sm:h-14 sm:w-14 border-2 border-background shadow-2xs ring-2 ring-primary/10"
           />
-          <div className="flex flex-col pt-0.5">
-            <div className="flex items-center gap-2">
-              <h3 className="font-heading font-bold text-lg text-foreground leading-tight group-hover:text-primary transition-colors">
-                {talent.pseudonym}
-              </h3>
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                <ShieldCheck className="h-3 w-3" />
-                Opt-in
-              </span>
-            </div>
-
-            {/* Field + Cohort */}
-            <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium mt-1">
-              <span className="inline-flex items-center gap-1">
-                <GraduationCap className="h-3.5 w-3.5 text-primary/80" />
-                {fieldLabel}
-              </span>
-              {talent.cohortYear && (
+          <div className="flex flex-col">
+            <h3 className="font-heading font-bold text-base sm:text-lg text-foreground leading-tight group-hover:text-primary transition-colors">
+              {talent.pseudonym}
+            </h3>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium mt-1">
+              {fieldLabel && (
                 <>
-                  <span>·</span>
-                  <span>Promo {talent.cohortYear}</span>
+                  <GraduationCap className="h-3.5 w-3.5 text-primary/80" />
+                  <span>{fieldLabel}</span>
                 </>
               )}
+              {fieldLabel && talent.cohortYear && <span>·</span>}
+              {talent.cohortYear && <span>Promo {talent.cohortYear}</span>}
             </div>
           </div>
         </div>
 
         {/* Completion Badge */}
-        <div className="flex flex-col items-end gap-1 shrink-0">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+        <div className="flex flex-col items-end shrink-0">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground opacity-70 mb-0.5">
             Complétion
           </span>
           <span
-            className={`text-xs font-bold px-2.5 py-1 rounded-full border ${
+            className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${
               talent.completion >= 80
-                ? "bg-emerald-500/15 text-emerald-600 border-emerald-500/30"
+                ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
                 : talent.completion >= 50
-                  ? "bg-amber-500/15 text-amber-600 border-amber-500/30"
+                  ? "bg-amber-500/10 text-amber-600 border-amber-500/20"
                   : "bg-muted text-muted-foreground border-border"
             }`}
           >
@@ -80,10 +61,10 @@ export function TalentCard({ talent }: TalentCardProps) {
         </div>
       </div>
 
-      {/* Headline & Pitch */}
-      <div className="space-y-1.5 bg-muted/30 p-3.5 rounded-xl border border-border/60">
+      {/* Headline & Bio Block */}
+      <div className="space-y-1.5 bg-muted/40 p-3.5 rounded-xl border border-border/50">
         {talent.headline && (
-          <p className="text-sm font-semibold text-foreground leading-snug flex items-center gap-1.5">
+          <p className="text-xs sm:text-sm font-semibold text-foreground leading-snug flex items-center gap-1.5">
             <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />
             <span>{talent.headline}</span>
           </p>
@@ -93,8 +74,8 @@ export function TalentCard({ talent }: TalentCardProps) {
             "{talent.bio}"
           </p>
         ) : (
-          <p className="text-xs text-muted-foreground/80 italic">
-            Ce candidat n'a pas encore rédigé sa biographie complète.
+          <p className="text-xs text-muted-foreground/70 italic">
+            Biographie non renseignée.
           </p>
         )}
       </div>
@@ -103,9 +84,9 @@ export function TalentCard({ talent }: TalentCardProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-2 border-y border-border/60">
         {/* Skills Column */}
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-bold text-foreground uppercase tracking-wider flex items-center gap-1.5 text-muted-foreground">
+          <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
             <Wrench className="h-3.5 w-3.5 text-primary" />
-            Compétences clés
+            Compétences
           </span>
           {talent.skills.length > 0 ? (
             <div className="flex flex-wrap gap-1.5">
@@ -114,7 +95,7 @@ export function TalentCard({ talent }: TalentCardProps) {
               ))}
             </div>
           ) : (
-            <span className="text-xs text-muted-foreground italic">Non spécifié</span>
+            <span className="text-xs text-muted-foreground/70 italic">Aucune renseignée</span>
           )}
         </div>
 
@@ -122,15 +103,15 @@ export function TalentCard({ talent }: TalentCardProps) {
         <div className="flex flex-col gap-3">
           {talent.goals.length > 0 && (
             <div className="flex flex-col gap-1.5">
-              <span className="text-xs font-bold text-foreground uppercase tracking-wider flex items-center gap-1.5 text-muted-foreground">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                 <Target className="h-3.5 w-3.5 text-primary" />
-                Objectifs recherchés
+                Objectifs
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {talent.goals.map((goal) => (
                   <span
                     key={goal}
-                    className="inline-flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-lg border border-primary/20"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2.5 py-0.5 rounded-lg border border-primary/20"
                   >
                     {goal}
                   </span>
@@ -139,7 +120,7 @@ export function TalentCard({ talent }: TalentCardProps) {
             </div>
           )}
 
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium pt-1">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium pt-0.5">
             <Clock className="h-3.5 w-3.5 text-primary/80" />
             <span>Disponibilité : <strong className="text-foreground">{availabilityLabel}</strong></span>
           </div>
@@ -148,11 +129,11 @@ export function TalentCard({ talent }: TalentCardProps) {
 
       {/* CTA Footer */}
       <div className="flex items-center gap-3 pt-1 w-full">
-        <Button variant="outline" size="sm" className="h-9 text-xs flex-1 rounded-xl font-semibold gap-1.5">
+        <Button variant="outline" size="sm" className="h-9 text-xs flex-1 rounded-xl font-semibold gap-1.5 cursor-pointer">
           <Eye className="h-3.5 w-3.5" />
           Consulter le profil
         </Button>
-        <Button size="sm" className="h-9 text-xs flex-1 rounded-xl font-semibold gap-1.5 shadow-xs">
+        <Button size="sm" className="h-9 text-xs flex-1 rounded-xl font-semibold gap-1.5 shadow-2xs cursor-pointer">
           <MessageSquare className="h-3.5 w-3.5" />
           Proposer d'échanger
         </Button>
