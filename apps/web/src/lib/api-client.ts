@@ -62,6 +62,10 @@ class ApiClient {
     return this.request(path, { method: 'POST', body: JSON.stringify(body) }, schema)
   }
 
+  patch<T>(path: string, body: unknown, schema?: Schema<T>) {
+    return this.request(path, { method: 'PATCH', body: JSON.stringify(body) }, schema)
+  }
+
   private parseJson(raw: string): unknown {
     try {
       return JSON.parse(raw) as unknown
