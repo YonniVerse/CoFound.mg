@@ -1,49 +1,54 @@
 > Fichier de reprise de contexte. Chargé automatiquement par `CLAUDE.md`.
-> Mis à jour par la commande `/handoff` en fin de session.
->
-> **Ne contient que l’état vivant.** L’historique va dans `CHANGELOG.md`, les décisions arrêtées
-> dans `CLAUDE.md`, le détail dans `docs/`.
+> L’état vivant est ici ; l’historique détaillé est dans `CHANGELOG.md`.
 
 **Dernière mise à jour** : 2026-08-21
-**Phase** : Vague 1 — démarrage de E-16
-**Branche** : `E-16`, issue de `dev` synchronisé après fusion de la PR #38
-**État du workspace** : E-15 est fusionné dans `dev` ; E-16 est implémenté sur sa branche et prêt pour revue
+**Phase** : Vague 3 — P-02 publié, en attente de revue
+**Branche** : `P-02`, publiée sur `origin/P-02`
+**Ticket courant** : P-02 — BMC guidé
+**Vague** : Vague 3 — Le projet
+**État du workspace** : propre après le commit `a589da0` ; PR #45 ouverte vers `dev` ; aucun secret Neon ajouté
 
 ---
+## 1. Tickets Vague 3
 
-## 1. Où on en est
-
-| Élément | État |
-|---|---|
-| Vague 0 — Fondations | ✅ `F-01` à `F-19` intégrés dans `dev` |
-| E-01 à E-08 | ✅ tickets d’import et dépendances email fusionnés ou intégrés |
-| E-12 — API et modèle de profil | ✅ fusionné dans `dev` |
-| E-13 — Onboarding progressif | ✅ fusionné dans `dev` |
-| E-14 — Rappel de complétion | ✅ fusionné dans `dev` |
-| E-15 — Registre des consentements | ✅ PR #38 fusionnée dans `dev` |
-| F-08 — Organisations et capacités | ✅ dépendance vérifiée dans `dev` |
-| F-13 — RBAC et permissions | ✅ dépendance vérifiée dans `dev` |
-| E-16 — Console établissement | ✅ overview, UI-34, membres et rôles implémentés ; PR #39 à finaliser |
+P-01 est validé et committé. L’ordre restant est P-02 → P-03, P-04 → P-05 → P-06 → P-07, P-08 → P-09, puis P-10, P-11, P-12 et P-13 selon leurs dépendances.
 
 ---
+## 2. P-01 terminé
 
-## 2. E-16 — socle en cours
+Le commit `62ae3c2 feat(project): créer un projet en brouillon` ajoute le contrat `projectCreateSchema`, le module projet NestJS, `POST /api/v1/projects`, `GET /api/v1/projects/:id`, la création transactionnelle en `DRAFT`, l’ajout du créateur comme `OWNER`, l’écran `/projects/new` et trois tests dédiés. La branche est publiée sur `origin/P-01`.
 
-L’endpoint `GET /institution/overview` est protégé par `ORG_READ` et ne retourne que les organisations de type `INSTITUTION` auxquelles l’utilisateur appartient. Les métriques sont agrégées au niveau organisationnel et toute valeur strictement inférieure à `MIN_AGGREGATION_THRESHOLD` (5) est remplacée par `null`. Aucun champ de genre n’est utilisé ou exposé.
-
-La page `/institution` fournit l’état de chargement, l’erreur, le premier usage sans chiffres à zéro, l’action principale « Importer une promotion », les cartes de métriques masquées et les cinq derniers lots d’import. Les liens vers la liste et le rapport des lots réutilisent les routes E-08 existantes. Les routes `/organizations/:organizationId/members` permettent de lister, inviter, modifier le rôle et retirer un membre. Les mutations sont transactionnelles lorsqu’elles créent une invitation et protègent le dernier administrateur ; elles sont auditées au niveau contrôleur.
-
----
-
-## 3. Points de vigilance
-
-- Toute route de console doit vérifier le rôle contextuel de l’utilisateur dans l’organisation, et non une organisation fournie librement par le client.
-- Le seuil de cinq personnes s’applique à chaque agrégat ; aucune donnée individuelle ni donnée de genre ne doit apparaître.
-- Les mutations futures de E-16 (membres et rôles) devront être transactionnelles et auditées.
-- Les alertes d’invitations anciennes et de rebonds seront traitées dans l’intégration détaillée E-17.
+Validations P-01 : 52 tests API passants sur la branche dédiée, typecheck shared/API/frontend passant et lint API/frontend passant.
 
 ---
+## 3. P-02 — implémenté
 
-## 4. Prochaine action
+P-02 est implémenté : contrats Zod partagés pour neuf blocs, service NestJS transactionnel, routes GET/PATCH protégées, calcul serveur de complétion, écran UI-26 avec exemples contextualisés, indicateur d’enregistrement et autosave debouncé. Les membres actifs du projet peuvent lire et modifier le BMC ; les non-membres sont refusés. La transition `DRAFT → RECRUITING` reste réservée à P-03.
 
-Les tests API passent avec 53 tests. Typecheck, lint, validation Prisma avec une URL locale de schéma, builds API/web et `check:bundle` passent. Le découpage dynamique des pages réduit le JavaScript initial à 125 964 octets gzip, sous le seuil strict de 290 221. La PR #39 est prête pour revue et fusion.
+Les neuf blocs sont : segments clients, propositions de valeur, canaux, relations clients, flux de revenus, ressources clés, activités clés, partenaires clés et structure de coûts. Validations : shared build, typechecks API/web, lint et build OK ; 56 tests API passants, 0 échec.
+
+---
+## 4. Fichiers importants
+
+- `packages/shared/src/schemas.ts` : `BMC_BLOCK_KEYS`, schémas de bloc, patch et réponse.
+- `apps/api/src/project/bmc.service.ts` : contrôle membre actif, normalisation, upsert transactionnel et complétion serveur.
+- `apps/api/src/project/bmc.controller.ts` : GET/PATCH `/api/v1/projects/:projectId/bmc`.
+- `apps/api/src/project/project.module.ts` : enregistrement du service et contrôleur.
+- `apps/api/test/bmc.test.ts` : quatre tests P-02.
+- `apps/web/src/pages/ProjectBmcPage.tsx` : écran UI-26 responsive.
+- `docs/plan-de-developpement.md` : backlog officiel.
+
+---
+## 5. Décisions et vigilance
+
+- Utiliser une transaction Prisma pour créer ou mettre à jour le BMC et conserver la cohérence du projet.
+- Ne pas exposer d’informations privées de membres ou de projets dans les contrats BMC.
+- Refuser l’accès aux utilisateurs qui ne sont pas membres actifs du projet.
+- La transition `DRAFT → RECRUITING` appartient à P-03 et ne doit pas être implémentée dans P-02.
+- Les données d’exemple doivent être statiques, localisées et séparées des réponses persistées.
+- Ne pas utiliser ni stocker les secrets Neon dans le dépôt.
+
+---
+## 6. Prochaine action
+
+Revoir et fusionner la PR #45 (`P-02`) après les contrôles CI ; ensuite créer la branche P-03 depuis `dev` et implémenter la transition `DRAFT → RECRUITING` conditionnée à 100 % de complétion, avec la liste des blocs manquants. Vigilances restantes : file offline persistante, conflit avec historique et lecture publique bloc par bloc à vérifier dans les tickets concernés.

@@ -147,6 +147,45 @@ export const talentViewSchema = z.discriminatedUnion('revealed', [
   revealedTalentViewSchema,
 ])
 
+export const projectCreateSchema = z.object({
+  title: z.string().trim().min(3).max(120),
+  pitch: z.string().trim().min(10).max(2_000),
+  sectorId: idSchema.optional(),
+  regionId: idSchema.optional(),
+})
+export type ProjectCreateInput = z.infer<typeof projectCreateSchema>
+
+export const BMC_BLOCK_KEYS = [
+  'customerSegments',
+  'valuePropositions',
+  'channels',
+  'customerRelationships',
+  'revenueStreams',
+  'keyResources',
+  'keyActivities',
+  'keyPartners',
+  'costStructure',
+] as const
+
+export const bmcBlockKeySchema = z.enum(BMC_BLOCK_KEYS)
+export const bmcBlockSchema = z.object({
+  content: z.string().trim().max(4_000),
+  isPublic: z.boolean().default(false),
+})
+export const bmcBlocksSchema = z.object(Object.fromEntries(BMC_BLOCK_KEYS.map((key) => [key, bmcBlockSchema])) as Record<typeof BMC_BLOCK_KEYS[number], typeof bmcBlockSchema>)
+export const bmcPatchSchema = z.object({ block: bmcBlockKeySchema, value: bmcBlockSchema })
+export const bmcResponseSchema = z.object({
+  projectId: idSchema,
+  blocks: bmcBlocksSchema,
+  completion: z.number().int().min(0).max(100),
+  completedBlocks: z.number().int().min(0).max(9),
+  updatedAt: z.coerce.date().nullable(),
+  updatedById: idSchema.nullable(),
+})
+export type BmcBlockKey = (typeof BMC_BLOCK_KEYS)[number]
+export type BmcBlocks = z.infer<typeof bmcBlocksSchema>
+export type BmcPatchInput = z.infer<typeof bmcPatchSchema>
+
 export const projectSummarySchema = z.object({
   id: idSchema,
   title: z.string(),
