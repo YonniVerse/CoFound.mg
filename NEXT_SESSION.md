@@ -1,62 +1,45 @@
 # Context Handoff — Reprise de session CoFound.mg
 
-> **Lire ce fichier en premier à chaque nouvelle session.**
-> **Périmètre développeur** : Rinoh / Roédrino — Vague 3, domaine Projet.
-> **Source de vérité du backlog** : [`docs/plan-de-developpement.md`](docs/plan-de-developpement.md).
+> Lire ce fichier en premier à chaque nouvelle session. Source de vérité : `docs/plan-de-developpement.md`.
 
----
+## État actuel
 
-## 1. État actuel
+- Vague 3 — Projet.
+- P-09 est fusionné dans `dev` via la PR #51, commit `cc479101`.
+- P-11 est implémenté et publié dans la PR #52.
+- P-12 et P-13 sont implémentés sur la branche `P-12` et publiés dans la PR #53.
+- M-10 et M-11 restent absents de l’implémentation API identifiable dans `origin/dev`; ils sont attribués à Yonni et M-11 dépend de M-10.
 
-- **Dernière mise à jour** : 2026-08-21.
-- **Vague** : Vague 3 — Projet.
-- **Ticket courant** : **P-09 — Tâches**, implémenté, PR ouverte vers `dev`.
-- **Branche Git** : `P-09`, créée depuis `P-08`.
-- **PR P-08** : [#50](https://github.com/YonniVerse/CoFound.mg/pull/50), fusionnée vers `dev` au commit `0095044`.
-- **PR P-09** : [#51](https://github.com/YonniVerse/CoFound.mg/pull/51), ouverte vers `dev`.
-- **Dépendance M-10** : aucun commit/PR explicitement identifié dans l’historique `origin/dev`; à confirmer avec Yonni avant fusion globale.
-- **État Git** : branche P-09 synchronisée avec `origin/P-09` au commit de merge `c3f2b23`; seuls les fichiers hérités non suivis restent exclus.
+## Livrables P-11 à P-13
 
-## 2. Tickets réalisés et en cours
+P-11 fournit les contrats partagés, le CRUD transactionnel des publications projet, l’auteur pseudonymisé et l’écran `/projects/:id/posts` connecté à l’API réelle.
 
-| Ticket | État | Référence |
-|---|---|---|
-| P-01 à P-07 | Implémentés dans l’historique de la branche | Projet, BMC, postes, candidatures, relances |
-| P-08 | Implémenté, PR ouverte | Membres, rôles, dévoilement pseudonymisé, UI-29 |
-| P-09 | Implémenté, PR #51 ouverte et synchronisée | CRUD des tâches, responsable, échéance, statut |
-| P-10 | Préparé, bloqué par M-11 | Canal de discussion projet |
-| P-11 à P-13 | À faire | Publications, export, détail public/privé |
+P-12 fournit l’export JSON transactionnel réservé au propriétaire, avec projet, BMC, membres pseudonymisés, postes, tâches et publications. L’écran `/projects/:id/export` déclenche le téléchargement local de l’archive.
 
-## 3. Travail réalisé cette session
+P-13 fournit le détail public `/projects/:id/public`. Les blocs BMC privés, les postes fermés et les publications expirées sont filtrés ; les membres sont présentés uniquement par pseudonyme.
 
-P-09 dispose maintenant de contrats Zod partagés pour les statuts `TODO`, `DOING`, `BLOCKED` et `DONE`, la création, la mise à jour et la réponse de liste. `ProjectTasksService` implémente la liste, création, mise à jour et suppression avec accès réservé aux membres actifs. Les mutations sont transactionnelles et un responsable doit appartenir à l’équipe active du projet. Les réponses ne renvoient qu’un pseudonyme de responsable.
+## Fichiers importants
 
-`ProjectTasksController` expose les routes REST sous `/api/v1/projects/:projectId/tasks`. L’écran lazy `/projects/:id/tasks` permet de créer une tâche, modifier son statut, afficher la description, le responsable et l’échéance, et supprimer une tâche via `apiClient`.
+- `apps/api/src/project/project-posts.*.ts` — API P-11.
+- `apps/api/src/project/project-export.*.ts` — API P-12.
+- `apps/api/src/project/project-public.*.ts` — API P-13.
+- `apps/api/test/project-posts.integration.test.ts` — tests HTTP P-11.
+- `apps/api/test/project-export.integration.test.ts` — test HTTP P-12.
+- `apps/api/test/project-public.integration.test.ts` — test HTTP P-13.
+- `apps/web/src/pages/ProjectPostsPage.tsx` — UI P-11.
+- `apps/web/src/pages/ProjectExportPage.tsx` — UI P-12.
+- `apps/web/src/pages/ProjectPublicPage.tsx` — UI P-13.
 
-## 4. Fichiers importants
+## Validation
 
-- `packages/shared/src/schemas.ts` — contrats et types P-09.
-- `apps/api/src/project/project-tasks.service.ts` — logique métier et transactions.
-- `apps/api/src/project/project-tasks.controller.ts` — routes CRUD P-09.
-- `apps/api/src/project/project.module.ts` — enregistrement du module P-09.
-- `apps/api/test/project-tasks.test.ts` — tests unitaires du service.
-- `apps/api/test/project-tasks.integration.test.ts` — tests HTTP du contrôleur.
-- `apps/web/src/data/projectApi.ts` — appels API des tâches.
-- `apps/web/src/pages/ProjectTasksPage.tsx` — écran P-09.
-- `apps/web/src/App.tsx` — route lazy P-09.
+- Tests HTTP P-11 : 2/2 réussis.
+- Tests HTTP P-12/P-13 : 2/2 réussis.
+- Suite API complète exécutée après P-09 : 84/84 réussis.
+- Typecheck API/frontend, lint frontend et build frontend réussis après ajout des vues P-12/P-13.
+- Les tests avec Prisma réel/Neon restent à effectuer séparément ; les tests HTTP utilisent des services substitués.
 
-## 5. Validation et points de vigilance
+## Prochaine action
 
-- Package shared build et typecheck API : réussis.
-- Tests ciblés P-09 : **5/5 réussis**.
-- Suite API complète : réussie lors de la validation précédente ; elle doit être relancée après le commit final.
-- Lint et build frontend : réussis lors de la validation P-09.
-- Le CRUD P-09 impose actuellement `PROJECT_READ` pour la lecture et `PROJECT_MANAGE` pour les mutations.
-- La validation avec Prisma réel et la démonstration recette restent à effectuer.
-- P-09 est maintenant synchronisé avec `dev` après fusion de P-08 ; la PR #51 reste en attente de revue et de fusion.
-- P-10 dépend de M-11. Le schéma Prisma `Conversation` existe, mais aucun service/API M-11 n’a été identifié dans `origin/dev`; ne pas dupliquer ce ticket sans confirmation de Yonni.
-- Ne pas ajouter les fichiers hérités non suivis : `analyse-backlog-vagues.md`, `guide-collaboration-CoFound.md`, `plan-tickets-utilisateur.md`, `rapport-analyse-attributions.md`, `pr-e*-body.md` et `apps/api/test/email-chain.test.ts`.
+Relancer la suite API complète après P-11/P-12/P-13, stabiliser les contrôles CI des PR #52 et #53, puis faire relire et fusionner dans l’ordre des dépendances. Confirmer avec Yonni l’état de M-10/M-11 avant toute implémentation réelle de P-10.
 
-## 6. Prochaine action
-
-**Faire relire puis fusionner la PR #51** : vérifier les contrôles CI et la revue humaine, puis confirmer avec Yonni l’état de M-11 avant de démarrer l’implémentation de P-10.
+Ne pas ajouter les fichiers hérités non suivis du workspace.
