@@ -5,8 +5,8 @@
 > dans `CLAUDE.md`, le détail dans `docs/`.
 
 **Dernière mise à jour** : 2026-08-21
-**Phase** : vague 0 (Fondations) — **F-01 à F-19 intégrés dans `dev`**
-**Branche** : `dev`, alignée sur `origin/dev` (dernier commit `09f1155`)
+**Phase** : transition Vague 1 → Vague 2 — E-04, E-06 et E-07 finalisés sur leurs branches ; PR E-07 à ouvrir
+**Branche** : `E-07`, issue de `dev` après fusion de la PR #29 (dernier commit `9e7b1a8`)
 **État du workspace** : propre
 
 ---
@@ -32,7 +32,7 @@
 | Tests négatifs RBAC et healthcheck | ✅ 12 tests API, tous passants |
 | Budget JavaScript initial | ✅ 271 701 octets gzip, sous le cliquet de 290 221 |
 
-Les pull requests finales sont fusionnées dans `dev` : [#20](https://github.com/YonniVerse/CoFound.mg/pull/20), [#21](https://github.com/YonniVerse/CoFound.mg/pull/21), [#22](https://github.com/YonniVerse/CoFound.mg/pull/22), [#23](https://github.com/YonniVerse/CoFound.mg/pull/23), [#24](https://github.com/YonniVerse/CoFound.mg/pull/24) et [#27](https://github.com/YonniVerse/CoFound.mg/pull/27).
+Les pull requests finales sont fusionnées dans `dev`, notamment les fondations #20 à #24, la documentation #27 et les tickets d’import #26 (E-04) et #29 (E-06).
 
 ---
 
@@ -58,7 +58,7 @@ Le sandbox ne dispose pas de Docker. Le build Docker réel et le démarrage Comp
 
 ## 3. Prochaine action recommandée
 
-La vague 0 est techniquement terminée. La prochaine séquence du plan est la **Vague 1 — chaîne d’entrée** : domaine et délivrabilité email (`E-01`), envoi transactionnel et gabarits (`E-02`), import CSV/XLSX et invitations (`E-03` à `E-09`), puis profil et onboarding (`E-12` à `E-15`).
+La Vague 0 est techniquement terminée. Dans la Vague 1, `E-04`, `E-06` et `E-07` sont finalisés ; `E-05` est déjà ancêtre de `dev` via E-06. La prochaine vague est la **Vague 2 — La rencontre**, dont le premier ticket est `M-01` — recherche PostgreSQL (`tsvector`, `pg_trgm`, `unaccent`), attribué à Norman. Pour Rino, le premier ticket de V2 est `M-05` — formulaire Dream-Match, après `E-12`.
 
 Avant le premier déploiement de recette, effectuer les opérations d’exploitation suivantes :
 
@@ -93,6 +93,8 @@ Avant le premier déploiement de recette, effectuer les opérations d’exploita
 | Q-3 | Statut juridique de l’entité | Contrats institutionnels | CEO |
 | Q-4 | Établissement pilote et calendrier | Import réel et recette | CEO + Yonni |
 | Q-5 | Fournisseur email transactionnel et configuration SPF/DKIM/DMARC | `E-01` et `E-02` | Yonni |
+| Q-6 | Revue et fusion de la PR E-07 | Chaîne d’import complète | Rino |
+
 
 ---
 

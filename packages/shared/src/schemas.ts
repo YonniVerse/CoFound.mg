@@ -130,11 +130,16 @@ export const importPreviewSchema = z.object({
   rows: z.array(importPreviewRowSchema),
 })
 
+export const importApplyInputSchema = z.object({
+  batchId: idSchema,
+})
+
 export type ImportField = z.infer<typeof importFieldSchema>
 export type ImportColumnMapping = z.infer<typeof importColumnMappingSchema>
 export type ImportPreviewResult = z.infer<typeof importPreviewResultSchema>
 export type ImportPreviewRow = z.infer<typeof importPreviewRowSchema>
 export type ImportPreview = z.infer<typeof importPreviewSchema>
+export type ImportApplyInput = z.infer<typeof importApplyInputSchema>
 
 export type LoginInput = z.infer<typeof loginInputSchema>
 export type ActivationInput = z.infer<typeof activationInputSchema>
