@@ -205,49 +205,17 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="relative mt-6 min-h-0 flex-1">
-            <svg aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 h-full w-full" viewBox="0 0 560 680" preserveAspectRatio="none" fill="none">
-              <path d="M246 126 C 282 126, 304 144, 330 164" stroke="rgba(255,255,255,0.86)" strokeWidth="7" strokeLinecap="round" className="opacity-80" />
-              <path d="M246 126 C 282 126, 304 144, 330 164" stroke="var(--primary)" strokeWidth="3" strokeDasharray="7 9" strokeLinecap="round" />
-              <path d="M334 230 C 316 260, 282 282, 244 306" stroke="rgba(255,255,255,0.86)" strokeWidth="7" strokeLinecap="round" className="opacity-80" />
-              <path d="M334 230 C 316 260, 282 282, 244 306" stroke="var(--secondary)" strokeWidth="3" strokeDasharray="7 9" strokeLinecap="round" />
-              <path d="M246 372 C 286 366, 318 380, 352 398" stroke="rgba(255,255,255,0.86)" strokeWidth="7" strokeLinecap="round" className="opacity-80" />
-              <path d="M246 372 C 286 366, 318 380, 352 398" stroke="var(--impact)" strokeWidth="3" strokeDasharray="7 9" strokeLinecap="round" />
-              <path d="M352 454 C 320 484, 284 512, 246 538" stroke="rgba(255,255,255,0.86)" strokeWidth="7" strokeLinecap="round" className="opacity-80" />
-              <path d="M352 454 C 320 484, 284 512, 246 538" stroke="var(--primary)" strokeWidth="3" strokeDasharray="7 9" strokeLinecap="round" />
-              <path d="M246 600 C 288 602, 332 616, 378 638" stroke="rgba(255,255,255,0.86)" strokeWidth="7" strokeLinecap="round" className="opacity-80" />
-              <path d="M246 600 C 288 602, 332 616, 378 638" stroke="var(--secondary)" strokeWidth="3" strokeDasharray="7 9" strokeLinecap="round" />
-              <circle cx="246" cy="126" r="5" fill="var(--primary)" />
-              <circle cx="334" cy="230" r="5" fill="var(--secondary)" />
-              <circle cx="246" cy="372" r="5" fill="var(--impact)" />
-            </svg>
-
-            {/* Projet principal */}
-            <div className="absolute left-[4%] top-[3%] z-10 flex h-[clamp(11rem,22vh,14rem)] w-[46%] max-w-[22rem] min-w-0 flex-col overflow-hidden rounded-2xl border border-border/70 bg-card p-4 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-5">
-              <div className="flex min-w-0 items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary text-base font-black text-primary-foreground shadow-sm">C</div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-[9px] font-semibold uppercase tracking-wider text-primary sm:text-[10px]">{t('auth.login.hero.cardProjectLabel')}</p>
-                  <h2 className="mt-1 line-clamp-3 break-words font-heading text-[clamp(0.95rem,1.3vw,1.2rem)] font-black leading-[1.08] text-foreground">{t('auth.login.hero.cardProjectTitle')}</h2>
-                  <p className="mt-1 line-clamp-1 break-words text-[10px] font-medium leading-tight text-muted-foreground sm:text-xs">{t('auth.login.hero.cardProjectMeta')}</p>
-                </div>
-              </div>
-              <div className="mt-auto flex min-w-0 items-center justify-between gap-2 border-t border-border/60 pt-3">
-                <span className="min-w-0 truncate rounded-md bg-primary/10 px-2 py-1 text-[9px] font-semibold text-primary">{t('auth.login.hero.cardProjectBadge')}</span>
-                <span className="shrink-0 text-[10px] font-semibold text-secondary">01</span>
-              </div>
-            </div>
-
-            {/* Exploration */}
-            <div className="absolute right-[4%] top-[10%] z-10 flex h-[clamp(11rem,22vh,14rem)] w-[46%] max-w-[22rem] min-w-0 rotate-2 flex-col overflow-hidden rounded-2xl border border-primary/35 bg-primary-light/95 p-4 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:rotate-0 hover:shadow-xl sm:p-5">
+          <div className="mt-6 grid min-h-0 flex-1 grid-cols-2 grid-rows-[1.2fr_1fr_1fr] gap-4 pb-2">
+            {/* Exploration : première card sur les deux colonnes */}
+            <div className="col-span-2 flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-primary/35 bg-primary-light/95 p-4 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5">
               <div className="flex items-center justify-between gap-2"><span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{t('auth.login.hero.cardExploreLabel')}</span><ArrowUpRight className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" /></div>
-              <p className="mt-auto line-clamp-2 break-words font-heading text-base font-black leading-tight text-foreground sm:text-lg">{t('auth.login.hero.cardExploreTitle')}</p>
-              <p className="mt-2 line-clamp-2 break-words text-xs font-medium leading-snug text-muted-foreground">{t('auth.login.hero.cardExploreMeta')}</p>
+              <p className="mt-auto line-clamp-2 break-words font-heading text-xl font-black leading-tight text-foreground sm:text-2xl">{t('auth.login.hero.cardExploreTitle')}</p>
+              <p className="mt-2 line-clamp-2 break-words text-xs font-medium leading-snug text-muted-foreground sm:text-sm">{t('auth.login.hero.cardExploreMeta')}</p>
               <div className="mt-3 flex gap-1"><span className="h-1.5 flex-1 rounded-full bg-primary" /><span className="h-1.5 flex-1 rounded-full bg-primary/50" /><span className="h-1.5 flex-1 rounded-full bg-primary/20" /></div>
             </div>
 
             {/* Complémentarité */}
-            <div className="absolute left-[4%] top-[35%] z-10 flex h-[clamp(11rem,22vh,14rem)] w-[46%] max-w-[22rem] min-w-0 -rotate-2 flex-col overflow-hidden rounded-2xl border border-impact/35 bg-impact-light/95 p-4 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:rotate-0 hover:shadow-xl sm:p-5">
+            <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-impact/35 bg-impact-light/95 p-4 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5">
               <div className="flex items-center justify-between gap-2"><span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{t('auth.login.hero.cardMatchLabel')}</span><ArrowUpRight className="h-4 w-4 shrink-0 text-impact" aria-hidden="true" /></div>
               <p className="mt-auto line-clamp-2 break-words font-heading text-base font-black leading-tight text-foreground sm:text-lg">{t('auth.login.hero.cardMatchTitle')}</p>
               <p className="mt-2 line-clamp-2 break-words text-xs font-medium leading-snug text-muted-foreground">{t('auth.login.hero.cardMatchMeta')}</p>
@@ -255,7 +223,7 @@ export default function LoginPage() {
             </div>
 
             {/* Communauté */}
-            <div className="absolute right-[4%] top-[39%] z-10 flex h-[clamp(11rem,22vh,14rem)] w-[46%] max-w-[22rem] min-w-0 rotate-2 flex-col overflow-hidden rounded-2xl border border-primary/45 bg-primary/10 p-4 text-foreground shadow-lg transition-all duration-300 hover:-translate-y-1 hover:rotate-0 hover:shadow-xl sm:p-5">
+            <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-primary/45 bg-primary/10 p-4 text-foreground shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-primary">{t('auth.login.hero.cardCommunityLabel')}</p>
               <p className="mt-auto line-clamp-2 break-words font-heading text-lg font-black leading-tight text-foreground sm:text-xl">{t('auth.login.hero.cardCommunityTitle')}</p>
               <p className="mt-2 line-clamp-2 break-words text-xs font-medium leading-snug text-muted-foreground">{t('auth.login.hero.cardCommunityMeta')}</p>
@@ -263,7 +231,7 @@ export default function LoginPage() {
             </div>
 
             {/* Impact collectif */}
-            <div className="absolute bottom-[11%] left-[4%] z-10 flex h-[clamp(11rem,22vh,14rem)] w-[46%] max-w-[22rem] min-w-0 -rotate-2 flex-col overflow-hidden rounded-2xl border border-secondary/45 bg-secondary-light/95 p-4 text-foreground shadow-lg transition-all duration-300 hover:-translate-y-1 hover:rotate-0 hover:shadow-xl sm:p-5">
+            <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-secondary/45 bg-secondary-light/95 p-4 text-foreground shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-secondary">{t('auth.login.hero.cardImpactLabel')}</p>
               <p className="mt-auto line-clamp-2 break-words font-heading text-xl font-black leading-tight text-foreground sm:text-2xl">{t('auth.login.hero.cardImpactTitle')}</p>
               <p className="mt-2 line-clamp-2 break-words text-xs font-medium text-muted-foreground">{t('auth.login.hero.cardImpactMeta')}</p>
@@ -271,7 +239,7 @@ export default function LoginPage() {
             </div>
 
             {/* Cadre de confiance */}
-            <div className="absolute bottom-[6%] right-[4%] z-10 flex h-[clamp(11rem,22vh,14rem)] w-[46%] max-w-[22rem] min-w-0 rotate-2 flex-col overflow-hidden rounded-2xl border border-border/70 bg-card p-4 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:rotate-0 hover:shadow-xl sm:p-5">
+            <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card p-4 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5">
               <div className="flex items-center gap-2 text-primary"><ShieldCheck className="h-4 w-4 shrink-0" aria-hidden="true" /><span className="text-[10px] font-semibold uppercase tracking-wider">{t('auth.login.hero.cardTrustLabel')}</span></div>
               <p className="mt-auto line-clamp-2 break-words font-heading text-base font-black leading-tight text-foreground sm:text-lg">{t('auth.login.hero.cardTrustTitle')}</p>
               <p className="mt-2 line-clamp-2 break-words text-xs font-medium leading-snug text-muted-foreground">{t('auth.login.hero.cardTrustMeta')}</p>
