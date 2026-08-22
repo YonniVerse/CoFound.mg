@@ -789,3 +789,58 @@ export type ModerationDecision = z.infer<typeof moderationDecisionSchema>
 export type ModerationQueueResponse = z.infer<typeof moderationQueueResponseSchema>
 export type ModerationIdentity = z.infer<typeof moderationIdentitySchema>
 
+
+
+// ─── Journal d’audit staff (S-05) ─────────────────────────────────────────────
+export const auditLogQuerySchema = z.object({
+  actorId: idSchema.optional(),
+  action: z.string().trim().min(1).max(100).optional(),
+  targetType: z.string().trim().min(1).max(100).optional(),
+  from: z.coerce.date().optional(),
+  to: z.coerce.date().optional(),
+  cursor: idSchema.optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(25),
+}).superRefine((value, context) => {
+  if (value.from && value.to && value.from > value.to) context.addIssue({ code: z.ZodIssueCode.custom, path: ['to'], message: 'La date de fin doit être postérieure au début.' })
+})
+export const auditLogItemSchema = z.object({
+  id: idSchema,
+  createdAt: z.coerce.date(),
+  actorId: idSchema.nullable(),
+  actorRole: z.string().nullable(),
+  action: z.string(),
+  targetType: z.string(),
+  targetId: z.string(),
+  ip: z.string().nullable(),
+  metadata: z.record(z.string(), z.unknown()).nullable(),
+})
+export const auditLogResponseSchema = z.object({
+  items: z.array(auditLogItemSchema),
+  nextCursor: idSchema.nullable(),
+  hasMore: z.boolean(),
+})
+export type AuditLogQuery = z.infer<typeof auditLogQuerySchema>
+export type AuditLogItem = z.infer<typeof auditLogItemSchema>
+export type AuditLogResponse = z.infer<typeof auditLogResponseSchema>
+
+export const referenceKindSchema = z.enum(['skills', 'fields', 'sectors', 'regions'])
+export const referenceCreateSchema = z.object({ slug: z.string().trim().min(2).max(80).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/), labelKey: z.string().trim().min(1).max(160), category: z.string().trim().max(80).nullable().optional(), countryCode: z.string().trim().length(2).toUpperCase().optional(), isActive: z.boolean().default(true), sortOrder: z.number().int().min(0).max(100000).default(0) })
+export const referencePatchSchema = referenceCreateSchema.partial()
+export const referenceItemSchema = z.object({ id: idSchema, slug: z.string(), labelKey: z.string(), category: z.string().nullable(), countryCode: z.string().nullable(), isActive: z.boolean(), sortOrder: z.number().int(), usageCount: z.number().int().nonnegative() })
+export const referenceListSchema = z.object({ kind: referenceKindSchema, items: z.array(referenceItemSchema) })
+export const productHealthSchema = z.object({ generatedAt: z.coerce.date(), threshold: z.number().int().positive(), activation: z.object({ invited: z.number().int().nonnegative(), activated: z.number().int().nonnegative(), rate: z.number().min(0).max(100).nullable() }), profileCompletionAverage: z.number().min(0).max(100).nullable(), projectsByStatus: z.record(z.string(), z.number().int().nonnegative()), acceptedMatchRate: z.number().min(0).max(100).nullable(), applicationResponseMedianHours: z.number().nonnegative().nullable(), moderation: z.object({ volume: z.number().int().nonnegative(), medianResolutionHours: z.number().nonnegative().nullable() }), invitationBounceRate: z.number().min(0).max(100).nullable() })
+export type ReferenceKind = z.infer<typeof referenceKindSchema>
+export type ReferenceCreateInput = z.infer<typeof referenceCreateSchema>
+export type ReferencePatchInput = z.infer<typeof referencePatchSchema>
+
+export const personalDataExportStatusSchema = z.enum(['PENDING', 'PROCESSING', 'READY', 'FAILED', 'EXPIRED'])
+export const personalDataExportRequestSchema = z.object({ confirmation: z.literal(true) })
+export const personalDataExportSchema = z.object({ id: idSchema, status: personalDataExportStatusSchema, requestedAt: z.coerce.date(), completedAt: z.coerce.date().nullable(), expiresAt: z.coerce.date().nullable(), downloadAvailable: z.boolean() })
+export const personalDataExportResponseSchema = z.object({ export: personalDataExportSchema })
+export type PersonalDataExportStatus = z.infer<typeof personalDataExportStatusSchema>
+export type PersonalDataExportRequest = z.infer<typeof personalDataExportRequestSchema>
+export type PersonalDataExport = z.infer<typeof personalDataExportSchema>
+export type PersonalDataExportResponse = z.infer<typeof personalDataExportResponseSchema>
+
+export const accountStatusResponseSchema = z.object({ status: accountStatusSchema, messageKey: z.string(), canAppeal: z.boolean(), endsAt: z.coerce.date().nullable() })
+export type AccountStatusResponse = z.infer<typeof accountStatusResponseSchema>
