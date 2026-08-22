@@ -70,3 +70,19 @@ L’API écrit des logs JSON via pino sur stdout. Les cookies, en-têtes Authori
 Sentry est initialisé avant NestJS quand `SENTRY_DSN` est défini. Le filtre global Sentry capture les exceptions non gérées et n’envoie pas les données personnelles par défaut. `SENTRY_TRACES_SAMPLE_RATE` doit rester proportionné au trafic et au budget du projet.
 
 La sonde `GET /api/v1/health` est anonyme et teste PostgreSQL. Elle renvoie `200` avec `{"status":"ok","database":"ok"}` lorsque la base répond, et `503` avec `{"status":"degraded","database":"unavailable"}` sinon. Le healthcheck Compose dépend de cette readiness.
+
+## Déploiement Render
+
+Le dépôt fournit également [`../render.yaml`](../render.yaml) pour déclarer l’API Web et le worker de notifications. Si le service Render est configuré avec le runtime Node natif, ne pas utiliser `corepack enable` dans le Build Command : certaines images Node de Render peuvent échouer sur la vérification de signature Corepack (`Cannot find matching keyid`). Installer la version du package manager explicitement :
+
+```bash
+npm install --global pnpm@11.9.0 && pnpm install --frozen-lockfile && pnpm --filter @cofound/shared build && pnpm --filter @cofound/api prisma:generate && pnpm --filter @cofound/api build
+```
+
+La commande de démarrage de l’API native est :
+
+```bash
+pnpm --filter @cofound/api prisma:migrate:deploy && pnpm --filter @cofound/api start
+```
+
+Configurer le health check sur `/api/v1/health`, fournir `DATABASE_URL` avec la chaîne Neon complète, et définir `CORS_ORIGIN` sur l’origine Vercel exacte. Le fichier `deploy/api.Dockerfile` installe également pnpm explicitement afin d’éviter la même dépendance à Corepack dans le build Docker.
