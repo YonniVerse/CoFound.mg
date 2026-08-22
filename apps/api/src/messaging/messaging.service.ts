@@ -1,11 +1,12 @@
-import { ForbiddenException, Injectable } from '@nestjs/common'
+import { ForbiddenException, Injectable, Optional } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import type { ConversationMessageCreateInput } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
+import { NotificationService } from '../notifications/notification.service.js'
 
 @Injectable()
 export class MessagingService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, @Optional() private readonly notifications?: NotificationService) {}
 
   async openDirect(userId: string, connectionId: string) {
     try {
@@ -38,9 +39,7 @@ export class MessagingService {
     })
   }
 
-  list(userId: string) {
-    return this.prisma.conversation.findMany({ where: { participants: { some: { userId } } }, orderBy: { createdAt: 'desc' } })
-  }
+  list(userId: string) { return this.prisma.conversation.findMany({ where: { participants: { some: { userId } } }, orderBy: { createdAt: 'desc' } }) }
 
   private async assertParticipant(userId: string, conversationId: string) {
     const participant = await this.prisma.conversationParticipant.findUnique({ where: { conversationId_userId: { conversationId, userId } } })
@@ -57,6 +56,16 @@ export class MessagingService {
     await this.assertParticipant(userId, conversationId)
     const row = await this.prisma.message.create({ data: { conversationId, authorId: userId, body: input.body, attachmentKey: input.attachmentKey ?? null }, include: { author: { select: { talentProfile: { select: { pseudonym: true } } } } } })
     const { author, ...message } = row
+    const recipients = await this.prisma.conversationParticipant.findMany({ where: { conversationId, userId: { not: userId } }, select: { user: { select: { id: true, email: true, locale: true, talentProfile: { select: { pseudonym: true } } } } } })
+    if (this.notifications) await Promise.all(recipients.map(({ user }) => this.notifications!.notifyBusinessEvent({
+      userId: user.id,
+      recipient: user.email,
+      displayName: user.talentProfile?.pseudonym ?? 'Membre',
+      type: 'message.received',
+      referenceId: row.id,
+      payload: { conversationId, messageId: row.id },
+      locale: user.locale === 'mg' ? 'mg' : 'fr',
+    })))
     return { ...message, authorPseudonym: author.talentProfile?.pseudonym ?? 'Membre' }
   }
 }

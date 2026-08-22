@@ -565,6 +565,9 @@ export const blockResultSchema = z.object({ blocked: z.boolean(), blockedId: idS
 export const blockedUserSchema = z.object({ blockedId: idSchema, createdAt: z.coerce.date() })
 export const blockedUsersResponseSchema = z.array(blockedUserSchema)
 export type BlockResult = z.infer<typeof blockResultSchema>
+export const notificationSchema = z.object({ id: idSchema, userId: idSchema, type: z.string(), payload: z.unknown(), readAt: z.coerce.date().nullable(), createdAt: z.coerce.date() })
+export const notificationsResponseSchema = z.array(notificationSchema)
+export type NotificationView = z.infer<typeof notificationSchema>
 export const projectFeedQuerySchema = z.object({
   status: z.nativeEnum(ProjectStatus).optional(),
   sectorId: idSchema.optional(),
