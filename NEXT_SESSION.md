@@ -12,22 +12,16 @@ S-09 est publié dans la [PR #76](https://github.com/YonniVerse/CoFound.mg/pull/
 
 S-10 et S-11 ont été fusionnés dans `dev` via les PR [#77](https://github.com/YonniVerse/CoFound.mg/pull/77) et [#78](https://github.com/YonniVerse/CoFound.mg/pull/78). Les validations locales correspondantes sont réussies.
 
-S-12 progresse depuis `origin/dev`. Les composants `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `TalentCard`, `ProjectsFeedPage`, `ImportMappingPage`, `ImportPreviewPage`, `SectionHero`, `SectionCTA`, `ApplyModal`, `Navbar`, `ActivationPage` et `DreamMatchPage` utilisent maintenant les clés FR/MG pour leurs textes visibles structurants. Sont couverts les actions de feed, erreurs, navigation, filtres, états vides, import, statuts de ligne, compteurs, CTA marketing, candidature, activation et consentement Dream Match.
+S-12 progresse depuis `origin/dev`. Le dictionnaire FR/MG et les composants suivants utilisent maintenant i18n pour leurs textes visibles structurants : `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `TalentCard`, `ProjectsFeedPage`, `ImportMappingPage`, `ImportPreviewPage`, `SectionHero`, `SectionCTA`, `ApplyModal`, `Navbar`, `ActivationPage`, `DreamMatchPage`, `ForgotPasswordPage` et `ResetPasswordPage`. Sont couverts les actions de feed, les états d’erreur, la navigation, les filtres, les états vides, l’import, les statuts de ligne, les compteurs, les CTA marketing, le formulaire de candidature, les notes de sécurité et le consentement Dream Match.
 
 ## Commits S-12 déjà poussés
 
-- `e435abc refactor(vague5): centraliser les libelles i18n des feeds`
-- `24b733d refactor(vague5): traduire la previsualisation d import`
-- `2051f87 refactor(vague5): traduire les actions de la landing`
-- `8a0bb30 refactor(vague5): traduire la carte talent`
-- `9093086 refactor(vague5): traduire la candidature et la cta`
-- `daa4bf8 refactor(vague5): traduire la navigation`
-- `c90d9de refactor(vague5): traduire la note d activation`
+- `e435abc`, `24b733d`, `2051f87`, `8a0bb30`, `9093086`, `daa4bf8`, `c90d9de`, `1f2c240`
 
 ## Fichiers modifiés depuis le dernier checkpoint
 
-- `apps/web/src/i18n.tsx` : clés FR/MG du consentement et des actions Dream Match.
-- `apps/web/src/pages/DreamMatchPage.tsx` : consentement, confirmation et sauvegarde traduits.
+- `apps/web/src/i18n.tsx` : clés FR/MG des notes de sécurité auth.
+- `apps/web/src/pages/ForgotPasswordPage.tsx` et `ResetPasswordPage.tsx` : notes de sécurité traduites.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : suivi actualisé.
 
 ## Validations récentes
@@ -41,7 +35,7 @@ S-12 progresse depuis `origin/dev`. Les composants `FeedErrorWidget`, `ProfileCa
 
 ## Reste à faire pour S-12
 
-Migrer les chaînes visibles restantes dans `ForgotPasswordPage`, `ResetPasswordPage`, `MyApplicationsPage`, `ProductHealthPage`, `ProjectPostsPage` et la notice d’information de `ImportMappingPage`. Ajouter ensuite un contrôle ciblé contre la réintroduction de textes visibles en dur, relancer les validations finales, créer le commit de clôture et ouvrir la PR S-12.
+Migrer les chaînes visibles restantes dans `MyApplicationsPage`, `ProductHealthPage`, `ProjectPostsPage` et la notice d’information de `ImportMappingPage`. Ajouter ensuite un contrôle ciblé contre la réintroduction de textes visibles en dur, relancer les validations finales, créer le commit de clôture et ouvrir la PR S-12.
 
 ## Suite de la Vague 5
 

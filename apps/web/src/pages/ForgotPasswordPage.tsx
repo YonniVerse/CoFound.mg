@@ -154,7 +154,7 @@ export default function ForgotPasswordPage() {
           {/* Security Note */}
           <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <ShieldCheck className="h-4 w-4 text-primary" />
-            <span>Procédure de récupération sécurisée CoFound.mg</span>
+            <span>{t('auth.forgotPassword.securityNote')}</span>
           </div>
         </div>
       </main>
