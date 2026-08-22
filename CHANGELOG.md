@@ -14,13 +14,12 @@ Retiré · En cours · Bloqué**.
 
 ### Modifié
 
-- Remplacement de la bordure verticale entre le formulaire et le panneau droit par une séparation ondulée SVG.
-- Vague remplie avec le token `background` et contour basé sur `var(--border)`.
-- Séparation non interactive, statique et visible uniquement sur desktop avec le panneau droit.
+- Remplacement de la bordure verticale par une séparation SVG géométrique angulaire entre le formulaire et le panneau droit.
+- Découpe remplie avec le token `background` et contour basée sur `var(--border)`.
+- Retrait de la vague et du triangle précédemment utilisés sur cette séparation.
 - Conservation de deux waves SVG décoratives dans le fond du panneau droit.
-- Conservation d’une seule vague SVG sur la bordure gauche comme séparation entre les sections.
 - Conservation du padding intérieur élargi du panneau droit pour mieux dégager les cards.
-- Modification publiée sur `dev` dans le commit `8c6c71e`.
+- Modification publiée sur `dev` dans le commit `1978804`.
 
 ### Validé
 
