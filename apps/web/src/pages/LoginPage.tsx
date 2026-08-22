@@ -189,10 +189,10 @@ export default function LoginPage() {
       </div>
 
       {/* RIGHT COLUMN: Composition thématique cohérente avec le landing */}
-      <div className="relative hidden min-h-0 overflow-hidden border-l border-border bg-linear-to-br from-primary-light via-background to-impact-light lg:col-span-6 lg:flex lg:items-center lg:justify-center xl:col-span-7">
+      <div className="relative hidden min-h-0 overflow-hidden border-l border-border bg-foreground lg:col-span-6 lg:flex lg:items-center lg:justify-center xl:col-span-7">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-60"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-70"
         />
 
         <div className="relative z-10 flex h-full min-h-0 w-full max-w-2xl flex-col px-6 py-8 text-foreground lg:px-10 lg:py-10">
