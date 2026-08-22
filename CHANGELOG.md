@@ -19,8 +19,9 @@ Retiré · En cours · Bloqué**.
 - Retrait de la découpe angulaire et du triangle précédemment utilisés sur cette séparation.
 - Conservation de deux waves SVG décoratives dans le fond du panneau droit.
 - Conservation du padding intérieur élargi du panneau droit pour mieux dégager les cards.
-- Augmentation de 2 px de la hauteur des cinq cards avec `h-[calc(100%+2px)]`.
-- Modification publiée sur `dev` dans le commit `00ee6bc`.
+- Annulation de l’augmentation temporaire de 2 px : les cinq cards utilisent de nouveau `h-full`.
+- Harmonisation de `ForgotPasswordPage` avec LoginPage : layout `h-screen`, formulaire, champs, gradient, séparation wave et grille thématique partagée.
+- Modification publiée sur `dev` dans les commits `8a0af26` et `063c9d9`.
 
 ### Validé
 
