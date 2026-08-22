@@ -208,7 +208,6 @@ export default function LoginPage() {
           fill="none"
         >
           <path d="M-80 160 C 120 20, 250 300, 470 170 S 700 50, 900 210" stroke="currentColor" strokeWidth="2" />
-          <path d="M-100 470 C 140 300, 280 590, 520 430 S 730 300, 920 510" stroke="currentColor" strokeWidth="1.5" />
           <path d="M-100 760 C 160 590, 310 860, 560 700 S 760 600, 920 770" stroke="currentColor" strokeWidth="2" />
         </svg>
         <div
@@ -216,7 +215,7 @@ export default function LoginPage() {
           className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.14)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,#000_55%,transparent_100%)] opacity-60"
         />
 
-        <div className="relative z-10 flex h-full min-h-0 w-full max-w-2xl flex-col px-6 py-8 text-foreground lg:px-10 lg:py-10">
+        <div className="relative z-10 flex h-full min-h-0 w-full max-w-2xl flex-col px-8 py-10 text-foreground lg:px-14 lg:py-12">
           <div className="flex items-center justify-end text-foreground">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card shadow-2xs">
               <Network className="h-4 w-4 text-primary" aria-hidden="true" />
