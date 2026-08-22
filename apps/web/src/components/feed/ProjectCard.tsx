@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Avatar } from "@/components/shared/Avatar";
 import { Button } from "@/components/ui/button";
 import type { ProjectFeedCard } from "@cofound/shared";
-import { Users, Briefcase, Eye, Send } from "lucide-react";
+import { Users, Briefcase, Eye, Send, FolderGit2 } from "lucide-react";
 import { ReportButton } from "@/components/shared/ReportButton";
 import { useI18n } from "@/i18n";
 
@@ -43,14 +43,16 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
     return (
       <div className="relative bg-card border border-border rounded-xl p-5 sm:p-6 shadow-2xs hover:border-border/80 transition-all duration-150 flex flex-col gap-4 group min-w-0 overflow-hidden">
-        {/* Subtle Absolute Project Indicator Dot */}
+        {/* Floating Mini Project Icon Badge (Top Right) */}
         <div
-          className="absolute top-3.5 left-3.5 h-2 w-2 rounded-full bg-primary"
+          className="absolute top-4 right-4 h-7 w-7 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center shadow-2xs group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200"
           title="Projet"
-        />
+        >
+          <FolderGit2 className="h-3.5 w-3.5" />
+        </div>
 
         {/* Header: Owner Avatar + Project Title & Sector + Status Badge */}
-        <div className="flex flex-wrap items-start justify-between gap-3 pl-2">
+        <div className="flex flex-wrap items-start justify-between gap-3 pr-8">
           <div className="flex items-center gap-3.5 min-w-0 flex-1">
             <Avatar
               name={ownerName}
@@ -135,14 +137,16 @@ export function ProjectCard({ project }: ProjectCardProps) {
   // Prototype Mock Data Fallback
   return (
     <div className="relative bg-card border border-border rounded-xl p-5 sm:p-6 shadow-2xs hover:border-border/80 transition-all duration-150 flex flex-col gap-4 group min-w-0 overflow-hidden">
-      {/* Subtle Absolute Project Indicator Dot */}
+      {/* Floating Mini Project Icon Badge (Top Right) */}
       <div
-        className="absolute top-3.5 left-3.5 h-2 w-2 rounded-full bg-primary"
+        className="absolute top-4 right-4 h-7 w-7 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center shadow-2xs group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200"
         title="Projet"
-      />
+      >
+        <FolderGit2 className="h-3.5 w-3.5" />
+      </div>
 
       {/* Header: Author Avatar + Title & Sector + Time ago */}
-      <div className="flex flex-wrap items-start justify-between gap-3 pl-2">
+      <div className="flex flex-wrap items-start justify-between gap-3 pr-8">
         <div className="flex items-center gap-3.5 min-w-0 flex-1">
           <Avatar
             name={project.author.name}
