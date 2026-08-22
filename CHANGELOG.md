@@ -10,6 +10,42 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Progression Vague 4 — B-02 à B-11
+
+### Ajouté
+
+- B-02 : permissions SUPER_ADMIN, file staff, approbation/rejet des demandes, création transactionnelle de l’organisation et du premier `ORG_ADMIN`.
+- B-02 : activation et retrait individuel des capacités avec audit ; `CERTIFY_AFFILIATION` est réservé aux `INSTITUTION`.
+- B-03 : profil public uniquement pour les organisations vérifiées.
+- B-04/B-05 : recherche partenaire de projets par maturité BMC, suivi privé et notes internes avec `ProjectWatch`.
+- B-06/B-07/B-08 : opportunités, candidatures talent/projet et décisions motivées côté partenaire.
+- B-09 : contact unique organisation/projet avec contrainte d’unicité et audit.
+- B-10 : recherche de talents opt-in pseudonymisés pour les organisations ayant `RECRUIT`.
+- B-11 : `PaymentProvider`, provider hors plateforme et création d’engagement `PROPOSED`, sans règlement en ligne.
+- Console UI-49 `/staff/organizations` et contrats partagés correspondants.
+
+### Modifié
+
+- Ajout des migrations `ProjectWatch`, `OpportunityApplication.rejectionReason` et `OrganizationProjectContact`.
+- Extension du guard RBAC avec trois permissions réservées à `STAFF/SUPER_ADMIN`.
+- Ajout de la méthode DELETE au client API frontend.
+
+### Validation
+
+- Suite API : **155/155 tests réussis**.
+- Typecheck API, frontend et shared réussi.
+- Lint API/frontend, build frontend, contrôle de bundle et `git diff --check` réussis.
+- Budget JavaScript initial : **65,52 KiB gzip**.
+
+### En cours
+
+- PR #75 de synthèse : https://github.com/YonniVerse/CoFound.mg/pull/75
+- Les interfaces partenaires B-03 à B-11 restent à construire.
+- Les migrations doivent être appliquées et les flux authentifiés testés dès que le serveur de recette fonctionne.
+- Cloudinary reste en attente ; aucun secret n’a été placé dans le frontend.
+
+---
+
 ## 2026-08-22 — Implémentation de B-01 — Demande d’accès organisationnel
 
 ### Ajouté

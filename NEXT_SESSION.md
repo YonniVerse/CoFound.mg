@@ -1,72 +1,109 @@
 # Context Handoff — Reprise de session CoFound.mg
 
 **Dernière mise à jour** : 2026-08-22
-**Phase** : Vague 4 — B-01 implémenté, PR #73 ouverte ; B-02 à démarrer après revue
-**Branche** : `feat/B-01-organization-request`
-**État du workspace** : propre après les commits de session ; branche poussée sur `origin` et PR #73 ouverte vers `dev`.
+**Phase** : Vague 4 — socle backend B-02 à B-11 implémenté ; interfaces partenaires B-03 à B-11 et recette restent à faire
+**Branche** : `feat/B-09-team-contact`
+**État du workspace** : propre après les commits de session ; branche poussée sur `origin` et PR de synthèse #75 ouverte vers `dev`.
 
-## 1. Travail réalisé
+## 1. Point de reprise
 
-B-01 de la Vague 4 est implémenté sur une branche dédiée. Le parcours public de demande d’accès organisationnel est disponible sur `/organization-request` et son endpoint est `POST /api/v1/organization-requests`.
+La session a repris le handoff de B-01, a laissé Cloudinary en attente comme demandé, puis a implémenté le socle backend des tickets B-02 à B-11 sur des branches successives. Les commits sont empilés ainsi : B-01 → B-02 → B-03/B-04/B-05 → B-06/B-07/B-08 → B-09/B-10/B-11.
 
-Le backend valide le type d’organisation, la raison sociale, le pays, la région, le site, la description, les secteurs d’intérêt, le contact et les pièces justificatives. Les emails et le code pays sont normalisés. Une demande active identique, basée sur l’email professionnel et le nom de l’organisation, est refusée avec une réponse 409. Toute création réussie est auditée par `AuditInterceptor`.
+La PR B-01 est #73, la PR B-02 est #74, et la PR de synthèse de la progression complète est #75 : https://github.com/YonniVerse/CoFound.mg/pull/75
 
-Le frontend propose un wizard en trois étapes : organisation, contact, puis pièces et validation. Il gère les états de chargement, erreur, doublon et succès avec un numéro de demande. Le lien vers le parcours est accessible depuis la page de connexion et le CTA de l’accueil. Les traductions françaises et malgaches ont été ajoutées.
+## 2. Travail réalisé pendant cette session
 
-Les justificatifs sont actuellement validés côté navigateur et leurs métadonnées (`fileName`, `contentType`, `sizeBytes`) sont persistées. Le dépôt ne contient pas encore d’adaptateur R2 : le stockage binaire et la consultation des fichiers côté staff restent à raccorder avant de considérer le parcours documentaire complet.
+### B-02 — Validation des organisations
 
-## 2. Fichiers importants
+- Permissions `organization-request:read`, `organization-request:manage` et `organization-capability:manage`, accessibles uniquement à `STAFF/SUPER_ADMIN`.
+- File paginée `GET /api/v1/staff/organization-requests` et détail `GET .../:id`.
+- Approbation avec création transactionnelle de l’organisation, création ou rattachement du premier utilisateur et rôle `ORG_ADMIN`.
+- Rejet avec motif obligatoire et protection contre les décisions répétées.
+- Octroi et retrait individuel des capacités avec audit.
+- `CERTIFY_AFFILIATION` interdit techniquement pour les organisations qui ne sont pas de type `INSTITUTION`.
+- Capacités V2 visibles mais non activables dans la console.
+- Console UI-49 sur `/staff/organizations`.
 
-- `apps/api/prisma/schema.prisma` : enum `OrganizationRequestStatus` et modèle `OrganizationRequest`.
-- `apps/api/prisma/migrations/20260822170000_add_organization_requests/migration.sql` : migration B-01.
-- `apps/api/src/organization-request/organization-request.controller.ts` : route publique et audit.
-- `apps/api/src/organization-request/organization-request.service.ts` : validation, normalisation, doublon et création.
-- `apps/api/src/organization-request/organization-request.module.ts` : module NestJS dédié.
-- `apps/api/test/organization-request.test.ts` : tests validation, création, doublon et audit.
-- `packages/shared/src/schemas.ts` : contrats `organizationRequestInputSchema` et `organizationRequestResponseSchema`.
-- `apps/web/src/pages/OrganizationRequestPage.tsx` : wizard public B-01.
-- `apps/web/src/App.tsx` : route `/organization-request`.
-- `apps/web/src/i18n.tsx` : traductions B-01 FR/MG.
-- `apps/web/src/pages/LoginPage.tsx` et `apps/web/src/components/landing/SectionCTA.tsx` : points d’entrée publics.
+### B-03 à B-05 — Profil, découverte et suivi
 
-## 3. Validation
+- Profil public d’une organisation seulement lorsqu’elle est `VERIFIED`, sans contact interne ni données staff.
+- Recherche partenaire de projets par texte, secteur, région et plage de maturité BMC.
+- Modèle `ProjectWatch`, note privée, création/mise à jour et retrait protégés par la capacité `RECRUIT`.
+- Les résultats de recherche ne contiennent pas d’identité civile.
 
-Les contrôles suivants passent sur la branche :
+### B-06 à B-08 — Opportunités et candidatures
 
-- suite API : **139/139 tests réussis** ;
+- Création et publication d’opportunités par une organisation ayant `PUBLISH_OPPORTUNITY`.
+- Liste publique des opportunités publiées.
+- Candidature d’un talent pour son propre compte ou d’un projet par un membre du projet.
+- Traitement partenaire des candidatures avec statut accepté/refusé et motif de rejet obligatoire.
+- Protection contre les candidatures et décisions répétées.
+
+### B-09 à B-11 — Contact, talents et finance
+
+- `OrganizationProjectContact` avec contrainte unique organisation/projet : un seul message de contact, sans relance.
+- Recherche de talents opt-in avec pseudonyme, profil, bio et complétion ; l’identité civile et le genre restent masqués.
+- Port `PaymentProvider`, provider `OffPlatformPaymentProvider` par défaut et création d’un `FinancialEngagement` au statut `PROPOSED`, sans paiement en ligne.
+
+## 3. Fichiers importants ajoutés ou modifiés
+
+- `apps/api/src/organization-request/organization-request-staff.service.ts` et `.controller.ts` : B-02.
+- `apps/api/src/organization-request/organization-profile.service.ts` et `.controller.ts` : B-03.
+- `apps/api/src/organization-request/partner-discovery.service.ts` et `.controller.ts` : B-04/B-05/B-10.
+- `apps/api/src/organization-request/opportunity.service.ts` et `.controller.ts` : B-06/B-07/B-08.
+- `apps/api/src/organization-request/partner-contact.service.ts` et `.controller.ts` : B-09.
+- `apps/api/src/financial/` : port de paiement et B-11.
+- `apps/api/prisma/schema.prisma` : relations `ProjectWatch`, `OrganizationProjectContact`, suivi d’approbation et motif de rejet.
+- `apps/api/prisma/migrations/20260822180000_add_project_watches/`.
+- `apps/api/prisma/migrations/20260822190000_add_opportunity_application_rejection_reason/`.
+- `apps/api/prisma/migrations/20260822200000_add_organization_project_contacts/`.
+- `packages/shared/src/schemas.ts` : contrats B-02 à B-11.
+- `apps/api/src/rbac/permissions.ts` et `permission.guard.ts` : restriction SUPER_ADMIN.
+- `apps/api/test/organization-request-staff.test.ts`, `partner-discovery.test.ts`, `opportunity.test.ts`, `partner-operations.test.ts` et `rbac.test.ts`.
+- `apps/web/src/pages/StaffOrganizationsPage.tsx`, `apps/web/src/App.tsx`, `apps/web/src/lib/api-client.ts` et `apps/web/src/i18n.tsx` : UI-49 et contrats frontend.
+
+## 4. Validation
+
+Les contrôles passent sur la branche :
+
+- suite API : **155/155 tests réussis** ;
 - typecheck API, frontend et shared réussi ;
 - lint API et frontend réussi ;
 - build frontend réussi ;
-- budget bundle respecté : **60,28 KiB gzip** pour le JavaScript initial ;
-- `prisma validate` réussi avec une URL PostgreSQL locale temporaire ;
-- `git diff --check` réussi.
+- budget JavaScript initial respecté : **65,52 KiB gzip** ;
+- `git diff --check` réussi ;
+- `prisma validate` doit être lancé avec une `DATABASE_URL` disponible, car le sandbox n’en fournit pas par défaut.
 
-L’installation initiale des dépendances était bloquée par l’absence de compilateur C pour `argon2`. `build-essential` a été installé dans le sandbox, puis `pnpm install --frozen-lockfile` a réussi. Aucun fichier de dépendance ou lockfile n’a été modifié par cette installation.
+## 5. Git et branches
 
-## 4. Git et publication
+- `feat/B-01-organization-request` : demande publique B-01, PR #73.
+- `feat/B-02-organization-validation` : console et validation B-02, PR #74 empilée sur B-01.
+- `feat/B-03-organization-profile` : profil, recherche, suivi et opportunités initiales.
+- `feat/B-09-team-contact` : B-09 à B-11 et branche de synthèse, PR #75 vers `dev`.
 
-La branche est `feat/B-01-organization-request` et contient les commits suivants :
+Derniers commits de la branche courante :
 
-- `0a5b22d feat(organisation): enregistrer les demandes d'accès publiques` ;
-- `6b64783 test(organisation): couvrir les demandes d'accès` ;
-- `dbbf3c9 feat(organisation): ajouter le formulaire de demande publique` ;
-- `9ff99cb test(organisation): aligner les secteurs d'intérêt` ;
-- `351b150 feat(organisation): relier l'accès depuis l'accueil`.
+- `3275989 feat(partenaire): ajouter contact et engagements financiers` ;
+- `cd8d5eb feat(opportunite): publier et traiter les candidatures` ;
+- `8833406 feat(partenaire): rechercher et suivre les projets` ;
+- `d967f2d feat(staff): ajouter la console des organisations` ;
+- `b8a5b2a feat(staff): valider les organisations et leurs capacités`.
 
-La branche distante est publiée. PR #73 : https://github.com/YonniVerse/CoFound.mg/pull/73
+## 6. Limites et points bloquants
 
-## 5. Points restant à vérifier
+Le serveur/API de recette n’est pas encore fonctionnel et aucune migration n’a été appliquée sur Neon pendant la session. Les endpoints et migrations doivent être testés sur une base réelle avant fusion définitive.
 
-La migration B-01 n’a pas été appliquée sur Neon pendant cette session, car aucune `DATABASE_URL` n’était disponible dans le sandbox. La migration doit être appliquée sur l’environnement de recette avant validation authentifiée.
+Les interfaces frontend partenaires pour B-03 à B-11 ne sont pas encore construites. Seule la console staff UI-49 a été ajoutée en plus du formulaire B-01. Les routes API sont donc le socle, pas une Vague 4 entièrement démontrable côté navigateur.
 
-La PR #73 doit être relue et fusionnée vers `dev`. La couverture frontend reste manuelle : aucun harnais de test UI n’est installé dans le dépôt. Les tests API ne démarrent pas une application Nest complète ; ils couvrent le service et les métadonnées du contrôleur.
+Cloudinary reste volontairement en attente. B-01 persiste encore les métadonnées des justificatifs ; le stockage binaire privé, les URLs signées et la consultation staff sont à faire lorsque le serveur et la configuration runtime seront disponibles. Aucun secret n’a été placé dans le frontend.
 
-Le stockage binaire des pièces justificatives reste à concevoir avec l’adaptateur R2. Ne pas présenter B-01 comme entièrement terminé tant que cette couture et l’écran staff de consultation ne sont pas raccordés.
+B-09 enregistre le contact unique comme entité métier auditée, mais ne l’envoie pas encore via la messagerie ou une notification email réelle. B-11 fournit l’abstraction et le provider hors plateforme, sans règlement réel.
 
-La Vague 4 restante est B-02 à B-11. B-02 dépend de F-08 et F-10 et doit fournir la file staff de demandes, l’approbation/refus et l’activation capacité par capacité. Les PR S-05 à S-08 de la Vague 5 sont parallèles et ne doivent pas être écrasées.
+## 7. Prochaines étapes concrètes
 
-Aucune décision durable n’a été ajoutée à `CLAUDE.md`, `docs/mvp-scope.md` ou à un autre registre : la persistance temporaire des métadonnées de justificatifs est un compromis de livraison, pas une décision d’architecture définitive.
-
-## 6. Prochaine action
-
-Après revue et fusion de la PR #73, créer `feat/B-02-organization-validation` depuis `origin/dev`, puis commencer la file staff `GET /api/v1/staff/organization-requests` avec ses permissions et ses tests, en relisant au préalable `docs/ui/ecrans-console-staff.md` UI-49.
+1. Vérifier et fusionner #73, puis #74 et enfin #75, ou rebaser la branche de synthèse selon la stratégie de revue retenue.
+2. Construire les pages partenaires B-03 à B-10 : profil organisation, recherche projets, suivi, opportunités, candidatures, recherche talents et contact.
+3. Rendre les contrôles de capacité effectifs dans les pages partenaires et ajouter leurs tests UI/API.
+4. Démarrer l’API/serveur de recette, appliquer toutes les migrations et exécuter les parcours authentifiés.
+5. Reprendre Cloudinary uniquement après disponibilité du serveur, avec secrets côté API et assets privés/authentifiés.
+6. Compléter la démonstration verticale de la Vague 4 et mettre à jour ce fichier avant toute nouvelle clôture de session.
