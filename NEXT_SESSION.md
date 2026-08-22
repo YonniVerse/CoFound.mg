@@ -1,56 +1,41 @@
 # Context Handoff — Reprise de session CoFound.mg
-
 **Dernière mise à jour** : 2026-08-22
-**Phase** : Vague 5 — S-01 à S-04 fusionnés ; préparation de S-05
-**Branche** : `dev`
-**État du workspace** : E-14 est fusionné via PR #37. S-01 à S-04 sont fusionnés via PR #68. `dev` est synchronisé avec `origin/dev` au commit `32e6af7`.
+**Phase** : Vague 5 — S-06 implémenté localement ; S-07 planifié
+**Branche** : `feat/S-06-export-donnees-personnelles`
+**État du workspace** : modifications S-06 non committées. S-05 est poussé dans la PR #69.
 
 ## 1. Travail réalisé
+S-05 est publié dans la PR #69 vers `dev`, avec le commit `ad9ff1f feat(staff): finaliser la console d audit et les referentiels`. La PR reste ouverte et GitHub indique `UNSTABLE` pour son statut de fusion.
 
-E-14 a été synchronisé avec `dev`, complété avec les traductions française et malgache de la bannière, puis fusionné. Un test HTTP couvre `GET /api/v1/me/profile/completion-reminder`.
+S-06 est implémenté sur sa branche dédiée. Le modèle Prisma `PersonalDataExport`, les statuts `PENDING`, `PROCESSING`, `READY`, `FAILED`, `EXPIRED` et la migration `20260822150000_add_personal_data_exports` sont présents. Le service garantit la confirmation explicite, l’idempotence par utilisateur, l’isolation du statut et la journalisation minimale.
 
-La chaîne des signalements comprend une file priorisée et paginée (`GET /api/v1/reports/moderation-queue`), des décisions transactionnelles (`PATCH /api/v1/reports/:id/decision`), la résolution/classement (`PATCH /api/v1/reports/:id/resolve`), les sanctions `WARNING`, `FREEZE`, `DISABLE` et `CONTENT_REMOVED`, ainsi que le gel/désactivation automatique pour les actions correspondantes.
+Le worker pg-boss `cofound.privacy.personal-data-export` réclame les exports en attente, construit une archive JSON complète avec les données du compte demandeur, exclut les credentials et tokens, la stocke dans `PERSONAL_EXPORT_DIR`, renseigne une expiration de 24 heures et passe l’export à `READY`. Les erreurs passent l’export à `FAILED`. Le processus `apps/api/src/worker.ts` démarre désormais le worker notifications et le worker d’exports.
 
-La résolution notifie le déclarant via `NotificationService`. L’accès à l’identité civile de la cible est séparé de la file pseudonymisée (`GET /api/v1/reports/:id/identity`), protégé par `moderation:act` et journalisé par `AuditService`. Le genre n’est jamais renvoyé dans la réponse d’identité.
-
-Le contexte JWT transporte désormais `staffRole`. Le guard autorise les actions sensibles uniquement pour un compte `STAFF` ayant `MODERATOR`, `OPS_ADMIN` ou `SUPER_ADMIN`. Un compte STAFF sans rôle étendu reste refusé.
-
-Une console frontend `/moderation` affiche la file pseudonymisée, permet la prise en revue, la résolution, le classement sans suite, la saisie d’une sanction et une révélation d’identité explicitement confirmée.
+Les routes sont `POST /api/v1/me/privacy/exports`, `GET /api/v1/me/privacy/exports/:id` et `GET /api/v1/me/privacy/exports/:id/download`. Le téléchargement vérifie le propriétaire, le statut, la présence du fichier et l’expiration. `/settings` propose la demande d’export avec traductions FR/MG.
 
 ## 2. Fichiers importants
-
-- `apps/api/src/report/report.service.ts` : file, décisions, sanctions, notification et résolution de cible.
-- `apps/api/src/report/report.controller.ts` : routes publiques de signalement et routes staff.
-- `apps/api/src/rbac/access-token.guard.ts` et `permission.guard.ts` : propagation et contrôle de `staffRole`.
-- `apps/api/src/auth/auth.service.ts` et `auth-request.ts` : claims JWT et contexte authentifié.
-- `packages/shared/src/schemas.ts` : contrats de file, décision et identité modérateur.
-- `apps/web/src/pages/ModerationQueuePage.tsx` : console staff pseudonymisée et formulaire de sanction.
-- `apps/web/src/App.tsx` : route `/moderation`.
-- `apps/api/test/report.test.ts` : tests de file, sanction et audit d’identité.
-- `apps/api/test/dream-match.integration.test.ts` : tests HTTP E-14 et résolution de signalement.
+- `apps/api/prisma/schema.prisma` et `apps/api/prisma/migrations/20260822150000_add_personal_data_exports/migration.sql` : persistance S-06.
+- `apps/api/src/privacy/personal-data-export.service.ts` : demande, idempotence, statut et téléchargement.
+- `apps/api/src/privacy/personal-data-export.controller.ts` : routes S-06.
+- `apps/api/src/privacy/personal-data-export-job.ts` et `personal-data-export-queue.service.ts` : contrat et file pg-boss.
+- `apps/api/src/privacy/personal-data-export.worker.ts` et `apps/api/src/worker.ts` : traitement asynchrone.
+- `packages/shared/src/schemas.ts` : contrats Zod de demande et statut.
+- `apps/web/src/pages/SettingsPage.tsx` et `apps/web/src/i18n.tsx` : interface et traductions.
+- `apps/api/test/personal-data-export.test.ts` : tests unitaires.
+- `apps/api/test/personal-data-export.integration.test.ts` : tests HTTP.
 
 ## 3. Validation
+S-06 passe `prisma generate`, `prisma validate`, `prisma migrate deploy` sur Neon, les typechecks shared/API/frontend, le lint ciblé, le build frontend et `git diff --check`. Les tests ciblés unitaires et HTTP passent à **5/5** ; la vérification réelle du worker produit `READY`, une clé de stockage et une expiration. Le test HTTP vérifie la demande, le statut et le téléchargement avec Content-Disposition contrôlé.
 
-Le package partagé, l’API et le frontend passent le typecheck. Le lint API/frontend, le build Vite et `git diff --check` passent. Les tests ciblés signalement/RBAC/intégration passent avec **23/23 réussis**. Le build frontend produit un chunk applicatif maximal inférieur à 500 kB.
+La migration S-06 a été appliquée sur Neon avec `prisma migrate deploy`. Une exécution réelle de `processExport` contre l’utilisateur de recette a produit un export `READY` avec une clé de stockage et une date d’expiration. Le démarrage du processus pg-boss complet reste à tester en recette avec `DATABASE_URL` et `PERSONAL_EXPORT_DIR` configurés.
 
 ## 4. Fusion
+S-06 n’a pas encore de commit ni de PR. Les modifications restent locales sur `feat/S-06-export-donnees-personnelles`. La migration Neon et la vérification réelle du worker sont réussies ; il reste à contrôler la confidentialité du fichier produit, effectuer la validation complète finale, puis committer et ouvrir la PR.
 
-PR #68 : https://github.com/YonniVerse/CoFound.mg/pull/68 — fusionnée.
+## 5. Plan S-07
+Le backlog officiel définit S-07 comme **« Écrans de gel, de compte sortant, de compte alumni »**, dépendant de S-02 et relevant de la responsabilité N. La spécification UI-05 couvre `/account-status` pour les comptes `FROZEN`, `LEAVING` et `ALUMNI`. En `FROZEN`, cette route doit être la seule accessible ; `LEAVING` conserve une lecture limitée avec explication ; `ALUMNI` conserve la lecture des projets existants mais ne peut plus candidater.
 
-Commit fonctionnel : `e73ae62 feat(moderation): finaliser la chaine des signalements`.
-
-Commit de stabilisation frontend : `0ee1f47 fix(moderation): stabiliser les decisions staff`.
-
-La branche distante de fonctionnalité a été supprimée après fusion. `dev` a été mis à jour automatiquement et reste propre après la synchronisation.
-
-## 5. Points restant à vérifier
-
-La recette authentifiée avec un utilisateur staff réellement porteur d’un `StaffRole` dans Neon reste à exécuter. Il faut également vérifier le transport email réel et les retries pg-boss lors d’une résolution.
-
-Les nouvelles routes doivent encore recevoir des tests dédiés de permission en environnement HTTP complet, ainsi qu’un test d’idempotence d’une décision répétée. La résolution est actuellement protégée par le guard et la mutation empêche le traitement d’un signalement déjà résolu, mais cette garantie doit être conservée par les tests de régression.
-
-Les écrans complets S-05 (`/staff/audit`, `/staff/reference-data`, `/staff/health`) ne sont pas encore construits. Les écrans S-07 de compte gelé, sortant et alumni, le seed `seed:demo`, les E2E Playwright, la passe accessibilité/i18n et la documentation d’exploitation restent à réaliser.
+Le plan proposé pour S-07 est : vérifier les transitions de statut et le guard, définir les réponses d’accès par statut, construire l’écran `/account-status` en FR/MG avec états gelé/sortant/alumni, vérifier les restrictions d’écriture côté candidatures et projets, ajouter les tests HTTP et les tests de navigation, puis effectuer la recette avec trois comptes de statut différent. Aucun code S-07 n’a encore été modifié.
 
 ## 6. Prochaine action
-
-Effectuer la recette réelle de la chaîne S-01 à S-04 sur Neon, puis commencer S-05 — console staff d’audit, référentiels et santé produit. Ne pas modifier les backlogs officiels sans demande explicite.
+Finaliser la recette Neon de S-06 : appliquer la migration, démarrer le worker avec `PERSONAL_EXPORT_DIR` privé, créer une demande authentifiée, vérifier le passage à `READY` et télécharger l’archive en contrôlant l’absence de credentials/tokens ; ensuite seulement committer S-06 et ouvrir sa PR avant d’implémenter S-07.

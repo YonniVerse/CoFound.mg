@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useI18n } from '@/i18n'
 import { apiClient } from '@/lib/api-client'
-import { consentRecordSchema, consentRegistrySchema, type ConsentPurpose, type ConsentRecord } from '@cofound/shared'
+import { consentRecordSchema, consentRegistrySchema, personalDataExportRequestSchema, personalDataExportResponseSchema, type ConsentPurpose, type ConsentRecord } from '@cofound/shared'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
@@ -20,6 +20,8 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true)
   const [pending, setPending] = useState<ConsentPurpose | null>(null)
   const [error, setError] = useState(false)
+  const [personalExport, setPersonalExport] = useState<{ id: string; status: string; requestedAt: Date; completedAt: Date | null; expiresAt: Date | null; downloadAvailable: boolean } | null>(null)
+  const [exportPending, setExportPending] = useState(false)
 
   const active = useMemo(() => new Set(consents.filter((consent) => consent.active).map((consent) => consent.purpose)), [consents])
 
@@ -31,6 +33,15 @@ export default function SettingsPage() {
       .finally(() => { if (mounted) setLoading(false) })
     return () => { mounted = false }
   }, [])
+
+  async function requestPersonalExport() {
+    setExportPending(true)
+    setError(false)
+    try {
+      const result = await apiClient.post('/me/privacy/exports', personalDataExportRequestSchema.parse({ confirmation: true }), personalDataExportResponseSchema)
+      setPersonalExport(result.export)
+    } catch { setError(true) } finally { setExportPending(false) }
+  }
 
   async function toggle(purpose: ConsentPurpose, checked: boolean) {
     setPending(purpose)
@@ -71,6 +82,7 @@ export default function SettingsPage() {
               </div>
             })}
             <p className="border-t pt-4 text-sm text-muted-foreground">{t('settings.privacy.withdrawExplanation')}</p>
+            <div className="border-t pt-4"><p className="font-semibold">{t('settings.export.title')}</p><p className="mt-1 text-sm text-muted-foreground">{t('settings.export.description')}</p><Button className="mt-3" variant="outline" disabled={exportPending} onClick={() => void requestPersonalExport()}>{exportPending ? t('settings.export.pending') : t('settings.export.request')}</Button>{personalExport && <p className="mt-2 text-sm text-muted-foreground" role="status">{t('settings.export.status')}: {personalExport.status}</p>}</div>
             <Button variant="outline" asChild><a href="/onboarding">{t('settings.backProfile')}</a></Button>
           </CardContent>
         </Card>

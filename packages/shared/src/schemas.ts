@@ -789,3 +789,10 @@ export type ModerationDecision = z.infer<typeof moderationDecisionSchema>
 export type ModerationQueueResponse = z.infer<typeof moderationQueueResponseSchema>
 export type ModerationIdentity = z.infer<typeof moderationIdentitySchema>
 
+
+export const personalDataExportStatusSchema = z.enum(['PENDING', 'PROCESSING', 'READY', 'FAILED', 'EXPIRED'])
+export const personalDataExportRequestSchema = z.object({ confirmation: z.literal(true) })
+export const personalDataExportSchema = z.object({ id: idSchema, status: personalDataExportStatusSchema, requestedAt: z.coerce.date(), completedAt: z.coerce.date().nullable(), expiresAt: z.coerce.date().nullable(), downloadAvailable: z.boolean() })
+export const personalDataExportResponseSchema = z.object({ export: personalDataExportSchema })
+export type PersonalDataExportStatus = z.infer<typeof personalDataExportStatusSchema>
+export type PersonalDataExportRequest = z.infer<typeof personalDataExportRequestSchema>

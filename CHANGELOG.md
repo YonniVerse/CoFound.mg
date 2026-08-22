@@ -10,6 +10,49 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — S-06 : worker asynchrone et tests HTTP
+
+### Ajouté
+
+- Worker pg-boss `cofound.privacy.personal-data-export` intégré au processus de fond.
+- Génération d’une archive JSON complète du compte demandeur, exclusion des credentials et tokens, stockage privé via `PERSONAL_EXPORT_DIR` et expiration de 24 heures.
+- Passage transactionnel des exports de `PENDING` à `PROCESSING`, puis `READY` ou `FAILED`.
+- Endpoint de téléchargement authentifié avec contrôle du propriétaire, de l’état, de l’expiration et du nom de fichier.
+- Tests HTTP de demande, statut et téléchargement, en plus des tests unitaires d’idempotence et d’isolation.
+- Plan de S-07 documenté pour les écrans de compte gelé, sortant et alumni.
+
+### Validation
+
+- Typechecks shared/API/frontend, lint ciblé et `git diff --check` réussis.
+- Tests S-06 unitaires et HTTP : **5/5 réussis**.
+- Build frontend validé avec les chunks sous 500 kB.
+
+### En cours
+
+- Contrôle de confidentialité de l’archive produite sur Neon et démarrage complet du processus pg-boss restent à finaliser.
+- Commit/PR S-06 après recette ; S-07 est planifié mais aucun code n’est encore modifié.
+
+## 2026-08-22 — PR S-05 publiée et socle S-06 initialisé
+
+### Ajouté
+
+- Commit `ad9ff1f feat(staff): finaliser la console d audit et les referentiels` et branche `feat/S-05-console-staff` poussés sur GitHub.
+- Pull Request [#69](https://github.com/YonniVerse/CoFound.mg/pull/69) ouverte vers `dev`.
+- Modèle Prisma `PersonalDataExport`, statuts de cycle de vie et migration `20260822150000_add_personal_data_exports` pour S-06.
+- Routes authentifiées `POST /me/privacy/exports` et `GET /me/privacy/exports/:id` avec confirmation explicite, idempotence par utilisateur et audit minimal.
+- Interface initiale d’export dans `/settings`, avec traductions françaises et malgaches.
+- Tests unitaires initiaux S-06 sur la confirmation, l’idempotence et l’isolation utilisateur.
+
+### Validation
+
+- S-05 : 140/140 tests API, typechecks, lint, build frontend et budget chunks validés avant publication.
+- S-06 : `prisma generate`, `prisma validate`, typechecks, lint ciblé, build frontend et tests ciblés réussis.
+
+### En cours
+
+- Worker asynchrone, génération et stockage privé de l’archive, notification de disponibilité et téléchargement authentifié S-06.
+- Revue et contrôles GitHub de la PR #69.
+
 ## 2026-08-22 — CI staging et initialisation M-14
 
 ### Ajouté
