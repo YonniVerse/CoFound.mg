@@ -10,17 +10,20 @@
 
 S-09 est publié dans la [PR #76](https://github.com/YonniVerse/CoFound.mg/pull/76), mais la validation réelle sur recette reste conditionnée aux variables `E2E_*`, aux comptes authentifiés et au jeton d’activation.
 
-S-10 a été fusionné dans `dev` via la [PR #77](https://github.com/YonniVerse/CoFound.mg/pull/77). S-11 a été fusionné via la [PR #78](https://github.com/YonniVerse/CoFound.mg/pull/78). Les validations locales correspondantes sont réussies.
+S-10 et S-11 ont été fusionnés dans `dev` via les PR [#77](https://github.com/YonniVerse/CoFound.mg/pull/77) et [#78](https://github.com/YonniVerse/CoFound.mg/pull/78). Les validations locales correspondantes sont réussies.
 
-S-12 progresse depuis `origin/dev`. Les clés FR/MG couvrent les actions de feed, les états d’erreur, les filtres projets et la chaîne d’import. `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `ProjectsFeedPage`, `ImportMappingPage` et `ImportPreviewPage` utilisent i18n pour leurs textes visibles structurants. `SectionHero` utilise maintenant i18n pour ses deux appels à l’action.
+S-12 progresse depuis `origin/dev`. Les clés FR/MG couvrent les actions de feed, les états d’erreur, les filtres projets et toute la chaîne d’import visible. `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `TalentCard`, `ProjectsFeedPage`, `ImportMappingPage`, `ImportPreviewPage` et `SectionHero` utilisent désormais i18n pour leurs textes visibles structurants, avec les statuts de ligne, les compteurs, les actions, les erreurs de chargement et les états vides.
 
-Les statuts de ligne de prévisualisation, les compteurs, les erreurs de chargement, les boutons de navigation et l’état vide sont traduits. Les commits de checkpoint déjà poussés sont `e435abc` et `24b733d` sur la branche S-12.
+## Commits S-12 déjà poussés
+
+- `e435abc refactor(vague5): centraliser les libelles i18n des feeds`
+- `24b733d refactor(vague5): traduire la previsualisation d import`
+- `2051f87 refactor(vague5): traduire les actions de la landing`
 
 ## Fichiers S-12 modifiés depuis le dernier checkpoint
 
-- `apps/web/src/i18n.tsx` : clés FR/MG supplémentaires pour les statuts d’import et l’appel à l’action landing.
-- `apps/web/src/pages/ImportPreviewPage.tsx` : statuts de ligne et erreur de chargement traduits.
-- `apps/web/src/components/landing/SectionHero.tsx` : appels à l’action traduits.
+- `apps/web/src/i18n.tsx` : clés FR/MG de TalentCard.
+- `apps/web/src/components/feed/TalentCard.tsx` : promo, complétion, biographie, disponibilité et actions traduits.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : suivi actualisé.
 
 ## Validations récentes
@@ -34,7 +37,7 @@ Les statuts de ligne de prévisualisation, les compteurs, les erreurs de chargem
 
 ## Reste à faire pour S-12
 
-Migrer les chaînes visibles restantes dans `TalentCard`, `SectionCTA`, `Navbar`, `ApplyModal`, `ActivationPage`, `DreamMatchPage`, `ForgotPasswordPage`, `ResetPasswordPage`, `MyApplicationsPage` et `ProductHealthPage`. Traiter aussi la notice d’information de `ImportMappingPage`, puis ajouter un contrôle ciblé contre la réintroduction de textes visibles en dur. Relancer les validations finales, créer le commit de clôture et ouvrir la PR S-12.
+Migrer les chaînes visibles restantes dans `SectionCTA`, `Navbar`, `ApplyModal`, `ActivationPage`, `DreamMatchPage`, `ForgotPasswordPage`, `ResetPasswordPage`, `MyApplicationsPage`, `ProductHealthPage`, `ProjectPostsPage` et la notice d’information de `ImportMappingPage`. Ajouter ensuite un contrôle ciblé contre la réintroduction de textes visibles en dur, relancer les validations finales, créer le commit de clôture et ouvrir la PR S-12.
 
 ## Suite de la Vague 5
 
