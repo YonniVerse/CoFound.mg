@@ -189,7 +189,17 @@ export default function LoginPage() {
       </div>
 
       {/* RIGHT COLUMN: Composition thématique cohérente avec le landing */}
-      <div className="relative hidden min-h-0 overflow-hidden border-l border-border bg-linear-to-br from-primary via-impact to-secondary lg:col-span-6 lg:flex lg:items-center lg:justify-center xl:col-span-7">
+      <div className="relative hidden min-h-0 overflow-hidden bg-linear-to-br from-primary via-impact to-secondary lg:col-span-6 lg:flex lg:items-center lg:justify-center xl:col-span-7">
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 left-0 z-20 h-full w-14 text-background"
+          viewBox="0 0 56 900"
+          preserveAspectRatio="none"
+          fill="none"
+        >
+          <path d="M0 0H34C52 78 8 156 34 244C54 330 10 418 34 510C56 596 8 684 34 776C48 830 42 866 24 900H0Z" fill="currentColor" />
+          <path d="M34 0C52 78 8 156 34 244C54 330 10 418 34 510C56 596 8 684 34 776C48 830 42 866 24 900" stroke="var(--border)" strokeWidth="1.5" />
+        </svg>
         <svg
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 h-full w-full text-white/25"
