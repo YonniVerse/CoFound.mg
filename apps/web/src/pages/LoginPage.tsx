@@ -208,7 +208,6 @@ export default function LoginPage() {
           fill="none"
         >
           <path d="M-80 160 C 120 20, 250 300, 470 170 S 700 50, 900 210" stroke="currentColor" strokeWidth="2" />
-          <path d="M-100 760 C 160 590, 310 860, 560 700 S 760 600, 920 770" stroke="currentColor" strokeWidth="2" />
         </svg>
         <div
           aria-hidden="true"
