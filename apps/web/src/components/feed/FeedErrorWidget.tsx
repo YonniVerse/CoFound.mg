@@ -1,5 +1,6 @@
 import { AlertCircle, RotateCcw, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/i18n";
 
 interface FeedErrorWidgetProps {
   title?: string;
@@ -8,10 +9,13 @@ interface FeedErrorWidgetProps {
 }
 
 export function FeedErrorWidget({
-  title = "Impossible de charger les profils de talents",
-  message = "Nous n'avons pas pu récupérer la liste des talents. Cela peut être dû à un problème réseau temporaire ou à une maintenance du serveur.",
+  title,
+  message,
   onRetry,
 }: FeedErrorWidgetProps) {
+  const { t } = useI18n()
+  const resolvedTitle = title ?? t('feed.errorTitle')
+  const resolvedMessage = message ?? t('feed.errorMessage')
   return (
     <div className="bg-card border border-destructive/20 rounded-2xl p-8 sm:p-10 shadow-2xs text-center flex flex-col items-center justify-center my-4 animate-in fade-in zoom-in-95 duration-200">
       {/* Icon Badge */}
@@ -21,12 +25,12 @@ export function FeedErrorWidget({
 
       {/* Title */}
       <h3 className="font-heading font-bold text-lg text-foreground mb-1.5 flex items-center gap-2">
-        <span>{title}</span>
+        <span>{resolvedTitle}</span>
       </h3>
 
       {/* Detailed Message */}
       <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto leading-relaxed mb-6">
-        {message}
+        {resolvedMessage}
       </p>
 
       {/* Actions */}
@@ -39,12 +43,12 @@ export function FeedErrorWidget({
             className="h-9 px-5 text-xs font-semibold rounded-xl border-border hover:bg-accent hover:text-foreground gap-2 cursor-pointer transition-all"
           >
             <RotateCcw className="h-3.5 w-3.5" />
-            <span>Réessayer la connexion</span>
+            <span>{t('common.retry')}</span>
           </Button>
         )}
         <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground/70 font-mono">
           <ShieldAlert className="h-3 w-3" />
-          <span>Code d'erreur : FEED_FETCH_FAILED</span>
+          <span>{t('common.errorCode').replace('{code}', 'FEED_FETCH_FAILED')}</span>
         </div>
       </div>
     </div>

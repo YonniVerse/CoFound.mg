@@ -2,22 +2,28 @@
 
 **Dernière mise à jour** : 2026-08-22
 **Vague** : Vague 5 — Sécurité et finition
-**Ticket courant** : S-11 finalisé localement ; S-12 à démarrer
-**Branche actuelle** : `feat/S-11-accessibilite-responsive`
-**État du workspace** : changements S-11 locaux, non commités au moment de cette mise à jour.
+**Ticket courant** : S-12 en cours
+**Branche actuelle** : `feat/S-12-i18n`
+**État du workspace** : modifications S-12 locales non commités au moment de cette mise à jour.
 
 ## État exact
 
-S-09 est publié dans la [PR #76](https://github.com/YonniVerse/CoFound.mg/pull/76), avec trois scénarios Playwright détectés. Les tests réels restent conditionnés par les variables `E2E_*`, les comptes authentifiés et le jeton d’activation de recette.
+S-09 est publié dans la [PR #76](https://github.com/YonniVerse/CoFound.mg/pull/76), mais la validation réelle sur recette reste conditionnée aux variables `E2E_*`, aux comptes authentifiés et au jeton d’activation.
 
-S-10 a été fusionné dans `dev` via la [PR #77](https://github.com/YonniVerse/CoFound.mg/pull/77). Il apporte le lazy loading du shell public et du graphique Recharts, les images WebP, les métadonnées de chargement et le budget Vite de 400 kB brut par chunk. Le build frontend et le lint sont réussis.
+S-10 a été fusionné dans `dev` via la [PR #77](https://github.com/YonniVerse/CoFound.mg/pull/77). S-11 a été fusionné via la [PR #78](https://github.com/YonniVerse/CoFound.mg/pull/78). Les validations locales correspondantes sont réussies.
 
-S-11 est implémenté sur `feat/S-11-accessibilite-responsive` depuis `origin/dev` synchronisé après S-10. La navigation mobile possède désormais un bouton explicitement typé, un nom accessible bilingue côté interface, `aria-expanded`, `aria-controls`, une cible nommée et une fermeture au clavier avec Échap. Le menu est exposé comme dialogue de navigation mobile. Les styles globaux ajoutent un anneau `:focus-visible` visible et respectent `prefers-reduced-motion` pour les animations, transitions et défilements.
+S-12 est en cours depuis `origin/dev`. L’audit initial a trouvé des chaînes visibles en dur dans les feeds, les cartes, l’import, les pages métier et les composants marketing. Les clés communes FR/MG ont été ajoutées pour les actions de feed, les états d’erreur, les filtres de projets et les écrans d’import.
 
-## Fichiers S-11
+Les composants `FeedErrorWidget`, `ProfileCard` et `ProjectCard` utilisent maintenant `useI18n`. `ProjectsFeedPage` utilise également i18n pour son en-tête, la recherche, les filtres et l’état vide. `ImportMappingPage` utilise les clés i18n pour le titre de correspondance et l’action d’ignorance de colonne.
 
-- `apps/web/src/components/layout/Navbar.tsx` : navigation mobile accessible et fermeture avec Échap.
-- `apps/web/src/index.css` : focus clavier et réduction des mouvements.
+## Fichiers S-12 modifiés
+
+- `apps/web/src/i18n.tsx` : nouvelles clés FR/MG feed, projets, erreurs et import.
+- `apps/web/src/components/feed/FeedErrorWidget.tsx` : messages et code d’erreur traduits.
+- `apps/web/src/components/feed/ProfileCard.tsx` : actions, statut et libellés traduits.
+- `apps/web/src/components/feed/ProjectCard.tsx` : actions et libellé de recherche traduits.
+- `apps/web/src/pages/ProjectsFeedPage.tsx` : textes structurants et filtres traduits.
+- `apps/web/src/pages/ImportMappingPage.tsx` : titre et option d’import traduits.
 
 ## Validation
 
@@ -25,16 +31,13 @@ S-11 est implémenté sur `feat/S-11-accessibilite-responsive` depuis `origin/de
 - `pnpm --filter @cofound/shared build` : réussi.
 - `pnpm --filter @cofound/web build` : réussi.
 - `pnpm --filter @cofound/web lint` : réussi.
-- Le chunk analytique reste lazy et mesuré à 358,03 kB brut / 104,22 kB gzip.
-- Aucun secret ou compte de recette réel ajouté.
+- Le chunk analytique reste lazy à 358,03 kB brut / 104,22 kB gzip.
+- Aucun secret réel ajouté.
 
-## Prochaines étapes concrètes
+## Reste à faire pour S-12
 
-1. Créer le commit conventionnel français de S-11, pousser la branche et ouvrir sa PR vers `dev`.
-2. Contrôler puis fusionner la PR S-11 après les contrôles CI.
-3. Créer `feat/S-12-i18n` depuis `origin/dev` et auditer les chaînes en dur du frontend.
-4. Continuer S-13 puis S-14, en mettant à jour ce fichier et `CHANGELOG.md` à chaque fin de session.
+Migrer les chaînes visibles restantes dans `ImportPreviewPage`, `ApplyModal`, `TalentCard`, `SectionCTA`, `SectionHero`, `ActivationPage`, `DreamMatchPage`, `ForgotPasswordPage`, `ResetPasswordPage`, `MyApplicationsPage` et `ProductHealthPage`. Ajouter ensuite un contrôle ciblé contre la réintroduction de textes visibles en dur, lancer les validations finales, créer le commit et ouvrir la PR S-12.
 
-## Blocages connus
+## Suite de la Vague 5
 
-La validation E2E réelle de S-09 reste bloquée par l’absence volontaire des variables `E2E_*` et des comptes de recette. Les PR de Vague 4 #73, #74 et #75 restent ouvertes indépendamment de cette chaîne.
+Après fusion de S-12, traiter S-13 — documentation d’exploitation — puis S-14 — CGU et politique de confidentialité avec engagement de portabilité. Les PR de Vague 4 #73, #74 et #75 restent ouvertes indépendamment.

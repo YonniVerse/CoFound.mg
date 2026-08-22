@@ -10,6 +10,24 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — S-12 — Audit i18n commencé
+
+### Ajouté
+
+- Clés communes FR/MG pour les actions de feed, les états d’erreur, les filtres de projets et les libellés d’import.
+
+### Modifié
+
+- `FeedErrorWidget` utilise désormais `useI18n`, y compris pour ses messages par défaut et le code d’erreur affiché.
+
+### En cours
+
+- Migration en cours des chaînes visibles restantes dans les cartes de feed, l’import, les pages métier et les composants marketing.
+- `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `ProjectsFeedPage` et une partie de `ImportMappingPage` utilisent désormais les clés FR/MG dédiées.
+- Validation build/lint et ajout d’un contrôle empêchant la réintroduction de chaînes visibles en dur.
+
+---
+
 ## 2026-08-22 — S-11 — Passe accessibilité et responsive mobile
 
 ### Ajouté
