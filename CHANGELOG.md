@@ -34,6 +34,8 @@ Retiré · En cours · Bloqué**.
 - `ForgotPasswordPage` et `ResetPasswordPage` utilisent des clés FR/MG dédiées pour leurs notes de sécurité.
 - `MyApplicationsPage` utilise les clés FR/MG pour son en-tête, ses filtres, ses statuts et les informations de candidature.
 - `ProductHealthPage` utilise les clés FR/MG pour l’accès RBAC, l’en-tête, la description, les projets par état et le seuil de confidentialité.
+- `ProjectPostsPage` utilise les clés FR/MG pour les types, les erreurs, le formulaire, les états et les actions du feed projet.
+- Les avertissements de dépendances `t` des hooks de santé produit et de publications ont été corrigés.
 - Validation build/lint réussie après suppression de la constante de statuts devenue inutilisée et ajout de `t` aux dépendances du hook.
 - Migration des chaînes visibles restantes et ajout d’un contrôle empêchant leur réintroduction encore en cours.
 
