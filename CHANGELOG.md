@@ -10,6 +10,21 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Grille statique du panneau de connexion
+
+### Modifié
+
+- Suppression complète du flottement, des rotations et des superpositions entre cards.
+- Passage des six cards à une grille régulière de deux colonnes avec largeur uniforme.
+- Réduction de la grande card principale et alignement des cards sur une hauteur commune.
+- Verrouillage de `LoginPage` sur `h-screen` avec `overflow-hidden` pour empêcher le scroll global.
+- Suppression des keyframes et utilitaires CSS de flottement devenus inutiles.
+- Modifications publiées séparément sur `dev` dans les commits `67573f9` et `c49f5d4`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Cards flottantes du panneau de connexion
 
 ### Modifié
