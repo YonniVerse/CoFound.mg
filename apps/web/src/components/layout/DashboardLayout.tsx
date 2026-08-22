@@ -1,5 +1,7 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { profileCompletionReminderSchema, type ProfileCompletionReminder } from "@cofound/shared";
+import { apiClient } from "@/lib/api-client";
 import { 
   Home, 
   Search, 
@@ -13,6 +15,7 @@ import {
 import { LogoSVG } from "../ui/LogoSVG";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/i18n";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -30,6 +33,16 @@ const NAVIGATION = [
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const location = useLocation();
+  const { t } = useI18n();
+  const [completionReminder, setCompletionReminder] = useState<ProfileCompletionReminder | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    void apiClient.get('/me/profile/completion-reminder', profileCompletionReminderSchema)
+      .then((reminder) => { if (active) setCompletionReminder(reminder); })
+      .catch(() => { if (active) setCompletionReminder(null); });
+    return () => { active = false; };
+  }, [location.pathname]);
 
   const navContent = NAVIGATION.map((item) => {
     const isActive = location.pathname === item.href || location.pathname.startsWith(item.href + '/');
@@ -116,6 +129,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Main Content Area */}
       <main className="flex-1 lg:pl-64 w-full">
+        {completionReminder?.shouldRemind && location.pathname !== '/onboarding' && (
+          <div className="border-b border-primary/20 bg-primary/5 px-4 py-3 sm:px-8" role="status">
+            <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 text-sm">
+              <p className="text-foreground">{t('profile.completionReminder.message').replace('{completion}', String(completionReminder.completion))}</p>
+              <Link to={completionReminder.ctaPath} className="shrink-0 font-semibold text-primary underline-offset-4 hover:underline">{t('profile.completionReminder.action')}</Link>
+            </div>
+          </div>
+        )}
         {children}
       </main>
     </div>

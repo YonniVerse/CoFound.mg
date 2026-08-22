@@ -1,5 +1,9 @@
 # Context Handoff — Reprise de session CoFound.mg
 
+**Dernière mise à jour** : 2026-08-21
+**Phase** : Vague 1 — revue E-14 et préparation E-15
+**Branche** : `E-14`, issue de `dev` après fusion de la PR #36
+**État du workspace** : E-12 et E-13 finalisés et fusionnés ; E-14 implémenté, PR #37 ouverte et en revue ; E-15 préparé
 > Lire ce fichier en premier à chaque nouvelle session. Sources de vérité : le dépôt et `docs/plan-de-developpement.md`.
 
 ## 1. État actuel
@@ -44,6 +48,7 @@ Les tests ciblés des quatre événements et de la résolution HTTP sont mainten
 
 ## 7. État Git et prochaine action
 
+E-14 est implémenté sur la branche dédiée et la PR #37 est en revue. Le rapport `docs/revue-pr37-et-preparation-e15.md` recense les points à vérifier : i18n de la bannière, test HTTP de l’endpoint, fréquence des requêtes et catalogue des clés. E-15 est le ticket suivant, attribué à Yonni ; son modèle Prisma `Consent` existe déjà et sa dépendance F-05 est livrée. La prochaine action est de valider/fusionner E-14, puis de coordonner la branche dédiée E-15 avec revue croisée confidentialité.
 Les commits principaux sont intégrés dans `origin/dev` : M-15/M-16 via PR #67, E-10 via PR #43, E-11 via PR #44, E-17 via PR #40, E-18 via PR #41 et E-19 via PR #42. Les branches E-10, E-18, E-19 et E-11 ont été synchronisées avec dev avant fusion pour résoudre les conflits de routeur et de traductions. La branche locale `dev` est à jour et propre après le commit `bee8499` (`fix(auth): restaurer la session après activation`).
 
 Prochaine action : démarrer S-01, la file de modération priorisée, puis enchaîner S-02 et S-03. S-04 peut être préparé en parallèle après confirmation de la journalisation d’identité. Ne pas modifier les backlogs officiels sans demande explicite.

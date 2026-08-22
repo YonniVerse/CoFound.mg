@@ -12,6 +12,8 @@ import { BlockController } from '../src/block/block.controller.js'
 import { BlockService } from '../src/block/block.service.js'
 import { NotificationController } from '../src/notifications/notification.controller.js'
 import { NotificationService } from '../src/notifications/notification.service.js'
+import { CompletionReminderController } from '../src/profile/completion-reminder.controller.js'
+import { CompletionReminderService } from '../src/profile/completion-reminder.service.js'
 
 function createFakeService() {
   const calls: Array<{ method: string; userId: string; input?: unknown }> = []
@@ -267,6 +269,51 @@ test('M-16 expose la résolution d’un signalement via HTTP', async () => {
     assert.equal(response.status, 200)
     assert.deepEqual(await response.json(), { id: 'report-1', reporterId: 'reporter-1', status: 'RESOLVED', targetType: 'MESSAGE', targetId: 'message-2' })
     assert.deepEqual(calls, [{ actorId: 'moderator-1', reportId: 'report-1', input: { status: 'RESOLVED' } }])
+  } finally {
+    await app.close()
+  }
+})
+
+
+test('E-14 expose GET /api/v1/me/profile/completion-reminder via HTTP', async () => {
+  const calls: string[] = []
+  const fakeService = {
+    getMine: async (userId: string) => {
+      calls.push(userId)
+      return {
+        shouldRemind: true,
+        completion: 40,
+        minimumCompletion: 70,
+        missingFields: ['profile.fields.bio'],
+        ctaPath: '/onboarding' as const,
+      }
+    },
+  }
+  @Module({
+    controllers: [CompletionReminderController],
+    providers: [{ provide: CompletionReminderService, useValue: fakeService }],
+  })
+  class TestModule {}
+  const app = await NestFactory.create(TestModule, { logger: false })
+  app.use((request: { user?: { userId: string } }, _response: unknown, next: () => void) => {
+    request.user = { userId: 'talent-user' }
+    next()
+  })
+  app.setGlobalPrefix('api/v1')
+  await app.listen(0, '127.0.0.1')
+  try {
+    const response = await fetch(`${await app.getUrl()}/api/v1/me/profile/completion-reminder`, {
+      headers: { authorization: 'Bearer test-token' },
+    })
+    assert.equal(response.status, 200)
+    assert.deepEqual(await response.json(), {
+      shouldRemind: true,
+      completion: 40,
+      minimumCompletion: 70,
+      missingFields: ['profile.fields.bio'],
+      ctaPath: '/onboarding',
+    })
+    assert.deepEqual(calls, ['talent-user'])
   } finally {
     await app.close()
   }
