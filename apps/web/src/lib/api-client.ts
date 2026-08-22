@@ -66,6 +66,14 @@ class ApiClient {
     return this.request(path, { method: 'PATCH', body: JSON.stringify(body) }, schema)
   }
 
+  async getText(path: string): Promise<string> {
+    const headers = new Headers()
+    if (this.accessToken) headers.set('authorization', `Bearer ${this.accessToken}`)
+    const response = await fetch(`${this.baseUrl}${path}`, { method: 'GET', headers, credentials: 'include' })
+    if (!response.ok) throw new ApiClientError(response.status, { code: 'HTTP_ERROR', messageKey: 'errors.http' })
+    return response.text()
+  }
+
   private parseJson(raw: string): unknown {
     try {
       return JSON.parse(raw) as unknown
