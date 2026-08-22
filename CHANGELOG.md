@@ -32,6 +32,7 @@ Retiré · En cours · Bloqué**.
 - La note de sécurité d’`ActivationPage` utilise désormais une clé FR/MG dédiée.
 - `DreamMatchPage` utilise les clés FR/MG pour le consentement, la confirmation et l’action de sauvegarde.
 - `ForgotPasswordPage` et `ResetPasswordPage` utilisent des clés FR/MG dédiées pour leurs notes de sécurité.
+- `MyApplicationsPage` utilise les clés FR/MG pour son en-tête, ses filtres, ses statuts et les informations de candidature.
 - Validation build/lint réussie après suppression de la constante de statuts devenue inutilisée et ajout de `t` aux dépendances du hook.
 - Migration des chaînes visibles restantes et ajout d’un contrôle empêchant leur réintroduction encore en cours.
 

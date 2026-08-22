@@ -12,16 +12,16 @@ S-09 est publié dans la [PR #76](https://github.com/YonniVerse/CoFound.mg/pull/
 
 S-10 et S-11 ont été fusionnés dans `dev` via les PR [#77](https://github.com/YonniVerse/CoFound.mg/pull/77) et [#78](https://github.com/YonniVerse/CoFound.mg/pull/78). Les validations locales correspondantes sont réussies.
 
-S-12 progresse depuis `origin/dev`. Le dictionnaire FR/MG et les composants suivants utilisent maintenant i18n pour leurs textes visibles structurants : `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `TalentCard`, `ProjectsFeedPage`, `ImportMappingPage`, `ImportPreviewPage`, `SectionHero`, `SectionCTA`, `ApplyModal`, `Navbar`, `ActivationPage`, `DreamMatchPage`, `ForgotPasswordPage` et `ResetPasswordPage`. Sont couverts les actions de feed, les états d’erreur, la navigation, les filtres, les états vides, l’import, les statuts de ligne, les compteurs, les CTA marketing, le formulaire de candidature, les notes de sécurité et le consentement Dream Match.
+S-12 progresse depuis `origin/dev`. Le dictionnaire FR/MG et les pages/composants suivants utilisent maintenant i18n : `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `TalentCard`, `ProjectsFeedPage`, `ImportMappingPage`, `ImportPreviewPage`, `SectionHero`, `SectionCTA`, `ApplyModal`, `Navbar`, `ActivationPage`, `DreamMatchPage`, `ForgotPasswordPage`, `ResetPasswordPage` et `MyApplicationsPage`. Les statuts de candidature, filtres, compteurs, motifs de refus, labels de poste et dates de candidature sont maintenant couverts.
 
 ## Commits S-12 déjà poussés
 
-- `e435abc`, `24b733d`, `2051f87`, `8a0bb30`, `9093086`, `daa4bf8`, `c90d9de`, `1f2c240`
+`e435abc`, `24b733d`, `2051f87`, `8a0bb30`, `9093086`, `daa4bf8`, `c90d9de`, `1f2c240`, `a639878`
 
 ## Fichiers modifiés depuis le dernier checkpoint
 
-- `apps/web/src/i18n.tsx` : clés FR/MG des notes de sécurité auth.
-- `apps/web/src/pages/ForgotPasswordPage.tsx` et `ResetPasswordPage.tsx` : notes de sécurité traduites.
+- `apps/web/src/i18n.tsx` : clés FR/MG de MyApplicationsPage.
+- `apps/web/src/pages/MyApplicationsPage.tsx` : en-tête, filtres, statuts et informations de candidature traduits.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : suivi actualisé.
 
 ## Validations récentes
@@ -35,7 +35,7 @@ S-12 progresse depuis `origin/dev`. Le dictionnaire FR/MG et les composants suiv
 
 ## Reste à faire pour S-12
 
-Migrer les chaînes visibles restantes dans `MyApplicationsPage`, `ProductHealthPage`, `ProjectPostsPage` et la notice d’information de `ImportMappingPage`. Ajouter ensuite un contrôle ciblé contre la réintroduction de textes visibles en dur, relancer les validations finales, créer le commit de clôture et ouvrir la PR S-12.
+Migrer les chaînes visibles restantes dans `ProductHealthPage`, `ProjectPostsPage` et la notice d’information de `ImportMappingPage`. Vérifier les éventuelles chaînes restantes de `MyApplicationsPage`, ajouter un contrôle ciblé contre la réintroduction de textes visibles en dur, relancer les validations finales, créer le commit de clôture et ouvrir la PR S-12.
 
 ## Suite de la Vague 5
 
