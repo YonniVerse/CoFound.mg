@@ -1,13 +1,13 @@
 # Context Handoff — Reprise de session CoFound.mg
 
 **Dernière mise à jour** : 2026-08-22
-**Phase** : Vague 4 — socle backend B-02 à B-11 implémenté ; interfaces partenaires B-03 à B-11 et recette restent à faire
+**Phase** : Vague 4 — socle backend et interfaces partenaires B-02 à B-11 implémentés ; recette serveur et intégrations opérationnelles restent à faire
 **Branche** : `feat/B-09-team-contact`
 **État du workspace** : propre après les commits de session ; branche poussée sur `origin` et PR de synthèse #75 ouverte vers `dev`.
 
 ## 1. Point de reprise
 
-La session a repris le handoff de B-01, a laissé Cloudinary en attente comme demandé, puis a implémenté le socle backend des tickets B-02 à B-11 sur des branches successives. Les commits sont empilés ainsi : B-01 → B-02 → B-03/B-04/B-05 → B-06/B-07/B-08 → B-09/B-10/B-11.
+La session a repris le handoff de B-01, a laissé Cloudinary en attente comme demandé, puis a implémenté le socle backend et les interfaces principales des tickets B-02 à B-11 sur des branches successives. Les commits sont empilés ainsi : B-01 → B-02 → B-03/B-04/B-05 → B-06/B-07/B-08 → B-09/B-10/B-11 → interfaces partenaires.
 
 La PR B-01 est #73, la PR B-02 est #74, et la PR de synthèse de la progression complète est #75 : https://github.com/YonniVerse/CoFound.mg/pull/75
 
@@ -23,6 +23,7 @@ La PR B-01 est #73, la PR B-02 est #74, et la PR de synthèse de la progression 
 - `CERTIFY_AFFILIATION` interdit techniquement pour les organisations qui ne sont pas de type `INSTITUTION`.
 - Capacités V2 visibles mais non activables dans la console.
 - Console UI-49 sur `/staff/organizations`.
+- Pages partenaires : `/organizations/:organizationId/profile`, `/projects`, `/talents` et `/opportunities`, couvrant profil vérifié, recherche/suivi/contact, recherche de talents, opportunités, candidatures et proposition financière.
 
 ### B-03 à B-05 — Profil, découverte et suivi
 
@@ -83,6 +84,7 @@ Les contrôles passent sur la branche :
 
 Derniers commits de la branche courante :
 
+- `e493916 feat(partenaire): ajouter les interfaces de la vague 4` ;
 - `3275989 feat(partenaire): ajouter contact et engagements financiers` ;
 - `cd8d5eb feat(opportunite): publier et traiter les candidatures` ;
 - `8833406 feat(partenaire): rechercher et suivre les projets` ;
@@ -93,7 +95,7 @@ Derniers commits de la branche courante :
 
 Le serveur/API de recette n’est pas encore fonctionnel et aucune migration n’a été appliquée sur Neon pendant la session. Les endpoints et migrations doivent être testés sur une base réelle avant fusion définitive.
 
-Les interfaces frontend partenaires pour B-03 à B-11 ne sont pas encore construites. Seule la console staff UI-49 a été ajoutée en plus du formulaire B-01. Les routes API sont donc le socle, pas une Vague 4 entièrement démontrable côté navigateur.
+Les interfaces frontend partenaires B-03 à B-11 sont maintenant présentes. Elles nécessitent encore une recette manuelle authentifiée, car le serveur/API de recette n’est pas fonctionnel dans cette session et aucun harnais UI n’est installé dans le dépôt.
 
 Cloudinary reste volontairement en attente. B-01 persiste encore les métadonnées des justificatifs ; le stockage binaire privé, les URLs signées et la consultation staff sont à faire lorsque le serveur et la configuration runtime seront disponibles. Aucun secret n’a été placé dans le frontend.
 
@@ -102,8 +104,8 @@ B-09 enregistre le contact unique comme entité métier auditée, mais ne l’en
 ## 7. Prochaines étapes concrètes
 
 1. Vérifier et fusionner #73, puis #74 et enfin #75, ou rebaser la branche de synthèse selon la stratégie de revue retenue.
-2. Construire les pages partenaires B-03 à B-10 : profil organisation, recherche projets, suivi, opportunités, candidatures, recherche talents et contact.
-3. Rendre les contrôles de capacité effectifs dans les pages partenaires et ajouter leurs tests UI/API.
-4. Démarrer l’API/serveur de recette, appliquer toutes les migrations et exécuter les parcours authentifiés.
-5. Reprendre Cloudinary uniquement après disponibilité du serveur, avec secrets côté API et assets privés/authentifiés.
-6. Compléter la démonstration verticale de la Vague 4 et mettre à jour ce fichier avant toute nouvelle clôture de session.
+2. Démarrer l’API/serveur de recette, appliquer toutes les migrations et exécuter les parcours authentifiés des pages partenaires.
+3. Ajouter un harnais UI ou des tests de routes frontend si nécessaire et vérifier les contrôles de capacité en conditions réelles.
+4. Reprendre Cloudinary uniquement après disponibilité du serveur, avec secrets côté API et assets privés/authentifiés.
+5. Remplacer l’enregistrement local du contact par une notification réelle et compléter la démonstration verticale de la Vague 4.
+6. Mettre à jour ce fichier avant toute nouvelle clôture de session.

@@ -40,9 +40,34 @@ Retiré · En cours · Bloqué**.
 ### En cours
 
 - PR #75 de synthèse : https://github.com/YonniVerse/CoFound.mg/pull/75
-- Les interfaces partenaires B-03 à B-11 restent à construire.
+- Les interfaces partenaires B-03 à B-11 sont maintenant ajoutées : profil, projets, suivi/contact, talents, opportunités, candidatures et proposition financière.
 - Les migrations doivent être appliquées et les flux authentifiés testés dès que le serveur de recette fonctionne.
 - Cloudinary reste en attente ; aucun secret n’a été placé dans le frontend.
+
+---
+
+## 2026-08-22 — Interfaces partenaires de la Vague 4
+
+### Ajouté
+
+- Pages frontend `/organizations/:organizationId/profile`, `/projects`, `/talents` et `/opportunities`.
+- Recherche de projets par texte et maturité BMC, suivi privé, note interne et contact unique.
+- Recherche de talents opt-in pseudonymisés.
+- Création/publication d’opportunités, consultation des candidatures, décisions et proposition d’engagement financier hors plateforme.
+- Routes frontend et traductions françaises/malgaches associées.
+
+### Validation
+
+- Typecheck API, frontend et shared réussi.
+- Lint API/frontend réussi.
+- Build frontend réussi.
+- Suite API : **155/155 tests réussis**.
+- Budget JavaScript initial : **69,57 KiB gzip**.
+
+### Limites
+
+- La recette authentifiée attend le serveur/API et la base de données disponibles.
+- Cloudinary n’est pas encore raccordé au serveur ; aucune clé secrète n’a été exposée au frontend.
 
 ---
 
