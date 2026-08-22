@@ -10,6 +10,12 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Audit correctif — Vagues 1 à 3
+
+- Ajout de `docs/traceabilite-vagues-1-2-3.md` pour distinguer les PR dédiées, les tickets regroupés et les PR fermées sans fusion, sans modifier le backlog officiel.
+- Mise à jour de `audit-vagues-1-2-3-2026-08-22.md` avec les preuves E-09, le contrôle RBAC existant et les risques restant à confirmer sur staging.
+- Handoff mis à jour avec les validations vertes et les réserves E2E/recette.
+
 ## 2026-08-22 — Préparation déploiement staging — Vague 5
 
 - Ajout de `docs/staging-deployment-checklist.md` couvrant les secrets attendus, la configuration serveur, le lancement contrôlé, les contrôles post-déploiement, S-09 E2E et le retour arrière.

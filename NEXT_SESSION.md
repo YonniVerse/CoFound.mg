@@ -1,37 +1,28 @@
 # Handoff CoFound.mg
 
 **Dernière mise à jour** : 2026-08-22
-**Vague** : Vague 5 — Sécurité et finition
-**État** : Vague 5 fusionnée dans `dev` ; préparation staging en cours
+**Vague** : Vagues 1, 2 et 3 — traitement des incohérences
+**État** : audit correctif documenté
 **Branche actuelle** : `dev`
-
-## État staging
-
-Le workflow `.github/workflows/deploy-staging.yml` existe et se déclenche sur push vers `dev` ou manuellement via `workflow_dispatch`. Il publie les images API et backup dans GHCR avec un tag SHA et le tag `staging`, puis déploie via SSH les fichiers Compose/Caddy et recrée les services.
-
-La commande `gh secret list --env staging` indique actuellement **aucun secret staging configuré**. Les valeurs n’ont pas été demandées ni affichées. Le déploiement réel ne doit donc pas être lancé avant la configuration humaine des secrets et du fichier `.env` sur le serveur staging.
 
 ## Travail réalisé
 
-Création de `docs/staging-deployment-checklist.md` avec la liste des secrets attendus, la préparation du serveur, la séparation staging/production, les contrôles de santé, le seed `demo-`, la validation E2E S-09, les critères de sortie et le retour arrière. Aucun secret ou identifiant réel n’y figure.
+Les incohérences de traçabilité identifiées dans l’audit ont été traitées sans modifier le backlog officiel. La matrice [`docs/traceabilite-vagues-1-2-3.md`](docs/traceabilite-vagues-1-2-3.md) distingue désormais les PR dédiées fusionnées, les tickets regroupés dans une autre PR, les PR fermées sans fusion et les points à confirmer en recette.
 
-## Pré-requis bloquants
+Le rapport [`audit-vagues-1-2-3-2026-08-22.md`](audit-vagues-1-2-3-2026-08-22.md) a été complété avec les preuves et mesures correctives. E-05 est documenté comme regroupé. E-09 est documenté comme présent dans le schéma et le service d’activation, mais à démontrer en recette pour les cas nominal, expiré et réutilisé. M-09 à M-11, M-12/M-13 et M-15/M-16 sont reliés à leurs PR regroupées. P-03 et P-04 restent explicitement des PR fermées sans fusion, malgré la présence de surfaces fonctionnelles reprises dans `dev`.
 
-Configurer dans l’environnement GitHub `staging` : `STAGING_DEPLOY_SSH_KEY`, `STAGING_KNOWN_HOSTS`, `STAGING_DEPLOY_HOST`, `STAGING_DEPLOY_USER`, `STAGING_DEPLOY_PATH`, `GHCR_USERNAME` et `GHCR_READ_TOKEN`. Préparer hors Git le fichier `${STAGING_DEPLOY_PATH}/deploy/.env` avec une base Neon de staging et un `RESTORE_DATABASE_URL` jetable distinct.
+Le contrôle RBAC existant a été vérifié dans `apps/api/test/rbac.test.ts` : sept cas négatifs F-19 et les contrôles staff S-05 sont présents. Aucun secret, mot de passe ou donnée réelle n’a été ajouté.
 
-Fournir également, dans un environnement d’exécution séparé, les variables `E2E_*` et les comptes de démonstration nécessaires à S-09. Ne jamais les ajouter au dépôt.
+## Validation
 
-## Validations
+La suite globale exécutée sur `dev` a réussi : 149 tests API, typecheck récursif, lint récursif, build shared et build web. Le dépôt était propre et aligné sur `origin/dev` avant les modifications documentaires.
 
-- `dev` est alignée sur `origin/dev`.
-- Le build shared, le build web et le lint web de la Vague 5 sont verts.
-- Les PR #79, #80 et #81 sont fusionnées.
-- Aucune valeur de secret n’a été exposée.
+## Risques restant à traiter
+
+La présence fonctionnelle ne remplace pas une démonstration verticale sur staging. Il faut encore fournir les variables `E2E_*`, les comptes pseudonymisés et le jeton d’activation pour exécuter les trois scénarios Playwright de S-09. Les tests négatifs RBAC doivent aussi être rejoués sur la recette réelle. La restauration doit viser une base jetable, jamais la base de production. Les tickets P-03/P-04 et E-09 doivent rester marqués « à confirmer en recette » tant que cette démonstration n’est pas faite.
 
 ## Prochaines étapes
 
-1. Configurer les secrets GitHub de l’environnement `staging` et le `.env` du serveur hors dépôt.
-2. Vérifier manuellement la cible SSH, la base staging, le SHA précédent et le jeu de données `demo-`.
-3. Déclencher le workflow `Déploiement staging` avec confirmation humaine.
-4. Contrôler les endpoints de santé, les services, les parcours Vague 5 et les trois scénarios E2E S-09.
-5. Documenter le résultat dans l’audit global.
+1. Committer et pousser les documents correctifs.
+2. Préparer la recette staging et exécuter la démonstration verticale.
+3. Mettre à jour la matrice avec les résultats réels, sans modifier le backlog officiel.
