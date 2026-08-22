@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Check, HeartHandshake, Loader2, Sparkles } from 'lucide-react'
-import { getDreamMatchProfile, getDreamMatchSuggestions, saveDreamMatchProfile } from '@/data/dreamMatchApi'
+import { getDreamMatchProfile, getDreamMatchSuggestions, markDreamMatchNotInterested, saveDreamMatchProfile } from '@/data/dreamMatchApi'
 import type { DreamMatchSuggestionsResponse, DreamMatchUpsertRequest } from '@cofound/shared'
 
 const emptyForm: Omit<DreamMatchUpsertRequest, 'consent'> = {
@@ -27,6 +27,7 @@ export default function DreamMatchPage() {
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [suggestionsError, setSuggestionsError] = useState<string | null>(null)
+  const [excludingTalentId, setExcludingTalentId] = useState<string | null>(null)
 
   useEffect(() => {
     getDreamMatchProfile()
@@ -67,6 +68,21 @@ export default function DreamMatchPage() {
       setError('Impossible d’enregistrer vos préférences pour le moment.')
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const markNotInterested = async (talentId: string) => {
+    if (!suggestions || excludingTalentId) return
+    const previous = suggestions
+    setExcludingTalentId(talentId)
+    setSuggestions({ ...suggestions, items: suggestions.items.filter((item) => item.talentId !== talentId) })
+    try {
+      await markDreamMatchNotInterested(talentId)
+    } catch {
+      setSuggestions(previous)
+      setSuggestionsError('Impossible d’enregistrer ce retour. Réessayez dans un instant.')
+    } finally {
+      setExcludingTalentId(null)
     }
   }
 
@@ -136,6 +152,9 @@ export default function DreamMatchPage() {
                   </div>
                 })}
               </div>
+              <button type="button" onClick={() => void markNotInterested(suggestion.talentId)} disabled={excludingTalentId !== null} className="mt-5 w-full rounded-xl border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-destructive hover:text-destructive disabled:cursor-wait disabled:opacity-60" aria-label={`Ne plus proposer ${suggestion.pseudonym}`}>
+                {excludingTalentId === suggestion.talentId ? 'Enregistrement…' : 'Pas intéressé'}
+              </button>
             </article>
           ))}
         </div>

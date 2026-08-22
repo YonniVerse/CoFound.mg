@@ -703,3 +703,11 @@ export type DreamMatchSuggestion = z.infer<typeof dreamMatchSuggestionSchema>
 export type DreamMatchSuggestionsResponse = z.infer<typeof dreamMatchSuggestionsResponseSchema>
 export type DreamMatchSuggestionsQuery = z.infer<typeof dreamMatchSuggestionsQuerySchema>
 
+// ─── Dream-Match feedback (M-08) ───────────────────────────────────────────────
+
+export const dreamMatchNotInterestedResponseSchema = z.object({
+  excluded: z.literal(true),
+  talentId: idSchema,
+})
+export type DreamMatchNotInterestedResponse = z.infer<typeof dreamMatchNotInterestedResponseSchema>
+

@@ -4,7 +4,7 @@
 
 ## 1. État actuel
 
-M-05 est fusionné dans `dev` via la PR #60 et M-06 via la PR #61. M-07 est également fusionné via la PR #62. La branche active est `dev`, synchronisée avec `origin/dev` au commit `c27b5ea`.
+M-05 est fusionné dans `dev` via la PR #60, M-06 via la PR #61 et M-07 via la PR #62. La branche active est `feat/M-08-not-interested`, créée depuis `dev` après ces fusions.
 
 ## 2. Livrables de cette session
 
@@ -14,7 +14,7 @@ Les fichiers principaux sont `apps/api/src/connection/connection-request.service
 
 ## 3. Validation exécutée
 
-Les validations complètes passent : tests API **109/109**, lint monorepo, typecheck monorepo et build monorepo. Le plus gros chunk frontend généré est `vendor-data` à **363,98 kB**, inférieur au seuil de 500 kB.
+Pour M-08, Prisma validate, lint API, typecheck API, build frontend et les tests API passent. La suite compte **111/111 tests réussis**, dont les tests unitaires et HTTP du retour « pas intéressé ». La migration `20260822100000_add_dream_match_exclusions` est appliquée sur Neon. Aucun harnais Playwright/Cypress E2E n’est présent dans le dépôt ; les tests HTTP locaux constituent la validation d’intégration disponible.
 
 ## 4. Décisions techniques
 
@@ -22,8 +22,8 @@ Les routes de messagerie exigent `message:send` et vérifient l’appartenance �
 
 ## 5. Vigilance et travaux restants
 
-M-05 est intégré dans `dev` après 106 tests API et un test HTTP GET/PATCH. M-06 ajoute les contrats de suggestions, le service de scoring SQL pondéré par compétences, secteurs et disponibilité, l’endpoint `GET /me/dream-match/suggestions`, des tests unitaires et un test HTTP d’intégration. M-07 connecte ce contrat au frontend et affiche les facteurs explicatifs sans score numérique. Les tests API comptent 109 réussites ; lint, typecheck et build monorepo passent. Les résultats restent pseudonymisés et aucune identité civile ni genre n’est exposé. Les fichiers non suivis hérités du workspace ne doivent pas être ajoutés aux commits par erreur.
+M-05, M-06 et M-07 sont intégrés dans `dev`. M-08 ajoute le modèle `DreamMatchExclusion`, la migration SQL, la route POST `/me/dream-match/suggestions/:talentId/not-interested`, l’upsert transactionnel idempotent, le filtre SQL `NOT EXISTS` des suggestions exclues et le bouton frontend avec retrait optimiste et restauration en cas d’échec. Le contrat de réponse reste pseudonymisé.
 
 ## 6. Prochaine action
 
-M-08 est la prochaine priorité Rino : retour « pas intéressé » et exclusion transactionnelle des suggestions. Ensuite M-14 concerne le signalement transverse. M-12, M-13, M-15 et M-16 restent à traiter par leurs propriétaires selon le backlog.
+Ouvrir la PR M-08 après le commit frontend, puis faire contrôler les vérifications GitHub. Ajouter ultérieurement un vrai parcours E2E Playwright/Cypress avec authentification de recette si l’environnement de test est fourni. Après M-08, reprendre M-14 selon le backlog. M-12, M-13, M-15 et M-16 restent à traiter par leurs propriétaires.

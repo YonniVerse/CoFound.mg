@@ -116,3 +116,34 @@ test('M-06 expose GET /api/v1/me/dream-match/suggestions via HTTP', async () => 
     await app.close()
   }
 })
+
+
+test('M-08 expose le retour pas intéressé via HTTP', async () => {
+  const calls: Array<{ userId: string; talentId: string }> = []
+  const fakeService: Pick<DreamMatchScoringService, 'markNotInterested'> = {
+    markNotInterested: async (userId, talentId) => {
+      calls.push({ userId, talentId })
+      return { excluded: true, talentId }
+    },
+  }
+  @Module({ controllers: [DreamMatchScoringController], providers: [{ provide: DreamMatchScoringService, useValue: fakeService }] })
+  class TestModule {}
+  const app = await NestFactory.create(TestModule, { logger: false })
+  app.use((request: { user?: { userId: string } }, _response: unknown, next: () => void) => {
+    request.user = { userId: 'talent-user' }
+    next()
+  })
+  app.setGlobalPrefix('api/v1')
+  await app.listen(0, '127.0.0.1')
+  try {
+    const response = await fetch(`${await app.getUrl()}/api/v1/me/dream-match/suggestions/talent-2/not-interested`, {
+      method: 'POST',
+      headers: { authorization: 'Bearer test-token' },
+    })
+    assert.equal(response.status, 201)
+    assert.deepEqual(await response.json(), { excluded: true, talentId: 'talent-2' })
+    assert.deepEqual(calls, [{ userId: 'talent-user', talentId: 'talent-2' }])
+  } finally {
+    await app.close()
+  }
+})

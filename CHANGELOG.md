@@ -44,6 +44,41 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Démarrage de M-08 — Retour « pas intéressé »
+
+### Ajouté
+
+- Branche `feat/M-08-not-interested` créée depuis `dev` après les fusions de M-05, M-06 et M-07.
+- Modèle Prisma `DreamMatchExclusion` avec unicité `(seekerId, candidateId)` et migration SQL dédiée.
+- Route `POST /me/dream-match/suggestions/:talentId/not-interested`.
+- Upsert transactionnel idempotent et filtre SQL `NOT EXISTS` pour exclure les profils écartés des suggestions futures.
+- Tests unitaires et HTTP du retour « pas intéressé ».
+
+### Validation
+
+- Prisma validate réussi avec une URL locale non persistée.
+- Lint et typecheck API réussis.
+- **111/111 tests API réussis**.
+
+### Modifié
+
+- Le client API expose la mutation `markDreamMatchNotInterested`.
+- L’écran Dream-Match affiche le bouton « Pas intéressé », retire la carte de manière optimiste et la restaure en cas d’échec.
+- La migration `20260822100000_add_dream_match_exclusions` est appliquée sur Neon.
+
+### Validation
+
+- 111/111 tests API réussis.
+- Typecheck, lint et build frontend réussis.
+- Aucun harnais Playwright/Cypress présent ; les tests HTTP d’intégration M-08 sont la validation disponible.
+
+### En cours
+
+- Ouvrir et faire contrôler la PR M-08.
+- Ajouter un vrai parcours E2E authentifié lorsque le harnais et les identifiants de recette seront disponibles.
+
+---
+
 ## 2026-08-22 — Reprise de M-04 Feed Talents
 
 ### Modifié

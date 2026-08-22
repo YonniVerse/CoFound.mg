@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Query, Req } from '@nestjs/common'
+import { Controller, Get, Inject, Param, Post, Query, Req } from '@nestjs/common'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
 import { Permission } from '../rbac/permissions.js'
 import { RequirePermissions } from '../rbac/rbac.decorators.js'
@@ -12,5 +12,10 @@ export class DreamMatchScoringController {
   @Get()
   getSuggestions(@Req() request: AuthenticatedRequest, @Query() query: unknown) {
     return this.scoringService.getSuggestions(request.user!.userId, query)
+  }
+
+  @Post(':talentId/not-interested')
+  markNotInterested(@Req() request: AuthenticatedRequest, @Param('talentId') talentId: string) {
+    return this.scoringService.markNotInterested(request.user!.userId, talentId)
   }
 }

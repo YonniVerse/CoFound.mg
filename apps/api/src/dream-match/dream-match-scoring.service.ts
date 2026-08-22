@@ -18,6 +18,21 @@ type ScoredSuggestionRow = {
 export class DreamMatchScoringService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async markNotInterested(userId: string, candidateTalentId: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const seeker = await tx.dreamMatchProfile.findFirst({ where: { talent: { userId } }, select: { talentId: true } })
+      if (!seeker || seeker.talentId === candidateTalentId) throw new NotFoundException('Suggestion Dream-Match introuvable')
+      const candidate = await tx.talentProfile.findUnique({ where: { id: candidateTalentId }, select: { id: true } })
+      if (!candidate) throw new NotFoundException('Suggestion Dream-Match introuvable')
+      await tx.dreamMatchExclusion.upsert({
+        where: { seekerId_candidateId: { seekerId: seeker.talentId, candidateId: candidateTalentId } },
+        create: { seekerId: seeker.talentId, candidateId: candidateTalentId },
+        update: {},
+      })
+      return { excluded: true as const, talentId: candidateTalentId }
+    })
+  }
+
   async getSuggestions(userId: string, input: unknown) {
     const parsed = dreamMatchSuggestionsQuerySchema.safeParse(input)
     if (!parsed.success) throw new BadRequestException({ code: 'VALIDATION_ERROR', issues: parsed.error.issues })
@@ -62,6 +77,12 @@ export class DreamMatchScoringService {
         FROM "TalentProfile" candidate
         WHERE candidate."visibleInTalentFeed" = true
           AND candidate."userId" <> ${userId}
+          AND NOT EXISTS (
+            SELECT 1 FROM "DreamMatchExclusion" exclusion
+            JOIN "TalentProfile" seekerProfile ON seekerProfile.id = exclusion."seekerId"
+            WHERE seekerProfile."userId" = ${userId}
+              AND exclusion."candidateId" = candidate.id
+          )
           AND (${cursorId} = '' OR candidate.id > ${cursorId})
       )
       SELECT *, ("skillComplementarity" + "sectorOverlap" + availability)::float8 AS score
