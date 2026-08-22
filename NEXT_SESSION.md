@@ -1,42 +1,41 @@
 # Reprise de session
 
 **Dernière mise à jour** : 2026-08-22
-**Phase** : refonte thématique du panneau droit de connexion
+**Phase** : panneau droit de connexion — cards flottantes
 **Vague / ticket** : E-11 — connexion et accès
 **Branche actuelle** : `dev`
 
 ## 1. État actuel
 
-`LoginPage` reprend désormais la composition de référence avec un fond dégradé, une grande card centrale et des cards flottantes. Le contenu est spécifique à CoFound.mg : projets, talents, complémentarité, impact collectif et pseudonymat. Les changements sont publiés sur `origin/dev` et le dépôt local est propre.
+Le panneau droit de `LoginPage` reprend une composition proche de la référence fournie, adaptée au design system CoFound.mg. Les deux textes demandés ont été retirés : `COFONDATEURS · PROJETS · IMPACT` et `Un espace pour avancer.` La grande card a été réduite et plusieurs cards thématiques flottent autour d’elle.
 
 ## 2. Tâches terminées
 
-Le panneau droit n’utilise plus une image ni une composition sombre isolée. Il est construit en CSS/UI avec les tokens du design system : `primary`, `impact`, `secondary`, `background`, `foreground`, `Sora` et `Inter`.
+La composition contient maintenant une card principale plus compacte et cinq éléments visuels autour : Explorer, Complémentarité, Communauté, Impact collectif et Cadre de confiance. Les cards utilisent les couleurs `primary`, `impact`, `secondary` et `background`, avec les polices existantes et les rayons/ombres du design system.
 
-La grande card présente un projet en mouvement, une équipe ouverte, les axes BMC/rôles/compétences et des repères éditoriaux. Les cards flottantes présentent la complémentarité des profils, l’impact paritaire et le cadre de confiance pseudonyme. La composition reprend la logique visuelle de la référence sans copier de contenu métier de salon.
-
-Les champs, boutons, rayons, espacements et tailles de police restent cohérents avec `FeedPage`. Les textes du panneau existent en français et en malgache dans `i18n.tsx`.
+Les cards flottent avec deux rythmes d’animation CSS décalés. L’animation utilise la propriété `translate` afin de préserver les rotations décoratives. La préférence utilisateur `prefers-reduced-motion` déjà présente dans les styles globaux continue de réduire les animations.
 
 ## 3. Fichiers importants modifiés
 
-- `apps/web/src/pages/LoginPage.tsx` : nouvelle composition CSS/UI du panneau droit et harmonisation des contrôles.
-- `apps/web/src/i18n.tsx` : textes français et malgaches du panneau et de ses cards.
+- `apps/web/src/pages/LoginPage.tsx` : retrait des textes, réduction de la card principale et nouvelle disposition des cards flottantes.
+- `apps/web/src/index.css` : ajout des animations `animate-cof-float` et `animate-cof-float-slow`.
+- `apps/web/src/i18n.tsx` : libellés français et malgaches des cards Explorer et Communauté.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-Commits de code publiés séparément : `963b825`, `1c35f1d`, `72739eb` et `f33ae9a`. Le commit `72739eb` supprime les doublons de clés i18n détectés par le typecheck.
+Commits publiés séparément : `1bd44eb` pour les animations CSS, `51ab703` pour les textes des nouvelles cards et `58da98d` pour la composition visuelle finale.
 
 ## 4. Validations et problèmes connus
 
-Le typecheck web, le lint web, la compilation de `@cofound/shared` et le build web ont réussi après la correction des doublons i18n.
+Le typecheck web et le lint web ont réussi après correction des doublons i18n. Le build de `@cofound/shared` et le build web ont également réussi après la composition finale.
 
-La référence externe `https://salon-atlas.mada-digital.xyz/register/salon` affiche une page blanche dans le navigateur sandbox ; aucun détail visuel non vérifié n’a été copié. La composition est une interprétation CSS/UI éditable et sans image générée par IA.
+La référence externe n’est pas utilisée comme source de contenu : la composition est une interprétation CSS/UI adaptée à CoFound.mg. Aucun asset image ni visuel généré par IA n’a été ajouté.
 
-Une installation complète avec `pnpm install --frozen-lockfile` échoue dans cet environnement lors de la compilation native d’`argon2`, faute de compilateur C (`cc`). Les validations utilisent les dépendances installées avec `--ignore-scripts`.
+Une installation complète avec `pnpm install --frozen-lockfile` échoue dans cet environnement lors de la compilation native d’`argon2`, faute de compilateur C (`cc`).
 
 ## 5. Prochaine action
 
-Ouvrir `/login` dans le navigateur en desktop puis en mobile, vérifier le rendu du fond dégradé, les cards flottantes, les retours à la ligne français/malgaches et l’alignement visuel avec `/feed`.
+Ouvrir `/login` en desktop et vérifier visuellement l’équilibre des cinq cards, les éventuels chevauchements selon la largeur et le comportement avec le malgache, dont les libellés peuvent être plus longs.
 
 ## 6. Décisions et contexte de reprise
 
-Le panneau droit est volontairement réalisé en CSS/UI plutôt qu’avec une image afin de rester éditable, léger et parfaitement aligné sur le design system CoFound.mg. Les chiffres de la card principale sont des repères éditoriaux `01` et `02`, pas des statistiques produit. Aucun changement d’architecture, de périmètre, de RBAC, de données privées ou de stack n’a été introduit.
+Les cards utilisent des contenus de plateforme — projets, talents, communauté, impact et confiance — et non le contenu métier de la référence. Les valeurs `01` et `02` restent des repères éditoriaux, pas des statistiques produit. Aucun changement d’architecture, de périmètre, de RBAC, de données privées ou de stack n’a été introduit.
