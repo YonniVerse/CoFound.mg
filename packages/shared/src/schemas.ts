@@ -121,6 +121,35 @@ export const affiliationUpdateSchema = z.object({ status: affiliationStatusSchem
 export const affiliationBulkStatusSchema = z.object({ affiliationIds: z.array(idSchema).min(1).max(1000), status: affiliationStatusSchema, confirmation: z.string().min(1) })
 export const institutionDirectoryQuerySchema = z.object({ organizationId: idSchema, search: z.string().trim().min(1).optional(), cohortYear: z.coerce.number().int().optional(), status: z.string().min(1).optional() })
 
+export const organizationTypeSchema = z.enum(['INSTITUTION', 'INCUBATOR', 'COMPANY', 'NGO', 'PUBLIC', 'ASSOCIATION'])
+export const organizationRequestDocumentSchema = z.object({
+  fileName: z.string().trim().min(1).max(255),
+  contentType: z.string().trim().min(1).max(120),
+  sizeBytes: z.number().int().positive().max(10_000_000),
+})
+export const organizationRequestInputSchema = z.object({
+  organizationType: organizationTypeSchema,
+  organizationName: z.string().trim().min(2).max(160),
+  countryCode: z.string().trim().length(2).toUpperCase().default('MG'),
+  region: z.string().trim().min(2).max(120),
+  website: z.string().trim().url().max(255).optional().or(z.literal('')),
+  description: z.string().trim().min(20).max(2_000),
+  sectorIds: z.array(idSchema).max(20).default([]),
+  contactName: z.string().trim().min(2).max(160),
+  contactRole: z.string().trim().min(2).max(120),
+  contactEmail: z.string().trim().email().max(255),
+  contactPhone: z.string().trim().min(7).max(40).optional().or(z.literal('')),
+  supportingDocuments: z.array(organizationRequestDocumentSchema).max(5).default([]),
+})
+export const organizationRequestStatusSchema = z.enum(['PENDING', 'APPROVED', 'REJECTED'])
+export const organizationRequestResponseSchema = z.object({
+  requestId: idSchema,
+  status: organizationRequestStatusSchema,
+  receivedAt: z.coerce.date(),
+})
+export type OrganizationRequestInput = z.infer<typeof organizationRequestInputSchema>
+export type OrganizationRequestResponse = z.infer<typeof organizationRequestResponseSchema>
+
 export const privateTalentProfileSchema = z.object({
   user: z.object({ id: idSchema, email: z.string().email(), locale: localeSchema }),
   identity: z.object({ firstName: z.string(), lastName: z.string(), photoKey: z.string().nullable(), phone: z.string().nullable(), regionId: idSchema.nullable() }).nullable(),
