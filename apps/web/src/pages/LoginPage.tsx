@@ -202,6 +202,15 @@ export default function LoginPage() {
         </svg>
         <svg
           aria-hidden="true"
+          className="pointer-events-none absolute left-0 top-1/2 z-30 h-20 w-12 -translate-y-1/2 text-background"
+          viewBox="0 0 64 112"
+          preserveAspectRatio="none"
+          fill="none"
+        >
+          <path d="M0 0L64 56L0 112Z" fill="currentColor" stroke="var(--border)" strokeWidth="1.5" />
+        </svg>
+        <svg
+          aria-hidden="true"
           className="pointer-events-none absolute inset-0 h-full w-full text-white/25"
           viewBox="0 0 800 900"
           preserveAspectRatio="none"
