@@ -29,6 +29,13 @@ export class ImportBatchController {
     return this.importBatchService.cancel(id, request.user!.userId, confirmation)
   }
 
+  @Post(':id/activation-links')
+  @RequirePermissions(Permission.ORG_MANAGE)
+  @AuditAction('IMPORT_ACTIVATION_LINKS', 'ImportBatch')
+  async activationLinks(@Param('id') id: string, @Req() request: AuthenticatedRequest) {
+    return this.importBatchService.activationLinks(id, request.user!.userId)
+  }
+
   @Post(':id/resend-invitations')
   @RequirePermissions(Permission.ORG_MANAGE)
   @AuditAction('IMPORT_RESEND_INVITATIONS', 'ImportBatch')
