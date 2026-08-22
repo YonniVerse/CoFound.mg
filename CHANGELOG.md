@@ -25,6 +25,7 @@ Retiré · En cours · Bloqué**.
 - Migration en cours des chaînes visibles restantes dans les cartes de feed, l’import, les pages métier et les composants marketing.
 - `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `ProjectsFeedPage`, `ImportMappingPage` et `ImportPreviewPage` utilisent désormais les clés FR/MG dédiées.
 - Les statuts et compteurs de prévisualisation, l’erreur de chargement et les actions de navigation sont traduits.
+- `SectionHero` utilise les clés i18n pour ses appels à l’action d’exploration et d’impact.
 - Validation build/lint réussie après suppression de la constante de statuts devenue inutilisée et ajout de `t` aux dépendances du hook.
 - Migration des chaînes visibles restantes et ajout d’un contrôle empêchant leur réintroduction encore en cours.
 
