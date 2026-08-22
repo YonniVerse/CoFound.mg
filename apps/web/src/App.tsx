@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import LandingPage from "@/pages/LandingPage";
 import OrganizationRequestPage from "@/pages/OrganizationRequestPage";
+import StaffOrganizationsPage from "@/pages/StaffOrganizationsPage";
 import ActivationPage from "@/pages/ActivationPage";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { AuthProvider } from "@/hooks/useAuth";
@@ -49,6 +50,7 @@ function App() {
     <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
     <Route path="/activation/:token" element={<ActivationPage />} />
     <Route path="/organization-request" element={<OrganizationRequestPage />} />
+    <Route path="/staff/organizations" element={<StaffOrganizationsPage />} />
     <Route path="/onboarding" element={<OnboardingPage />} />
     <Route path="/feed" element={<FeedPage />} />
     <Route path="/search" element={<SearchPage />} />

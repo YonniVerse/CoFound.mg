@@ -182,6 +182,7 @@ export const organizationRequestQueueItemSchema = z.object({
   decidedAt: z.coerce.date().nullable(),
   createdAt: z.coerce.date(),
   approvedOrganizationId: idSchema.nullable(),
+  capabilities: z.array(organizationCapabilitySchema).default([]),
 })
 export const organizationRequestQueueSchema = z.object({
   items: z.array(organizationRequestQueueItemSchema),
@@ -190,6 +191,7 @@ export const organizationRequestQueueSchema = z.object({
 })
 export type OrganizationRequestDecision = z.infer<typeof organizationRequestDecisionSchema>
 export type OrganizationCapabilityUpdate = z.infer<typeof organizationCapabilityUpdateSchema>
+export type OrganizationRequestQueueItem = z.infer<typeof organizationRequestQueueItemSchema>
 
 export const privateTalentProfileSchema = z.object({
   user: z.object({ id: idSchema, email: z.string().email(), locale: localeSchema }),

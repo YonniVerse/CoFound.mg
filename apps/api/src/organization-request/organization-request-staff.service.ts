@@ -26,6 +26,7 @@ export class OrganizationRequestStaffService {
         website: true, description: true, sectorsOfInterest: true, contactName: true, contactRole: true,
         contactEmail: true, contactPhone: true, supportingDocuments: true, status: true,
         decisionReason: true, decidedAt: true, createdAt: true, approvedOrganizationId: true,
+        approvedOrganization: { select: { capabilities: { select: { capability: true } } } },
       },
     })
     const hasMore = rows.length > limit
@@ -41,6 +42,7 @@ export class OrganizationRequestStaffService {
         website: true, description: true, sectorsOfInterest: true, contactName: true, contactRole: true,
         contactEmail: true, contactPhone: true, supportingDocuments: true, status: true,
         decisionReason: true, decidedAt: true, createdAt: true, approvedOrganizationId: true,
+        approvedOrganization: { select: { capabilities: { select: { capability: true } } } },
       },
     })
     if (!request) throw new NotFoundException({ code: 'ORGANIZATION_REQUEST_NOT_FOUND', messageKey: 'errors.notFound' })
@@ -121,12 +123,24 @@ export class OrganizationRequestStaffService {
     if (status !== 'PENDING') throw new ConflictException({ code: 'ORGANIZATION_REQUEST_ALREADY_DECIDED', messageKey: 'organizationRequest.errors.alreadyDecided' })
   }
 
-  private serialize<T extends { sectorsOfInterest: unknown; supportingDocuments: unknown }>(item: T) {
-    return { ...item, sectorsOfInterest: this.asStringArray(item.sectorsOfInterest), supportingDocuments: this.asDocuments(item.supportingDocuments) }
+  private serialize<T extends { sectorsOfInterest: unknown; supportingDocuments: unknown; approvedOrganization?: unknown }>(item: T) {
+    return {
+      ...item,
+      sectorsOfInterest: this.asStringArray(item.sectorsOfInterest),
+      supportingDocuments: this.asDocuments(item.supportingDocuments),
+      capabilities: this.asCapabilities(item.approvedOrganization),
+    }
   }
 
   private asStringArray(value: unknown): string[] {
     return Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === 'string') : []
+  }
+
+  private asCapabilities(value: unknown): string[] {
+    if (!value || typeof value !== 'object') return []
+    const capabilities = (value as { capabilities?: unknown }).capabilities
+    if (!Array.isArray(capabilities)) return []
+    return capabilities.flatMap((entry) => typeof entry === 'object' && entry !== null && typeof (entry as Record<string, unknown>).capability === 'string' ? [(entry as Record<string, unknown>).capability as string] : [])
   }
 
   private asDocuments(value: unknown): Array<{ fileName: string; contentType: string; sizeBytes: number }> {
