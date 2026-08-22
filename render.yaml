@@ -1,0 +1,59 @@
+# Render Blueprint for CoFound.mg API + notification worker.
+# DATABASE_URL and CORS_ORIGIN are requested securely in the Render Dashboard.
+# Switch branch to dev after merging the deployment-ready PR.
+services:
+  - type: web
+    name: cofound-api
+    runtime: docker
+    branch: feat/B-09-team-contact
+    region: frankfurt
+    plan: starter
+    dockerfilePath: ./deploy/api.Dockerfile
+    dockerContext: .
+    dockerCommand: >-
+      sh -c "./node_modules/.bin/prisma migrate deploy --schema prisma/schema.prisma
+      && node dist/main.js"
+    healthCheckPath: /api/v1/health
+    autoDeployTrigger: checksPass
+    maxShutdownDelaySeconds: 60
+    envVars:
+      - fromGroup: cofound-api-runtime
+      - key: NODE_ENV
+        value: production
+      - key: RENDER_SERVICE_TYPE
+        value: api
+
+  - type: worker
+    name: cofound-notification-worker
+    runtime: docker
+    branch: feat/B-09-team-contact
+    region: frankfurt
+    plan: starter
+    dockerfilePath: ./deploy/api.Dockerfile
+    dockerContext: .
+    dockerCommand: node dist/worker.js
+    autoDeployTrigger: checksPass
+    envVars:
+      - fromGroup: cofound-api-runtime
+      - key: NODE_ENV
+        value: production
+      - key: RENDER_SERVICE_TYPE
+        value: worker
+
+envVarGroups:
+  - name: cofound-api-runtime
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        sync: false
+      - key: LOG_LEVEL
+        value: info
+      - key: SENTRY_DSN
+        sync: false
+      - key: SENTRY_ENVIRONMENT
+        value: production
+      - key: SENTRY_TRACES_SAMPLE_RATE
+        value: "0.05"
