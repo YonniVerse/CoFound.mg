@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/i18n";
 import ctaImage from "@/assets/images/cta.jpg";
 
 export function SectionCTA() {
+  const { t } = useI18n();
+
   return (
     <section className="py-24 bg-foreground relative overflow-hidden border-t border-border-dark/60">
       {/* Pattern de fond micro-géométrique lié à la bordure sombre du système */}
@@ -45,6 +48,12 @@ export function SectionCTA() {
                 <Link to="/feed">Voir les profils</Link>
               </Button>
             </div>
+            <p className="mt-5 text-sm text-muted-foreground/80">
+              {t('organizationRequest.cta')}{' '}
+              <Link to="/organization-request" className="font-semibold text-background underline-offset-4 hover:underline">
+                {t('organizationRequest.cta.link')}
+              </Link>
+            </p>
           </div>
 
           {/* Image illustrative */}

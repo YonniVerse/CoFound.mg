@@ -228,6 +228,8 @@ const messages = {
     'organizationRequest.errors.duplicate': 'Une demande active existe déjà pour cette organisation et cette adresse professionnelle.',
     'organizationRequest.errors.generic': 'La demande n’a pas pu être envoyée. Vérifiez votre connexion puis réessayez.',
     'organizationRequest.errors.documents': 'Chaque pièce doit être un fichier PDF, DOC, DOCX ou une image de 10 Mo maximum.',
+    'organizationRequest.cta': 'Vous représentez une organisation ?',
+    'organizationRequest.cta.link': 'Demander un accès',
   },
   mg: {
     'language.label': 'Fiteny',
@@ -454,6 +456,8 @@ const messages = {
     'organizationRequest.errors.duplicate': 'Efa misy fangatahana mbola mandeha ho an’ity fikambanana sy mailaka matihanina ity.',
     'organizationRequest.errors.generic': 'Tsy voaray ny fangatahana. Hamarino ny fifandraisana ary andramo indray.',
     'organizationRequest.errors.documents': 'Ny taratasy tsirairay dia tsy maintsy PDF, DOC, DOCX na sary 10 Mo fara-fahabetsany.',
+    'organizationRequest.cta': 'Misolo tena fikambanana ve ianao?',
+    'organizationRequest.cta.link': 'Mangataka fidirana',
   },
 } as const
 
