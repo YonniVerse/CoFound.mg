@@ -22,8 +22,8 @@ Les routes de messagerie exigent `message:send` et vérifient l’appartenance �
 
 ## 5. Vigilance et travaux restants
 
-M-05 à M-08 sont intégrés dans `dev`. M-14 ajoute les contrats Zod du signalement, `ReportService`, `ReportController`, `ReportModule`, la route POST `/reports` pour les cibles PROFILE, MESSAGE, PROJECT et POST, ainsi qu’une création transactionnelle sans identité civile dans la réponse. Le socle API, les boutons frontend et les tests HTTP M-14 sont fusionnés dans `dev`. Le composant réutilisable est intégré aux profils/talents, projets, publications et messages du canal projet. Les tickets M-12, M-13, M-15 et M-16 restent non implémentés.
+M-05 à M-08 sont intégrés dans `dev`. M-14 ajoute les contrats Zod du signalement, `ReportService`, `ReportController`, `ReportModule`, la route POST `/reports` pour les cibles PROFILE, MESSAGE, PROJECT et POST, ainsi qu’une création transactionnelle sans identité civile dans la réponse. Le socle API, les boutons frontend et les tests HTTP M-14 sont fusionnés dans `dev`. Le composant réutilisable est intégré aux profils/talents, projets, publications et messages du canal projet. M-12 et M-13 restent en cours. M-14 est fusionné dans `dev`. M-15 et M-16 restent non implémentés.
 
 ## 6. Prochaine action
 
-Configurer l’environnement GitHub `staging` et ses secrets, puis lancer le workflow après fusion de #64. Ajouter un vrai test E2E authentifié lorsque le harnais et les identifiants staging seront disponibles. Les tickets Vague 2 restants sont M-12, M-13, M-15 et M-16 ; ils doivent être traités par leurs propriétaires avant la clôture de la vague. La chaîne Rino suivante est `S-01 → S-02 → S-03/S-04`.
+Configurer l’environnement GitHub `staging` et ses secrets, puis lancer le workflow. M-13 dispose maintenant d’un socle `BlockService`, `BlockController` et `BlockModule` sur `feat/M-13-user-blocking`, avec typecheck et 114 tests API réussis ; il reste à ajouter ses tests HTTP et son interface. M-12 reste à implémenter. M-15 et M-16 restent non implémentés. Ajouter un vrai test E2E authentifié lorsque le harnais et les identifiants staging seront disponibles.
