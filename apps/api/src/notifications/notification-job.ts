@@ -16,4 +16,12 @@ export type PasswordResetEmailJob = {
   locale: NotificationLocale
 }
 
-export type NotificationJob = ActivationEmailJob | PasswordResetEmailJob
+export type BusinessEmailJob = {
+  kind: 'connection.accepted' | 'message.received' | 'application.accepted' | 'report.resolved'
+  recipient: string
+  displayName: string
+  locale: NotificationLocale
+  referenceId: string
+}
+
+export type NotificationJob = ActivationEmailJob | PasswordResetEmailJob | BusinessEmailJob

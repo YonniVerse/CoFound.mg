@@ -59,7 +59,7 @@ export function Navbar() {
             className="text-sm font-semibold hover:bg-muted" 
             asChild
           >
-            <Link to="/feed">Se connecter</Link>
+            <Link to="/login">Se connecter</Link>
           </Button>
           <Button 
             variant="default"
@@ -67,7 +67,7 @@ export function Navbar() {
             className="font-semibold shadow-sm hover:shadow-md transition-shadow"
             asChild
           >
-            <Link to="/signup" className="flex items-center gap-1.5">
+            <Link to="/feed" className="flex items-center gap-1.5">
               Rejoindre l'écosystème <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </Button>
@@ -98,10 +98,10 @@ export function Navbar() {
           ))}
           <div className="flex flex-col gap-3 pt-4 border-t border-border/50">
             <Button variant="outline" className="w-full justify-center font-semibold" asChild>
-              <Link to="/feed">Se connecter</Link>
+              <Link to="/login">Se connecter</Link>
             </Button>
             <Button variant="default" className="w-full justify-center font-semibold" asChild>
-              <Link to="/signup">Rejoindre l'écosystème</Link>
+              <Link to="/feed">Rejoindre l'écosystème</Link>
             </Button>
           </div>
         </div>
