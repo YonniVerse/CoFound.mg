@@ -789,3 +789,6 @@ export type ModerationDecision = z.infer<typeof moderationDecisionSchema>
 export type ModerationQueueResponse = z.infer<typeof moderationQueueResponseSchema>
 export type ModerationIdentity = z.infer<typeof moderationIdentitySchema>
 
+
+export const accountStatusResponseSchema = z.object({ status: accountStatusSchema, messageKey: z.string(), canAppeal: z.boolean(), endsAt: z.coerce.date().nullable() })
+export type AccountStatusResponse = z.infer<typeof accountStatusResponseSchema>

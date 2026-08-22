@@ -1,5 +1,7 @@
-import { lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { lazy, Suspense, useEffect, type ReactNode } from "react";
+import { BrowserRouter, Routes, Route, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { accountStatusResponseSchema } from '@cofound/shared'
+import { apiClient } from '@/lib/api-client'
 import LandingPage from "@/pages/LandingPage";
 import ActivationPage from "@/pages/ActivationPage";
 import { MainLayout } from "@/components/layout/MainLayout";
@@ -13,6 +15,7 @@ const ProjectDetailPage = lazy(() => import("@/pages/ProjectDetailPage"));
 const ProjectCreatePage = lazy(() => import("@/pages/ProjectCreatePage"));
 const ImpactPage = lazy(() => import("@/pages/ImpactPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
+const AccountStatusPage = lazy(() => import("@/pages/AccountStatusPage"));
 const ImportMappingPage = lazy(() => import("@/pages/ImportMappingPage"));
 const ImportPreviewPage = lazy(() => import("@/pages/ImportPreviewPage"));
 const ImportBatchesPage = lazy(() => import("@/pages/ImportBatchesPage"));
@@ -40,8 +43,22 @@ const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
 const LayoutWrapper = () => <MainLayout><Outlet /></MainLayout>;
 const Loading = () => <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">Chargement…</div>;
 
+function AccountStatusBoundary({ children }: { children: ReactNode }) {
+  const location = useLocation()
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (location.pathname === '/account-status') return
+    let mounted = true
+    void apiClient.get('/me/status', accountStatusResponseSchema).then((status) => {
+      if (mounted && status.status === 'FROZEN') navigate('/account-status', { replace: true })
+    }).catch(() => undefined)
+    return () => { mounted = false }
+  }, [location.pathname, navigate])
+  return <>{children}</>
+}
+
 function App() {
-  return <AuthProvider><BrowserRouter><Suspense fallback={<Loading />}><Routes>
+  return <AuthProvider><BrowserRouter><AccountStatusBoundary><Suspense fallback={<Loading />}><Routes>
     <Route element={<LayoutWrapper />}><Route path="/" element={<LandingPage />} /></Route>
     <Route path="/login" element={<LoginPage />} />
     <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -78,7 +95,8 @@ function App() {
     <Route path="/moderation" element={<ModerationQueuePage />} />
     <Route path="/profile/me" element={<OnboardingPage />} />
     <Route path="/settings" element={<SettingsPage />} />
-  </Routes></Suspense></BrowserRouter></AuthProvider>;
+    <Route path="/account-status" element={<AccountStatusPage />} />
+  </Routes></Suspense></AccountStatusBoundary></BrowserRouter></AuthProvider>;
 }
 
 export default App;

@@ -1,56 +1,28 @@
 # Context Handoff — Reprise de session CoFound.mg
-
 **Dernière mise à jour** : 2026-08-22
-**Phase** : Vague 5 — S-01 à S-04 fusionnés ; préparation de S-05
-**Branche** : `dev`
-**État du workspace** : E-14 est fusionné via PR #37. S-01 à S-04 sont fusionnés via PR #68. `dev` est synchronisé avec `origin/dev` au commit `32e6af7`.
+**Phase** : Vague 5 — S-07 finalisé localement ; S-08 initialisé
+**Branche** : `feat/S-07-account-status`
+**État du workspace** : S-07 prêt à être committé. Le premier code S-08 est présent localement mais doit être isolé sur une branche dédiée après publication de S-07.
 
 ## 1. Travail réalisé
+S-06 est publié dans la PR #70 avec le commit `bef8cc3`.
 
-E-14 a été synchronisé avec `dev`, complété avec les traductions française et malgache de la bannière, puis fusionné. Un test HTTP couvre `GET /api/v1/me/profile/completion-reminder`.
+S-07 est finalisé sur la branche `feat/S-07-account-status`. L’API expose `GET /api/v1/me/status` sans données civiles. L’écran lazy `/account-status` rend les états ACTIVE, FROZEN, LEAVING et ALUMNI. Une garde frontend redirige un compte FROZEN vers cette route et évite la navigation applicative ordinaire. Les traductions françaises et malgaches `account.status.*` sont présentes. Les tests HTTP couvrent les quatre statuts.
 
-La chaîne des signalements comprend une file priorisée et paginée (`GET /api/v1/reports/moderation-queue`), des décisions transactionnelles (`PATCH /api/v1/reports/:id/decision`), la résolution/classement (`PATCH /api/v1/reports/:id/resolve`), les sanctions `WARNING`, `FREEZE`, `DISABLE` et `CONTENT_REMOVED`, ainsi que le gel/désactivation automatique pour les actions correspondantes.
+Le premier socle de S-08 est également écrit localement : `apps/api/prisma/seed-demo.ts` crée de façon idempotente un établissement, une promotion via affiliation, deux projets métier et un partenaire avec opportunité publiée ; la commande `seed:demo` est ajoutée au package API. Ces modifications S-08 ne doivent pas être mélangées au commit S-07.
 
-La résolution notifie le déclarant via `NotificationService`. L’accès à l’identité civile de la cible est séparé de la file pseudonymisée (`GET /api/v1/reports/:id/identity`), protégé par `moderation:act` et journalisé par `AuditService`. Le genre n’est jamais renvoyé dans la réponse d’identité.
+## 2. Validation
+S-07 passe les typechecks shared/API/frontend, le lint ciblé, `git diff --check`, le build frontend et **4/4 tests HTTP**. Le chunk `AccountStatusPage` est lazy et reste largement sous le budget de 500 kB.
 
-Le contexte JWT transporte désormais `staffRole`. Le guard autorise les actions sensibles uniquement pour un compte `STAFF` ayant `MODERATOR`, `OPS_ADMIN` ou `SUPER_ADMIN`. Un compte STAFF sans rôle étendu reste refusé.
+S-08 passe la génération Prisma, le typecheck API, le lint du seed et `git diff --check`. Le seed-demo n’a pas encore été exécuté sur Neon dans cette session.
 
-Une console frontend `/moderation` affiche la file pseudonymisée, permet la prise en revue, la résolution, le classement sans suite, la saisie d’une sanction et une révélation d’identité explicitement confirmée.
+## 3. Commit et PR
+S-07 n’a pas encore de commit ni de PR. Les fichiers à committer pour S-07 sont le module `apps/api/src/account-status`, `apps/api/src/app.module.ts`, `apps/api/test/account-status.integration.test.ts`, `packages/shared/src/schemas.ts`, `apps/web/src/pages/AccountStatusPage.tsx`, `apps/web/src/App.tsx`, `apps/web/src/i18n.tsx`, ainsi que ce handoff et le changelog. Après commit, pousser `feat/S-07-account-status` et ouvrir la PR vers `dev`.
 
-## 2. Fichiers importants
+## 4. Plan détaillé S-08
+Le backlog officiel définit S-08 comme **`seed:demo` : établissement, promotion, projets, partenaire, tous reconstructibles par commande**, dépendance F-06, responsabilité R. Il faut conserver le préfixe `demo-`, l’idempotence, une transaction Prisma pour chaque lot cohérent, l’absence de secrets réels et des données explicitement non productives.
 
-- `apps/api/src/report/report.service.ts` : file, décisions, sanctions, notification et résolution de cible.
-- `apps/api/src/report/report.controller.ts` : routes publiques de signalement et routes staff.
-- `apps/api/src/rbac/access-token.guard.ts` et `permission.guard.ts` : propagation et contrôle de `staffRole`.
-- `apps/api/src/auth/auth.service.ts` et `auth-request.ts` : claims JWT et contexte authentifié.
-- `packages/shared/src/schemas.ts` : contrats de file, décision et identité modérateur.
-- `apps/web/src/pages/ModerationQueuePage.tsx` : console staff pseudonymisée et formulaire de sanction.
-- `apps/web/src/App.tsx` : route `/moderation`.
-- `apps/api/test/report.test.ts` : tests de file, sanction et audit d’identité.
-- `apps/api/test/dream-match.integration.test.ts` : tests HTTP E-14 et résolution de signalement.
+Le premier code actuel couvre le socle de données. La suite est de séparer S-08 sur `feat/S-08-seed-demo`, vérifier les relations et enums, exécuter `pnpm --filter @cofound/api seed:demo` sur une base de recette dédiée, rejouer la commande pour confirmer l’absence de doublons, puis ajouter un test de reconstruction ou un rapport de comptage. Les données de démonstration devront inclure au minimum une institution, une cohorte 2026, un talent activé avec profil, deux projets et un partenaire publiant une opportunité.
 
-## 3. Validation
-
-Le package partagé, l’API et le frontend passent le typecheck. Le lint API/frontend, le build Vite et `git diff --check` passent. Les tests ciblés signalement/RBAC/intégration passent avec **23/23 réussis**. Le build frontend produit un chunk applicatif maximal inférieur à 500 kB.
-
-## 4. Fusion
-
-PR #68 : https://github.com/YonniVerse/CoFound.mg/pull/68 — fusionnée.
-
-Commit fonctionnel : `e73ae62 feat(moderation): finaliser la chaine des signalements`.
-
-Commit de stabilisation frontend : `0ee1f47 fix(moderation): stabiliser les decisions staff`.
-
-La branche distante de fonctionnalité a été supprimée après fusion. `dev` a été mis à jour automatiquement et reste propre après la synchronisation.
-
-## 5. Points restant à vérifier
-
-La recette authentifiée avec un utilisateur staff réellement porteur d’un `StaffRole` dans Neon reste à exécuter. Il faut également vérifier le transport email réel et les retries pg-boss lors d’une résolution.
-
-Les nouvelles routes doivent encore recevoir des tests dédiés de permission en environnement HTTP complet, ainsi qu’un test d’idempotence d’une décision répétée. La résolution est actuellement protégée par le guard et la mutation empêche le traitement d’un signalement déjà résolu, mais cette garantie doit être conservée par les tests de régression.
-
-Les écrans complets S-05 (`/staff/audit`, `/staff/reference-data`, `/staff/health`) ne sont pas encore construits. Les écrans S-07 de compte gelé, sortant et alumni, le seed `seed:demo`, les E2E Playwright, la passe accessibilité/i18n et la documentation d’exploitation restent à réaliser.
-
-## 6. Prochaine action
-
-Effectuer la recette réelle de la chaîne S-01 à S-04 sur Neon, puis commencer S-05 — console staff d’audit, référentiels et santé produit. Ne pas modifier les backlogs officiels sans demande explicite.
+## 5. Prochaine action
+Commiter et ouvrir la PR S-07, puis créer `feat/S-08-seed-demo` depuis `dev`, y déplacer le script `seed-demo` et valider son exécution idempotente sur une base de recette non productive.
