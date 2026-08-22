@@ -10,6 +10,14 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Audit global du projet
+
+- Ajout de `audit-global-2026-08-22.md` couvrant les six vagues et les 92 tickets du backlog.
+- État GitHub actualisé : PR ouvertes #73, #74, #75 et #76 ; PR #77 à #81 fusionnées.
+- Validation globale de `dev` réussie pour shared build, génération Prisma, typecheck, lint, tests, builds et budget bundle.
+- Tâches restantes classées par priorité : décision sur le stockage B-01, fusion ordonnée de la Vague 4, recette Neon/staging, seed pseudonymisé, E2E S-09, validations RBAC et revue juridique S-14.
+- `NEXT_SESSION.md` actualisé pour permettre une reprise directe.
+
 ## 2026-08-22 — Vague 4 — validations et blocages traités
 
 - Validation correcte des branches B-01, B-02 et de la synthèse B-02 à B-11 après `shared build` et `prisma generate` : 139/139, 145/145 et 157/157 tests API réussis.

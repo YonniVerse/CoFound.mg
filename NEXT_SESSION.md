@@ -2,8 +2,14 @@
 
 **Dernière mise à jour** : 2026-08-22
 **Vague** : Vague 4 — Le côté payant
-**État** : validations locales terminées ; PR #73, #74 et #75 restent ouvertes
+**État** : audit global terminé ; PR #73, #74, #75 et #76 restent ouvertes
 **Branche actuelle** : `dev`
+
+## Audit global réalisé
+
+Le rapport `audit-global-2026-08-22.md` couvre les 6 vagues et les 92 tickets du backlog. Il distingue les tickets fusionnés, regroupés, présents seulement dans une PR ouverte et les validations qui restent à faire sur staging. L’état GitHub actuel comporte quatre PR ouvertes : #73, #74, #75 pour la Vague 4 et #76 pour S-09. Les PR #77 à #81 de S-10 à S-14 sont fusionnées.
+
+La validation globale de `dev` a réussi pour shared build, Prisma generate, typecheck, lint, tests, builds et budget bundle. Cette validation ne remplace pas la recette staging ; le détail du nombre de tests API (149/149) provient de l’audit précédent et les commandes globales du nouveau passage se sont terminées sans erreur.
 
 ## Travail effectué sans intervention externe
 
@@ -22,7 +28,8 @@ Les migrations et les données de staging ne peuvent pas être appliquées sans 
 ## Prochaines étapes nécessitant une intervention ou un accès
 
 1. Décider si B-01 peut être fusionné avec stockage de métadonnées uniquement, ou implémenter l’adaptateur R2/S3 avant fusion.
-2. Configurer les secrets et la cible staging, puis appliquer les migrations avec sauvegarde et retour arrière.
-3. Exécuter le seed `demo-` dans Neon staging et tester B-01 à B-11 avec comptes pseudonymisés.
-4. Rebaser #74 après décision B-01, comparer #75 après #74, puis fusionner dans l’ordre validé.
-5. Ne déclarer la Vague 4 terminée qu’après validation des justificatifs, notifications, interfaces partenaires, RBAC, pseudonymat et absence de paiement réel.
+2. Rebaser/fusionner #73 puis #74, dédoublonner et rebaser #75, puis revalider la Vague 4.
+3. Configurer les secrets et la cible staging, puis appliquer les migrations avec sauvegarde et retour arrière.
+4. Exécuter le seed `demo-` dans Neon staging et tester B-01 à B-11 avec comptes pseudonymisés.
+5. Rebaser #76 et exécuter S-09 avec staging, comptes pseudonymisés et variables `E2E_*`.
+6. Ne déclarer les Vagues 4 et 5 terminées qu’après validation des justificatifs, notifications, interfaces partenaires, RBAC, pseudonymat, E2E et absence de paiement réel.
