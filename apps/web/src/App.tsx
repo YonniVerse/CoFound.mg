@@ -1,7 +1,9 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import LandingPage from "@/pages/LandingPage";
+import ActivationPage from "@/pages/ActivationPage";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { AuthProvider } from "@/hooks/useAuth";
 
 const OnboardingPage = lazy(() => import("@/pages/OnboardingPage"));
 const FeedPage = lazy(() => import("@/pages/FeedPage"));
@@ -33,8 +35,9 @@ const LayoutWrapper = () => <MainLayout><Outlet /></MainLayout>;
 const Loading = () => <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">Chargement…</div>;
 
 function App() {
-  return <BrowserRouter><Suspense fallback={<Loading />}><Routes>
+  return <AuthProvider><BrowserRouter><Suspense fallback={<Loading />}><Routes>
     <Route element={<LayoutWrapper />}><Route path="/" element={<LandingPage />} /></Route>
+    <Route path="/activation/:token" element={<ActivationPage />} />
     <Route path="/onboarding" element={<OnboardingPage />} />
     <Route path="/feed" element={<FeedPage />} />
     <Route path="/search" element={<SearchPage />} />
@@ -63,7 +66,7 @@ function App() {
     <Route path="/notifications" element={<NotificationsPage />} />
     <Route path="/profile/me" element={<OnboardingPage />} />
     <Route path="/settings" element={<SettingsPage />} />
-  </Routes></Suspense></BrowserRouter>;
+  </Routes></Suspense></BrowserRouter></AuthProvider>;
 }
 
 export default App;
