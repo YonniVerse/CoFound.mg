@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useI18n } from "@/i18n";
 import { Mail, Heart, ExternalLink } from "lucide-react";
 import {  LogoSVG } from "../ui/LogoSVG";
 
@@ -61,6 +62,7 @@ const navigation = {
 const Underline = `hover:-translate-y-1 border border-border rounded-xl p-2.5 transition-transform bg-background shadow-xs`;
 
 export function Footer() {
+  const { t } = useI18n()
   return (
     <footer className="border-t border-border px-4 mx-auto w-full bg-muted/30">
       <div className="relative mx-auto grid max-w-7xl items-center justify-center gap-6 p-10 pb-0 md:flex flex-col">
@@ -148,6 +150,10 @@ export function Footer() {
       </div>
 
       <div className="mx-auto mb-10 mt-10 flex flex-col justify-between text-center text-xs md:max-w-7xl">
+        <nav className="mb-4 flex justify-center gap-4 text-muted-foreground" aria-label={t('legal.navigation')}>
+          <Link className="hover:text-primary hover:underline" to="/legal/terms">{t('legal.terms')}</Link>
+          <Link className="hover:text-primary hover:underline" to="/legal/privacy">{t('legal.privacy')}</Link>
+        </nav>
         <div className="flex flex-row items-center justify-center gap-1 text-muted-foreground font-medium">
           <span> © </span>
           <span>{new Date().getFullYear()}</span>
