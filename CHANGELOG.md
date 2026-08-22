@@ -10,6 +10,24 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — S-11 — Passe accessibilité et responsive mobile
+
+### Ajouté
+
+- Navigation mobile avec `aria-expanded`, `aria-controls`, cible nommée et rôle de dialogue.
+- Fermeture du menu mobile avec la touche Échap.
+- Anneau global `:focus-visible` pour conserver un focus clavier visible.
+- Respect de `prefers-reduced-motion` pour les animations, transitions et défilements.
+
+### Validation
+
+- `git diff --check` réussi.
+- Build shared et build frontend réussis.
+- Lint frontend réussi.
+- Le chunk analytique demeure différé et reste à 358,03 kB brut / 104,22 kB gzip.
+
+---
+
 ## 2026-08-22 — S-10 — Passe de performance frontend
 
 ### Ajouté
