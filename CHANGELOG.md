@@ -10,6 +10,21 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Grille simplifiée du panneau de connexion
+
+### Modifié
+
+- Suppression de la card Projet principal.
+- Suppression complète des tirets, chemins SVG, cercles et connecteurs entre les cards.
+- Passage des cinq cards restantes en grille de deux colonnes.
+- Card Exploration placée en première position sur les deux colonnes avec `col-span-2`.
+- Conservation des fonds, bordures, rayons, ombres et contraintes de contenu du design system.
+- Modification publiée sur `dev` dans le commit `32f770d`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Hauteur stabilisée des cards du login
 
 ### Modifié
