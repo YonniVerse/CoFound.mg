@@ -335,6 +335,7 @@ model Organization {
   opportunities        Opportunity[]
   financialEngagements FinancialEngagement[]
   approvedRequest      OrganizationRequest?      @relation("OrganizationRequestApprovedOrganization")
+  projectWatches       ProjectWatch[]
 
   @@index([type, verificationStatus])
 }
@@ -580,9 +581,24 @@ model Project {
   posts                Post[]
   conversation         Conversation?
   financialEngagements FinancialEngagement[]
+  projectWatches       ProjectWatch[]
 
   @@index([status, createdAt])
   @@index([sectorId])
+}
+
+model ProjectWatch {
+  id             String       @id @default(cuid())
+  organizationId String
+  projectId      String
+  note           String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  project        Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, projectId])
+  @@index([organizationId, updatedAt])
 }
 
 model BusinessModelCanvas {

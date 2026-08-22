@@ -192,6 +192,41 @@ export const organizationRequestQueueSchema = z.object({
 export type OrganizationRequestDecision = z.infer<typeof organizationRequestDecisionSchema>
 export type OrganizationCapabilityUpdate = z.infer<typeof organizationCapabilityUpdateSchema>
 export type OrganizationRequestQueueItem = z.infer<typeof organizationRequestQueueItemSchema>
+export const organizationProfileSchema = z.object({
+  id: idSchema,
+  name: z.string(),
+  type: organizationTypeSchema,
+  countryCode: z.string(),
+  logoKey: z.string().nullable(),
+  description: z.string().nullable(),
+  verificationStatus: z.literal('VERIFIED'),
+  capabilities: z.array(organizationCapabilitySchema),
+})
+export type OrganizationProfile = z.infer<typeof organizationProfileSchema>
+export const partnerProjectSearchSchema = z.object({
+  q: z.string().trim().max(160).optional(),
+  sectorId: idSchema.optional(),
+  regionId: idSchema.optional(),
+  minMaturity: z.coerce.number().int().min(0).max(100).default(0),
+  maxMaturity: z.coerce.number().int().min(0).max(100).default(100),
+  limit: z.coerce.number().int().min(1).max(50).default(25),
+}).refine((value) => value.minMaturity <= value.maxMaturity, { path: ['maxMaturity'], message: 'Maximum maturity must be greater than or equal to minimum maturity.' })
+export const partnerProjectSearchResultSchema = z.object({
+  id: idSchema,
+  title: z.string(),
+  pitch: z.string(),
+  status: z.string(),
+  maturity: z.number().int().min(0).max(100),
+  sectorId: idSchema.nullable(),
+  regionId: idSchema.nullable(),
+  createdAt: z.coerce.date(),
+})
+export const partnerProjectSearchResponseSchema = z.object({ items: z.array(partnerProjectSearchResultSchema) })
+export const projectWatchInputSchema = z.object({ note: z.string().trim().max(1_000).optional() })
+export const projectWatchSchema = z.object({ id: idSchema, projectId: idSchema, note: z.string().nullable(), createdAt: z.coerce.date(), updatedAt: z.coerce.date() })
+export const projectWatchListSchema = z.object({ items: z.array(projectWatchSchema) })
+export type PartnerProjectSearch = z.infer<typeof partnerProjectSearchSchema>
+export type ProjectWatchInput = z.infer<typeof projectWatchInputSchema>
 
 export const privateTalentProfileSchema = z.object({
   user: z.object({ id: idSchema, email: z.string().email(), locale: localeSchema }),
