@@ -10,6 +10,19 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Refonte visuelle de l’écran de connexion
+
+### Modifié
+
+- Harmonisation de `LoginPage` avec `FeedPage` : champs, bouton principal, espacements, rayons, hauteurs et typographie responsive.
+- Remplacement de l’image `auth-hero.webp` par une composition CSS/UI moderne avec fond sombre, grille, repères circulaires et cartes de statistiques.
+- Ajout des libellés français et malgaches du panneau droit dans `i18n.tsx`.
+- Commits publiés séparément sur `dev` : `88b249e` et `29a187f`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Harmonisation visuelle de la page détail projet
 
 ### Modifié

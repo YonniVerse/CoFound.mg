@@ -1,43 +1,40 @@
 # Reprise de session
 
 **Dernière mise à jour** : 2026-08-22
-**Phase** : harmonisation visuelle de la page détail projet
-**Vague / ticket** : M-05 — découverte, feed et expérience responsive
+**Phase** : harmonisation des écrans d’authentification
+**Vague / ticket** : E-11 — connexion et accès
 **Branche actuelle** : `dev`
 
 ## 1. État actuel
 
-La page détail projet `/projects/:id` a été harmonisée avec le langage visuel de `FeedPage`. Les quatre modifications de code ont été commitées et poussées séparément sur `origin/dev`. Le dépôt local est propre et synchronisé.
+`LoginPage` est harmonisée avec le langage visuel de `FeedPage` et sa refonte est publiée sur `origin/dev`. Le panneau droit n’utilise plus l’image `auth-hero.webp` : il est remplacé par une composition CSS/UI éditoriale, responsive et sans génération d’image IA. Le dépôt local est propre et synchronisé.
 
 ## 2. Tâches terminées
 
-Le layout de la page détail reprend la largeur, le padding, les gaps et l’alignement du feed. Le panneau latéral utilise le même offset sticky de 90 px et reste aligné au début.
+Les champs de connexion et le bouton principal utilisent une densité cohérente avec les actions du feed : hauteur `h-9` ou `h-11`, rayon `rounded-lg`, typographie responsive, bordures et ombres légères.
 
-Les actions du projet utilisent désormais la même densité que les actions du feed : boutons `sm`, hauteur `h-9`, rayon `rounded-lg`, padding homogène, typographie responsive et ombre réduite.
-
-La carte équipe reprend la surface, le rayon, l’ombre, la hiérarchie du titre, les espacements et la densité d’avatar du feed. Le contenu principal reprend une hiérarchie responsive pour les titres, paragraphes, tags et cartes de rôles.
+Le panneau droit desktop utilise un fond sombre, une grille discrète, des repères circulaires, une hiérarchie de titre, trois cartes de statistiques et une signature de marque. Les textes du panneau sont traduits en français et en malgache via l’i18n existante.
 
 ## 3. Fichiers importants modifiés
 
-- `apps/web/src/pages/ProjectDetailPage.tsx` : layout, bouton Retour et sticky de la page détail.
-- `apps/web/src/components/project/ProjectActionCard.tsx` : boutons et carte d’action.
-- `apps/web/src/components/project/ProjectTeamCard.tsx` : carte équipe et densité des membres.
-- `apps/web/src/components/project/ProjectContent.tsx` : typographie, espacements et cartes de contenu.
+- `apps/web/src/pages/LoginPage.tsx` : harmonisation des contrôles et remplacement de l’image par la composition CSS/UI.
+- `apps/web/src/i18n.tsx` : ajout des traductions du panneau visuel en français et en malgache.
+- `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
+
+Commits publiés séparément : `88b249e` pour les textes i18n et `29a187f` pour la refonte visuelle de LoginPage.
 
 ## 4. Validations et problèmes connus
 
-Le typecheck web, le lint web, la compilation de `@cofound/shared` et le build web ont réussi après les modifications.
+Le typecheck web, le lint web, la compilation de `@cofound/shared` et le build web ont réussi après la refonte.
 
-Une installation complète avec `pnpm install --frozen-lockfile` échoue dans cet environnement lors de la compilation native d’`argon2`, car aucun compilateur C (`cc`) n’est disponible. Les validations ont été exécutées avec les dépendances déjà installées via `pnpm install --frozen-lockfile --ignore-scripts`.
+La référence externe `https://salon-atlas.mada-digital.xyz/register/salon` a affiché une page blanche dans le navigateur sandbox ; aucun détail visuel non vérifié n’a été copié. La direction réalisée est donc une interprétation CSS/UI moderne et élégante, sans asset généré.
 
-La validation visuelle finale dans un navigateur desktop sur `/projects/:id` reste recommandée pour vérifier les retours à la ligne et la densité sur les différentes largeurs.
+Une installation complète avec `pnpm install --frozen-lockfile` échoue dans cet environnement lors de la compilation native d’`argon2`, faute de compilateur C (`cc`). Les validations ont été exécutées avec les dépendances déjà installées via `--ignore-scripts`.
 
 ## 5. Prochaine action
 
-Ouvrir `/projects/:id` et `/feed` côte à côte en desktop puis en mobile, comparer les boutons et les tailles de texte, et signaler tout écart visuel restant.
+Ouvrir `/login` en desktop puis en mobile et vérifier visuellement la hiérarchie du formulaire, les retours à la ligne du panneau droit et la disparition de l’ancien visuel `auth-hero.webp`.
 
 ## 6. Décisions et contexte de reprise
 
-La page détail conserve ses titres de niveau page plus grands que les cartes du feed, mais partage désormais la même grammaire de composants : `bg-card`, `rounded-xl`, `shadow-2xs`, boutons compacts et typographie responsive. Aucun changement d’architecture, de périmètre, de RBAC, de données privées ou de stack n’a été introduit.
-
-Commits publiés : `5ecefc4`, `9109150`, `bb407c6` et `cec3962`. Les commits documentaires précédents liés au sticky sont `85041a2` et `29ce0c4`.
+Le visuel droit est volontairement construit en CSS/UI plutôt qu’avec une image ou une génération IA afin de rester éditable, léger, cohérent avec la marque et maîtrisé dans le code. Aucun changement d’architecture, de périmètre, de RBAC, de données privées ou de stack n’a été introduit.
