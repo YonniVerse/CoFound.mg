@@ -33,10 +33,11 @@ export class AccessTokenGuard implements CanActivate {
       const userId = verified.payload.sub
       const platformRole = verified.payload.platformRole
       const status = verified.payload.status
+      const staffRole = verified.payload.staffRole
       if (typeof userId !== 'string' || typeof platformRole !== 'string' || typeof status !== 'string') {
         throw new Error('JWT claims invalides')
       }
-      request.user = { userId, platformRole, status }
+      request.user = { userId, platformRole, status, ...(typeof staffRole === 'string' ? { staffRole } : {}) }
       return true
     } catch {
       throw new UnauthorizedException({
