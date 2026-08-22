@@ -10,6 +10,20 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Panneau de connexion thématique CoFound
+
+### Modifié
+
+- Recomposition du panneau droit de `LoginPage` selon la référence fournie : fond dégradé, grande card centrale et cards flottantes.
+- Remplacement du contenu générique par des informations liées à CoFound.mg : projets, talents, complémentarité, impact collectif et pseudonymat.
+- Alignement du panneau sur les tokens de couleur et les polices du design system ; aucun asset image ou visuel généré par IA n’a été ajouté.
+- Ajout des traductions françaises et malgaches des cards, avec suppression des doublons i18n détectés pendant la validation.
+- Modifications de code publiées séparément sur `dev` dans les commits `963b825`, `1c35f1d`, `72739eb` et `f33ae9a`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Refonte visuelle de l’écran de connexion
 
 ### Modifié

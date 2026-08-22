@@ -1,40 +1,42 @@
 # Reprise de session
 
 **Dernière mise à jour** : 2026-08-22
-**Phase** : harmonisation des écrans d’authentification
+**Phase** : refonte thématique du panneau droit de connexion
 **Vague / ticket** : E-11 — connexion et accès
 **Branche actuelle** : `dev`
 
 ## 1. État actuel
 
-`LoginPage` est harmonisée avec le langage visuel de `FeedPage` et sa refonte est publiée sur `origin/dev`. Le panneau droit n’utilise plus l’image `auth-hero.webp` : il est remplacé par une composition CSS/UI éditoriale, responsive et sans génération d’image IA. Le dépôt local est propre et synchronisé.
+`LoginPage` reprend désormais la composition de référence avec un fond dégradé, une grande card centrale et des cards flottantes. Le contenu est spécifique à CoFound.mg : projets, talents, complémentarité, impact collectif et pseudonymat. Les changements sont publiés sur `origin/dev` et le dépôt local est propre.
 
 ## 2. Tâches terminées
 
-Les champs de connexion et le bouton principal utilisent une densité cohérente avec les actions du feed : hauteur `h-9` ou `h-11`, rayon `rounded-lg`, typographie responsive, bordures et ombres légères.
+Le panneau droit n’utilise plus une image ni une composition sombre isolée. Il est construit en CSS/UI avec les tokens du design system : `primary`, `impact`, `secondary`, `background`, `foreground`, `Sora` et `Inter`.
 
-Le panneau droit desktop utilise un fond sombre, une grille discrète, des repères circulaires, une hiérarchie de titre, trois cartes de statistiques et une signature de marque. Les textes du panneau sont traduits en français et en malgache via l’i18n existante.
+La grande card présente un projet en mouvement, une équipe ouverte, les axes BMC/rôles/compétences et des repères éditoriaux. Les cards flottantes présentent la complémentarité des profils, l’impact paritaire et le cadre de confiance pseudonyme. La composition reprend la logique visuelle de la référence sans copier de contenu métier de salon.
+
+Les champs, boutons, rayons, espacements et tailles de police restent cohérents avec `FeedPage`. Les textes du panneau existent en français et en malgache dans `i18n.tsx`.
 
 ## 3. Fichiers importants modifiés
 
-- `apps/web/src/pages/LoginPage.tsx` : harmonisation des contrôles et remplacement de l’image par la composition CSS/UI.
-- `apps/web/src/i18n.tsx` : ajout des traductions du panneau visuel en français et en malgache.
+- `apps/web/src/pages/LoginPage.tsx` : nouvelle composition CSS/UI du panneau droit et harmonisation des contrôles.
+- `apps/web/src/i18n.tsx` : textes français et malgaches du panneau et de ses cards.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-Commits publiés séparément : `88b249e` pour les textes i18n et `29a187f` pour la refonte visuelle de LoginPage.
+Commits de code publiés séparément : `963b825`, `1c35f1d`, `72739eb` et `f33ae9a`. Le commit `72739eb` supprime les doublons de clés i18n détectés par le typecheck.
 
 ## 4. Validations et problèmes connus
 
-Le typecheck web, le lint web, la compilation de `@cofound/shared` et le build web ont réussi après la refonte.
+Le typecheck web, le lint web, la compilation de `@cofound/shared` et le build web ont réussi après la correction des doublons i18n.
 
-La référence externe `https://salon-atlas.mada-digital.xyz/register/salon` a affiché une page blanche dans le navigateur sandbox ; aucun détail visuel non vérifié n’a été copié. La direction réalisée est donc une interprétation CSS/UI moderne et élégante, sans asset généré.
+La référence externe `https://salon-atlas.mada-digital.xyz/register/salon` affiche une page blanche dans le navigateur sandbox ; aucun détail visuel non vérifié n’a été copié. La composition est une interprétation CSS/UI éditable et sans image générée par IA.
 
-Une installation complète avec `pnpm install --frozen-lockfile` échoue dans cet environnement lors de la compilation native d’`argon2`, faute de compilateur C (`cc`). Les validations ont été exécutées avec les dépendances déjà installées via `--ignore-scripts`.
+Une installation complète avec `pnpm install --frozen-lockfile` échoue dans cet environnement lors de la compilation native d’`argon2`, faute de compilateur C (`cc`). Les validations utilisent les dépendances installées avec `--ignore-scripts`.
 
 ## 5. Prochaine action
 
-Ouvrir `/login` en desktop puis en mobile et vérifier visuellement la hiérarchie du formulaire, les retours à la ligne du panneau droit et la disparition de l’ancien visuel `auth-hero.webp`.
+Ouvrir `/login` dans le navigateur en desktop puis en mobile, vérifier le rendu du fond dégradé, les cards flottantes, les retours à la ligne français/malgaches et l’alignement visuel avec `/feed`.
 
 ## 6. Décisions et contexte de reprise
 
-Le visuel droit est volontairement construit en CSS/UI plutôt qu’avec une image ou une génération IA afin de rester éditable, léger, cohérent avec la marque et maîtrisé dans le code. Aucun changement d’architecture, de périmètre, de RBAC, de données privées ou de stack n’a été introduit.
+Le panneau droit est volontairement réalisé en CSS/UI plutôt qu’avec une image afin de rester éditable, léger et parfaitement aligné sur le design system CoFound.mg. Les chiffres de la card principale sont des repères éditoriaux `01` et `02`, pas des statistiques produit. Aucun changement d’architecture, de périmètre, de RBAC, de données privées ou de stack n’a été introduit.
