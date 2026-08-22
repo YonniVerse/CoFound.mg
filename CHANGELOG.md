@@ -10,6 +10,19 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Séparation ondulée de LoginPage
+
+### Modifié
+
+- Remplacement de la bordure verticale entre le formulaire et le panneau droit par une séparation ondulée SVG.
+- Vague remplie avec le token `background` et contour basé sur `var(--border)`.
+- Séparation non interactive, statique et visible uniquement sur desktop avec le panneau droit.
+- Modification publiée sur `dev` dans le commit `84c4518`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Gradient de marque et vagues dans LoginPage
 
 ### Modifié
