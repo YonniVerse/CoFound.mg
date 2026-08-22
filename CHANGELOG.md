@@ -10,6 +10,40 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Implémentation de B-01 — Demande d’accès organisationnel
+
+### Ajouté
+
+- Branche `feat/B-01-organization-request` et PR #73 vers `dev`.
+- Modèle Prisma `OrganizationRequest`, enum de statut et migration `20260822170000_add_organization_requests`.
+- Contrats Zod partagés pour l’entrée, les métadonnées de pièces et la réponse B-01.
+- Endpoint public `POST /api/v1/organization-requests` avec validation, normalisation, détection des doublons actifs et audit.
+- Page publique `/organization-request` en trois étapes avec confirmation et numéro de demande.
+- Liens vers la demande depuis la connexion et le CTA de l’accueil.
+- Traductions françaises et malgaches du parcours B-01.
+- Tests ciblés de création, validation, doublon et métadonnées d’audit.
+
+### Décidé
+
+- Les secteurs d’intérêt sont saisis comme libellés publics dans B-01, car le demandeur ne doit pas connaître les identifiants internes des référentiels.
+- Les justificatifs sont limités à cinq fichiers de 10 Mo côté interface ; cette session persiste uniquement leurs métadonnées, car aucun adaptateur R2 n’est encore présent dans le dépôt.
+
+### Validation
+
+- Suite API : **139/139 tests réussis**.
+- Typecheck API, frontend et shared, lint API/frontend, build frontend et `git diff --check` réussis.
+- Budget JavaScript initial respecté : **60,28 KiB gzip**.
+- `prisma validate` réussi avec une URL PostgreSQL locale temporaire.
+
+### En cours
+
+- Revue et fusion de la PR #73.
+- Application de la migration sur Neon et validation authentifiée de l’endpoint.
+- Raccordement ultérieur du stockage binaire R2 et de la consultation staff des pièces.
+- Préparation de B-02 : file staff, décision d’approbation/refus et capacités organisationnelles.
+
+---
+
 ## 2026-08-22 — CI staging et initialisation M-14
 
 ### Ajouté

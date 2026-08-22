@@ -1,56 +1,72 @@
 # Context Handoff — Reprise de session CoFound.mg
 
 **Dernière mise à jour** : 2026-08-22
-**Phase** : Vague 5 — S-01 à S-04 fusionnés ; préparation de S-05
-**Branche** : `dev`
-**État du workspace** : E-14 est fusionné via PR #37. S-01 à S-04 sont fusionnés via PR #68. `dev` est synchronisé avec `origin/dev` au commit `32e6af7`.
+**Phase** : Vague 4 — B-01 implémenté, PR #73 ouverte ; B-02 à démarrer après revue
+**Branche** : `feat/B-01-organization-request`
+**État du workspace** : propre après les commits de session ; branche poussée sur `origin` et PR #73 ouverte vers `dev`.
 
 ## 1. Travail réalisé
 
-E-14 a été synchronisé avec `dev`, complété avec les traductions française et malgache de la bannière, puis fusionné. Un test HTTP couvre `GET /api/v1/me/profile/completion-reminder`.
+B-01 de la Vague 4 est implémenté sur une branche dédiée. Le parcours public de demande d’accès organisationnel est disponible sur `/organization-request` et son endpoint est `POST /api/v1/organization-requests`.
 
-La chaîne des signalements comprend une file priorisée et paginée (`GET /api/v1/reports/moderation-queue`), des décisions transactionnelles (`PATCH /api/v1/reports/:id/decision`), la résolution/classement (`PATCH /api/v1/reports/:id/resolve`), les sanctions `WARNING`, `FREEZE`, `DISABLE` et `CONTENT_REMOVED`, ainsi que le gel/désactivation automatique pour les actions correspondantes.
+Le backend valide le type d’organisation, la raison sociale, le pays, la région, le site, la description, les secteurs d’intérêt, le contact et les pièces justificatives. Les emails et le code pays sont normalisés. Une demande active identique, basée sur l’email professionnel et le nom de l’organisation, est refusée avec une réponse 409. Toute création réussie est auditée par `AuditInterceptor`.
 
-La résolution notifie le déclarant via `NotificationService`. L’accès à l’identité civile de la cible est séparé de la file pseudonymisée (`GET /api/v1/reports/:id/identity`), protégé par `moderation:act` et journalisé par `AuditService`. Le genre n’est jamais renvoyé dans la réponse d’identité.
+Le frontend propose un wizard en trois étapes : organisation, contact, puis pièces et validation. Il gère les états de chargement, erreur, doublon et succès avec un numéro de demande. Le lien vers le parcours est accessible depuis la page de connexion et le CTA de l’accueil. Les traductions françaises et malgaches ont été ajoutées.
 
-Le contexte JWT transporte désormais `staffRole`. Le guard autorise les actions sensibles uniquement pour un compte `STAFF` ayant `MODERATOR`, `OPS_ADMIN` ou `SUPER_ADMIN`. Un compte STAFF sans rôle étendu reste refusé.
-
-Une console frontend `/moderation` affiche la file pseudonymisée, permet la prise en revue, la résolution, le classement sans suite, la saisie d’une sanction et une révélation d’identité explicitement confirmée.
+Les justificatifs sont actuellement validés côté navigateur et leurs métadonnées (`fileName`, `contentType`, `sizeBytes`) sont persistées. Le dépôt ne contient pas encore d’adaptateur R2 : le stockage binaire et la consultation des fichiers côté staff restent à raccorder avant de considérer le parcours documentaire complet.
 
 ## 2. Fichiers importants
 
-- `apps/api/src/report/report.service.ts` : file, décisions, sanctions, notification et résolution de cible.
-- `apps/api/src/report/report.controller.ts` : routes publiques de signalement et routes staff.
-- `apps/api/src/rbac/access-token.guard.ts` et `permission.guard.ts` : propagation et contrôle de `staffRole`.
-- `apps/api/src/auth/auth.service.ts` et `auth-request.ts` : claims JWT et contexte authentifié.
-- `packages/shared/src/schemas.ts` : contrats de file, décision et identité modérateur.
-- `apps/web/src/pages/ModerationQueuePage.tsx` : console staff pseudonymisée et formulaire de sanction.
-- `apps/web/src/App.tsx` : route `/moderation`.
-- `apps/api/test/report.test.ts` : tests de file, sanction et audit d’identité.
-- `apps/api/test/dream-match.integration.test.ts` : tests HTTP E-14 et résolution de signalement.
+- `apps/api/prisma/schema.prisma` : enum `OrganizationRequestStatus` et modèle `OrganizationRequest`.
+- `apps/api/prisma/migrations/20260822170000_add_organization_requests/migration.sql` : migration B-01.
+- `apps/api/src/organization-request/organization-request.controller.ts` : route publique et audit.
+- `apps/api/src/organization-request/organization-request.service.ts` : validation, normalisation, doublon et création.
+- `apps/api/src/organization-request/organization-request.module.ts` : module NestJS dédié.
+- `apps/api/test/organization-request.test.ts` : tests validation, création, doublon et audit.
+- `packages/shared/src/schemas.ts` : contrats `organizationRequestInputSchema` et `organizationRequestResponseSchema`.
+- `apps/web/src/pages/OrganizationRequestPage.tsx` : wizard public B-01.
+- `apps/web/src/App.tsx` : route `/organization-request`.
+- `apps/web/src/i18n.tsx` : traductions B-01 FR/MG.
+- `apps/web/src/pages/LoginPage.tsx` et `apps/web/src/components/landing/SectionCTA.tsx` : points d’entrée publics.
 
 ## 3. Validation
 
-Le package partagé, l’API et le frontend passent le typecheck. Le lint API/frontend, le build Vite et `git diff --check` passent. Les tests ciblés signalement/RBAC/intégration passent avec **23/23 réussis**. Le build frontend produit un chunk applicatif maximal inférieur à 500 kB.
+Les contrôles suivants passent sur la branche :
 
-## 4. Fusion
+- suite API : **139/139 tests réussis** ;
+- typecheck API, frontend et shared réussi ;
+- lint API et frontend réussi ;
+- build frontend réussi ;
+- budget bundle respecté : **60,28 KiB gzip** pour le JavaScript initial ;
+- `prisma validate` réussi avec une URL PostgreSQL locale temporaire ;
+- `git diff --check` réussi.
 
-PR #68 : https://github.com/YonniVerse/CoFound.mg/pull/68 — fusionnée.
+L’installation initiale des dépendances était bloquée par l’absence de compilateur C pour `argon2`. `build-essential` a été installé dans le sandbox, puis `pnpm install --frozen-lockfile` a réussi. Aucun fichier de dépendance ou lockfile n’a été modifié par cette installation.
 
-Commit fonctionnel : `e73ae62 feat(moderation): finaliser la chaine des signalements`.
+## 4. Git et publication
 
-Commit de stabilisation frontend : `0ee1f47 fix(moderation): stabiliser les decisions staff`.
+La branche est `feat/B-01-organization-request` et contient les commits suivants :
 
-La branche distante de fonctionnalité a été supprimée après fusion. `dev` a été mis à jour automatiquement et reste propre après la synchronisation.
+- `0a5b22d feat(organisation): enregistrer les demandes d'accès publiques` ;
+- `6b64783 test(organisation): couvrir les demandes d'accès` ;
+- `dbbf3c9 feat(organisation): ajouter le formulaire de demande publique` ;
+- `9ff99cb test(organisation): aligner les secteurs d'intérêt` ;
+- `351b150 feat(organisation): relier l'accès depuis l'accueil`.
+
+La branche distante est publiée. PR #73 : https://github.com/YonniVerse/CoFound.mg/pull/73
 
 ## 5. Points restant à vérifier
 
-La recette authentifiée avec un utilisateur staff réellement porteur d’un `StaffRole` dans Neon reste à exécuter. Il faut également vérifier le transport email réel et les retries pg-boss lors d’une résolution.
+La migration B-01 n’a pas été appliquée sur Neon pendant cette session, car aucune `DATABASE_URL` n’était disponible dans le sandbox. La migration doit être appliquée sur l’environnement de recette avant validation authentifiée.
 
-Les nouvelles routes doivent encore recevoir des tests dédiés de permission en environnement HTTP complet, ainsi qu’un test d’idempotence d’une décision répétée. La résolution est actuellement protégée par le guard et la mutation empêche le traitement d’un signalement déjà résolu, mais cette garantie doit être conservée par les tests de régression.
+La PR #73 doit être relue et fusionnée vers `dev`. La couverture frontend reste manuelle : aucun harnais de test UI n’est installé dans le dépôt. Les tests API ne démarrent pas une application Nest complète ; ils couvrent le service et les métadonnées du contrôleur.
 
-Les écrans complets S-05 (`/staff/audit`, `/staff/reference-data`, `/staff/health`) ne sont pas encore construits. Les écrans S-07 de compte gelé, sortant et alumni, le seed `seed:demo`, les E2E Playwright, la passe accessibilité/i18n et la documentation d’exploitation restent à réaliser.
+Le stockage binaire des pièces justificatives reste à concevoir avec l’adaptateur R2. Ne pas présenter B-01 comme entièrement terminé tant que cette couture et l’écran staff de consultation ne sont pas raccordés.
+
+La Vague 4 restante est B-02 à B-11. B-02 dépend de F-08 et F-10 et doit fournir la file staff de demandes, l’approbation/refus et l’activation capacité par capacité. Les PR S-05 à S-08 de la Vague 5 sont parallèles et ne doivent pas être écrasées.
+
+Aucune décision durable n’a été ajoutée à `CLAUDE.md`, `docs/mvp-scope.md` ou à un autre registre : la persistance temporaire des métadonnées de justificatifs est un compromis de livraison, pas une décision d’architecture définitive.
 
 ## 6. Prochaine action
 
-Effectuer la recette réelle de la chaîne S-01 à S-04 sur Neon, puis commencer S-05 — console staff d’audit, référentiels et santé produit. Ne pas modifier les backlogs officiels sans demande explicite.
+Après revue et fusion de la PR #73, créer `feat/B-02-organization-validation` depuis `origin/dev`, puis commencer la file staff `GET /api/v1/staff/organization-requests` avec ses permissions et ses tests, en relisant au préalable `docs/ui/ecrans-console-staff.md` UI-49.
