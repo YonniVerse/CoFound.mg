@@ -29,6 +29,7 @@ Retiré · En cours · Bloqué**.
 - `TalentCard` utilise les clés i18n pour la promo, la complétion, la biographie, la disponibilité et ses actions.
 - `SectionCTA` et `ApplyModal` utilisent les clés FR/MG pour leurs textes visibles, validations et actions.
 - `Navbar` utilise les clés FR/MG pour les liens, les actions de connexion et les contrôles du menu mobile.
+- La note de sécurité d’`ActivationPage` utilise désormais une clé FR/MG dédiée.
 - Validation build/lint réussie après suppression de la constante de statuts devenue inutilisée et ajout de `t` aux dépendances du hook.
 - Migration des chaînes visibles restantes et ajout d’un contrôle empêchant leur réintroduction encore en cours.
 
