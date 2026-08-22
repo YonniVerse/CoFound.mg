@@ -42,17 +42,17 @@ export function ProjectCard({ project }: ProjectCardProps) {
     const membersCount = project.membersCount;
 
     return (
-      <div className="relative bg-card border border-border rounded-xl p-5 sm:p-6 shadow-2xs hover:border-border/80 transition-all duration-150 flex flex-col gap-4 group min-w-0">
-        {/* Floating Project Icon Badge Straddling Top-Right Border */}
+      <div className="relative bg-card border border-border rounded-xl p-5 sm:p-6 shadow-2xs hover:border-border/80 transition-all duration-150 flex flex-col gap-4 group min-w-0 overflow-hidden">
+        {/* Project Icon Badge Top-Left Inside Card */}
         <div
-          className="absolute -top-3 -right-3 h-7 w-7 rounded-full bg-primary text-primary-foreground border-2 border-background shadow-xs flex items-center justify-center"
+          className="absolute top-4 left-4 h-6 w-6 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center shadow-2xs group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200"
           title="Projet"
         >
-          <FolderGit2 className="h-3.5 w-3.5" />
+          <FolderGit2 className="h-3 w-3" />
         </div>
 
         {/* Header: Owner Avatar + Project Title & Sector + Status Badge */}
-        <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex flex-wrap items-start justify-between gap-3 pl-8">
           <div className="flex items-center gap-3.5 min-w-0 flex-1">
             <Avatar
               name={ownerName}
@@ -136,17 +136,17 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   // Prototype Mock Data Fallback
   return (
-    <div className="relative bg-card border border-border rounded-xl p-5 sm:p-6 shadow-2xs hover:border-border/80 transition-all duration-150 flex flex-col gap-4 group min-w-0">
-      {/* Floating Project Icon Badge Straddling Top-Right Border */}
+    <div className="relative bg-card border border-border rounded-xl p-5 sm:p-6 shadow-2xs hover:border-border/80 transition-all duration-150 flex flex-col gap-4 group min-w-0 overflow-hidden">
+      {/* Project Icon Badge Top-Left Inside Card */}
       <div
-        className="absolute -top-3 -right-3 h-7 w-7 rounded-full bg-primary text-primary-foreground border-2 border-background shadow-xs flex items-center justify-center"
+        className="absolute top-4 left-4 h-6 w-6 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center shadow-2xs group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200"
         title="Projet"
       >
-        <FolderGit2 className="h-3.5 w-3.5" />
+        <FolderGit2 className="h-3 w-3" />
       </div>
 
       {/* Header: Author Avatar + Title & Sector + Time ago */}
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="flex flex-wrap items-start justify-between gap-3 pl-8">
         <div className="flex items-center gap-3.5 min-w-0 flex-1">
           <Avatar
             name={project.author.name}
