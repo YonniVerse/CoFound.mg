@@ -10,6 +10,20 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Hauteur stabilisée des cards du login
+
+### Modifié
+
+- Augmentation et stabilisation de la hauteur des six cards avec `clamp(11rem,22vh,14rem)`.
+- Conservation de `overflow-hidden` et ajout de contraintes `line-clamp`/`break-words` pour garder tous les textes dans leurs cards.
+- Ajustement des espacements internes afin que les titres, meta-informations, badges, indicateurs et avatars restent visibles.
+- Liaisons pointillées SVG conservées avec un contraste renforcé et des points mieux répartis.
+- Modification publiée sur `dev` dans le commit `7ee0a6d`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Cards du login stabilisées et mieux composées
 
 ### Modifié
