@@ -19,7 +19,8 @@ Retiré · En cours · Bloqué**.
 - Retrait de la découpe angulaire et du triangle précédemment utilisés sur cette séparation.
 - Conservation de deux waves SVG décoratives dans le fond du panneau droit.
 - Conservation du padding intérieur élargi du panneau droit pour mieux dégager les cards.
-- Modification publiée sur `dev` dans le commit `1cc5dc4`.
+- Augmentation de 2 px de la hauteur des cinq cards avec `h-[calc(100%+2px)]`.
+- Modification publiée sur `dev` dans le commit `00ee6bc`.
 
 ### Validé
 
