@@ -188,20 +188,17 @@ export default function LoginPage() {
         </footer>
       </div>
 
-      {/* RIGHT COLUMN: Composition thématique inspirée de la référence */}
-      <div className="relative hidden min-h-screen overflow-hidden border-l border-border lg:col-span-6 lg:flex lg:items-center lg:justify-center xl:col-span-7">
-        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-br from-primary via-impact to-secondary" />
+      {/* RIGHT COLUMN: Composition thématique cohérente avec le landing */}
+      <div className="relative hidden min-h-0 overflow-hidden border-l border-border bg-background lg:col-span-6 lg:flex lg:items-center lg:justify-center xl:col-span-7">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(to_right,rgba(255,255,255,0.18)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.18)_1px,transparent_1px)] [background-size:4rem_4rem]"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-60"
         />
-        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full border border-white/30" />
-        <div aria-hidden="true" className="pointer-events-none absolute -bottom-28 -left-24 h-96 w-96 rounded-full border border-white/20" />
 
         <div className="relative z-10 flex h-full min-h-0 w-full max-w-2xl flex-col px-6 py-8 text-foreground lg:px-10 lg:py-10">
-          <div className="flex items-center justify-end text-white">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/25 bg-white/15 backdrop-blur-sm">
-              <Network className="h-4 w-4 text-white" aria-hidden="true" />
+          <div className="flex items-center justify-end text-foreground">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card shadow-2xs">
+              <Network className="h-4 w-4 text-primary" aria-hidden="true" />
             </div>
           </div>
 
