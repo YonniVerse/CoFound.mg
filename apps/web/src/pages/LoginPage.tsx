@@ -197,8 +197,8 @@ export default function LoginPage() {
           preserveAspectRatio="none"
           fill="none"
         >
-          <path d="M0 0H18L50 450L18 900H0Z" fill="currentColor" />
-          <path d="M18 0L50 450L18 900" stroke="var(--border)" strokeWidth="1.5" />
+          <path d="M0 0H16C40 190 40 710 16 900H0Z" fill="currentColor" />
+          <path d="M16 0C40 190 40 710 16 900" stroke="var(--border)" strokeWidth="1.5" />
         </svg>
         <svg
           aria-hidden="true"
