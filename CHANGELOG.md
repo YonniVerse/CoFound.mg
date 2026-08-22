@@ -10,6 +10,21 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Gradient de marque et vagues dans LoginPage
+
+### Modifié
+
+- Remplacement du fond bleu léger par le gradient `primary → impact → secondary`, inspiré des couleurs du logo CoFound.mg.
+- Ajout de trois vagues SVG statiques et discrètes en arrière-plan.
+- Conservation d’une grille géométrique légère au-dessus du gradient.
+- Adaptation des cards claires avec `bg-card/95`, `backdrop-blur-sm` et ombres renforcées pour améliorer le contraste.
+- Cards bleue et rouge conservées avec fonds opaques et textes contrastés.
+- Modification publiée sur `dev` dans le commit `a1b292f`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Fond LoginPage accordé au logo
 
 ### Modifié
