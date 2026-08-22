@@ -797,9 +797,11 @@ model OpportunityApplication {
   opportunityId String
   applicantType OpportunityApplicantType
   applicantId   String
-  message       String
-  status        ApplicationStatus
-  createdAt     DateTime                 @default(now())
+    message         String
+  status          ApplicationStatus
+  rejectionReason String?
+  createdAt       DateTime                 @default(now())
+
   opportunity   Opportunity              @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
 
   @@unique([opportunityId, applicantType, applicantId])

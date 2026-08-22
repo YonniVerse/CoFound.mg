@@ -227,6 +227,52 @@ export const projectWatchSchema = z.object({ id: idSchema, projectId: idSchema, 
 export const projectWatchListSchema = z.object({ items: z.array(projectWatchSchema) })
 export type PartnerProjectSearch = z.infer<typeof partnerProjectSearchSchema>
 export type ProjectWatchInput = z.infer<typeof projectWatchInputSchema>
+export const opportunityTypeSchema = z.enum(['CALL_FOR_APPLICATIONS', 'CONTEST', 'INCUBATION_PROGRAM', 'FUNDING_OFFER', 'EVENT', 'INTERNSHIP'])
+export const opportunityStatusSchema = z.enum(['DRAFT', 'PUBLISHED', 'CLOSED', 'ARCHIVED'])
+export const opportunityCreateSchema = z.object({
+  type: opportunityTypeSchema.default('CALL_FOR_APPLICATIONS'),
+  title: z.string().trim().min(3).max(180),
+  description: z.string().trim().min(20).max(4_000),
+  eligibility: z.string().trim().max(2_000).optional(),
+  deadline: z.coerce.date().nullable().optional(),
+  seats: z.number().int().positive().max(100_000).nullable().optional(),
+})
+export const opportunityApplicationCreateSchema = z.object({
+  applicantType: z.enum(['TALENT', 'PROJECT']),
+  applicantId: idSchema,
+  message: z.string().trim().min(10).max(2_000),
+})
+export const opportunityApplicationDecisionSchema = z.object({
+  status: z.enum(['ACCEPTED', 'REJECTED']),
+  rejectionReason: z.string().trim().min(5).max(1_000).optional(),
+}).superRefine((value, context) => {
+  if (value.status === 'REJECTED' && !value.rejectionReason) context.addIssue({ code: z.ZodIssueCode.custom, path: ['rejectionReason'], message: 'A rejection reason is required.' })
+})
+export const opportunitySchema = z.object({
+  id: idSchema,
+  organizationId: idSchema,
+  type: opportunityTypeSchema,
+  title: z.string(),
+  description: z.string(),
+  eligibility: z.string().nullable(),
+  deadline: z.coerce.date().nullable(),
+  seats: z.number().int().nullable(),
+  status: opportunityStatusSchema,
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+export const opportunityApplicationSchema = z.object({
+  id: idSchema,
+  opportunityId: idSchema,
+  applicantType: z.enum(['TALENT', 'PROJECT']),
+  applicantId: idSchema,
+  message: z.string(),
+  status: z.enum(['PENDING', 'ACCEPTED', 'REJECTED', 'WITHDRAWN']),
+  rejectionReason: z.string().nullable(),
+  createdAt: z.coerce.date(),
+})
+export type OpportunityCreate = z.infer<typeof opportunityCreateSchema>
+export type OpportunityApplicationCreate = z.infer<typeof opportunityApplicationCreateSchema>
 
 export const privateTalentProfileSchema = z.object({
   user: z.object({ id: idSchema, email: z.string().email(), locale: localeSchema }),

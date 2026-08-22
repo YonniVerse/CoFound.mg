@@ -8,10 +8,12 @@ import { OrganizationRequestStaffService } from './organization-request-staff.se
 import { OrganizationProfileService } from './organization-profile.service.js'
 import { PartnerDiscoveryController } from './partner-discovery.controller.js'
 import { PartnerDiscoveryService } from './partner-discovery.service.js'
+import { PublicOpportunityController, OrganizationOpportunityController } from './opportunity.controller.js'
+import { OpportunityService } from './opportunity.service.js'
 
 @Module({
   imports: [PrismaModule],
-  controllers: [OrganizationRequestController, OrganizationRequestStaffController, OrganizationCapabilityController, OrganizationProfileController, PartnerDiscoveryController],
-  providers: [OrganizationRequestService, OrganizationRequestStaffService, OrganizationProfileService, PartnerDiscoveryService],
+  controllers: [OrganizationRequestController, OrganizationRequestStaffController, OrganizationCapabilityController, OrganizationProfileController, PartnerDiscoveryController, PublicOpportunityController, OrganizationOpportunityController],
+  providers: [OrganizationRequestService, OrganizationRequestStaffService, OrganizationProfileService, PartnerDiscoveryService, OpportunityService],
 })
 export class OrganizationRequestModule {}
