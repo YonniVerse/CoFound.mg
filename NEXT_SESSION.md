@@ -4,7 +4,7 @@
 
 ## 1. État actuel
 
-M-05 est fusionné dans `dev` via la PR #60, M-06 via la PR #61, M-07 via la PR #62, M-08 via la PR #63, la correction CI/staging via la PR #64 et M-14 via la PR #65. M-12 et M-13 sont implémentés sur `feat/M-13-user-blocking` et regroupés dans la PR #66. M-14 est déjà fusionné via la PR #65. La branche active est `feat/M-13-user-blocking`, publiée et synchronisée avec `origin/feat/M-13-user-blocking`.
+M-05 est fusionné dans `dev` via la PR #60, M-06 via la PR #61, M-07 via la PR #62, M-08 via la PR #63, la correction CI/staging via la PR #64 et M-14 via la PR #65. M-12 et M-13 sont fusionnés dans `dev` via la PR #66. M-14 est fusionné via la PR #65. La branche active est `dev`, synchronisée avec `origin/dev` au commit `f0938bf`.
 
 ## 2. Livrables de cette session
 
@@ -22,8 +22,8 @@ Les routes de messagerie exigent `message:send` et vérifient l’appartenance �
 
 ## 5. Vigilance et travaux restants
 
-M-05 à M-08 sont intégrés dans `dev`. M-14 ajoute les contrats Zod du signalement, `ReportService`, `ReportController`, `ReportModule`, la route POST `/reports` pour les cibles PROFILE, MESSAGE, PROJECT et POST, ainsi qu’une création transactionnelle sans identité civile dans la réponse. Le socle API, les boutons frontend et les tests HTTP M-14 sont fusionnés dans `dev`. Le composant réutilisable est intégré aux profils/talents, projets, publications et messages du canal projet. M-12 et M-13 sont en revue dans la PR #66. M-14 est fusionné dans `dev`. M-15 et M-16 restent non implémentés.
+M-05 à M-08 sont intégrés dans `dev`. M-14 ajoute les contrats Zod du signalement, `ReportService`, `ReportController`, `ReportModule`, la route POST `/reports` pour les cibles PROFILE, MESSAGE, PROJECT et POST, ainsi qu’une création transactionnelle sans identité civile dans la réponse. Le socle API, les boutons frontend et les tests HTTP M-14 sont fusionnés dans `dev`. Le composant réutilisable est intégré aux profils/talents, projets, publications et messages du canal projet. M-12 et M-13 sont fusionnés dans `dev` via la PR #66. M-14 est fusionné dans `dev`. M-15 et M-16 restent non implémentés.
 
 ## 6. Prochaine action
 
-Configurer l’environnement GitHub `staging` et ses secrets, puis lancer le workflow. M-13 dispose de `BlockService`, `BlockController`, `BlockModule`, de ses routes authentifiées, du bouton Bloquer/Débloquer et d’un test HTTP ; M-12 dispose de l’écran `/messages`, du client de conversations, du fil pseudonymisé et du rafraîchissement périodique. La PR #66 reste à relire et fusionner. M-15 et M-16 restent non implémentés. Ajouter un vrai test E2E authentifié lorsque le harnais et les identifiants staging seront disponibles.
+Configurer l’environnement GitHub `staging` et ses secrets, puis lancer le workflow. M-13 dispose de `BlockService`, `BlockController`, `BlockModule`, de ses routes authentifiées, du bouton Bloquer/Débloquer et d’un test HTTP ; M-12 dispose de l’écran `/messages`, du client de conversations, du fil pseudonymisé et du rafraîchissement périodique. La PR #66 est fusionnée. Le workflow staging a été déclenché manuellement et doit encore être surveillé jusqu’à son résultat final. M-15 et M-16 restent non implémentés. Ajouter un vrai test E2E authentifié lorsque le harnais et les identifiants staging seront disponibles.
