@@ -10,6 +10,27 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — PR S-07 publiée et socle S-08 initialisé
+
+### Ajouté
+
+- Commit `87b72e3 feat(account): finaliser les statuts de compte` et branche `feat/S-07-account-status` publiés.
+- Pull Request [#71](https://github.com/YonniVerse/CoFound.mg/pull/71) ouverte vers `dev`.
+- Branche `feat/S-08-seed-demo` créée depuis `dev`.
+- Premier script `apps/api/prisma/seed-demo.ts` avec transaction Prisma, idempotence et préfixe `demo-`.
+- Commande API `seed:demo` ajoutée.
+- Jeu de démonstration couvrant institution, partenaire, staff, talent activé, promotion 2026, affiliation, projet et opportunité publiée.
+
+### Validation
+
+- S-07 : typechecks, lint, build, `git diff --check` et tests HTTP 4/4 réussis.
+- S-08 : génération Prisma, typecheck API et lint du seed réussis.
+
+### En cours
+
+- Exécution et rejeu de `seed:demo` sur une base de recette non productive.
+- S-08 n’a pas encore de commit ni de PR.
+
 ## 2026-08-22 — CI staging et initialisation M-14
 
 ### Ajouté
