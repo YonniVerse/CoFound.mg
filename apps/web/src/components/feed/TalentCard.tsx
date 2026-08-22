@@ -18,10 +18,10 @@ export function TalentCard({ talent }: TalentCardProps) {
     : null;
 
   return (
-    <div className="bg-card border border-border rounded-xl p-5 sm:p-6 shadow-2xs hover:border-border/80 transition-all duration-150 flex flex-col gap-4 group">
+    <div className="bg-card border border-border rounded-xl p-5 sm:p-6 shadow-2xs hover:border-border/80 transition-all duration-150 flex flex-col gap-4 group min-w-0 overflow-hidden">
       {/* Header: Pseudonymized Avatar + Pseudonym + Field & Cohort + Completion */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3.5">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex items-center gap-3.5 min-w-0 flex-1">
           <Avatar
             name={talent.pseudonym}
             src={null}
@@ -55,14 +55,14 @@ export function TalentCard({ talent }: TalentCardProps) {
       </div>
 
       {/* Headline & Bio */}
-      <div className="space-y-1.5">
+      <div className="space-y-1.5 min-w-0">
         {talent.headline && (
-          <p className="text-sm font-semibold text-foreground/90 leading-snug">
+          <p className="text-sm font-semibold text-foreground/90 leading-snug break-words">
             {talent.headline}
           </p>
         )}
         {talent.bio ? (
-          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 leading-relaxed break-words">
             "{talent.bio}"
           </p>
         ) : (
@@ -101,7 +101,7 @@ export function TalentCard({ talent }: TalentCardProps) {
       )}
 
       {/* Footer Info & Actions */}
-      <div className="flex items-center justify-between gap-3 pt-3 border-t border-border/50 mt-1">
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-border/50 mt-1">
         {availabilityLabel ? (
           <div className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground font-medium">
             <Clock className="h-3.5 w-3.5 opacity-70" />
@@ -111,11 +111,11 @@ export function TalentCard({ talent }: TalentCardProps) {
           <div />
         )}
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             variant="outline"
             size="sm"
-            className="h-9 px-3.5 text-xs sm:text-sm font-medium rounded-lg border-border hover:bg-accent cursor-pointer gap-1.5"
+            className="h-9 px-3 text-xs sm:text-sm font-medium rounded-lg border-border hover:bg-accent cursor-pointer gap-1.5"
           >
             <Eye className="h-4 w-4" />
             <span>{t('common.profile')}</span>
@@ -124,7 +124,7 @@ export function TalentCard({ talent }: TalentCardProps) {
           <BlockButton userId={talent.id} />
           <Button
             size="sm"
-            className="h-9 px-3.5 text-xs sm:text-sm font-medium rounded-lg cursor-pointer gap-1.5"
+            className="h-9 px-3 text-xs sm:text-sm font-medium rounded-lg cursor-pointer gap-1.5"
           >
             <MessageSquare className="h-4 w-4" />
             <span>{t('common.contact')}</span>

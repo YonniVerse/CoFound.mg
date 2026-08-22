@@ -74,9 +74,9 @@ export default function FeedPage() {
         setSearch={setSearch}
       />
 
-      <div className="flex px-6 sm:px-10 py-8 gap-6 max-w-[1400px] mx-auto">
+      <div className="flex px-4 sm:px-10 py-8 gap-6 max-w-[1400px] mx-auto w-full overflow-x-hidden">
         {/* Main Column: Feed */}
-        <div className="flex-1 max-w-3xl flex flex-col gap-6">
+        <div className="flex-1 min-w-0 max-w-3xl flex flex-col gap-6">
           {isLoading && (
             <div className="space-y-4">
               <TalentCardSkeleton />
@@ -96,16 +96,18 @@ export default function FeedPage() {
             <>
               {/* ── Real API Talents Feed (M-04) ── */}
               {showTalents && hasTalents && (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                    <Users className="h-3.5 w-3.5 text-primary" />
-                    <span>Co-fondateurs & Talents ({talents.length})</span>
-                  </div>
+                <div className="space-y-6 min-w-0">
+                  {filter !== "all" && (
+                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      <Users className="h-3.5 w-3.5 text-primary" />
+                      <span>Co-fondateurs & Talents ({talents.length})</span>
+                    </div>
+                  )}
 
                   {talents.map((talent, index) => (
                     <div
                       key={talent.id}
-                      className="animate-in fade-in slide-in-from-bottom-3 duration-400"
+                      className="animate-in fade-in slide-in-from-bottom-3 duration-400 min-w-0"
                       style={{ animationDelay: `${(index % 5) * 60}ms` }}
                     >
                       <TalentCard talent={talent} />
@@ -132,7 +134,7 @@ export default function FeedPage() {
                 mockFilteredItems.map((item, index) => (
                   <div
                     key={`${item.type}-${item.data.id}-${index}`}
-                    className="animate-in fade-in slide-in-from-bottom-3 duration-400"
+                    className="animate-in fade-in slide-in-from-bottom-3 duration-400 min-w-0"
                     style={{ animationDelay: `${(index % 5) * 60}ms` }}
                   >
                     {item.type === "project" ? (

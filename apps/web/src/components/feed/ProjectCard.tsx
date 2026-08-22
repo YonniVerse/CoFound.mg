@@ -43,18 +43,18 @@ export function ProjectCard({ project }: ProjectCardProps) {
     const membersCount = project.membersCount;
 
     return (
-      <div className="bg-card border border-border rounded-xl p-5 shadow-xs hover:shadow-sm transition-all duration-200 flex flex-col gap-4 group">
+      <div className="bg-card border border-border rounded-xl p-5 shadow-xs hover:shadow-sm transition-all duration-200 flex flex-col gap-4 group min-w-0 overflow-hidden">
         {/* Header: Title & Badges */}
         <div className="flex items-start justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 mb-2">
+          <div className="space-y-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
               <SectorBadge sector={sectorSlug} />
               <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
                 {project.status}
               </span>
             </div>
             <Link to={`/projects/${project.id}`}>
-              <h3 className="font-heading font-bold text-lg text-foreground leading-tight group-hover:text-primary transition-colors cursor-pointer">
+              <h3 className="font-heading font-bold text-lg text-foreground leading-tight group-hover:text-primary transition-colors cursor-pointer truncate">
                 {title}
               </h3>
             </Link>
@@ -62,17 +62,17 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
 
         {/* Pitch / Description */}
-        <p className="text-sm text-muted-foreground font-medium line-clamp-2">
+        <p className="text-sm text-muted-foreground font-medium line-clamp-2 break-words">
           {pitch}
         </p>
 
         {/* Author & Stats */}
         <div className="flex flex-col gap-3 py-3 border-y border-border/50 mt-1">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5 min-w-0">
               <Avatar name={ownerName} src={null} size="sm" />
-              <div className="flex flex-col">
-                <span className="text-xs font-bold text-foreground">{ownerName}</span>
+              <div className="flex flex-col min-w-0">
+                <span className="text-xs font-bold text-foreground truncate">{ownerName}</span>
                 <span className="text-[11px] text-muted-foreground font-medium">Fondateur principal</span>
               </div>
             </div>
@@ -90,11 +90,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
 
         {/* Footer CTA */}
-        <div className="flex items-center justify-between mt-auto pt-1">
+        <div className="flex flex-wrap items-center justify-between mt-auto pt-1 gap-2">
           <div className="text-xs text-muted-foreground font-medium">
             Projet CoFound.mg
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <ReportButton targetType="PROJECT" targetId={project.id} />
             <Button variant="outline" size="sm" className="h-8 text-xs" asChild>
               <Link to={`/projects/${project.id}`}>{t('common.viewProject')}</Link>
@@ -110,30 +110,30 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   // Prototype Mock Data Fallback
   return (
-    <div className="bg-card border border-border rounded-xl p-5 shadow-xs hover:shadow-sm transition-all duration-200 flex flex-col gap-4 group">
+    <div className="bg-card border border-border rounded-xl p-5 shadow-xs hover:shadow-sm transition-all duration-200 flex flex-col gap-4 group min-w-0 overflow-hidden">
       <div className="flex items-start justify-between gap-4">
-        <div className="space-y-1">
+        <div className="space-y-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
             <SectorBadge sector={project.sector} />
           </div>
           <Link to={`/projects/${project.id}`}>
-            <h3 className="font-heading font-bold text-lg text-foreground leading-tight group-hover:text-primary transition-colors cursor-pointer">
+            <h3 className="font-heading font-bold text-lg text-foreground leading-tight group-hover:text-primary transition-colors cursor-pointer truncate">
               {project.title}
             </h3>
           </Link>
         </div>
       </div>
 
-      <p className="text-sm text-muted-foreground font-medium line-clamp-2">
+      <p className="text-sm text-muted-foreground font-medium line-clamp-2 break-words">
         {project.description}
       </p>
 
       <div className="flex flex-col gap-3 py-3 border-y border-border/50 mt-1">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <Avatar name={project.author.name} src={project.author.avatar} size="sm" />
-          <div className="flex flex-col">
-            <span className="text-xs font-bold text-foreground">{project.author.name}</span>
-            <span className="text-xs text-muted-foreground font-medium">{project.author.school}</span>
+          <div className="flex flex-col min-w-0">
+            <span className="text-xs font-bold text-foreground truncate">{project.author.name}</span>
+            <span className="text-xs text-muted-foreground font-medium truncate">{project.author.school}</span>
           </div>
         </div>
 
@@ -147,11 +147,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-auto pt-1">
+      <div className="flex flex-wrap items-center justify-between mt-auto pt-1 gap-2">
         <div className="text-xs text-muted-foreground font-medium">
           {project.timeAgo} · {project.applicantsCount} {project.applicantsCount > 1 ? "candidatures" : "candidature"}
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" className="h-8 text-xs" asChild>
             <Link to={`/projects/${project.id}`}>{t('common.viewProject')}</Link>
           </Button>
