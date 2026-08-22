@@ -9,7 +9,7 @@ CREATE TABLE "OrganizationRequest" (
     "region" TEXT NOT NULL,
     "website" TEXT,
     "description" TEXT NOT NULL,
-    "sectorIds" JSONB NOT NULL,
+    "sectorsOfInterest" JSONB NOT NULL,
     "contactName" TEXT NOT NULL,
     "contactRole" TEXT NOT NULL,
     "contactEmail" TEXT NOT NULL,
@@ -30,8 +30,8 @@ CREATE INDEX "OrganizationRequest_contactEmail_organizationName_status_idx"
     ON "OrganizationRequest"("contactEmail", "organizationName", "status");
 
 ALTER TABLE "OrganizationRequest"
-    ADD CONSTRAINT "OrganizationRequest_sectorIds_check"
-    CHECK (jsonb_typeof("sectorIds") = 'array');
+    ADD CONSTRAINT "OrganizationRequest_sectorsOfInterest_check"
+    CHECK (jsonb_typeof("sectorsOfInterest") = 'array');
 
 ALTER TABLE "OrganizationRequest"
     ADD CONSTRAINT "OrganizationRequest_supportingDocuments_check"

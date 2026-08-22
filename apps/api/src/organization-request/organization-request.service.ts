@@ -42,7 +42,7 @@ export class OrganizationRequestService {
         region: input.region,
         website: input.website || null,
         description: input.description,
-        sectorIds: input.sectorIds,
+        sectorsOfInterest: input.sectorsOfInterest,
         contactName: input.contactName,
         contactRole: input.contactRole,
         contactEmail: input.contactEmail,

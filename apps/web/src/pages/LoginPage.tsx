@@ -177,7 +177,7 @@ export default function LoginPage() {
           <div className="pt-4 border-t border-border/60 flex items-start gap-2.5 text-xs text-muted-foreground">
             <ShieldCheck className="h-4 w-4 text-muted-foreground/70 shrink-0 mt-0.5" />
             <p className="leading-relaxed">
-              <span className="font-medium text-foreground">{t('auth.login.noAccount')}</span> — {t('auth.login.noAccountHint')}
+              <span className="font-medium text-foreground">{t('auth.login.noAccount')}</span> — {t('auth.login.noAccountHint')} <Link to="/organization-request" className="font-semibold text-primary hover:underline">{t('organizationRequest.submit')}</Link>
             </p>
           </div>
         </main>

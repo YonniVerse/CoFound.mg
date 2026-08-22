@@ -300,7 +300,7 @@ model OrganizationRequest {
   region               String
   website              String?
   description          String
-  sectorIds            Json
+  sectorsOfInterest   Json
   contactName          String
   contactRole          String
   contactEmail         String

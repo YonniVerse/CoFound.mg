@@ -134,7 +134,7 @@ export const organizationRequestInputSchema = z.object({
   region: z.string().trim().min(2).max(120),
   website: z.string().trim().url().max(255).optional().or(z.literal('')),
   description: z.string().trim().min(20).max(2_000),
-  sectorIds: z.array(idSchema).max(20).default([]),
+  sectorsOfInterest: z.array(z.string().trim().min(1).max(80)).max(20).default([]),
   contactName: z.string().trim().min(2).max(160),
   contactRole: z.string().trim().min(2).max(120),
   contactEmail: z.string().trim().email().max(255),
