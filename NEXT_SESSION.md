@@ -2,50 +2,39 @@
 
 **Dernière mise à jour** : 2026-08-22
 **Vague** : Vague 5 — Sécurité et finition
-**Ticket courant** : S-10 finalisé localement ; S-11 à démarrer
-**Branche actuelle** : `feat/S-10-performance`
-**État du workspace** : changements S-10 locaux, non commités au moment de cette mise à jour.
+**Ticket courant** : S-11 finalisé localement ; S-12 à démarrer
+**Branche actuelle** : `feat/S-11-accessibilite-responsive`
+**État du workspace** : changements S-11 locaux, non commités au moment de cette mise à jour.
 
 ## État exact
 
-S-09 est publié dans la [PR #76](https://github.com/YonniVerse/CoFound.mg/pull/76) depuis `feat/S-09-e2e-playwright`. Playwright détecte les trois scénarios critiques et Chromium est installé. L’exécution locale est correctement configurée, mais les scénarios restent ignorés faute de variables `E2E_*`, de comptes authentifiés et de jeton d’activation de recette. S-09 n’est donc pas encore validé sur recette réelle.
+S-09 est publié dans la [PR #76](https://github.com/YonniVerse/CoFound.mg/pull/76), avec trois scénarios Playwright détectés. Les tests réels restent conditionnés par les variables `E2E_*`, les comptes authentifiés et le jeton d’activation de recette.
 
-S-10 est implémenté sur `feat/S-10-performance` depuis `origin/dev`. Le bundle initial conserve le lazy loading des routes et le shell public (`LandingPage`, `ActivationPage`) est désormais chargé à la demande. Le graphique Recharts de la page Impact est isolé dans un sous-chunk lazy. Le regroupement global Recharts a été retiré de `manualChunks` afin de ne pas charger le module analytique hors de sa route.
+S-10 a été fusionné dans `dev` via la [PR #77](https://github.com/YonniVerse/CoFound.mg/pull/77). Il apporte le lazy loading du shell public et du graphique Recharts, les images WebP, les métadonnées de chargement et le budget Vite de 400 kB brut par chunk. Le build frontend et le lint sont réussis.
 
-Les images raster lourdes de la CTA et de l’authentification ont été converties en WebP, les références frontend ont été mises à jour, et les attributs `width`, `height`, `loading="lazy"` et `decoding="async"` ont été ajoutés. Les tailles observées sont passées de 206 621 à 145 142 octets pour la CTA et de 842 479 à 110 706 octets pour l’image d’authentification.
+S-11 est implémenté sur `feat/S-11-accessibilite-responsive` depuis `origin/dev` synchronisé après S-10. La navigation mobile possède désormais un bouton explicitement typé, un nom accessible bilingue côté interface, `aria-expanded`, `aria-controls`, une cible nommée et une fermeture au clavier avec Échap. Le menu est exposé comme dialogue de navigation mobile. Les styles globaux ajoutent un anneau `:focus-visible` visible et respectent `prefers-reduced-motion` pour les animations, transitions et défilements.
 
-Le budget Vite S-10 est fixé à 400 kB brut par chunk, avec une cible gzip d’environ 110 kB pour le chunk analytique isolé. Le build final ne produit plus d’avertissement de chunk supérieur au budget.
+## Fichiers S-11
 
-## Fichiers modifiés pour S-10
-
-- `apps/web/src/App.tsx` : lazy loading de `LandingPage` et `ActivationPage`.
-- `apps/web/src/pages/ImpactPage.tsx` : chargement différé du graphique Recharts.
-- `apps/web/src/components/landing/SectionCTA.tsx` : référence WebP et métadonnées image.
-- `apps/web/src/pages/LoginPage.tsx` : référence WebP et métadonnées image.
-- `apps/web/src/vite.config.ts` : budget de chunks à 400 kB et découpage révisé.
-- `apps/web/package.json` : commande `assets:optimize`.
-- `scripts/optimize-raster-assets.py` : génération reproductible des variantes WebP.
-- `apps/web/src/assets/images/cta.webp` et `apps/web/public/images/auth-hero.webp` : assets optimisés.
-- `apps/web/src/i18n.tsx` : ajout des cinq clés d’export manquantes en français et en malgache, correction nécessaire pour compiler `origin/dev`.
+- `apps/web/src/components/layout/Navbar.tsx` : navigation mobile accessible et fermeture avec Échap.
+- `apps/web/src/index.css` : focus clavier et réduction des mouvements.
 
 ## Validation
 
+- `git diff --check` : réussi.
 - `pnpm --filter @cofound/shared build` : réussi.
 - `pnpm --filter @cofound/web build` : réussi.
 - `pnpm --filter @cofound/web lint` : réussi.
-- Aucun avertissement Vite de chunk supérieur à 400 kB.
-- Aucun secret, compte de recette ou mot de passe réel ajouté au dépôt.
-
-## PR et dépendances
-
-Les PR S-05 à S-08 restent à contrôler/fusionner selon l’état GitHub réel. S-09 est en PR #76. La Vague 4 reste ouverte avec les PR #73, #74 et #75.
-
-S-11 dépend de F-13 et porte sur l’accessibilité ainsi que le responsive sur mobile réel. S-12 dépend de F-12 et porte sur l’absence de chaînes en dur. S-13 dépend de F-17 et porte sur le déploiement, la restauration et la gestion d’incident. S-14 porte sur les CGU et la politique de confidentialité avec engagement de portabilité.
+- Le chunk analytique reste lazy et mesuré à 358,03 kB brut / 104,22 kB gzip.
+- Aucun secret ou compte de recette réel ajouté.
 
 ## Prochaines étapes concrètes
 
-1. Vérifier le diff, créer le commit conventionnel français de S-10 et pousser `feat/S-10-performance`.
-2. Ouvrir la PR S-10 vers `dev` et contrôler les vérifications CI.
-3. Créer `feat/S-11-accessibilite-responsive` depuis `origin/dev` à jour.
-4. Auditer les écrans prioritaires au clavier, avec lecteurs d’écran et viewport mobile, puis ajouter les corrections et tests disponibles.
-5. À chaque fin de session, maintenir ce fichier et `CHANGELOG.md` avec uniquement les changements réellement effectués.
+1. Créer le commit conventionnel français de S-11, pousser la branche et ouvrir sa PR vers `dev`.
+2. Contrôler puis fusionner la PR S-11 après les contrôles CI.
+3. Créer `feat/S-12-i18n` depuis `origin/dev` et auditer les chaînes en dur du frontend.
+4. Continuer S-13 puis S-14, en mettant à jour ce fichier et `CHANGELOG.md` à chaque fin de session.
+
+## Blocages connus
+
+La validation E2E réelle de S-09 reste bloquée par l’absence volontaire des variables `E2E_*` et des comptes de recette. Les PR de Vague 4 #73, #74 et #75 restent ouvertes indépendamment de cette chaîne.
