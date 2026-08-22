@@ -1,6 +1,6 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import { AffiliationStatus, OrganizationRole } from '@prisma/client'
-import type { PrismaService } from '../prisma/prisma.service.js'
+import { PrismaService } from '../prisma/prisma.service.js'
 
 const MANAGERS: OrganizationRole[] = [OrganizationRole.ORG_ADMIN, OrganizationRole.ORG_MANAGER]
 @Injectable()
