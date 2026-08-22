@@ -1,25 +1,51 @@
-# Context Handoff — Reprise de session CoFound.mg
+# Handoff CoFound.mg
+
 **Dernière mise à jour** : 2026-08-22
-**Phase** : Vague 5 — S-08 initialisé
-**Branche** : `feat/S-08-seed-demo`
-**État du workspace** : premier code S-08 local non committé. S-07 est publié dans la PR #71.
+**Vague** : Vague 5 — Sécurité et finition
+**Ticket courant** : S-10 finalisé localement ; S-11 à démarrer
+**Branche actuelle** : `feat/S-10-performance`
+**État du workspace** : changements S-10 locaux, non commités au moment de cette mise à jour.
 
-## Travail réalisé
-S-07 a été finalisé, committé et poussé avec le commit `87b72e3 feat(account): finaliser les statuts de compte`. La PR [#71](https://github.com/YonniVerse/CoFound.mg/pull/71) est ouverte vers `dev`. Elle comprend `GET /api/v1/me/status`, l’écran `/account-status`, les rendus ACTIVE/FROZEN/LEAVING/ALUMNI, la garde frontend redirigeant FROZEN et les tests HTTP 4/4.
+## État exact
 
-S-08 a été planifié et isolé sur `feat/S-08-seed-demo`, créée depuis `dev`. Le premier code ajoute `apps/api/prisma/seed-demo.ts` et la commande `seed:demo` au package API. Le script est idempotent et préfixe tous les identifiants métier par `demo-`. Il crée une institution, un partenaire, un staff OPS_ADMIN, un talent activé avec profil et identité, une affiliation de promotion 2026, une capacité partenaire, un projet de démonstration et une opportunité publiée.
+S-09 est publié dans la [PR #76](https://github.com/YonniVerse/CoFound.mg/pull/76) depuis `feat/S-09-e2e-playwright`. Playwright détecte les trois scénarios critiques et Chromium est installé. L’exécution locale est correctement configurée, mais les scénarios restent ignorés faute de variables `E2E_*`, de comptes authentifiés et de jeton d’activation de recette. S-09 n’est donc pas encore validé sur recette réelle.
 
-## Fichiers S-08
-- `apps/api/prisma/seed-demo.ts` : seed transactionnel et idempotent.
-- `apps/api/package.json` : commande `seed:demo`.
+S-10 est implémenté sur `feat/S-10-performance` depuis `origin/dev`. Le bundle initial conserve le lazy loading des routes et le shell public (`LandingPage`, `ActivationPage`) est désormais chargé à la demande. Le graphique Recharts de la page Impact est isolé dans un sous-chunk lazy. Le regroupement global Recharts a été retiré de `manualChunks` afin de ne pas charger le module analytique hors de sa route.
+
+Les images raster lourdes de la CTA et de l’authentification ont été converties en WebP, les références frontend ont été mises à jour, et les attributs `width`, `height`, `loading="lazy"` et `decoding="async"` ont été ajoutés. Les tailles observées sont passées de 206 621 à 145 142 octets pour la CTA et de 842 479 à 110 706 octets pour l’image d’authentification.
+
+Le budget Vite S-10 est fixé à 400 kB brut par chunk, avec une cible gzip d’environ 110 kB pour le chunk analytique isolé. Le build final ne produit plus d’avertissement de chunk supérieur au budget.
+
+## Fichiers modifiés pour S-10
+
+- `apps/web/src/App.tsx` : lazy loading de `LandingPage` et `ActivationPage`.
+- `apps/web/src/pages/ImpactPage.tsx` : chargement différé du graphique Recharts.
+- `apps/web/src/components/landing/SectionCTA.tsx` : référence WebP et métadonnées image.
+- `apps/web/src/pages/LoginPage.tsx` : référence WebP et métadonnées image.
+- `apps/web/src/vite.config.ts` : budget de chunks à 400 kB et découpage révisé.
+- `apps/web/package.json` : commande `assets:optimize`.
+- `scripts/optimize-raster-assets.py` : génération reproductible des variantes WebP.
+- `apps/web/src/assets/images/cta.webp` et `apps/web/public/images/auth-hero.webp` : assets optimisés.
+- `apps/web/src/i18n.tsx` : ajout des cinq clés d’export manquantes en français et en malgache, correction nécessaire pour compiler `origin/dev`.
 
 ## Validation
-S-07 passe les typechecks shared/API/frontend, le lint ciblé, le build frontend, `git diff --check` et 4/4 tests HTTP.
 
-Le premier socle S-08 passe `prisma generate`, le typecheck API et le lint du seed. `seed:demo` n’a pas encore été exécuté sur une base de recette. Les données ne contiennent aucun secret réel et le mot de passe des comptes de démonstration reste volontairement absent.
+- `pnpm --filter @cofound/shared build` : réussi.
+- `pnpm --filter @cofound/web build` : réussi.
+- `pnpm --filter @cofound/web lint` : réussi.
+- Aucun avertissement Vite de chunk supérieur à 400 kB.
+- Aucun secret, compte de recette ou mot de passe réel ajouté au dépôt.
 
-## Plan détaillé S-08
-Le backlog officiel définit S-08 comme **`seed:demo` : établissement, promotion, projets, partenaire, tous reconstructibles par commande**, dépendance F-06, responsabilité R. Il faut exécuter le seed sur une base de recette non productive, le rejouer pour vérifier l’absence de doublons, contrôler les relations et produire un rapport de comptage. La suite pourra ajouter une vérification automatisée du nombre d’organisations, utilisateurs, affiliations, projets et opportunités créés avec le préfixe `demo-`.
+## PR et dépendances
 
-## Prochaine action
-Exécuter `pnpm --filter @cofound/api seed:demo` sur une base de recette dédiée, corriger les incohérences Prisma éventuelles, rejouer la commande et ajouter les tests/contrôles d’idempotence avant le commit de S-08.
+Les PR S-05 à S-08 restent à contrôler/fusionner selon l’état GitHub réel. S-09 est en PR #76. La Vague 4 reste ouverte avec les PR #73, #74 et #75.
+
+S-11 dépend de F-13 et porte sur l’accessibilité ainsi que le responsive sur mobile réel. S-12 dépend de F-12 et porte sur l’absence de chaînes en dur. S-13 dépend de F-17 et porte sur le déploiement, la restauration et la gestion d’incident. S-14 porte sur les CGU et la politique de confidentialité avec engagement de portabilité.
+
+## Prochaines étapes concrètes
+
+1. Vérifier le diff, créer le commit conventionnel français de S-10 et pousser `feat/S-10-performance`.
+2. Ouvrir la PR S-10 vers `dev` et contrôler les vérifications CI.
+3. Créer `feat/S-11-accessibilite-responsive` depuis `origin/dev` à jour.
+4. Auditer les écrans prioritaires au clavier, avec lecteurs d’écran et viewport mobile, puis ajouter les corrections et tests disponibles.
+5. À chaque fin de session, maintenir ce fichier et `CHANGELOG.md` avec uniquement les changements réellement effectués.
