@@ -10,6 +10,20 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Composition éditoriale en cascade du login
+
+### Modifié
+
+- Correction du débordement du titre dans la card Projet principal en séparant son en-tête, sa zone de texte et son badge.
+- Retour à une composition asymétrique inspirée du hero landing : six cards positionnées en cascade avec des rotations légères.
+- Ajout de quatre liaisons SVG en pointillés, colorées avec les tokens `primary`, `secondary` et `impact`, placées derrière les cards.
+- Conservation de surfaces `bg-card`, bordures légères, rayons `rounded-2xl`, ombres et typographies du design system.
+- Modification publiée sur `dev` dans le commit `767be35`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Cards du login alignées sur le landing
 
 ### Modifié
