@@ -199,20 +199,17 @@ export default function LoginPage() {
         <div aria-hidden="true" className="pointer-events-none absolute -bottom-28 -left-24 h-96 w-96 rounded-full border border-white/20" />
 
         <div className="relative z-10 min-h-[680px] w-full max-w-2xl px-8 py-10 text-foreground lg:px-10">
-          <div className="flex items-center justify-between text-white">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/75">
-              {t('auth.login.hero.eyebrow')}
-            </span>
+          <div className="flex items-center justify-end text-white">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/25 bg-white/15 backdrop-blur-sm">
               <Network className="h-4 w-4 text-white" aria-hidden="true" />
             </div>
           </div>
 
-          <div className="relative mt-8 min-h-[560px]">
+          <div className="relative mt-8 min-h-[620px]">
             <div aria-hidden="true" className="absolute left-8 top-8 h-44 w-44 rounded-full bg-white/20 blur-3xl" />
 
             {/* Grande card principale : l’espace où une équipe prend forme */}
-            <div className="relative z-20 w-[calc(100%-2rem)] rounded-2xl border border-white/70 bg-background p-6 shadow-2xl sm:p-8">
+            <div className="relative z-20 mx-auto w-[calc(100%-4rem)] max-w-[32rem] rounded-2xl border border-white/70 bg-background p-5 shadow-2xl sm:p-6">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex min-w-0 items-center gap-3">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-lg font-black text-primary-foreground shadow-sm">
@@ -259,13 +256,27 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Cards flottantes : les trois promesses de la plateforme */}
-            <div className="absolute -right-2 top-28 z-30 hidden w-48 rotate-3 rounded-xl border border-border/80 bg-background p-4 shadow-xl sm:block">
+            {/* Cards flottantes : des repères vivants autour de l’écosystème */}
+            <div className="animate-cof-float-slow absolute -left-1 top-4 z-30 hidden w-44 -rotate-6 rounded-xl border border-border/80 bg-background p-4 shadow-xl sm:block">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{t('auth.login.hero.cardExploreLabel')}</span>
+                <ArrowUpRight className="h-4 w-4 text-primary" aria-hidden="true" />
+              </div>
+              <p className="mt-5 font-heading text-base font-black leading-tight text-foreground">{t('auth.login.hero.cardExploreTitle')}</p>
+              <p className="mt-2 text-xs font-medium leading-snug text-muted-foreground">{t('auth.login.hero.cardExploreMeta')}</p>
+              <div className="mt-4 flex gap-1">
+                <span className="h-1.5 flex-1 rounded-full bg-primary" />
+                <span className="h-1.5 flex-1 rounded-full bg-primary/50" />
+                <span className="h-1.5 flex-1 rounded-full bg-primary/20" />
+              </div>
+            </div>
+
+            <div className="animate-cof-float absolute -right-1 top-20 z-30 hidden w-48 rotate-3 rounded-xl border border-border/80 bg-background p-4 shadow-xl sm:block">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{t('auth.login.hero.cardMatchLabel')}</span>
                 <ArrowUpRight className="h-4 w-4 text-primary" aria-hidden="true" />
               </div>
-              <p className="mt-6 font-heading text-base font-black leading-tight text-foreground">{t('auth.login.hero.cardMatchTitle')}</p>
+              <p className="mt-5 font-heading text-base font-black leading-tight text-foreground">{t('auth.login.hero.cardMatchTitle')}</p>
               <p className="mt-2 text-xs font-medium text-muted-foreground">{t('auth.login.hero.cardMatchMeta')}</p>
               <div className="mt-4 flex gap-1">
                 <span className="h-1.5 flex-1 rounded-full bg-primary" />
@@ -274,14 +285,25 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="absolute -bottom-1 left-0 z-30 w-52 -rotate-3 rounded-xl border border-white/30 bg-secondary p-5 text-secondary-foreground shadow-xl">
+            <div className="animate-cof-float-slow absolute -right-2 top-72 z-30 hidden w-44 rotate-[-4deg] rounded-xl border border-white/30 bg-primary p-4 text-primary-foreground shadow-xl sm:block">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-foreground/75">{t('auth.login.hero.cardCommunityLabel')}</p>
+              <p className="mt-5 font-heading text-xl font-black leading-none">{t('auth.login.hero.cardCommunityTitle')}</p>
+              <p className="mt-2 text-xs font-medium leading-snug text-primary-foreground/75">{t('auth.login.hero.cardCommunityMeta')}</p>
+              <div className="mt-4 flex -space-x-1">
+                <span className="h-6 w-6 rounded-full border-2 border-primary bg-secondary" />
+                <span className="h-6 w-6 rounded-full border-2 border-primary bg-impact" />
+                <span className="h-6 w-6 rounded-full border-2 border-primary bg-background" />
+              </div>
+            </div>
+
+            <div className="animate-cof-float absolute -bottom-1 left-1 z-30 w-48 -rotate-3 rounded-xl border border-white/30 bg-secondary p-4 text-secondary-foreground shadow-xl">
               <p className="text-[10px] font-semibold uppercase tracking-wider opacity-75">{t('auth.login.hero.cardImpactLabel')}</p>
               <p className="mt-5 font-heading text-2xl font-black leading-none">{t('auth.login.hero.cardImpactTitle')}</p>
               <p className="mt-2 text-xs font-medium opacity-80">{t('auth.login.hero.cardImpactMeta')}</p>
               <div className="mt-4 h-1.5 w-full rounded-full bg-secondary-foreground/20"><div className="h-full w-3/4 rounded-full bg-secondary-foreground" /></div>
             </div>
 
-            <div className="absolute -bottom-8 right-5 z-30 w-52 rotate-2 rounded-xl border border-border/80 bg-background p-4 shadow-xl">
+            <div className="animate-cof-float-slow absolute -bottom-5 right-3 z-30 w-48 rotate-2 rounded-xl border border-border/80 bg-background p-4 shadow-xl">
               <div className="flex items-center gap-2 text-primary">
                 <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                 <span className="text-[10px] font-semibold uppercase tracking-wider">{t('auth.login.hero.cardTrustLabel')}</span>
@@ -291,10 +313,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="mt-8 flex items-center justify-between text-xs font-medium text-white/75">
-            <span>{t('auth.login.hero.brand')}</span>
-            <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white" /> {t('auth.login.hero.tagline')}</span>
-          </div>
         </div>
       </div>
     </div>
