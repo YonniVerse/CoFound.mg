@@ -711,3 +711,24 @@ export const dreamMatchNotInterestedResponseSchema = z.object({
 })
 export type DreamMatchNotInterestedResponse = z.infer<typeof dreamMatchNotInterestedResponseSchema>
 
+// ─── Signalement transverse (M-14) ─────────────────────────────────────────────
+
+export const reportTargetTypeSchema = z.enum(['PROFILE', 'MESSAGE', 'PROJECT', 'POST'])
+export const reportReasonSchema = z.enum(['HARASSMENT', 'HATE_SPEECH', 'SPAM', 'FRAUD', 'TOXIC_CONTENT'])
+export const reportCreateSchema = z.object({
+  targetType: reportTargetTypeSchema,
+  targetId: idSchema,
+  reason: reportReasonSchema,
+  description: z.string().trim().max(2000).nullable().optional(),
+})
+export const reportResponseSchema = z.object({
+  id: idSchema,
+  targetType: reportTargetTypeSchema,
+  targetId: idSchema,
+  reason: reportReasonSchema,
+  status: z.literal('OPEN'),
+})
+export type ReportCreateInput = z.infer<typeof reportCreateSchema>
+export type ReportResponse = z.infer<typeof reportResponseSchema>
+export type ReportTargetType = z.infer<typeof reportTargetTypeSchema>
+

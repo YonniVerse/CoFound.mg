@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { getProjectChannelMessages, openProjectChannel, sendProjectChannelMessage } from "@/data/projectChannelApi";
 import type { ConversationMessage } from "@cofound/shared";
+import { ReportButton } from "@/components/shared/ReportButton";
 
 export default function ProjectChannelPage() {
   const { id: projectId = "" } = useParams<{ id: string }>();
@@ -73,6 +74,7 @@ export default function ProjectChannelPage() {
                 <time className="text-muted-foreground" dateTime={message.createdAt.toISOString()}>{message.createdAt.toLocaleString("fr-FR")}</time>
               </div>
               <p className="mt-2 whitespace-pre-wrap text-sm">{message.body}</p>
+              <div className="mt-2 flex justify-end"><ReportButton targetType="MESSAGE" targetId={message.id} /></div>
             </article>
           ))}
         </section>

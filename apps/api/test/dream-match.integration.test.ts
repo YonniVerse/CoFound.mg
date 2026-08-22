@@ -6,6 +6,8 @@ import { DreamMatchController } from '../src/dream-match/dream-match.controller.
 import { DreamMatchScoringController } from '../src/dream-match/dream-match-scoring.controller.js'
 import { DreamMatchScoringService } from '../src/dream-match/dream-match-scoring.service.js'
 import { DreamMatchService } from '../src/dream-match/dream-match.service.js'
+import { ReportController } from '../src/report/report.controller.js'
+import { ReportService } from '../src/report/report.service.js'
 
 function createFakeService() {
   const calls: Array<{ method: string; userId: string; input?: unknown }> = []
@@ -117,6 +119,39 @@ test('M-06 expose GET /api/v1/me/dream-match/suggestions via HTTP', async () => 
   }
 })
 
+
+test('M-14 expose la création d’un signalement via HTTP sans identité civile', async () => {
+  const calls: Array<{ reporterId: string; input: unknown }> = []
+  const fakeService: Pick<ReportService, 'create'> = {
+    create: async (reporterId, input) => {
+      calls.push({ reporterId, input })
+      return { id: 'report-1', targetType: 'MESSAGE', targetId: 'message-2', reason: 'HARASSMENT', status: 'OPEN' }
+    },
+  }
+  @Module({ controllers: [ReportController], providers: [{ provide: ReportService, useValue: fakeService }] })
+  class TestModule {}
+  const app = await NestFactory.create(TestModule, { logger: false })
+  app.use((request: { user?: { userId: string } }, _response: unknown, next: () => void) => {
+    request.user = { userId: 'reporter-1' }
+    next()
+  })
+  app.setGlobalPrefix('api/v1')
+  await app.listen(0, '127.0.0.1')
+  try {
+    const response = await fetch(`${await app.getUrl()}/api/v1/reports`, {
+      method: 'POST',
+      headers: { authorization: 'Bearer test-token', 'content-type': 'application/json' },
+      body: JSON.stringify({ targetType: 'MESSAGE', targetId: 'message-2', reason: 'HARASSMENT', description: 'Contenu à examiner' }),
+    })
+    assert.equal(response.status, 201)
+    const body = await response.json() as Record<string, unknown>
+    assert.deepEqual(body, { id: 'report-1', targetType: 'MESSAGE', targetId: 'message-2', reason: 'HARASSMENT', status: 'OPEN' })
+    assert.equal('reporterId' in body, false)
+    assert.deepEqual(calls, [{ reporterId: 'reporter-1', input: { targetType: 'MESSAGE', targetId: 'message-2', reason: 'HARASSMENT', description: 'Contenu à examiner' } }])
+  } finally {
+    await app.close()
+  }
+})
 
 test('M-08 expose le retour pas intéressé via HTTP', async () => {
   const calls: Array<{ userId: string; talentId: string }> = []

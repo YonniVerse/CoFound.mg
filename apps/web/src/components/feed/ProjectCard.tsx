@@ -5,6 +5,7 @@ import { SkillTag } from "@/components/shared/SkillTag";
 import { Button } from "@/components/ui/button";
 import type { ProjectFeedCard } from "@cofound/shared";
 import { Users, Briefcase } from "lucide-react";
+import { ReportButton } from "@/components/shared/ReportButton";
 
 export interface ProjectData {
   id: string;
@@ -91,7 +92,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
           <div className="text-xs text-muted-foreground font-medium">
             Projet CoFound.mg
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
+            <ReportButton targetType="PROJECT" targetId={project.id} />
             <Button variant="outline" size="sm" className="h-8 text-xs" asChild>
               <Link to={`/projects/${project.id}`}>Voir le projet</Link>
             </Button>

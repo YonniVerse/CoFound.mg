@@ -2,6 +2,7 @@ import type { TalentFeedCard } from "@cofound/shared";
 import { Avatar } from "@/components/shared/Avatar";
 import { Button } from "@/components/ui/button";
 import { Eye, MessageSquare, Clock } from "lucide-react";
+import { ReportButton } from "@/components/shared/ReportButton";
 
 interface TalentCardProps {
   talent: TalentFeedCard;
@@ -116,6 +117,7 @@ export function TalentCard({ talent }: TalentCardProps) {
             <Eye className="h-4 w-4" />
             <span>Profil</span>
           </Button>
+          <ReportButton targetType="PROFILE" targetId={talent.id} />
           <Button
             size="sm"
             className="h-9 px-3.5 text-xs sm:text-sm font-medium rounded-lg cursor-pointer gap-1.5"
