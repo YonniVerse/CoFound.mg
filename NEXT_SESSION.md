@@ -1,49 +1,49 @@
-> Fichier de reprise de contexte. Chargé automatiquement par `CLAUDE.md`.
-> Mis à jour par la commande `/handoff` en fin de session.
->
-> **Ne contient que l’état vivant.** L’historique va dans `CHANGELOG.md`, les décisions arrêtées
-> dans `CLAUDE.md`, le détail dans `docs/`.
+# Context Handoff — Reprise de session CoFound.mg
 
-**Dernière mise à jour** : 2026-08-21
-**Phase** : Vague 1 — démarrage de E-16
-**Branche** : `E-16`, issue de `dev` synchronisé après fusion de la PR #38
-**État du workspace** : E-15 est fusionné dans `dev` ; E-16 est implémenté sur sa branche et prêt pour revue
+> Lire ce fichier en premier à chaque nouvelle session. Sources de vérité : le dépôt et `docs/plan-de-developpement.md`.
 
----
+## 1. État actuel
 
-## 1. Où on en est
+La branche active est `feat/M-15-notifications`. Elle contient des changements non commités pour M-15/M-16, les interfaces spécialisées des feeds, le parcours de candidature et les premiers déclencheurs de notifications. Les changements ne sont pas encore fusionnés dans `dev`.
 
-| Élément | État |
-|---|---|
-| Vague 0 — Fondations | ✅ `F-01` à `F-19` intégrés dans `dev` |
-| E-01 à E-08 | ✅ tickets d’import et dépendances email fusionnés ou intégrés |
-| E-12 — API et modèle de profil | ✅ fusionné dans `dev` |
-| E-13 — Onboarding progressif | ✅ fusionné dans `dev` |
-| E-14 — Rappel de complétion | ✅ fusionné dans `dev` |
-| E-15 — Registre des consentements | ✅ PR #38 fusionnée dans `dev` |
-| F-08 — Organisations et capacités | ✅ dépendance vérifiée dans `dev` |
-| F-13 — RBAC et permissions | ✅ dépendance vérifiée dans `dev` |
-| E-16 — Console établissement | ✅ overview, UI-34, membres et rôles implémentés ; PR #39 à finaliser |
+## 2. Travail réellement effectué pendant cette session
 
----
+Les routes `/projects` et `/profiles` utilisent maintenant des pages distinctes : `ProjectsFeedPage` consomme `useFeedData` et `/projects/feed`, tandis que `TalentsFeedPage` consomme `useTalentFeedData` et `/talents/feed`. Les deux pages ont leurs recherches, états de chargement, erreurs, vides et pagination, et affichent uniquement les cartes adaptées. Le découpage lazy conserve la contrainte de bundle.
 
-## 2. E-16 — socle en cours
+Le hook `useMyApplications` n’utilise plus de candidatures fictives lorsque l’API est vide ou indisponible. Les erreurs métier sont remontées à l’interface pour afficher les cas candidature déjà existante, poste fermé, projet fermé, non-éligibilité et retrait impossible. Le contrôle backend des candidatures refuse maintenant les projets dont le statut n’est pas `RECRUITING` ainsi que les comptes `ALUMNI`, `DISABLED` ou `FROZEN`.
 
-L’endpoint `GET /institution/overview` est protégé par `ORG_READ` et ne retourne que les organisations de type `INSTITUTION` auxquelles l’utilisateur appartient. Les métriques sont agrégées au niveau organisationnel et toute valeur strictement inférieure à `MIN_AGGREGATION_THRESHOLD` (5) est remplacée par `null`. Aucun champ de genre n’est utilisé ou exposé.
+Le service de connexion déclenche `connection.accepted`, le service de messagerie déclenche `message.received` pour les autres participants et le service de candidatures déclenche `application.accepted` après acceptation. Une route de résolution de signalement `PATCH /reports/:id/resolve`, protégée par `moderation:act`, déclenche `report.resolved`. Les événements créent une notification in-app et ajoutent un job email via `NotificationService`.
 
-La page `/institution` fournit l’état de chargement, l’erreur, le premier usage sans chiffres à zéro, l’action principale « Importer une promotion », les cartes de métriques masquées et les cinq derniers lots d’import. Les liens vers la liste et le rapport des lots réutilisent les routes E-08 existantes. Les routes `/organizations/:organizationId/members` permettent de lister, inviter, modifier le rôle et retirer un membre. Les mutations sont transactionnelles lorsqu’elles créent une invitation et protègent le dernier administrateur ; elles sont auditées au niveau contrôleur.
+## 3. Fichiers importants modifiés
 
----
+- `apps/web/src/pages/ProjectsFeedPage.tsx` et `apps/web/src/pages/TalentsFeedPage.tsx` : nouveaux feeds dédiés.
+- `apps/web/src/App.tsx` : routes `/projects` et `/profiles` spécialisées.
+- `apps/web/src/hooks/useMyApplications.ts` : suppression des fallbacks démo et remontée des erreurs métier.
+- `apps/api/src/applications/applications.service.ts` et `.module.ts` : contrôles d’éligibilité et événement d’acceptation.
+- `apps/api/src/connection/connection.service.ts` et `.module.ts` : événement d’acceptation de connexion.
+- `apps/api/src/messaging/messaging.service.ts` et `.module.ts` : événement de nouveau message.
+- `apps/api/src/report/report.service.ts`, `.controller.ts` et `.module.ts` : résolution et notification de signalement.
+- `apps/api/src/notifications/*`, `packages/shared/src/schemas.ts` : socle M-15/M-16 existant sur la branche.
+- `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-## 3. Points de vigilance
+## 4. Validation exécutée
 
-- Toute route de console doit vérifier le rôle contextuel de l’utilisateur dans l’organisation, et non une organisation fournie librement par le client.
-- Le seuil de cinq personnes s’applique à chaque agrégat ; aucune donnée individuelle ni donnée de genre ne doit apparaître.
-- Les mutations futures de E-16 (membres et rôles) devront être transactionnelles et auditées.
-- Les alertes d’invitations anciennes et de rebonds seront traitées dans l’intégration détaillée E-17.
+La suite API passe maintenant avec **121/121 tests réussis**, dont quatre tests unitaires des événements `connection.accepted`, `message.received`, `application.accepted` et `report.resolved`, ainsi qu’un test d’intégration HTTP de `PATCH /reports/:id/resolve`. Le typecheck et le lint API passent. Le typecheck, le lint et le build frontend passent. `git diff --check` passe. Les chunks applicatifs restent sous 500 kB ; le chunk de données observé est inférieur à 400 kB.
 
----
+## 5. Contraintes respectées
 
-## 4. Prochaine action
+Les cartes talents réutilisent les données pseudonymisées de `TalentCard`. Les notifications utilisent le pseudonyme comme nom d’affichage et l’adresse email comme destinataire technique ; aucune identité civile n’est introduite dans les réponses utilisateur. Les permissions restent imposées par les contrôleurs/backend. Les mutations critiques de domaine conservent leurs transactions Prisma.
 
-Les tests API passent avec 53 tests. Typecheck, lint, validation Prisma avec une URL locale de schéma, builds API/web et `check:bundle` passent. Le découpage dynamique des pages réduit le JavaScript initial à 125 964 octets gzip, sous le seuil strict de 290 221. La PR #39 est prête pour revue et fusion.
+## 6. Points à vérifier ensuite
+
+Le détail projet et la candidature utilisent encore des identifiants de postes dérivés dans `ProjectActionCard`, car le modèle frontend historique ne transporte pas encore les vrais `OpenPosition.id`. Il faut créer ou exposer un read-model candidat-facing avec les postes réels pour supprimer cette approximation.
+
+La résolution de signalement existe maintenant techniquement, mais elle devra être complétée par une vraie file de modération, une liste des signalements, un écran staff, un historique d’actions et des tests de permission. Le statut de résolution doit également être confirmé par les spécifications officielles de la chaîne S-01 à S-04.
+
+Les tests ciblés des quatre événements et de la résolution HTTP sont maintenant ajoutés. Il reste à couvrir l’idempotence ou la répétition d’une décision, les erreurs de queue et les scénarios authentifiés avec une base de recette réelle. Il faut aussi vérifier que les erreurs API renvoient bien les codes métier ajoutés (`PROJECT_CLOSED`, `NOT_ELIGIBLE`, etc.) dans tous les environnements.
+
+## 7. État Git et prochaine action
+
+Le commit `6546556` (`feat(notifications): raccorder les événements métier`) est poussé sur `origin/feat/M-15-notifications`. La PR [#67](https://github.com/YonniVerse/CoFound.mg/pull/67) est ouverte vers `dev`. La branche locale est propre et suit sa branche distante. GitHub retourne actuellement `UNSTABLE` pour l’état de fusion ; le détail des contrôles n’est pas accessible avec le jeton courant via l’API GitHub CLI. La validation locale reste verte : 121/121 tests API, typecheck, lint et build.
+
+Prochaine action : examiner les contrôles CI de la PR #67 depuis GitHub, corriger toute défaillance éventuelle, puis faire relire et fusionner la PR. Ne pas modifier les backlogs officiels sans demande explicite.

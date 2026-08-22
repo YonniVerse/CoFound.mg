@@ -70,6 +70,23 @@ export class ImportBatchService {
     return { batchId, status: ImportBatchStatus.CANCELLED, changed: true }
   }
 
+  async activationLinks(batchId: string, actorId: string) {
+    await this.assertBatchAccess(batchId, actorId, true)
+    return this.prisma.$transaction(async (transaction) => {
+      const batch = await transaction.importBatch.findUnique({ where: { id: batchId }, include: { rows: { where: { result: ImportRowResult.CREATED }, include: { user: true }, orderBy: { lineNumber: 'asc' } } } })
+      if (!batch) throw new NotFoundException('Lot d’import introuvable.')
+      if (batch.status !== ImportBatchStatus.APPLIED) throw new ConflictException('Les liens ne sont disponibles qu’après application du lot.')
+      const links: Array<{ email: string; url: string }> = []
+      for (const row of batch.rows) {
+        if (!row.user || row.user.status !== AccountStatus.INVITED) continue
+        const token = randomBytes(32).toString('base64url')
+        await transaction.invitationToken.create({ data: { userId: row.user.id, importBatchId: batch.id, tokenHash: this.hashToken(token), expiresAt: new Date(Date.now() + INVITATION_EXPIRY_DAYS * 24 * 60 * 60 * 1000) } })
+        links.push({ email: row.user.email, url: `${process.env.WEB_APP_URL ?? 'http://localhost:5173'}/activation/${token}` })
+      }
+      return { batchId, links }
+    })
+  }
+
   async resendInvitations(batchId: string, actorId: string) {
     await this.assertBatchAccess(batchId, actorId, true)
     const invitations: PendingInvitation[] = []
