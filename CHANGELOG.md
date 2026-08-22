@@ -752,3 +752,15 @@ Trois tests ciblés couvrent le seuil temporel, le regroupement de plusieurs can
 ### En cours
 
 - GitHub indique actuellement `UNSTABLE` pour l’état de fusion de la PR ; le détail des contrôles n’est pas accessible via le jeton CLI courant. La PR doit être revue depuis GitHub avant fusion.
+
+---
+
+## 2026-08-22 — Fusion des chaînes notifications, auth et établissement
+
+Les PR #67, #43, #44, #40, #41 et #42 ont été fusionnées dans `dev`, dans l’ordre des dépendances. Cela clôture l’intégration des notifications M-15/M-16, de l’activation E-10, de la connexion E-11, des rapports d’import E-17, des affiliations E-18 et de l’annuaire E-19.
+
+Les branches E-10, E-11, E-18 et E-19 ont été synchronisées avec `dev` avant fusion afin de résoudre les conflits du routeur frontend et des traductions sans perdre les routes récemment ajoutées. Le commit `bee8499` corrige la mise en session après activation en ajoutant `setAccessToken` au contexte d’authentification.
+
+Après reconstruction de `@cofound/shared`, la validation intégrée passe avec 128/128 tests API, lint, typecheck et build frontend réussis. La reconstruction du package partagé est nécessaire après les fusions lorsque les tests exécutent des exports nouvellement ajoutés.
+
+La prochaine chaîne prioritaire est désormais S-01, puis S-02 et S-03. S-04 peut être préparé en parallèle après vérification de l’audit d’accès à l’identité.

@@ -4,7 +4,7 @@
 
 ## 1. État actuel
 
-La branche active est `feat/M-15-notifications`. Elle contient des changements non commités pour M-15/M-16, les interfaces spécialisées des feeds, le parcours de candidature et les premiers déclencheurs de notifications. Les changements ne sont pas encore fusionnés dans `dev`.
+La branche active est `dev`. Les PR M-15/M-16, E-10, E-11, E-17, E-18 et E-19 ont été fusionnées. Le commit de stabilisation `bee8499` restaure la mise en session après activation, nécessaire au typecheck et au parcours E-10.
 
 ## 2. Travail réellement effectué pendant cette session
 
@@ -28,7 +28,7 @@ Le service de connexion déclenche `connection.accepted`, le service de messager
 
 ## 4. Validation exécutée
 
-La suite API passe maintenant avec **121/121 tests réussis**, dont quatre tests unitaires des événements `connection.accepted`, `message.received`, `application.accepted` et `report.resolved`, ainsi qu’un test d’intégration HTTP de `PATCH /reports/:id/resolve`. Le typecheck et le lint API passent. Le typecheck, le lint et le build frontend passent. `git diff --check` passe. Les chunks applicatifs restent sous 500 kB ; le chunk de données observé est inférieur à 400 kB.
+Après fusion, la suite API passe avec **128/128 tests réussis**, dont les tests des quatre événements métier et le test d’intégration HTTP de `PATCH /reports/:id/resolve`. Le lint et le typecheck du monorepo passent. Le build frontend passe et les chunks applicatifs restent sous 500 kB. Le premier run de tests a révélé un artefact `@cofound/shared` obsolète ; la reconstruction du package partagé a résolu le problème.
 
 ## 5. Contraintes respectées
 
@@ -44,6 +44,6 @@ Les tests ciblés des quatre événements et de la résolution HTTP sont mainten
 
 ## 7. État Git et prochaine action
 
-Le commit `6546556` (`feat(notifications): raccorder les événements métier`) est poussé sur `origin/feat/M-15-notifications`. La PR [#67](https://github.com/YonniVerse/CoFound.mg/pull/67) est ouverte vers `dev`. La branche locale est propre et suit sa branche distante. GitHub retourne actuellement `UNSTABLE` pour l’état de fusion ; le détail des contrôles n’est pas accessible avec le jeton courant via l’API GitHub CLI. La validation locale reste verte : 121/121 tests API, typecheck, lint et build.
+Les commits principaux sont intégrés dans `origin/dev` : M-15/M-16 via PR #67, E-10 via PR #43, E-11 via PR #44, E-17 via PR #40, E-18 via PR #41 et E-19 via PR #42. Les branches E-10, E-18, E-19 et E-11 ont été synchronisées avec dev avant fusion pour résoudre les conflits de routeur et de traductions. La branche locale `dev` est à jour et propre après le commit `bee8499` (`fix(auth): restaurer la session après activation`).
 
-Prochaine action : examiner les contrôles CI de la PR #67 depuis GitHub, corriger toute défaillance éventuelle, puis faire relire et fusionner la PR. Ne pas modifier les backlogs officiels sans demande explicite.
+Prochaine action : démarrer S-01, la file de modération priorisée, puis enchaîner S-02 et S-03. S-04 peut être préparé en parallèle après confirmation de la journalisation d’identité. Ne pas modifier les backlogs officiels sans demande explicite.
