@@ -10,6 +10,28 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — CI staging et initialisation M-14
+
+### Ajouté
+
+- PR #64 : génération explicite du client Prisma avant les contrôles CI.
+- Workflow `deploy-staging.yml` déclenché par `dev` ou manuellement, avec environnement GitHub `staging` et secrets `STAGING_*`.
+- Branche `feat/M-14-reporting` et socle de signalement transverse pour les cibles PROFILE, MESSAGE, PROJECT et POST.
+- Route `POST /api/v1/reports` avec validation Zod et création transactionnelle.
+
+### Validation
+
+- Prisma generate, lint et typecheck API réussis.
+- 113/113 tests API réussis, dont les tests unitaires M-14.
+- Les secrets de l’environnement staging restent à configurer pour permettre un déploiement effectif.
+
+### En cours
+
+- Ajouter les boutons de signalement sur les écrans métier et les tests HTTP M-14.
+- Revoir et fusionner la PR #64.
+
+---
+
 ## 2026-08-22 — Démarrage de M-06 Scoring Dream-Match
 
 ### Ajouté
