@@ -841,3 +841,6 @@ export type PersonalDataExportStatus = z.infer<typeof personalDataExportStatusSc
 export type PersonalDataExportRequest = z.infer<typeof personalDataExportRequestSchema>
 export type PersonalDataExport = z.infer<typeof personalDataExportSchema>
 export type PersonalDataExportResponse = z.infer<typeof personalDataExportResponseSchema>
+
+export const accountStatusResponseSchema = z.object({ status: accountStatusSchema, messageKey: z.string(), canAppeal: z.boolean(), endsAt: z.coerce.date().nullable() })
+export type AccountStatusResponse = z.infer<typeof accountStatusResponseSchema>

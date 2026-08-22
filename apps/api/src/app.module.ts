@@ -25,11 +25,10 @@ import { TalentsModule } from './talents/talents.module.js'
 import { DreamMatchModule } from './dream-match/dream-match.module.js'
 import { ReportModule } from './report/report.module.js'
 import { BlockModule } from './block/block.module.js'
-import { ReferenceDataModule } from './reference-data/reference-data.module.js'
-import { ProductHealthModule } from './health/product-health.module.js'
+import { AccountStatusModule } from './account-status/account-status.module.js'
 
 @Module({
-  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, PrivacyModule, AuditModule, BounceModule, ImportModule, ProfileModule, OnboardingModule, ConsentModule, InstitutionModule, ApplicationsModule, ProjectModule, ConnectionModule, MessagingModule, SearchModule, ProjectsModule, TalentsModule, DreamMatchModule, ReportModule, BlockModule, ReferenceDataModule, ProductHealthModule],
+  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, PrivacyModule, AuditModule, BounceModule, ImportModule, AccountStatusModule, ProfileModule, OnboardingModule, ConsentModule, InstitutionModule, ApplicationsModule, ProjectModule, ConnectionModule, MessagingModule, SearchModule, ProjectsModule, TalentsModule, DreamMatchModule, ReportModule, BlockModule],
   controllers: [HealthController, MeController],
   providers: [
     { provide: APP_FILTER, useClass: SentryGlobalFilter },
