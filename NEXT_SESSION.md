@@ -7,30 +7,31 @@
 
 ## 1. État actuel
 
-Le correctif du panneau latéral de `FeedPage` est appliqué localement et n’est pas encore committé. Le dépôt est propre hormis cette modification volontaire.
+Le correctif définitif du panneau latéral de `FeedPage` est publié sur `origin/dev` dans le commit `85041a2`. Le dépôt local est propre et synchronisé avec GitHub.
 
 ## 2. Tâches terminées
 
-Le conteneur principal du feed utilise désormais `items-start`. Le panneau latéral utilise `self-start`, en complément de `sticky top-[90px] h-fit shrink-0`. Ces classes empêchent l’étirement flex du panneau, qui pouvait égaler la hauteur de la colonne principale et empêcher l’effet sticky d’être visible.
+Le conteneur parent du feed utilise `items-start` et le panneau latéral utilise `self-start`, `sticky top-[90px]`, `h-fit` et `shrink-0`. Le `overflow-x-hidden` du parent a été retiré : cette propriété créait un conteneur de défilement implicite et empêchait `position: sticky` de suivre le scroll de la page.
+
+Les améliorations de responsive et de débordement déjà présentes sur `origin/dev` sont conservées : `w-full`, `min-w-0` sur les colonnes et `overflow-x-hidden` n’est plus utilisé sur le parent sticky.
 
 ## 3. Fichiers importants modifiés
 
-- `apps/web/src/pages/FeedPage.tsx` : ajout de `items-start` sur le conteneur des deux colonnes et de `self-start` sur le panneau sticky.
-
-Aucun autre fichier source n’a été modifié.
+- `apps/web/src/pages/FeedPage.tsx` : correction du contexte de défilement du panneau sticky.
+- `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
 ## 4. Validations et problèmes connus
 
-Le typecheck web a réussi. Le lint web a réussi. Le build web a réussi après la compilation préalable de `@cofound/shared`.
+Le typecheck web et le lint web ont réussi après le dernier correctif. Le build web avait également réussi après la compilation préalable de `@cofound/shared`.
 
-Une installation complète avec `pnpm install --frozen-lockfile` échoue dans cet environnement lors de la compilation native d’`argon2`, car aucun compilateur C (`cc`) n’est disponible. La validation a été poursuivie avec `pnpm install --frozen-lockfile --ignore-scripts`; cela ne modifie pas le code applicatif.
+Une installation complète avec `pnpm install --frozen-lockfile` échoue dans cet environnement lors de la compilation native d’`argon2`, car aucun compilateur C (`cc`) n’est disponible. L’installation de validation a donc utilisé `pnpm install --frozen-lockfile --ignore-scripts`.
 
-La confirmation visuelle dans un navigateur desktop reste à faire. Les règles CSS générées dans le bundle contiennent bien `position: sticky`, `top: 90px`, `align-items: flex-start` et `align-self: flex-start`.
+La validation visuelle doit être confirmée dans le navigateur desktop sur `/feed`, après rechargement du bundle publié, en faisant défiler la colonne principale.
 
 ## 5. Prochaine action
 
-Lancer l’application web sur le port 5173, ouvrir `/feed` en viewport `lg`, faire défiler la colonne principale et confirmer visuellement que le panneau reste à 90 px du haut ; si nécessaire, ajuster uniquement `top-[90px]` ou la hauteur interne du panneau.
+Recharger `/feed` en viewport desktop puis faire défiler la page pour confirmer que le panneau reste à 90 px du haut ; si le comportement est correct, aucune modification supplémentaire n’est nécessaire.
 
 ## 6. Décisions et contexte de reprise
 
-Le problème est traité comme un problème de contexte flex : `sticky` doit rester un enfant de la page qui défile, avec une hauteur propre et un alignement au début. Aucun changement d’architecture, de périmètre, de RBAC, de données privées ou de stack n’a été introduit. Aucun commit ni push n’a été effectué.
+La cause retenue était le `overflow-x-hidden` du parent : lorsqu’un seul axe est masqué, le navigateur peut établir un contexte de scroll implicite qui neutralise le sticky. Le débordement horizontal est traité par `min-w-0` sur les enfants flex. Aucun changement d’architecture, de périmètre, de RBAC, de données privées ou de stack n’a été introduit. Les commits `85041a2` et `88d558a` sont publiés sur `dev`.

@@ -10,6 +10,18 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Correction définitive du panneau sticky du feed
+
+### Modifié
+
+- Retrait de `overflow-x-hidden` sur le parent du panneau dans `FeedPage.tsx`, car cette règle créait un contexte de défilement implicite et empêchait `position: sticky` de suivre le scroll de la page.
+- Conservation de `items-start`, `self-start` et `min-w-0` pour empêcher l’étirement flex et les débordements horizontaux.
+- Correctif publié sur `dev` dans le commit `85041a2`.
+
+### Validé
+
+- Typecheck web et lint web réussis.
+
 ## 2026-08-22 — Correction du panneau sticky du feed
 
 ### Modifié
