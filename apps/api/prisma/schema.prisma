@@ -252,15 +252,20 @@ model TalentProfile {
   availabilityHours   Int?
   goals               Json?
   sectors             Json?
-  completion          Int                @default(0)
-  visibleInTalentFeed Boolean            @default(false)
+  completion                Int                @default(0)
+  visibleInTalentFeed       Boolean            @default(false)
+  onboardingStep            Int                @default(1)
+  onboardingCompletedSteps  Json?
+  onboardingUpdatedAt       DateTime           @default(now())
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
   user                User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   field               Field?             @relation(fields: [fieldId], references: [id])
   skills              TalentSkill[]
-  dreamMatchProfile   DreamMatchProfile?
-  posts               Post[]
+    dreamMatchProfile   DreamMatchProfile?
+  dreamMatchExclusionsMade     DreamMatchExclusion[] @relation("DreamMatchExclusionSeeker")
+  dreamMatchExclusionsReceived DreamMatchExclusion[] @relation("DreamMatchExclusionCandidate")
+  posts                 Post[]
 
   @@index([visibleInTalentFeed])
   @@index([fieldId])
@@ -495,6 +500,18 @@ model DreamMatchProfile {
   sectors           Json?
   talent            TalentProfile     @relation(fields: [talentId], references: [id], onDelete: Cascade)
   skills            DreamMatchSkill[]
+}
+
+model DreamMatchExclusion {
+  id          String        @id @default(cuid())
+  seekerId    String
+  candidateId String
+  createdAt   DateTime      @default(now())
+  seeker      TalentProfile @relation("DreamMatchExclusionSeeker", fields: [seekerId], references: [id], onDelete: Cascade)
+  candidate   TalentProfile @relation("DreamMatchExclusionCandidate", fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([seekerId, candidateId])
+  @@index([seekerId])
 }
 
 model DreamMatchSkill {

@@ -20,8 +20,8 @@ interface DashboardLayoutProps {
 
 const NAVIGATION = [
   { name: "Feed", href: "/feed", icon: Home },
-  { name: "Explorer Projets", href: "/projects", icon: Search },
-  { name: "Explorer Profils", href: "/profiles", icon: Users },
+  { name: "Recherche", href: "/search", icon: Search },
+  { name: "Explorer Projets", href: "/projects", icon: Users },
   { name: "Messages", href: "/messages", icon: MessageSquare, badge: 3 },
   { name: "Impact & Parité", href: "/impact", icon: BarChart2 },
   { name: "Mon Profil", href: "/profile/me", icon: User },

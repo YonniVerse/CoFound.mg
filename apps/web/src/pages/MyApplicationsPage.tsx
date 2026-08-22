@@ -1,0 +1,217 @@
+import { useState } from "react";
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { useMyApplications } from "@/hooks/useMyApplications";
+import { Button } from "@/components/ui/button";
+import {
+  Clock,
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  Briefcase,
+  Calendar,
+  MessageSquare,
+  Sparkles,
+} from "lucide-react";
+import type { ApplicationStatus } from "@cofound/shared";
+
+type ApplicationFilter = "ALL" | ApplicationStatus;
+
+const statusBadges: Record<
+  ApplicationStatus,
+  { label: string; icon: React.ReactNode; color: string }
+> = {
+  PENDING: {
+    label: "En attente",
+    icon: <Clock className="h-3.5 w-3.5" />,
+    color: "bg-amber-500/10 text-amber-600 border-amber-500/20",
+  },
+  ACCEPTED: {
+    label: "Acceptée",
+    icon: <CheckCircle2 className="h-3.5 w-3.5" />,
+    color: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+  },
+  REJECTED: {
+    label: "Refusée",
+    icon: <XCircle className="h-3.5 w-3.5" />,
+    color: "bg-destructive/10 text-destructive border-destructive/20",
+  },
+  WITHDRAWN: {
+    label: "Retirée",
+    icon: <AlertTriangle className="h-3.5 w-3.5" />,
+    color: "bg-muted text-muted-foreground border-border",
+  },
+};
+
+export default function MyApplicationsPage() {
+  const { applications, isLoading, withdrawApplication } = useMyApplications();
+  const [filter, setFilter] = useState<ApplicationFilter>("ALL");
+  const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
+
+  const filteredApplications = applications.filter((app) => {
+    if (filter === "ALL") return true;
+    return app.status === filter;
+  });
+
+  const handleWithdraw = async (id: string) => {
+    try {
+      setWithdrawingId(id);
+      await withdrawApplication(id);
+    } finally {
+      setWithdrawingId(null);
+    }
+  };
+
+  return (
+    <DashboardLayout>
+      <div className="max-w-[1200px] mx-auto px-6 sm:px-10 py-8 space-y-6">
+        {/* Page Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/70">
+          <div>
+            <h1 className="font-heading font-bold text-xl sm:text-2xl text-foreground flex items-center gap-2">
+              <Briefcase className="h-5 w-5 text-primary" />
+              <span>Mes candidatures</span>
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground font-medium mt-1">
+              Suivez l'état de vos candidatures auprès des porteurs de projet CoFound.mg.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground font-mono font-medium">
+              TOTAL : {applications.length}
+            </span>
+          </div>
+        </div>
+
+        {/* Status Filters */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2">
+          {(["ALL", "PENDING", "ACCEPTED", "REJECTED", "WITHDRAWN"] as const).map(
+            (statusKey) => {
+              const isActive = filter === statusKey;
+              const label =
+                statusKey === "ALL"
+                  ? "Toutes"
+                  : statusBadges[statusKey]?.label ?? statusKey;
+
+              return (
+                <button
+                  key={statusKey}
+                  onClick={() => setFilter(statusKey)}
+                  className={`h-8 px-3 rounded-lg text-xs font-semibold transition-all shrink-0 cursor-pointer ${
+                    isActive
+                      ? "bg-accent text-foreground border border-border/80 shadow-2xs"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            },
+          )}
+        </div>
+
+        {/* Loading State */}
+        {isLoading && (
+          <div className="space-y-4">
+            <div className="bg-card border border-border rounded-2xl p-6 h-36 animate-pulse" />
+            <div className="bg-card border border-border rounded-2xl p-6 h-36 animate-pulse" />
+          </div>
+        )}
+
+        {/* Applications List */}
+        {!isLoading && (
+          <div className="space-y-4">
+            {filteredApplications.map((app) => {
+              const badge = statusBadges[app.status];
+              const dateStr = new Date(app.createdAt).toLocaleDateString("fr-FR", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              });
+
+              return (
+                <div
+                  key={app.id}
+                  className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-2xs hover:border-border transition-all flex flex-col gap-4"
+                >
+                  {/* Header: Project Title + Position Title + Status Badge */}
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-heading font-bold text-base sm:text-lg text-foreground">
+                          {app.project.title}
+                        </h3>
+                      </div>
+                      <p className="text-xs sm:text-sm text-muted-foreground font-medium">
+                        {app.project.pitch}
+                      </p>
+                      {app.position && (
+                        <div className="flex items-center gap-1.5 text-xs text-primary font-medium pt-0.5">
+                          <Sparkles className="h-3 w-3" />
+                          <span>Poste visé : {app.position.title}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Status Badge */}
+                    <span
+                      className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full border ${badge.color} shrink-0`}
+                    >
+                      {badge.icon}
+                      <span>{badge.label}</span>
+                    </span>
+                  </div>
+
+                  {/* Candidate Message Block */}
+                  <div className="bg-muted/40 p-3.5 rounded-xl border border-border/50 space-y-1">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                      <MessageSquare className="h-3 w-3 text-primary" />
+                      Votre message de candidature
+                    </span>
+                    <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed italic">
+                      "{app.message}"
+                    </p>
+                  </div>
+
+                  {/* Rejection Reason (if rejected) */}
+                  {app.status === "REJECTED" && app.rejectionReason && (
+                    <div className="bg-destructive/10 border border-destructive/20 text-destructive text-xs p-3 rounded-xl">
+                      <strong>Motif du refus :</strong> {app.rejectionReason}
+                    </div>
+                  )}
+
+                  {/* Footer Info & Actions */}
+                  <div className="flex items-center justify-between gap-4 pt-2 border-t border-border/60">
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+                      <Calendar className="h-3.5 w-3.5 opacity-70" />
+                      <span>Candidaté le {dateStr}</span>
+                    </div>
+
+                    {app.status === "PENDING" && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={withdrawingId === app.id}
+                        onClick={() => handleWithdraw(app.id)}
+                        className="h-8 text-xs font-semibold rounded-xl text-destructive border-destructive/20 hover:bg-destructive/10 cursor-pointer"
+                      >
+                        {withdrawingId === app.id ? "Retrait..." : "Retirer la candidature"}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+
+            {filteredApplications.length === 0 && (
+              <div className="text-center py-16 text-muted-foreground font-medium bg-card border border-border rounded-2xl p-8 space-y-2">
+                <Briefcase className="h-8 w-8 mx-auto text-muted-foreground/50 mb-2" />
+                <p className="text-sm">Aucune candidature ne correspond à ce filtre.</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </DashboardLayout>
+  );
+}

@@ -1,259 +1,73 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Progress } from "@/components/ui/progress";
-import { Avatar } from "@/components/shared/Avatar";
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { onboardingStepResponseSchema } from '@cofound/shared'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Progress } from '@/components/ui/progress'
+import { Textarea } from '@/components/ui/textarea'
+import { apiClient } from '@/lib/api-client'
 
-const TECH_SKILLS = ["React", "Python", "Node.js", "Figma", "Marketing", "Finance", "Droit", "Data Science", "Vente"];
-const SOFT_SKILLS = ["Leadership", "Créativité", "Analyse", "Communication", "Organisation"];
+const STEPS = ['Toi', 'Ton parcours', 'Tes compétences', 'Tes aspirations', 'Ta disponibilité', 'Ta visibilité']
+
+type FormState = { firstName: string; lastName: string; pseudonym: string; bio: string; fieldId: string; cohortYear: string; skillIds: string; goals: string; sectorIds: string; availabilityHours: string; visibleInTalentFeed: boolean; gender: string | null }
+
+const initialForm: FormState = { firstName: '', lastName: '', pseudonym: '', bio: '', fieldId: '', cohortYear: '', skillIds: '', goals: '', sectorIds: '', availabilityHours: '', visibleInTalentFeed: false, gender: null }
 
 export default function OnboardingPage() {
-  const navigate = useNavigate();
-  const [step, setStep] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate()
+  const [step, setStep] = useState(1)
+  const [form, setForm] = useState(initialForm)
+  const [completion, setCompletion] = useState(0)
+  const [completedSteps, setCompletedSteps] = useState<number[]>([])
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  // Form states
-  const [bio, setBio] = useState("");
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-  const [mode, setMode] = useState("idea"); // idea, project, both
-  const [projectName, setProjectName] = useState("");
-  const [availability, setAvailability] = useState("flexible");
-  const [gender, setGender] = useState("not-specified");
-  const [femalePriority, setFemalePriority] = useState(false);
-  const [parityPreference, setParityPreference] = useState(false);
-  const [visibility, setVisibility] = useState("public");
+  useEffect(() => {
+    let active = true
+    void apiClient.get('/me/onboarding').then((payload) => {
+      if (!active) return
+      const result = onboardingStepResponseSchema.parse(payload)
+      setStep(result.progress.currentStep)
+      setCompletion(result.progress.completion)
+      setCompletedSteps(result.progress.completedSteps)
+    }).catch(() => { if (active) setError('Impossible de charger ta progression.') }).finally(() => { if (active) setLoading(false) })
+    return () => { active = false }
+  }, [])
 
-  const toggleSkill = (skill: string) => {
-    setSelectedSkills(prev => 
-      prev.includes(skill) ? prev.filter(s => s !== skill) : [...prev, skill]
-    );
-  };
+  const update = (key: keyof FormState, value: string | boolean | null) => setForm((current) => ({ ...current, [key]: value }))
+  const stepData = (): Record<string, unknown> => {
+    if (step === 1) return { firstName: form.firstName, lastName: form.lastName }
+    if (step === 2) return { fieldId: form.fieldId || undefined, cohortYear: form.cohortYear ? Number(form.cohortYear) : undefined }
+    if (step === 3) return { skillIds: form.skillIds.split(',').map((value) => value.trim()).filter(Boolean) }
+    if (step === 4) return { goals: form.goals.split(',').map((value) => value.trim()).filter(Boolean), sectorIds: form.sectorIds.split(',').map((value) => value.trim()).filter(Boolean) }
+    if (step === 5) return { availabilityHours: form.availabilityHours ? Number(form.availabilityHours) : undefined }
+    return { pseudonym: form.pseudonym, bio: form.bio || undefined, visibleInTalentFeed: form.visibleInTalentFeed, gender: form.gender }
+  }
+  const save = async () => {
+    setSaving(true); setError(null)
+    try {
+      const payload = await apiClient.patch(`/me/onboarding/steps/${step}`, { data: stepData() })
+      const result = onboardingStepResponseSchema.parse(payload)
+      setCompletion(result.progress.completion); setCompletedSteps(result.progress.completedSteps)
+      if (step < 6) setStep(result.progress.currentStep); else navigate('/feed')
+    } catch { setError('Vérifie les informations de cette étape puis réessaie.') } finally { setSaving(false) }
+  }
 
-  const handleNext = () => {
-    if (step < 3) setStep(step + 1);
-  };
-
-  const handlePrev = () => {
-    if (step > 1) setStep(step - 1);
-  };
-
-  const handleFinish = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate("/feed");
-    }, 1000);
-  };
-
-  const progress = (step / 3) * 100;
-
-  return (
-    <div className="min-h-screen bg-muted/20 py-12 px-6">
-      <div className="max-w-2xl mx-auto">
-        
-        {/* Header & Progress */}
-        <div className="mb-10 text-center">
-          <h1 className="font-heading font-black text-3xl tracking-tight text-foreground mb-4">
-            Complète ton profil
-          </h1>
-          <div className="flex items-center justify-between text-sm font-medium text-muted-foreground mb-3">
-            <span>Étape {step} sur 3</span>
-            <span>{Math.round(progress)}%</span>
-          </div>
-          <Progress value={progress} className="h-2" />
-        </div>
-
-        {/* Form Container */}
-        <div className="bg-background border border-border rounded-2xl shadow-xs p-8 sm:p-10">
-          
-          {/* STEP 1 */}
-          {step === 1 && (
-            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="space-y-4">
-                <h2 className="text-xl font-heading font-bold text-foreground">1. Ton Profil</h2>
-                <div className="flex items-center gap-4">
-                  <Avatar name="Utilisateur" size="lg" className="h-20 w-20 text-2xl" />
-                  <Button variant="outline" size="sm">Changer de photo</Button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="bio" className="text-foreground font-semibold">Bio courte</Label>
-                <Textarea 
-                  id="bio" 
-                  placeholder="Décris-toi en quelques mots... (max 140 caractères)" 
-                  maxLength={140}
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  className="resize-none h-24 bg-muted/50"
-                />
-              </div>
-
-              <div className="space-y-3">
-                <Label className="text-foreground font-semibold">Tes Compétences</Label>
-                <div className="flex flex-wrap gap-2">
-                  {[...TECH_SKILLS, ...SOFT_SKILLS].map(skill => (
-                    <button
-                      key={skill}
-                      onClick={() => toggleSkill(skill)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
-                        selectedSkills.includes(skill)
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-background text-muted-foreground border-border hover:border-primary/50"
-                      }`}
-                    >
-                      {skill}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* STEP 2 */}
-          {step === 2 && (
-            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="space-y-1.5">
-                <h2 className="text-xl font-heading font-bold text-foreground">2. Ce que tu cherches</h2>
-                <p className="text-sm text-muted-foreground font-medium">Définis tes objectifs sur la plateforme.</p>
-              </div>
-
-              <div className="space-y-4">
-                <Label className="text-foreground font-semibold">Mode principal</Label>
-                <RadioGroup value={mode} onValueChange={setMode} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className={`border rounded-xl p-4 flex flex-col gap-2 cursor-pointer transition-colors ${mode === "idea" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`} onClick={() => setMode("idea")}>
-                    <RadioGroupItem value="idea" id="mode-idea" className="sr-only" />
-                    <Label htmlFor="mode-idea" className="font-bold cursor-pointer">J'ai une idée</Label>
-                    <span className="text-xs text-muted-foreground font-medium">Je cherche des co-fondateurs.</span>
-                  </div>
-                  <div className={`border rounded-xl p-4 flex flex-col gap-2 cursor-pointer transition-colors ${mode === "project" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`} onClick={() => setMode("project")}>
-                    <RadioGroupItem value="project" id="mode-project" className="sr-only" />
-                    <Label htmlFor="mode-project" className="font-bold cursor-pointer">Je cherche un projet</Label>
-                    <span className="text-xs text-muted-foreground font-medium">Je veux rejoindre une équipe.</span>
-                  </div>
-                  <div className={`border rounded-xl p-4 flex flex-col gap-2 cursor-pointer transition-colors ${mode === "both" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`} onClick={() => setMode("both")}>
-                    <RadioGroupItem value="both" id="mode-both" className="sr-only" />
-                    <Label htmlFor="mode-both" className="font-bold cursor-pointer">Les deux</Label>
-                    <span className="text-xs text-muted-foreground font-medium">Ouvert à toute opportunité.</span>
-                  </div>
-                </RadioGroup>
-              </div>
-
-              {mode === "idea" && (
-                <div className="space-y-4 animate-in fade-in duration-300 bg-muted/30 p-5 rounded-xl border border-border">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="projectName" className="text-foreground font-semibold">Nom du projet</Label>
-                    <Input id="projectName" value={projectName} onChange={(e) => setProjectName(e.target.value)} placeholder="Ex: HealthCare Mada" className="bg-background" />
-                  </div>
-                </div>
-              )}
-
-              <div className="space-y-4 pt-2">
-                <Label className="text-foreground font-semibold">Ta disponibilité</Label>
-                <RadioGroup value={availability} onValueChange={setAvailability} className="flex flex-col gap-3">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="full-time" id="avail-full" />
-                    <Label htmlFor="avail-full" className="font-medium cursor-pointer">Temps plein (Full-time)</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="part-time" id="avail-part" />
-                    <Label htmlFor="avail-part" className="font-medium cursor-pointer">Soirs & Weekends</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="flexible" id="avail-flex" />
-                    <Label htmlFor="avail-flex" className="font-medium cursor-pointer">Flexible / À discuter</Label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </div>
-          )}
-
-          {/* STEP 3 */}
-          {step === 3 && (
-            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="space-y-1.5">
-                <h2 className="text-xl font-heading font-bold text-foreground">3. Inclusion & Visibilité</h2>
-                <p className="text-sm text-muted-foreground font-medium">Aidez-nous à rendre l'écosystème plus paritaire.</p>
-              </div>
-
-              <div className="space-y-4 bg-primary-light/30 border border-primary/20 p-5 rounded-xl">
-                <Label className="text-foreground font-semibold">Quel est votre genre ? (Optionnel)</Label>
-                <p className="text-xs text-muted-foreground font-medium mb-3">Ces données sont anonymisées et alimentent notre Dashboard de Parité public.</p>
-                <RadioGroup value={gender} onValueChange={setGender} className="flex flex-wrap gap-4">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="woman" id="gender-woman" />
-                    <Label htmlFor="gender-woman" className="font-medium cursor-pointer">Femme</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="man" id="gender-man" />
-                    <Label htmlFor="gender-man" className="font-medium cursor-pointer">Homme</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="not-specified" id="gender-none" />
-                    <Label htmlFor="gender-none" className="font-medium cursor-pointer">Je préfère ne pas le dire</Label>
-                  </div>
-                </RadioGroup>
-
-                {gender === "woman" && (
-                  <div className="pt-4 border-t border-primary/20 mt-4 animate-in fade-in slide-in-from-top-2 duration-300 flex items-center justify-between gap-4">
-                    <div className="space-y-0.5 flex-1">
-                      <Label className="font-semibold text-primary">Activer l'Espace Sécurisé</Label>
-                      <p className="text-xs font-medium text-muted-foreground">Rendre mon profil visible uniquement aux femmes en premier.</p>
-                    </div>
-                    <Switch checked={femalePriority} onCheckedChange={setFemalePriority} className="data-[state=checked]:bg-primary" />
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-6">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="space-y-0.5 flex-1">
-                    <Label className="font-semibold text-foreground">Équipes paritaires</Label>
-                    <p className="text-xs font-medium text-muted-foreground">Privilégier les suggestions d'équipes mixtes.</p>
-                  </div>
-                  <Switch checked={parityPreference} onCheckedChange={setParityPreference} />
-                </div>
-                
-                <div className="flex items-center justify-between gap-4">
-                  <div className="space-y-0.5 flex-1">
-                    <Label className="font-semibold text-foreground">Visibilité du profil</Label>
-                    <p className="text-xs font-medium text-muted-foreground">{visibility === "public" ? "Visible par tous" : "Visible uniquement par les connexions"}</p>
-                  </div>
-                  <Switch checked={visibility === "public"} onCheckedChange={(c) => setVisibility(c ? "public" : "private")} />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Navigation Buttons */}
-          <div className="mt-10 pt-6 border-t border-border flex items-center justify-between">
-            <Button 
-              variant="ghost" 
-              onClick={handlePrev}
-              disabled={step === 1 || isLoading}
-              className={step === 1 ? "invisible" : ""}
-            >
-              Précédent
-            </Button>
-
-            {step < 3 ? (
-              <Button onClick={handleNext} size="md">
-                Suivant
-              </Button>
-            ) : (
-              <Button onClick={handleFinish} size="md" disabled={isLoading} className="bg-primary hover:bg-primary/90 text-white">
-                {isLoading ? "Finalisation..." : "Terminer et Explorer"}
-              </Button>
-            )}
-          </div>
-
-        </div>
-      </div>
+  if (loading) return <main className="min-h-screen grid place-items-center"><p>Chargement de ta progression…</p></main>
+  const progressValue = Math.max(completion, Math.round((completedSteps.length / 6) * 100))
+  return <main className="min-h-screen bg-muted/20 px-4 py-10 sm:px-6"><section className="mx-auto max-w-2xl space-y-8">
+    <header className="space-y-3"><p className="text-sm font-medium text-muted-foreground">Étape {step} sur 6 · {STEPS[step - 1]}</p><h1 className="font-heading text-3xl font-black">Construisons ton profil, à ton rythme.</h1><Progress value={progressValue} className="h-2" /><p className="text-sm text-muted-foreground">{progressValue}% complété · Tu peux continuer plus tard.</p></header>
+    <div className="rounded-2xl border bg-background p-6 shadow-sm sm:p-8 space-y-6">
+      {step === 1 && <div className="space-y-4"><h2 className="text-xl font-bold">Toi</h2><p className="text-sm text-muted-foreground">Ces informations restent privées.</p><div className="grid gap-4 sm:grid-cols-2"><div><Label htmlFor="firstName">Prénom</Label><Input id="firstName" value={form.firstName} onChange={(event) => update('firstName', event.target.value)} /></div><div><Label htmlFor="lastName">Nom</Label><Input id="lastName" value={form.lastName} onChange={(event) => update('lastName', event.target.value)} /></div></div></div>}
+      {step === 2 && <div className="space-y-4"><h2 className="text-xl font-bold">Ton parcours</h2><p className="text-sm text-muted-foreground">Utilise les identifiants des référentiels fournis par la plateforme.</p><div><Label htmlFor="fieldId">Identifiant de filière</Label><Input id="fieldId" value={form.fieldId} onChange={(event) => update('fieldId', event.target.value)} /></div><div><Label htmlFor="cohortYear">Année</Label><Input id="cohortYear" type="number" value={form.cohortYear} onChange={(event) => update('cohortYear', event.target.value)} /></div></div>}
+      {step === 3 && <div className="space-y-4"><h2 className="text-xl font-bold">Ce que tu sais faire</h2><p className="text-sm text-muted-foreground">Saisis 3 à 8 identifiants de compétences, séparés par des virgules.</p><Input value={form.skillIds} onChange={(event) => update('skillIds', event.target.value)} placeholder="skill-1, skill-2, skill-3" /></div>}
+      {step === 4 && <div className="space-y-4"><h2 className="text-xl font-bold">Ce que tu veux faire</h2><div><Label htmlFor="goals">Objectifs</Label><Input id="goals" value={form.goals} onChange={(event) => update('goals', event.target.value)} placeholder="Créer, apprendre" /></div><div><Label htmlFor="sectorIds">Secteurs</Label><Input id="sectorIds" value={form.sectorIds} onChange={(event) => update('sectorIds', event.target.value)} placeholder="sector-1, sector-2" /></div></div>}
+      {step === 5 && <div className="space-y-4"><h2 className="text-xl font-bold">Ta disponibilité</h2><Label htmlFor="availabilityHours">Heures par semaine</Label><Input id="availabilityHours" type="number" min="0" max="168" value={form.availabilityHours} onChange={(event) => update('availabilityHours', event.target.value)} /></div>}
+      {step === 6 && <div className="space-y-4"><h2 className="text-xl font-bold">Ta visibilité</h2><p className="text-sm text-muted-foreground">Ton pseudonyme est visible. Ton nom, ta photo et ton genre ne sont jamais affichés dans les profils publics.</p><Input value={form.pseudonym} onChange={(event) => update('pseudonym', event.target.value)} placeholder="Pseudonyme" /><Textarea value={form.bio} onChange={(event) => update('bio', event.target.value)} placeholder="Une courte présentation" /><label className="flex items-center gap-3 text-sm"><input type="checkbox" checked={form.visibleInTalentFeed} onChange={(event) => update('visibleInTalentFeed', event.target.checked)} />Apparaître dans le Feed Talents si mon profil est assez complet</label><Button type="button" variant="outline" onClick={() => update('gender', form.gender ? null : 'prefer-not-to-say')}>{form.gender ? 'Effacer la donnée de genre' : 'Je préfère ne pas répondre au genre'}</Button></div>}
+      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+      <div className="flex items-center justify-between border-t pt-6"><Button variant="ghost" disabled={saving || step === 1} onClick={() => setStep((current) => current - 1)}>Précédent</Button><div className="flex gap-2"><Button variant="ghost" disabled={saving} onClick={() => navigate('/feed')}>Plus tard</Button><Button disabled={saving} onClick={() => void save()}>{saving ? 'Enregistrement…' : step === 6 ? 'Terminer' : 'Continuer'}</Button></div></div>
     </div>
-  );
+  </section></main>
 }

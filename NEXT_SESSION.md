@@ -1,64 +1,49 @@
-> Fichier de reprise de contexte. Chargé automatiquement par `CLAUDE.md`.
-> Mis à jour par la commande `/handoff` en fin de session.
->
-> **Ne contient que l’état vivant.** L’historique va dans `CHANGELOG.md`, les décisions arrêtées
-> dans `CLAUDE.md`, le détail dans `docs/`.
+# Context Handoff — Reprise de session CoFound.mg
 
-**Dernière mise à jour** : 2026-08-21
-**Phase** : Vague 1 — implémentation de E-12
-**Branche** : `E-12`, issue de `dev` après fusion de la PR #34
-**État du workspace** : audit des tickets Rino ajouté ; E-12 en revue dans la PR #35 ; E-13 identifié comme prochain ticket
+> Lire ce fichier en premier à chaque nouvelle session. Sources de vérité : le dépôt et `docs/plan-de-developpement.md`.
 
----
+## 1. État actuel
 
-## 1. Où on en est
+La branche active est `feat/M-15-notifications`. Elle contient des changements non commités pour M-15/M-16, les interfaces spécialisées des feeds, le parcours de candidature et les premiers déclencheurs de notifications. Les changements ne sont pas encore fusionnés dans `dev`.
 
-| Élément | État |
-|---|---|
-| Vague 0 — Fondations | ✅ `F-01` à `F-19` intégrés dans `dev` |
-| E-01 — Domaine et configuration email | ✅ PR #31 fusionnée ; DNS et fournisseur à renseigner en exploitation |
-| E-02 — Gabarits transactionnels | ✅ PR #32 fusionnée ; transport réel à configurer |
-| E-03 — Webhook de rebond | ✅ PR #33 fusionnée |
-| E-04 — Analyse CSV/XLSX | ✅ PR #26 fusionnée |
-| E-05 — Mapping assisté | ✅ intégré dans `dev` via la branche E-06 |
-| E-06 — Prévisualisation sans écriture | ✅ PR #29 fusionnée |
-| E-07 — Application transactionnelle idempotente | ✅ PR #30 fusionnée |
-| E-08 — Annulation et relance groupée | ✅ backend et UI-36 implémentés et validés |
+## 2. Travail réellement effectué pendant cette session
 
----
+Les routes `/projects` et `/profiles` utilisent maintenant des pages distinctes : `ProjectsFeedPage` consomme `useFeedData` et `/projects/feed`, tandis que `TalentsFeedPage` consomme `useTalentFeedData` et `/talents/feed`. Les deux pages ont leurs recherches, états de chargement, erreurs, vides et pagination, et affichent uniquement les cartes adaptées. Le découpage lazy conserve la contrainte de bundle.
 
-## 2. Validation avant E-12
+Le hook `useMyApplications` n’utilise plus de candidatures fictives lorsque l’API est vide ou indisponible. Les erreurs métier sont remontées à l’interface pour afficher les cas candidature déjà existante, poste fermé, projet fermé, non-éligibilité et retrait impossible. Le contrôle backend des candidatures refuse maintenant les projets dont le statut n’est pas `RECRUITING` ainsi que les comptes `ALUMNI`, `DISABLED` ou `FROZEN`.
 
-La PR #34 (E-08 backend + UI-36) est fusionnée dans `dev`. La branche E-12 est issue de ce `dev` synchronisé. Les tests API passent avec 37 tests, dont un test HTTP d’intégration des routes `GET` et `PATCH /api/v1/me/profile`. La revue et le plan E-13 sont dans `docs/revue-pr35-et-plan-e13.md`. Le bilan exhaustif des tickets de Rino est dans `docs/audit-tickets-rino.md`.
+Le service de connexion déclenche `connection.accepted`, le service de messagerie déclenche `message.received` pour les autres participants et le service de candidatures déclenche `application.accepted` après acceptation. Une route de résolution de signalement `PATCH /reports/:id/resolve`, protégée par `moderation:act`, déclenche `report.resolved`. Les événements créent une notification in-app et ajoutent un job email via `NotificationService`.
 
----
+## 3. Fichiers importants modifiés
 
-## 3. Ticket livré — E-08 et ticket courant — E-12
+- `apps/web/src/pages/ProjectsFeedPage.tsx` et `apps/web/src/pages/TalentsFeedPage.tsx` : nouveaux feeds dédiés.
+- `apps/web/src/App.tsx` : routes `/projects` et `/profiles` spécialisées.
+- `apps/web/src/hooks/useMyApplications.ts` : suppression des fallbacks démo et remontée des erreurs métier.
+- `apps/api/src/applications/applications.service.ts` et `.module.ts` : contrôles d’éligibilité et événement d’acceptation.
+- `apps/api/src/connection/connection.service.ts` et `.module.ts` : événement d’acceptation de connexion.
+- `apps/api/src/messaging/messaging.service.ts` et `.module.ts` : événement de nouveau message.
+- `apps/api/src/report/report.service.ts`, `.controller.ts` et `.module.ts` : résolution et notification de signalement.
+- `apps/api/src/notifications/*`, `packages/shared/src/schemas.ts` : socle M-15/M-16 existant sur la branche.
+- `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-**Objectif** : permettre à un établissement de suivre ses lots, d’annuler un lot admissible et de relancer uniquement les invitations non activées.
+## 4. Validation exécutée
 
-| Fonction | Accès | Endpoint prévu |
-|---|---|---|
-| Liste des lots | `ORG_VIEWER` | `GET /institution/imports` |
-| Détail du lot et des rebonds | `ORG_VIEWER` | `GET /institution/imports/:id` |
-| Annuler un lot | `ORG_MANAGER` | `POST /institution/imports/:id/cancel` |
-| Relancer les invitations | `ORG_MANAGER` | `POST /institution/imports/:id/resend-invitations` |
+La suite API passe maintenant avec **121/121 tests réussis**, dont quatre tests unitaires des événements `connection.accepted`, `message.received`, `application.accepted` et `report.resolved`, ainsi qu’un test d’intégration HTTP de `PATCH /reports/:id/resolve`. Le typecheck et le lint API passent. Le typecheck, le lint et le build frontend passent. `git diff --check` passe. Les chunks applicatifs restent sous 500 kB ; le chunk de données observé est inférieur à 400 kB.
 
-Le détail doit présenter les compteurs créés, mis à jour, ignorés, erreurs et rebonds, les lignes filtrables par résultat et les adresses `BOUNCED` exportables. L’annulation doit être protégée par RBAC, auditée et idempotente. Un lot déjà appliqué ou déjà annulé ne doit pas être annulé de nouveau. La relance doit cibler les comptes encore `INVITED`, exclure les comptes activés et republier les notifications via F-15 sans créer de nouveau compte.
+## 5. Contraintes respectées
 
-**Dépendance directe** : `E-07`. Les dépendances techniques disponibles sont Prisma, RBAC, audit et F-15.
+Les cartes talents réutilisent les données pseudonymisées de `TalentCard`. Les notifications utilisent le pseudonyme comme nom d’affichage et l’adresse email comme destinataire technique ; aucune identité civile n’est introduite dans les réponses utilisateur. Les permissions restent imposées par les contrôleurs/backend. Les mutations critiques de domaine conservent leurs transactions Prisma.
 
----
+## 6. Points à vérifier ensuite
 
-## 4. Points de vigilance
+Le détail projet et la candidature utilisent encore des identifiants de postes dérivés dans `ProjectActionCard`, car le modèle frontend historique ne transporte pas encore les vrais `OpenPosition.id`. Il faut créer ou exposer un read-model candidat-facing avec les postes réels pour supprimer cette approximation.
 
-- Le transport email F-15 reste un transport de journalisation tant qu’un fournisseur réel n’est pas configuré.
-- Le domaine `.mg`, SPF, DKIM, DMARC et `EMAIL_WEBHOOK_SECRET` doivent être renseignés dans l’environnement de déploiement.
-- Toute mutation E-08 doit vérifier l’organisation du lot, le rôle contextuel et l’état courant avant d’écrire.
-- Aucun ticket E-08 ne doit exposer le genre individuel dans la console établissement.
+La résolution de signalement existe maintenant techniquement, mais elle devra être complétée par une vraie file de modération, une liste des signalements, un écran staff, un historique d’actions et des tests de permission. Le statut de résolution doit également être confirmé par les spécifications officielles de la chaîne S-01 à S-04.
 
----
+Les tests ciblés des quatre événements et de la résolution HTTP sont maintenant ajoutés. Il reste à couvrir l’idempotence ou la répétition d’une décision, les erreurs de queue et les scénarios authentifiés avec une base de recette réelle. Il faut aussi vérifier que les erreurs API renvoient bien les codes métier ajoutés (`PROJECT_CLOSED`, `NOT_ELIGIBLE`, etc.) dans tous les environnements.
 
-## 5. Prochaine action
+## 7. État Git et prochaine action
 
-Corriger les points prioritaires de la revue PR #35 — seuil de complétion, erreurs 400 et validation des référentiels — puis fusionner E-12. Créer ensuite E-13 depuis `dev` avec la définition des étapes, la persistance de progression et les endpoints d’onboarding.
+Le commit `6546556` (`feat(notifications): raccorder les événements métier`) est poussé sur `origin/feat/M-15-notifications`. La PR [#67](https://github.com/YonniVerse/CoFound.mg/pull/67) est ouverte vers `dev`. La branche locale est propre et suit sa branche distante. GitHub retourne actuellement `UNSTABLE` pour l’état de fusion ; le détail des contrôles n’est pas accessible avec le jeton courant via l’API GitHub CLI. La validation locale reste verte : 121/121 tests API, typecheck, lint et build.
+
+Prochaine action : examiner les contrôles CI de la PR #67 depuis GitHub, corriger toute défaillance éventuelle, puis faire relire et fusionner la PR. Ne pas modifier les backlogs officiels sans demande explicite.
