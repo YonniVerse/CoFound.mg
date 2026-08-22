@@ -2,44 +2,26 @@
 
 **Dernière mise à jour** : 2026-08-22
 **Vague** : Vague 5 — Sécurité et finition
-**Ticket courant** : S-12 en cours, proche de la clôture
-**Branche actuelle** : `feat/S-12-i18n`
-**État du workspace** : modifications S-12 locales non commités au moment de cette mise à jour.
+**Ticket courant** : S-13 en cours de revue
+**Branche actuelle** : `feat/S-13-docs-exploitation`
+**État du workspace** : rebase S-13 en cours ; les conflits documentaires sont résolus par ce fichier.
 
 ## État exact
 
-S-09 est publié dans la [PR #76](https://github.com/YonniVerse/CoFound.mg/pull/76), mais la validation réelle sur recette reste conditionnée aux variables `E2E_*`, aux comptes authentifiés et au jeton d’activation.
+S-09 est publié dans la PR #76, mais sa validation réelle sur recette reste conditionnée aux variables `E2E_*`, aux comptes authentifiés et au jeton d’activation.
 
-S-10 et S-11 ont été fusionnés dans `dev` via les PR [#77](https://github.com/YonniVerse/CoFound.mg/pull/77) et [#78](https://github.com/YonniVerse/CoFound.mg/pull/78). Les validations locales correspondantes sont réussies.
+S-10 et S-11 sont fusionnés dans `dev` via les PR #77 et #78. S-12 est maintenant fusionné dans `dev` via la PR #79. S-13 est publié dans la PR #80 et doit être rebasé sur le `dev` mis à jour avant fusion. S-14 est publié dans la PR #81 et dépend de la revue des documents légaux.
 
-S-12 a maintenant centralisé les chaînes visibles principales en FR/MG dans les composants de feed, la landing, la navigation, le formulaire de candidature, l’activation, Dream Match, les écrans de récupération de compte, les candidatures, la console santé, le feed projet et la chaîne d’import. La notice de confidentialité de `ImportMappingPage` est également migrée.
+## Travail S-13 réalisé
 
-L’audit final des chaînes JSX identifie uniquement des faux positifs techniques (types TypeScript, `dialog.tsx` générique, fragments de footer) et aucun libellé métier visible attendu non migré dans les zones S-12 ciblées. Les chaînes métier de métriques internes de `ProductHealthPage` restent à traiter si l’exigence veut couvrir chaque valeur de détail ; elles ne bloquent pas l’interface principale mais doivent être confirmées lors de la revue.
+Le fichier `docs/runbook-exploitation.md` couvre le déploiement, les prérequis VPS, les secrets attendus sans valeurs, les vérifications post-déploiement, les sauvegardes hors machine, la restauration vers une base jetable, la classification des incidents P0 à P3, la procédure de réponse, la non-divulgation et la revue post-incident.
 
-## Commits S-12 déjà poussés
+## Validation
 
-`e435abc`, `24b733d`, `2051f87`, `8a0bb30`, `9093086`, `daa4bf8`, `c90d9de`, `1f2c240`, `a639878`, `1deb2e3`, `9d1c2f9`, `fc1f520`
+Les branches S-12, S-13 et S-14 ont passé localement `git diff --check`, le build de `@cofound/shared`, le build web et le lint web. Le rebase S-13 est en cours uniquement pour résoudre les conflits de handoff créés par la fusion de S-12.
 
-## Fichiers modifiés depuis le dernier checkpoint
+Aucun secret, token, mot de passe ou donnée réelle n’a été ajouté.
 
-- `apps/web/src/i18n.tsx` : clés FR/MG de la notice de confidentialité d’import.
-- `apps/web/src/pages/ImportMappingPage.tsx` : notice de confidentialité branchée sur i18n.
-- `NEXT_SESSION.md` et `CHANGELOG.md` : suivi actualisé.
+## Reste à faire
 
-## Validations récentes
-
-- Audit anti-chaînes visibles : seuls faux positifs techniques et quelques détails internes restent signalés.
-- `git diff --check` : réussi.
-- `pnpm --filter @cofound/shared build` : réussi.
-- `pnpm --filter @cofound/web build` : réussi.
-- `pnpm --filter @cofound/web lint` : réussi sans erreur ni avertissement.
-- Le chunk analytique reste lazy à 358,03 kB brut / 104,22 kB gzip.
-- Aucun secret réel ajouté.
-
-## Reste à faire pour S-12
-
-Décider en revue si les libellés internes des métriques détaillées de `ProductHealthPage` doivent également être externalisés. Sinon, enregistrer le commit de clôture, ouvrir la PR S-12, lancer les contrôles CI et mettre à jour ce fichier avec le numéro de PR.
-
-## Suite de la Vague 5
-
-Après fusion de S-12, traiter S-13 — documentation d’exploitation — puis S-14 — CGU et politique de confidentialité avec engagement de portabilité. Les PR de Vague 4 #73, #74 et #75 restent ouvertes indépendamment.
+Terminer le rebase S-13, pousser avec `--force-with-lease`, vérifier puis fusionner la PR #80. Ensuite rebaser si nécessaire S-14 sur `dev` et fusionner la PR #81 après revue humaine du contenu légal. Enfin mettre à jour l’audit et confirmer la clôture de la Vague 5. La validation E2E de S-09 sur recette reste séparée et non exécutée faute de variables et comptes de recette.
