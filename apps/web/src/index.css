@@ -158,3 +158,22 @@
     }
   }
 }
+
+@layer utilities {
+  @keyframes cof-float {
+    0%, 100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(0, -10px, 0);
+    }
+  }
+
+  .animate-cof-float {
+    animation: cof-float 7s ease-in-out infinite;
+  }
+
+  .animate-cof-float-slow {
+    animation: cof-float 9s ease-in-out 700ms infinite;
+  }
+}
