@@ -19,6 +19,7 @@ const ImportBatchesPage = lazy(() => import("@/pages/ImportBatchesPage"));
 const InstitutionOverviewPage = lazy(() => import("@/pages/InstitutionOverviewPage"));
 const InstitutionMembersPage = lazy(() => import("@/pages/InstitutionMembersPage"));
 const InstitutionAffiliationsPage = lazy(() => import("@/pages/InstitutionAffiliationsPage"));
+const InstitutionDirectoryPage = lazy(() => import("@/pages/InstitutionDirectoryPage"));
 const MyApplicationsPage = lazy(() => import("@/pages/MyApplicationsPage"));
 const ProjectApplicationsPage = lazy(() => import("@/pages/ProjectApplicationsPage"));
 const ProjectTeamPage = lazy(() => import("@/pages/ProjectTeamPage"));
@@ -57,6 +58,7 @@ function App() {
     <Route path="/institution" element={<InstitutionOverviewPage />} />
     <Route path="/institution/members" element={<InstitutionMembersPage />} />
     <Route path="/institution/affiliations" element={<InstitutionAffiliationsPage />} />
+    <Route path="/institution/directory" element={<InstitutionDirectoryPage />} />
     <Route path="/institution/imports" element={<ImportBatchesPage />} />
     <Route path="/institution/imports/:id" element={<ImportBatchesPage />} />
     <Route path="/institution/imports/new" element={<ImportMappingPage />} />
