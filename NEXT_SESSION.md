@@ -1,28 +1,32 @@
 # Handoff CoFound.mg
 
 **Dernière mise à jour** : 2026-08-22
-**Vague** : Vagues 1, 2 et 3 — traitement des incohérences
-**État** : audit correctif documenté
+**Vague** : Vague 4 — Le côté payant
+**État** : audit réalisé, Vague 4 non fusionnée
 **Branche actuelle** : `dev`
 
-## Travail réalisé
+## Audit Vague 4
 
-Les incohérences de traçabilité identifiées dans l’audit ont été traitées sans modifier le backlog officiel. La matrice [`docs/traceabilite-vagues-1-2-3.md`](docs/traceabilite-vagues-1-2-3.md) distingue désormais les PR dédiées fusionnées, les tickets regroupés dans une autre PR, les PR fermées sans fusion et les points à confirmer en recette.
+Le rapport complet est dans `audit-vague-4-2026-08-22.md`. Les trois PR ouvertes sont #73 pour B-01, #74 pour B-02 et #75 pour la synthèse B-02 à B-11. Aucune n’est fusionnée dans `dev`.
 
-Le rapport [`audit-vagues-1-2-3-2026-08-22.md`](audit-vagues-1-2-3-2026-08-22.md) a été complété avec les preuves et mesures correctives. E-05 est documenté comme regroupé. E-09 est documenté comme présent dans le schéma et le service d’activation, mais à démontrer en recette pour les cas nominal, expiré et réutilisé. M-09 à M-11, M-12/M-13 et M-15/M-16 sont reliés à leurs PR regroupées. P-03 et P-04 restent explicitement des PR fermées sans fusion, malgré la présence de surfaces fonctionnelles reprises dans `dev`.
+B-01 et B-02 ont été testés sur leurs branches respectives après reconstruction de `@cofound/shared` et `prisma generate` : B-01 passe 139/139 tests API et B-02 passe 145/145. La branche de synthèse B-02 à B-11 passe 157/157 tests API. Les typechecks, builds web et lint web passent sur les trois branches.
 
-Le contrôle RBAC existant a été vérifié dans `apps/api/test/rbac.test.ts` : sept cas négatifs F-19 et les contrôles staff S-05 sont présents. Aucun secret, mot de passe ou donnée réelle n’a été ajouté.
+## Blocages réels
 
-## Validation
+B-01 ne stocke actuellement que les métadonnées des justificatifs ; aucun adaptateur R2/S3 binaire n’est présent. La clôture documentaire complète est donc bloquée jusqu’à décision et implémentation du stockage.
 
-La suite globale exécutée sur `dev` a réussi : 149 tests API, typecheck récursif, lint récursif, build shared et build web. Le dépôt était propre et aligné sur `origin/dev` avant les modifications documentaires.
+Les migrations Neon de la Vague 4 doivent être appliquées et testées en staging avec une sauvegarde et une possibilité de retour arrière. Les écrans partenaires, les notifications de décisions, l’unicité du contact B-09, le pseudonymat RECRUIT de B-10 et l’absence de paiement réel pour B-11 doivent être démontrés sur staging.
 
-## Risques restant à traiter
+La PR #74 est empilée sur #73. La PR #75 reprend une partie du périmètre B-02 tout en ciblant `dev` ; il faut éviter un doublon lors de la fusion.
 
-La présence fonctionnelle ne remplace pas une démonstration verticale sur staging. Il faut encore fournir les variables `E2E_*`, les comptes pseudonymisés et le jeton d’activation pour exécuter les trois scénarios Playwright de S-09. Les tests négatifs RBAC doivent aussi être rejoués sur la recette réelle. La restauration doit viser une base jetable, jamais la base de production. Les tickets P-03/P-04 et E-09 doivent rester marqués « à confirmer en recette » tant que cette démonstration n’est pas faite.
+## Validation et reproductibilité
+
+Les premiers tests de branche échouaient avant `shared build` et `prisma generate`, avec exports shared absents et client Prisma obsolète. La procédure correcte est désormais documentée : reconstruire shared, générer Prisma, puis lancer tests/typecheck/build/lint. Les contrôles GitHub détaillés ne sont pas accessibles via l’intégration actuelle ; seuls les résultats locaux sont confirmés.
 
 ## Prochaines étapes
 
-1. Committer et pousser les documents correctifs.
-2. Préparer la recette staging et exécuter la démonstration verticale.
-3. Mettre à jour la matrice avec les résultats réels, sans modifier le backlog officiel.
+1. Revoir #73 et trancher le stockage des justificatifs.
+2. Fusionner #73, rebaser #74 sur `dev`, puis retester et fusionner #74.
+3. Rebaser #75 sur `dev`, vérifier les doublons B-02 et fusionner uniquement après validation.
+4. Appliquer les migrations Neon sur staging, exécuter le seed `demo-` et réaliser la recette B-01 à B-11.
+5. Ne déclarer la Vague 4 terminée qu’après validation documentaire, RBAC, pseudonymat, contact unique, notifications et port financier hors plateforme.

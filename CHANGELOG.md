@@ -10,6 +10,13 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Audit — Vague 4
+
+- Ajout de `audit-vague-4-2026-08-22.md` avec l’état B-01 à B-11, les PR #73 à #75, les dépendances et les risques résiduels.
+- Validations locales confirmées : B-01 139/139 tests API, B-02 145/145, branche de synthèse 157/157 ; typecheck, build web et lint réussis après `shared build` et `prisma generate`.
+- Blocages documentés : stockage binaire des justificatifs, migrations Neon, écrans et notifications partenaires, contact unique, pseudonymat RECRUIT et absence de paiement réel.
+- Handoff mis à jour sans modifier le backlog officiel.
+
 ## 2026-08-22 — Audit correctif — Vagues 1 à 3
 
 - Ajout de `docs/traceabilite-vagues-1-2-3.md` pour distinguer les PR dédiées, les tickets regroupés et les PR fermées sans fusion, sans modifier le backlog officiel.
