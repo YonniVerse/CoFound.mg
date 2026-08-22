@@ -10,6 +10,21 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Cards du login stabilisées et mieux composées
+
+### Modifié
+
+- Correction structurelle du débordement du premier card avec `overflow-hidden`, titre limité à trois lignes, meta limitée à une ligne et badge isolé dans le pied.
+- Ajout de fonds différenciés et de bordures cohérentes selon les accents `primary`, `impact` et `secondary`.
+- Suppression des bordures supérieures imposées sur les cards.
+- Rééquilibrage des positions en cascade sans superposition volontaire.
+- Renforcement des cinq liaisons SVG en pointillés avec un tracé blanc de contraste pour les rendre visibles sur le dégradé.
+- Modification publiée sur `dev` dans le commit `d054d57`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Composition éditoriale en cascade du login
 
 ### Modifié
