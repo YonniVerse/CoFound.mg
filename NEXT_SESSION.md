@@ -109,3 +109,27 @@ B-09 enregistre le contact unique comme entité métier auditée, mais ne l’en
 4. Reprendre Cloudinary uniquement après disponibilité du serveur, avec secrets côté API et assets privés/authentifiés.
 5. Remplacer l’enregistrement local du contact par une notification réelle et compléter la démonstration verticale de la Vague 4.
 6. Mettre à jour ce fichier avant toute nouvelle clôture de session.
+
+## 8. Déploiement Render vérifié
+
+Le service web Render `cofound-mg` est déployé depuis la branche `feat/B-09-team-contact`. Le dernier déploiement fonctionnel inclut le correctif `e848d4d` et les corrections NestJS précédentes. L’URL publique est https://cofound-mg.onrender.com.
+
+Vérification effectuée le 2026-08-22 :
+
+```text
+GET https://cofound-mg.onrender.com/api/v1/health
+HTTP 200
+{"status":"ok","database":"ok"}
+```
+
+Le CORS renvoie également `https://co-found-mg.vercel.app` comme origine autorisée. Les huit migrations Prisma ont été appliquées avec succès sur Neon et aucun déploiement de migration n’est encore en attente.
+
+La configuration native Render qui fonctionne est :
+
+```text
+Build: npm install --global pnpm@11.9.0 && pnpm install --frozen-lockfile && pnpm --filter @cofound/shared build && pnpm --filter @cofound/api prisma:generate && pnpm --filter @cofound/api build
+Start: pnpm --filter @cofound/api prisma:migrate:deploy && pnpm --filter @cofound/api start
+Health: /api/v1/health
+```
+
+Le worker pg-boss n’est pas encore créé comme Background Worker Render. Cloudinary n’est pas encore raccordé ; les secrets restent absents du frontend. La prochaine opération de déploiement est de configurer le frontend Vercel avec l’URL API Render, puis de créer et tester le worker séparément lorsque le plan Render le permet.

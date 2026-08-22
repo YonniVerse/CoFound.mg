@@ -910,3 +910,30 @@ La prochaine chaîne prioritaire est désormais S-01, puis S-02 et S-03. S-04 pe
 
 - Recette Neon avec un vrai compte staff et validation du transport email réel.
 - Préparation de S-05 : console staff d’audit, référentiels et santé produit.
+
+
+## 2026-08-22 — Déploiement backend Render réussi
+
+### Déployé
+
+- Service API `cofound-mg` déployé sur Render depuis `feat/B-09-team-contact`.
+- URL publique : https://cofound-mg.onrender.com.
+- Frontend autorisé par CORS : `https://co-found-mg.vercel.app`.
+- Les huit migrations Prisma ont été appliquées sur Neon.
+
+### Vérifié
+
+- `GET /api/v1/health` répond `HTTP 200` avec `{"status":"ok","database":"ok"}`.
+- Le build utilise pnpm 11.9.0 installé explicitement, sans dépendre de Corepack.
+- Le démarrage applique les migrations Prisma avant `node dist/main.js`.
+
+### Correctifs de déploiement
+
+- Injection NestJS corrigée pour `PrismaService` et `OffPlatformPaymentProvider`.
+- Dépendances `class-validator` et `class-transformer` ajoutées à l’API.
+
+### À faire ensuite
+
+- Renseigner l’URL API Render dans Vercel si ce n’est pas déjà fait.
+- Créer le Background Worker Render pour `node dist/worker.js`.
+- Raccorder Cloudinary côté serveur uniquement lorsque le flux documentaire sera repris.
