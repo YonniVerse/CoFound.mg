@@ -1,39 +1,37 @@
 # Reprise de session
 
 **Dernière mise à jour** : 2026-08-22
-**Phase** : LoginPage — fond coloré cohérent
+**Phase** : LoginPage — fond cohérent avec le logo
 **Vague / ticket** : E-11 — connexion et accès
 **Branche actuelle** : `dev`
 
 ## 1. État actuel
 
-La section droite de `LoginPage` utilise un fond bleu très clair basé sur le token `bg-primary-light`. Ce fond ajoute une couleur cohérente avec la plateforme tout en conservant la grille géométrique inspirée de `LandingPage`.
+Le fond de la section droite de `LoginPage` utilise maintenant un dégradé très doux basé sur les couleurs du logo CoFound.mg : bleu primaire clair, surface neutre et violet d’impact clair.
 
 ## 2. Tâches terminées
 
-Le fond de la colonne droite a été remplacé de `bg-background` par `bg-primary-light`. La grille sémantique utilisant `var(--border)`, `bg-[size:4rem_4rem]`, le masque radial et l’opacité `60` reste en place.
+Le fond de la colonne droite est passé à `bg-linear-to-br from-primary-light via-background to-impact-light`. Cette composition reprend la palette du logo sans utiliser de couleur brute ni le gradient violet-orange trop saturé de la version précédente.
 
-La couleur a été choisie à partir du design system existant, dont `--primary-light` est un bleu/indigo très pâle. Aucun hexadécimal arbitraire, gradient supplémentaire ou nouvel asset image n’a été ajouté.
-
-Les cards thématiques bleue et rouge gardent leurs fonds opaques, bordures et textes contrastés. L’icône Network reste adaptée au fond clair.
+La grille géométrique du landing est conservée au-dessus du fond avec `var(--border)`, une taille de `4rem`, un masque radial et une opacité modérée. Les cards restent lisibles avec leurs fonds opaques bleu et rouge, tandis que l’icône Network conserve une surface card claire et un accent primaire.
 
 ## 3. Fichiers importants modifiés
 
-- `apps/web/src/pages/LoginPage.tsx` : fond `bg-primary-light` de la section droite.
+- `apps/web/src/pages/LoginPage.tsx` : fond bleu-indigo-violet basé sur les tokens du logo.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-Le commit de code publié est `7e5101b`.
+Le commit de code publié est `edf5acf`.
 
 ## 4. Validations et problèmes connus
 
 Le typecheck web, le lint web, la compilation de `@cofound/shared` et le build web ont réussi. `dev` local et `origin/dev` sont synchronisés et propres.
 
-Le fond coloré est volontairement très léger pour éviter de concurrencer les cards. Si une teinte plus marquée est souhaitée, elle devra rester basée sur les tokens de la palette primaire ou de surface.
+Le fond reste volontairement doux afin de ne pas concurrencer les cards thématiques. Une vérification visuelle est recommandée pour confirmer le rendu du dégradé sur les différents écrans desktop.
 
 ## 5. Prochaine action
 
-Ouvrir `/login` sur desktop et comparer le fond droit avec le landing. Vérifier la visibilité de la grille, le contraste des cards et la cohérence entre la surface claire et les accents bleu/rouge.
+Ouvrir `/login` et comparer le fond droit avec le logo et le hero de `/`. Vérifier la transition bleu-indigo vers violet clair, la lisibilité de la grille et le contraste des cards.
 
 ## 6. Décisions et contexte de reprise
 
-Le fond réutilise `primary-light` plutôt qu’une couleur brute. La structure, l’authentification, l’i18n et les comportements responsive restent inchangés. Aucun changement d’architecture, de données, de RBAC ou de stack n’a été introduit.
+Le fond repose uniquement sur les tokens existants `primary-light`, `background` et `impact-light`, afin de maintenir la cohérence avec le design system. Aucun changement d’architecture, de données, de RBAC, d’i18n ou de logique d’authentification n’a été introduit.

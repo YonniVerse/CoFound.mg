@@ -10,6 +10,19 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Fond LoginPage cohérent avec le logo
+
+### Modifié
+
+- Remplacement du fond bleu uni par un dégradé doux `primary-light → background → impact-light`.
+- Palette alignée sur le dégradé bleu-indigo-violet utilisé par le logo CoFound.mg.
+- Conservation de la grille géométrique du landing et des cards thématiques opaques.
+- Modification publiée sur `dev` dans le commit `edf5acf`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Fond coloré cohérent pour LoginPage
 
 ### Modifié
