@@ -10,6 +10,20 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Harmonisation visuelle de la page détail projet
+
+### Modifié
+
+- Alignement du layout de `/projects/:id` sur `FeedPage` : largeur, padding, espacements, bouton Retour et panneau sticky.
+- Harmonisation des boutons de `ProjectActionCard` : taille `sm`, hauteur `h-9`, rayon `rounded-lg`, padding, typographie responsive et ombre.
+- Harmonisation de `ProjectTeamCard` : surface, rayon, ombre, titre, avatar et densité des membres.
+- Harmonisation de `ProjectContent` : hiérarchie des titres, tailles de paragraphes, tags, espacements et cartes de rôles.
+- Modifications publiées séparément sur `dev` dans les commits `5ecefc4`, `9109150`, `bb407c6` et `cec3962`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Correction définitive du panneau sticky du feed
 
 ### Modifié
