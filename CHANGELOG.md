@@ -10,6 +10,20 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Fond LoginPage aligné sur LandingPage
+
+### Modifié
+
+- Remplacement du gradient violet-orange spécifique de LoginPage par `bg-background`, comme sur LandingPage.
+- Réutilisation de la grille géométrique basée sur `var(--border)`, de la taille `4rem`, du masque radial et de l’opacité du hero landing.
+- Adaptation de l’icône Network à la surface claire avec `bg-card`, bordure et accent primaire.
+- Suppression des anneaux décoratifs propres à l’ancien panneau.
+- Modification publiée sur `dev` dans le commit `61ea9f2`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — SearchPage alignée sur FeedPage
 
 ### Modifié
