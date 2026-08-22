@@ -20,6 +20,7 @@ CREATE TABLE "OrganizationRequest" (
     "decidedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "approvedOrganizationId" TEXT,
     CONSTRAINT "OrganizationRequest_pkey" PRIMARY KEY ("id")
 );
 
@@ -28,6 +29,14 @@ CREATE INDEX "OrganizationRequest_status_createdAt_idx"
 
 CREATE INDEX "OrganizationRequest_contactEmail_organizationName_status_idx"
     ON "OrganizationRequest"("contactEmail", "organizationName", "status");
+
+CREATE UNIQUE INDEX "OrganizationRequest_approvedOrganizationId_key"
+    ON "OrganizationRequest"("approvedOrganizationId");
+
+ALTER TABLE "OrganizationRequest"
+    ADD CONSTRAINT "OrganizationRequest_approvedOrganizationId_fkey"
+    FOREIGN KEY ("approvedOrganizationId") REFERENCES "Organization"("id")
+    ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE "OrganizationRequest"
     ADD CONSTRAINT "OrganizationRequest_sectorsOfInterest_check"

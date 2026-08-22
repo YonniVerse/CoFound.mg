@@ -150,6 +150,47 @@ export const organizationRequestResponseSchema = z.object({
 export type OrganizationRequestInput = z.infer<typeof organizationRequestInputSchema>
 export type OrganizationRequestResponse = z.infer<typeof organizationRequestResponseSchema>
 
+export const organizationRequestQueueQuerySchema = z.object({
+  status: organizationRequestStatusSchema.default('PENDING'),
+  cursor: idSchema.optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(25),
+})
+export const organizationRequestDecisionSchema = z.object({
+  action: z.enum(['APPROVE', 'REJECT']),
+  reason: z.string().trim().min(5).max(1_000).optional(),
+}).superRefine((value, context) => {
+  if (value.action === 'REJECT' && !value.reason) context.addIssue({ code: z.ZodIssueCode.custom, path: ['reason'], message: 'A reason is required when rejecting a request.' })
+})
+export const organizationCapabilitySchema = z.enum(['CERTIFY_AFFILIATION', 'PUBLISH_OPPORTUNITY', 'RECRUIT', 'MENTOR', 'FUND', 'SURVEY', 'ANALYTICS'])
+export const organizationCapabilityUpdateSchema = z.object({ capability: organizationCapabilitySchema })
+export const organizationRequestQueueItemSchema = z.object({
+  id: idSchema,
+  organizationType: organizationTypeSchema,
+  organizationName: z.string(),
+  countryCode: z.string(),
+  region: z.string(),
+  website: z.string().nullable(),
+  description: z.string(),
+  sectorsOfInterest: z.array(z.string()),
+  contactName: z.string(),
+  contactRole: z.string(),
+  contactEmail: z.string().email(),
+  contactPhone: z.string().nullable(),
+  supportingDocuments: z.array(organizationRequestDocumentSchema),
+  status: organizationRequestStatusSchema,
+  decisionReason: z.string().nullable(),
+  decidedAt: z.coerce.date().nullable(),
+  createdAt: z.coerce.date(),
+  approvedOrganizationId: idSchema.nullable(),
+})
+export const organizationRequestQueueSchema = z.object({
+  items: z.array(organizationRequestQueueItemSchema),
+  nextCursor: idSchema.nullable(),
+  hasMore: z.boolean(),
+})
+export type OrganizationRequestDecision = z.infer<typeof organizationRequestDecisionSchema>
+export type OrganizationCapabilityUpdate = z.infer<typeof organizationCapabilityUpdateSchema>
+
 export const privateTalentProfileSchema = z.object({
   user: z.object({ id: idSchema, email: z.string().email(), locale: localeSchema }),
   identity: z.object({ firstName: z.string(), lastName: z.string(), photoKey: z.string().nullable(), phone: z.string().nullable(), regionId: idSchema.nullable() }).nullable(),

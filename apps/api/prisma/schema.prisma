@@ -311,6 +311,8 @@ model OrganizationRequest {
   decidedAt            DateTime?
   createdAt            DateTime                 @default(now())
   updatedAt            DateTime                 @updatedAt
+  approvedOrganizationId String?                  @unique
+  approvedOrganization  Organization?            @relation("OrganizationRequestApprovedOrganization", fields: [approvedOrganizationId], references: [id])
 
   @@index([status, createdAt])
   @@index([contactEmail, organizationName, status])
@@ -332,6 +334,7 @@ model Organization {
   importBatches        ImportBatch[]
   opportunities        Opportunity[]
   financialEngagements FinancialEngagement[]
+  approvedRequest      OrganizationRequest?      @relation("OrganizationRequestApprovedOrganization")
 
   @@index([type, verificationStatus])
 }
