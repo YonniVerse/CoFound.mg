@@ -36,6 +36,8 @@ Retiré · En cours · Bloqué**.
 - `ProductHealthPage` utilise les clés FR/MG pour l’accès RBAC, l’en-tête, la description, les projets par état et le seuil de confidentialité.
 - `ProjectPostsPage` utilise les clés FR/MG pour les types, les erreurs, le formulaire, les états et les actions du feed projet.
 - Les avertissements de dépendances `t` des hooks de santé produit et de publications ont été corrigés.
+- La notice de confidentialité de `ImportMappingPage` utilise désormais une clé FR/MG dédiée.
+- L’audit anti-chaînes visibles ne relève plus que des faux positifs techniques et les détails internes des métriques de santé à confirmer en revue.
 - Validation build/lint réussie après suppression de la constante de statuts devenue inutilisée et ajout de `t` aux dépendances du hook.
 - Migration des chaînes visibles restantes et ajout d’un contrôle empêchant leur réintroduction encore en cours.
 

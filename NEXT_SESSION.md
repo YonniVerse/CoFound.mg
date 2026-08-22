@@ -2,7 +2,7 @@
 
 **Dernière mise à jour** : 2026-08-22
 **Vague** : Vague 5 — Sécurité et finition
-**Ticket courant** : S-12 en cours
+**Ticket courant** : S-12 en cours, proche de la clôture
 **Branche actuelle** : `feat/S-12-i18n`
 **État du workspace** : modifications S-12 locales non commités au moment de cette mise à jour.
 
@@ -12,23 +12,23 @@ S-09 est publié dans la [PR #76](https://github.com/YonniVerse/CoFound.mg/pull/
 
 S-10 et S-11 ont été fusionnés dans `dev` via les PR [#77](https://github.com/YonniVerse/CoFound.mg/pull/77) et [#78](https://github.com/YonniVerse/CoFound.mg/pull/78). Les validations locales correspondantes sont réussies.
 
-S-12 progresse depuis `origin/dev`. Le dictionnaire FR/MG et les pages/composants `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `TalentCard`, `ProjectsFeedPage`, `ImportMappingPage`, `ImportPreviewPage`, `SectionHero`, `SectionCTA`, `ApplyModal`, `Navbar`, `ActivationPage`, `DreamMatchPage`, `ForgotPasswordPage`, `ResetPasswordPage`, `MyApplicationsPage`, `ProductHealthPage` et `ProjectPostsPage` utilisent maintenant i18n pour leurs textes visibles structurants. Les erreurs, statuts, filtres, formulaires, CTA, écrans auth, console santé et feed projet sont couverts.
+S-12 a maintenant centralisé les chaînes visibles principales en FR/MG dans les composants de feed, la landing, la navigation, le formulaire de candidature, l’activation, Dream Match, les écrans de récupération de compte, les candidatures, la console santé, le feed projet et la chaîne d’import. La notice de confidentialité de `ImportMappingPage` est également migrée.
 
-Les avertissements `react-hooks/exhaustive-deps` rencontrés sur ProductHealthPage et ProjectPostsPage ont été corrigés en déclarant `t` dans les dépendances des hooks.
+L’audit final des chaînes JSX identifie uniquement des faux positifs techniques (types TypeScript, `dialog.tsx` générique, fragments de footer) et aucun libellé métier visible attendu non migré dans les zones S-12 ciblées. Les chaînes métier de métriques internes de `ProductHealthPage` restent à traiter si l’exigence veut couvrir chaque valeur de détail ; elles ne bloquent pas l’interface principale mais doivent être confirmées lors de la revue.
 
 ## Commits S-12 déjà poussés
 
-`e435abc`, `24b733d`, `2051f87`, `8a0bb30`, `9093086`, `daa4bf8`, `c90d9de`, `1f2c240`, `a639878`, `1deb2e3`, `9d1c2f9`
+`e435abc`, `24b733d`, `2051f87`, `8a0bb30`, `9093086`, `daa4bf8`, `c90d9de`, `1f2c240`, `a639878`, `1deb2e3`, `9d1c2f9`, `fc1f520`
 
 ## Fichiers modifiés depuis le dernier checkpoint
 
-- `apps/web/src/i18n.tsx` : clés FR/MG de ProjectPostsPage.
-- `apps/web/src/pages/ProjectPostsPage.tsx` : textes, types de publication, erreurs, états et actions traduits ; dépendance `t` ajoutée au hook.
-- `apps/web/src/pages/ProductHealthPage.tsx` : dépendance `t` ajoutée au hook.
+- `apps/web/src/i18n.tsx` : clés FR/MG de la notice de confidentialité d’import.
+- `apps/web/src/pages/ImportMappingPage.tsx` : notice de confidentialité branchée sur i18n.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : suivi actualisé.
 
 ## Validations récentes
 
+- Audit anti-chaînes visibles : seuls faux positifs techniques et quelques détails internes restent signalés.
 - `git diff --check` : réussi.
 - `pnpm --filter @cofound/shared build` : réussi.
 - `pnpm --filter @cofound/web build` : réussi.
@@ -38,7 +38,7 @@ Les avertissements `react-hooks/exhaustive-deps` rencontrés sur ProductHealthPa
 
 ## Reste à faire pour S-12
 
-Migrer la notice d’information de `ImportMappingPage` et effectuer l’audit final anti-chaînes visibles en dur. Si l’audit confirme la couverture attendue, créer le commit de clôture, ouvrir la PR S-12 et faire contrôler ses workflows CI.
+Décider en revue si les libellés internes des métriques détaillées de `ProductHealthPage` doivent également être externalisés. Sinon, enregistrer le commit de clôture, ouvrir la PR S-12, lancer les contrôles CI et mettre à jour ce fichier avec le numéro de PR.
 
 ## Suite de la Vague 5
 
