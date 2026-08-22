@@ -10,6 +10,20 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Inputs du login harmonisés
+
+### Modifié
+
+- Uniformisation des champs email et mot de passe avec `h-11`, `rounded-xl`, bordure et fond identiques.
+- Alignement des icônes Mail et Lock et adaptation des paddings internes.
+- Focus primaire, placeholders, typographie et ombres rendus cohérents avec le reste de LoginPage.
+- Bouton d’affichage du mot de passe harmonisé avec une zone interactive `h-8 w-8 rounded-lg`.
+- Modification publiée sur `dev` dans le commit `b5c0595`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Cards Communauté et Impact contrastées
 
 ### Modifié
