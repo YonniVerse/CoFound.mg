@@ -733,3 +733,22 @@ Trois tests ciblés couvrent le seuil temporel, le regroupement de plusieurs can
 ### En cours
 
 - Les scénarios d’erreur de file email, de répétition/idempotence des décisions et de recette authentifiée Neon restent à ajouter.
+
+---
+
+## 2026-08-22 — Publication de la branche notifications
+
+### Modifié
+
+- Commit `6546556` créé avec le message conventionnel `feat(notifications): raccorder les événements métier`.
+- Branche `feat/M-15-notifications` poussée sur `origin`.
+- Pull Request [#67](https://github.com/YonniVerse/CoFound.mg/pull/67) ouverte vers `dev` avec la description des feeds spécialisés, du parcours de candidature, des notifications et des tests.
+
+### Validation
+
+- Validation monorepo réussie avant publication : lint, typecheck, tests API **121/121**, build et `git diff --check`.
+- La branche locale est propre et suit `origin/feat/M-15-notifications`.
+
+### En cours
+
+- GitHub indique actuellement `UNSTABLE` pour l’état de fusion de la PR ; le détail des contrôles n’est pas accessible via le jeton CLI courant. La PR doit être revue depuis GitHub avant fusion.

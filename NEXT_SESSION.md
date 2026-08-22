@@ -44,4 +44,6 @@ Les tests ciblés des quatre événements et de la résolution HTTP sont mainten
 
 ## 7. État Git et prochaine action
 
-Les modifications sont non commités sur `feat/M-15-notifications`. Avant la PR, relire le diff, ajouter les tests ciblés, exécuter la validation monorepo complète, puis créer un commit conventionnel en français et ouvrir la PR vers `dev`. Ne pas modifier les backlogs officiels sans demande explicite.
+Le commit `6546556` (`feat(notifications): raccorder les événements métier`) est poussé sur `origin/feat/M-15-notifications`. La PR [#67](https://github.com/YonniVerse/CoFound.mg/pull/67) est ouverte vers `dev`. La branche locale est propre et suit sa branche distante. GitHub retourne actuellement `UNSTABLE` pour l’état de fusion ; le détail des contrôles n’est pas accessible avec le jeton courant via l’API GitHub CLI. La validation locale reste verte : 121/121 tests API, typecheck, lint et build.
+
+Prochaine action : examiner les contrôles CI de la PR #67 depuis GitHub, corriger toute défaillance éventuelle, puis faire relire et fusionner la PR. Ne pas modifier les backlogs officiels sans demande explicite.
