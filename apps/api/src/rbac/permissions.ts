@@ -20,6 +20,7 @@ export const PLATFORM_ROLE_PERMISSIONS: Record<string, readonly Permission[]> = 
     Permission.TALENT_READ,
     Permission.PROJECT_READ,
     Permission.PROJECT_CREATE,
+    Permission.PROJECT_MANAGE,
     Permission.PROJECT_APPLY,
     Permission.CONNECTION_REQUEST,
     Permission.MESSAGE_SEND,
