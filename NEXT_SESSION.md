@@ -1,28 +1,25 @@
 # Context Handoff — Reprise de session CoFound.mg
 **Dernière mise à jour** : 2026-08-22
-**Phase** : Vague 5 — S-07 finalisé localement ; S-08 initialisé
-**Branche** : `feat/S-07-account-status`
-**État du workspace** : S-07 prêt à être committé. Le premier code S-08 est présent localement mais doit être isolé sur une branche dédiée après publication de S-07.
+**Phase** : Vague 5 — S-08 initialisé
+**Branche** : `feat/S-08-seed-demo`
+**État du workspace** : premier code S-08 local non committé. S-07 est publié dans la PR #71.
 
-## 1. Travail réalisé
-S-06 est publié dans la PR #70 avec le commit `bef8cc3`.
+## Travail réalisé
+S-07 a été finalisé, committé et poussé avec le commit `87b72e3 feat(account): finaliser les statuts de compte`. La PR [#71](https://github.com/YonniVerse/CoFound.mg/pull/71) est ouverte vers `dev`. Elle comprend `GET /api/v1/me/status`, l’écran `/account-status`, les rendus ACTIVE/FROZEN/LEAVING/ALUMNI, la garde frontend redirigeant FROZEN et les tests HTTP 4/4.
 
-S-07 est finalisé sur la branche `feat/S-07-account-status`. L’API expose `GET /api/v1/me/status` sans données civiles. L’écran lazy `/account-status` rend les états ACTIVE, FROZEN, LEAVING et ALUMNI. Une garde frontend redirige un compte FROZEN vers cette route et évite la navigation applicative ordinaire. Les traductions françaises et malgaches `account.status.*` sont présentes. Les tests HTTP couvrent les quatre statuts.
+S-08 a été planifié et isolé sur `feat/S-08-seed-demo`, créée depuis `dev`. Le premier code ajoute `apps/api/prisma/seed-demo.ts` et la commande `seed:demo` au package API. Le script est idempotent et préfixe tous les identifiants métier par `demo-`. Il crée une institution, un partenaire, un staff OPS_ADMIN, un talent activé avec profil et identité, une affiliation de promotion 2026, une capacité partenaire, un projet de démonstration et une opportunité publiée.
 
-Le premier socle de S-08 est également écrit localement : `apps/api/prisma/seed-demo.ts` crée de façon idempotente un établissement, une promotion via affiliation, deux projets métier et un partenaire avec opportunité publiée ; la commande `seed:demo` est ajoutée au package API. Ces modifications S-08 ne doivent pas être mélangées au commit S-07.
+## Fichiers S-08
+- `apps/api/prisma/seed-demo.ts` : seed transactionnel et idempotent.
+- `apps/api/package.json` : commande `seed:demo`.
 
-## 2. Validation
-S-07 passe les typechecks shared/API/frontend, le lint ciblé, `git diff --check`, le build frontend et **4/4 tests HTTP**. Le chunk `AccountStatusPage` est lazy et reste largement sous le budget de 500 kB.
+## Validation
+S-07 passe les typechecks shared/API/frontend, le lint ciblé, le build frontend, `git diff --check` et 4/4 tests HTTP.
 
-S-08 passe la génération Prisma, le typecheck API, le lint du seed et `git diff --check`. Le seed-demo n’a pas encore été exécuté sur Neon dans cette session.
+Le premier socle S-08 passe `prisma generate`, le typecheck API et le lint du seed. `seed:demo` n’a pas encore été exécuté sur une base de recette. Les données ne contiennent aucun secret réel et le mot de passe des comptes de démonstration reste volontairement absent.
 
-## 3. Commit et PR
-S-07 n’a pas encore de commit ni de PR. Les fichiers à committer pour S-07 sont le module `apps/api/src/account-status`, `apps/api/src/app.module.ts`, `apps/api/test/account-status.integration.test.ts`, `packages/shared/src/schemas.ts`, `apps/web/src/pages/AccountStatusPage.tsx`, `apps/web/src/App.tsx`, `apps/web/src/i18n.tsx`, ainsi que ce handoff et le changelog. Après commit, pousser `feat/S-07-account-status` et ouvrir la PR vers `dev`.
+## Plan détaillé S-08
+Le backlog officiel définit S-08 comme **`seed:demo` : établissement, promotion, projets, partenaire, tous reconstructibles par commande**, dépendance F-06, responsabilité R. Il faut exécuter le seed sur une base de recette non productive, le rejouer pour vérifier l’absence de doublons, contrôler les relations et produire un rapport de comptage. La suite pourra ajouter une vérification automatisée du nombre d’organisations, utilisateurs, affiliations, projets et opportunités créés avec le préfixe `demo-`.
 
-## 4. Plan détaillé S-08
-Le backlog officiel définit S-08 comme **`seed:demo` : établissement, promotion, projets, partenaire, tous reconstructibles par commande**, dépendance F-06, responsabilité R. Il faut conserver le préfixe `demo-`, l’idempotence, une transaction Prisma pour chaque lot cohérent, l’absence de secrets réels et des données explicitement non productives.
-
-Le premier code actuel couvre le socle de données. La suite est de séparer S-08 sur `feat/S-08-seed-demo`, vérifier les relations et enums, exécuter `pnpm --filter @cofound/api seed:demo` sur une base de recette dédiée, rejouer la commande pour confirmer l’absence de doublons, puis ajouter un test de reconstruction ou un rapport de comptage. Les données de démonstration devront inclure au minimum une institution, une cohorte 2026, un talent activé avec profil, deux projets et un partenaire publiant une opportunité.
-
-## 5. Prochaine action
-Commiter et ouvrir la PR S-07, puis créer `feat/S-08-seed-demo` depuis `dev`, y déplacer le script `seed-demo` et valider son exécution idempotente sur une base de recette non productive.
+## Prochaine action
+Exécuter `pnpm --filter @cofound/api seed:demo` sur une base de recette dédiée, corriger les incohérences Prisma éventuelles, rejouer la commande et ajouter les tests/contrôles d’idempotence avant le commit de S-08.
