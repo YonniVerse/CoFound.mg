@@ -4,26 +4,46 @@
 
 ## 1. État actuel
 
-M-05 est fusionné dans `dev` via la PR #60, M-06 via la PR #61, M-07 via la PR #62, M-08 via la PR #63, la correction CI/staging via la PR #64 et M-14 via la PR #65. M-12 et M-13 sont fusionnés dans `dev` via la PR #66. M-14 est fusionné via la PR #65. La branche active est `dev`, synchronisée avec `origin/dev` au commit `f0938bf`.
+La branche active est `feat/M-15-notifications`. Elle contient des changements non commités pour M-15/M-16, les interfaces spécialisées des feeds, le parcours de candidature et les premiers déclencheurs de notifications. Les changements ne sont pas encore fusionnés dans `dev`.
 
-## 2. Livrables de cette session
+## 2. Travail réellement effectué pendant cette session
 
-M-09 expose la création, la liste des demandes entrantes et la décision accepter/refuser, avec quota mensuel de cinq demandes, refus silencieux de doublon pendant l’état `PENDING` et écritures transactionnelles. M-10 crée une connexion idempotente à partir d’une demande acceptée, normalise la paire d’identifiants et fournit les lectures limitées aux membres. M-11 fournit l’ouverture d’une conversation directe depuis une connexion, la liste des conversations, la lecture et l’envoi de messages.
+Les routes `/projects` et `/profiles` utilisent maintenant des pages distinctes : `ProjectsFeedPage` consomme `useFeedData` et `/projects/feed`, tandis que `TalentsFeedPage` consomme `useTalentFeedData` et `/talents/feed`. Les deux pages ont leurs recherches, états de chargement, erreurs, vides et pagination, et affichent uniquement les cartes adaptées. Le découpage lazy conserve la contrainte de bundle.
 
-Les fichiers principaux sont `apps/api/src/connection/connection-request.service.ts`, `apps/api/src/connection/connection-request.controller.ts`, `apps/api/src/connection/connection.service.ts`, `apps/api/src/connection/connection.controller.ts`, `apps/api/src/connection/connection.module.ts`, `apps/api/src/messaging/messaging.service.ts`, `apps/api/src/messaging/messaging.controller.ts`, `apps/api/src/messaging/messaging.module.ts`, `apps/api/src/app.module.ts` et `packages/shared/src/schemas.ts`.
+Le hook `useMyApplications` n’utilise plus de candidatures fictives lorsque l’API est vide ou indisponible. Les erreurs métier sont remontées à l’interface pour afficher les cas candidature déjà existante, poste fermé, projet fermé, non-éligibilité et retrait impossible. Le contrôle backend des candidatures refuse maintenant les projets dont le statut n’est pas `RECRUITING` ainsi que les comptes `ALUMNI`, `DISABLED` ou `FROZEN`.
 
-## 3. Validation exécutée
+Le service de connexion déclenche `connection.accepted`, le service de messagerie déclenche `message.received` pour les autres participants et le service de candidatures déclenche `application.accepted` après acceptation. Une route de résolution de signalement `PATCH /reports/:id/resolve`, protégée par `moderation:act`, déclenche `report.resolved`. Les événements créent une notification in-app et ajoutent un job email via `NotificationService`.
 
-Pour M-08, Prisma validate, lint API, typecheck API, build frontend et les tests API passent. La suite compte **111/111 tests réussis**. Pour M-12/M-13, Prisma generate, lint, typecheck et build frontend passent avec **115/115 tests API réussis**, dont le test HTTP du blocage. La migration `20260822100000_add_dream_match_exclusions` est appliquée sur Neon. Pour M-14, Prisma generate, lint API, typecheck API, lint/build frontend et la suite API passent avec **114/114 tests réussis**, dont le test HTTP du endpoint de signalement. La PR #64 ajoute `prisma generate`, la construction de `@cofound/shared` au CI et un workflow staging dédié. Le workflow staging existe mais son exécution dépend encore de la création de l’environnement GitHub et des secrets staging.
+## 3. Fichiers importants modifiés
 
-## 4. Décisions techniques
+- `apps/web/src/pages/ProjectsFeedPage.tsx` et `apps/web/src/pages/TalentsFeedPage.tsx` : nouveaux feeds dédiés.
+- `apps/web/src/App.tsx` : routes `/projects` et `/profiles` spécialisées.
+- `apps/web/src/hooks/useMyApplications.ts` : suppression des fallbacks démo et remontée des erreurs métier.
+- `apps/api/src/applications/applications.service.ts` et `.module.ts` : contrôles d’éligibilité et événement d’acceptation.
+- `apps/api/src/connection/connection.service.ts` et `.module.ts` : événement d’acceptation de connexion.
+- `apps/api/src/messaging/messaging.service.ts` et `.module.ts` : événement de nouveau message.
+- `apps/api/src/report/report.service.ts`, `.controller.ts` et `.module.ts` : résolution et notification de signalement.
+- `apps/api/src/notifications/*`, `packages/shared/src/schemas.ts` : socle M-15/M-16 existant sur la branche.
+- `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-Les routes de messagerie exigent `message:send` et vérifient l’appartenance à la conversation avant toute lecture ou écriture. Les réponses de messages exposent uniquement `TalentProfile.pseudonym` sous le champ `authorPseudonym`; aucune relation `TalentIdentity` n’est chargée. Les créations de connexion et de conversation utilisent des transactions Prisma et des clés uniques pour l’idempotence.
+## 4. Validation exécutée
 
-## 5. Vigilance et travaux restants
+La suite API passe maintenant avec **121/121 tests réussis**, dont quatre tests unitaires des événements `connection.accepted`, `message.received`, `application.accepted` et `report.resolved`, ainsi qu’un test d’intégration HTTP de `PATCH /reports/:id/resolve`. Le typecheck et le lint API passent. Le typecheck, le lint et le build frontend passent. `git diff --check` passe. Les chunks applicatifs restent sous 500 kB ; le chunk de données observé est inférieur à 400 kB.
 
-M-05 à M-08 sont intégrés dans `dev`. M-14 ajoute les contrats Zod du signalement, `ReportService`, `ReportController`, `ReportModule`, la route POST `/reports` pour les cibles PROFILE, MESSAGE, PROJECT et POST, ainsi qu’une création transactionnelle sans identité civile dans la réponse. Le socle API, les boutons frontend et les tests HTTP M-14 sont fusionnés dans `dev`. Le composant réutilisable est intégré aux profils/talents, projets, publications et messages du canal projet. M-12 et M-13 sont fusionnés dans `dev` via la PR #66. M-14 est fusionné dans `dev`. M-15 et M-16 restent non implémentés.
+## 5. Contraintes respectées
 
-## 6. Prochaine action
+Les cartes talents réutilisent les données pseudonymisées de `TalentCard`. Les notifications utilisent le pseudonyme comme nom d’affichage et l’adresse email comme destinataire technique ; aucune identité civile n’est introduite dans les réponses utilisateur. Les permissions restent imposées par les contrôleurs/backend. Les mutations critiques de domaine conservent leurs transactions Prisma.
 
-Configurer l’environnement GitHub `staging` et ses secrets, puis lancer le workflow. M-13 dispose de `BlockService`, `BlockController`, `BlockModule`, de ses routes authentifiées, du bouton Bloquer/Débloquer et d’un test HTTP ; M-12 dispose de l’écran `/messages`, du client de conversations, du fil pseudonymisé et du rafraîchissement périodique. La PR #66 est fusionnée. Le workflow staging a été déclenché manuellement et doit encore être surveillé jusqu’à son résultat final. M-15 et M-16 restent non implémentés. Ajouter un vrai test E2E authentifié lorsque le harnais et les identifiants staging seront disponibles.
+## 6. Points à vérifier ensuite
+
+Le détail projet et la candidature utilisent encore des identifiants de postes dérivés dans `ProjectActionCard`, car le modèle frontend historique ne transporte pas encore les vrais `OpenPosition.id`. Il faut créer ou exposer un read-model candidat-facing avec les postes réels pour supprimer cette approximation.
+
+La résolution de signalement existe maintenant techniquement, mais elle devra être complétée par une vraie file de modération, une liste des signalements, un écran staff, un historique d’actions et des tests de permission. Le statut de résolution doit également être confirmé par les spécifications officielles de la chaîne S-01 à S-04.
+
+Les tests ciblés des quatre événements et de la résolution HTTP sont maintenant ajoutés. Il reste à couvrir l’idempotence ou la répétition d’une décision, les erreurs de queue et les scénarios authentifiés avec une base de recette réelle. Il faut aussi vérifier que les erreurs API renvoient bien les codes métier ajoutés (`PROJECT_CLOSED`, `NOT_ELIGIBLE`, etc.) dans tous les environnements.
+
+## 7. État Git et prochaine action
+
+Le commit `6546556` (`feat(notifications): raccorder les événements métier`) est poussé sur `origin/feat/M-15-notifications`. La PR [#67](https://github.com/YonniVerse/CoFound.mg/pull/67) est ouverte vers `dev`. La branche locale est propre et suit sa branche distante. GitHub retourne actuellement `UNSTABLE` pour l’état de fusion ; le détail des contrôles n’est pas accessible avec le jeton courant via l’API GitHub CLI. La validation locale reste verte : 121/121 tests API, typecheck, lint et build.
+
+Prochaine action : examiner les contrôles CI de la PR #67 depuis GitHub, corriger toute défaillance éventuelle, puis faire relire et fusionner la PR. Ne pas modifier les backlogs officiels sans demande explicite.

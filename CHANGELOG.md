@@ -653,3 +653,102 @@ Le premier lot P-07 ajoute `ApplicationReminderService`, configurable par `APPLI
 Le service de relance du porteur dispose maintenant d’un déclenchement périodique configurable par `APPLICATION_REMINDER_ENABLED` et `APPLICATION_REMINDER_INTERVAL_MS`. Le timer est non bloquant et s’arrête proprement avec le module NestJS. Les relances restent in-app et sont idempotentes par porteur et projet.
 
 Trois tests ciblés couvrent le seuil temporel, le regroupement de plusieurs candidatures d’un même projet et l’absence de doublon. La suite API compte 65 tests passants ; le typecheck API et le lint global sont également réussis.
+
+---
+
+## 2026-08-22 — Finalisation partielle des interfaces frontend
+
+### Modifié
+
+- Les routes `/projects`, `/profiles` et `/profile/me` ne renvoient plus vers `ComingSoonPage` : elles utilisent respectivement les écrans fonctionnels du feed et de l’onboarding en attendant des pages dédiées lorsque les contrats UI l’exigeront.
+- Le bouton « Postuler à ce projet » de `ProjectActionCard` ouvre désormais `ApplyModal` et transmet le message de motivation à `useProjectDetail.applyToProject`.
+- Les postes affichés dans le détail projet sont proposés comme options de candidature ; aucune identité civile n’est ajoutée au parcours.
+
+### Validation
+
+- Typecheck frontend réussi.
+- Lint frontend réussi.
+- Build Vite réussi.
+- `git diff --check` réussi après nettoyage du composant.
+- Les chunks applicatifs restent sous la limite de 500 kB ; le plus grand chunk de données observé est d’environ 364 kB.
+
+### En cours
+
+- Les événements métier des notifications email restent à raccorder aux services de connexion, messagerie, candidatures et résolution des signalements.
+- Les états UI « déjà candidaté », projet fermé, non-éligible et retrait doivent encore être couverts dans le parcours de candidature.
+- Les actions « Sauvegarder » et « Partager » restent visuelles.
+- Les changements M-15/M-16 et les compléments frontend restent sur `feat/M-15-notifications` et ne sont pas encore fusionnés dans `dev`.
+
+---
+
+## 2026-08-22 — Feeds spécialisés, candidatures et événements de notification
+
+### Modifié
+
+- `/projects` utilise désormais `ProjectsFeedPage` avec recherche, filtre de statut, pagination et API `/projects/feed`.
+- `/profiles` utilise désormais `TalentsFeedPage` avec recherche, pagination et API `/talents/feed`.
+- Le hook `useMyApplications` ne remplace plus les réponses réelles par des candidatures fictives et remonte les erreurs métier à l’interface.
+- Les candidatures refusent désormais côté backend les projets qui ne sont pas en recrutement et les comptes non éligibles.
+- La modale de candidature peut afficher les messages relatifs à une candidature déjà existante, un poste fermé, un projet fermé, une non-éligibilité ou un retrait impossible.
+
+### Ajouté
+
+- Notification `connection.accepted` lors de l’acceptation d’une demande de connexion.
+- Notification `message.received` aux autres participants lors de l’envoi d’un message.
+- Notification `application.accepted` lors de l’acceptation d’une candidature.
+- Route de résolution `PATCH /reports/:id/resolve`, protégée par `moderation:act`, avec notification `report.resolved` au déclarant.
+- Injection de `NotificationsModule` dans les modules connexion, messagerie, candidatures et signalement.
+
+### Validation
+
+- Suite API : **116/116 tests réussis**.
+- Typecheck et lint API réussis.
+- Typecheck, lint et build frontend réussis.
+- `git diff --check` réussi.
+- Chunks frontend applicatifs sous 500 kB.
+
+### En cours
+
+- Les nouveaux événements doivent encore recevoir des tests unitaires et HTTP dédiés avec doubles de `NotificationService`.
+- Le détail projet doit encore exposer les vrais identifiants `OpenPosition.id` afin de supprimer les identifiants de postes dérivés utilisés temporairement par la carte de candidature.
+- La file et l’interface staff de modération restent à construire.
+- Les changements restent non commités sur `feat/M-15-notifications`.
+
+---
+
+## 2026-08-22 — Tests des événements de notification métier
+
+### Ajouté
+
+- `apps/api/test/notification-business-events.test.ts` couvre les événements `connection.accepted`, `message.received`, `application.accepted` et `report.resolved`.
+- Le test de messagerie vérifie que seuls les autres participants sont notifiés et que le pseudonyme, la locale et les références métier sont transmis.
+- Le test de résolution HTTP dans `dream-match.integration.test.ts` couvre `PATCH /reports/:id/resolve`, le statut HTTP et l’acteur de modération transmis au service.
+
+### Validation
+
+- Typecheck API réussi.
+- Lint API réussi.
+- Suite API complète : **121/121 tests réussis**.
+
+### En cours
+
+- Les scénarios d’erreur de file email, de répétition/idempotence des décisions et de recette authentifiée Neon restent à ajouter.
+
+---
+
+## 2026-08-22 — Publication de la branche notifications
+
+### Modifié
+
+- Commit `6546556` créé avec le message conventionnel `feat(notifications): raccorder les événements métier`.
+- Branche `feat/M-15-notifications` poussée sur `origin`.
+- Pull Request [#67](https://github.com/YonniVerse/CoFound.mg/pull/67) ouverte vers `dev` avec la description des feeds spécialisés, du parcours de candidature, des notifications et des tests.
+
+### Validation
+
+- Validation monorepo réussie avant publication : lint, typecheck, tests API **121/121**, build et `git diff --check`.
+- La branche locale est propre et suit `origin/feat/M-15-notifications`.
+
+### En cours
+
+- GitHub indique actuellement `UNSTABLE` pour l’état de fusion de la PR ; le détail des contrôles n’est pas accessible via le jeton CLI courant. La PR doit être revue depuis GitHub avant fusion.

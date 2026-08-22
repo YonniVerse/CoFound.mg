@@ -5,10 +5,11 @@ import { MainLayout } from "@/components/layout/MainLayout";
 
 const OnboardingPage = lazy(() => import("@/pages/OnboardingPage"));
 const FeedPage = lazy(() => import("@/pages/FeedPage"));
+const ProjectsFeedPage = lazy(() => import("@/pages/ProjectsFeedPage"));
+const TalentsFeedPage = lazy(() => import("@/pages/TalentsFeedPage"));
 const ProjectDetailPage = lazy(() => import("@/pages/ProjectDetailPage"));
 const ProjectCreatePage = lazy(() => import("@/pages/ProjectCreatePage"));
 const ImpactPage = lazy(() => import("@/pages/ImpactPage"));
-const ComingSoonPage = lazy(() => import("@/pages/ComingSoonPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 const ImportMappingPage = lazy(() => import("@/pages/ImportMappingPage"));
 const ImportPreviewPage = lazy(() => import("@/pages/ImportPreviewPage"));
@@ -22,6 +23,7 @@ const ProjectTasksPage = lazy(() => import("@/pages/ProjectTasksPage"));
 const ProjectPostsPage = lazy(() => import("@/pages/ProjectPostsPage"));
 const ProjectChannelPage = lazy(() => import("@/pages/ProjectChannelPage"));
 const MessagesPage = lazy(() => import("@/pages/MessagesPage"));
+const NotificationsPage = lazy(() => import("@/pages/NotificationsPage"));
 const ProjectExportPage = lazy(() => import("@/pages/ProjectExportPage"));
 const ProjectPublicPage = lazy(() => import("@/pages/ProjectPublicPage"));
 const SearchPage = lazy(() => import("@/pages/SearchPage"));
@@ -55,10 +57,11 @@ function App() {
     <Route path="/institution/imports/new" element={<ImportMappingPage />} />
     <Route path="/institution/imports/preview" element={<ImportPreviewPage />} />
     <Route path="/institution/imports/:id/preview" element={<ImportPreviewPage />} />
-    <Route path="/projects" element={<ComingSoonPage />} />
-    <Route path="/profiles" element={<ComingSoonPage />} />
+    <Route path="/projects" element={<ProjectsFeedPage />} />
+    <Route path="/profiles" element={<TalentsFeedPage />} />
     <Route path="/messages" element={<MessagesPage />} />
-    <Route path="/profile/me" element={<ComingSoonPage />} />
+    <Route path="/notifications" element={<NotificationsPage />} />
+    <Route path="/profile/me" element={<OnboardingPage />} />
     <Route path="/settings" element={<SettingsPage />} />
   </Routes></Suspense></BrowserRouter>;
 }

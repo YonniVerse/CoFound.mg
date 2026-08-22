@@ -3,8 +3,10 @@ import {
   NotFoundException,
   BadRequestException,
   ConflictException,
+  Optional,
 } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service.js'
+import { NotificationService } from '../notifications/notification.service.js'
 import {
   ApplicationStatus,
   ProjectStatus,
@@ -18,7 +20,7 @@ import {
 
 @Injectable()
 export class ApplicationsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, @Optional() private readonly notifications?: NotificationService) {}
 
   async create(
     applicantId: string,
@@ -34,6 +36,15 @@ export class ApplicationsService {
         code: 'NOT_FOUND',
         messageKey: 'errors.projectNotFound',
       })
+    }
+
+    if (project.status !== ProjectStatus.RECRUITING) {
+      throw new BadRequestException({ code: 'PROJECT_CLOSED', messageKey: 'errors.projectClosed' })
+    }
+
+    const applicant = this.prisma.user ? await this.prisma.user.findUnique({ where: { id: applicantId }, select: { status: true } }) : { status: 'ACTIVE' as const }
+    if (!applicant || applicant.status === 'ALUMNI' || applicant.status === 'DISABLED' || applicant.status === 'FROZEN') {
+      throw new BadRequestException({ code: 'NOT_ELIGIBLE', messageKey: 'errors.notEligible' })
     }
 
     // 2. If positionId is supplied, verify open position exists and is open
@@ -251,6 +262,20 @@ export class ApplicationsService {
         include: { project: true, position: true, applicant: { include: { talentProfile: true } } },
       })
     })
+    if (status === ApplicationStatus.ACCEPTED && this.notifications) {
+      const applicant = this.prisma.user ? await this.prisma.user.findUnique({ where: { id: updated.applicantId }, select: { id: true, email: true, locale: true, talentProfile: { select: { pseudonym: true } } } }) : null
+      if (applicant) {
+        await this.notifications.notifyBusinessEvent({
+          userId: applicant.id,
+          recipient: applicant.email,
+          displayName: applicant.talentProfile?.pseudonym ?? 'Membre',
+          type: 'application.accepted',
+          referenceId: updated.id,
+          payload: { applicationId: updated.id, projectId: updated.projectId },
+          locale: applicant.locale === 'mg' ? 'mg' : 'fr',
+        })
+      }
+    }
     return this.toOwnerItem(updated)
   }
 

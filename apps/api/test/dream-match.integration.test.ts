@@ -10,6 +10,8 @@ import { ReportController } from '../src/report/report.controller.js'
 import { ReportService } from '../src/report/report.service.js'
 import { BlockController } from '../src/block/block.controller.js'
 import { BlockService } from '../src/block/block.service.js'
+import { NotificationController } from '../src/notifications/notification.controller.js'
+import { NotificationService } from '../src/notifications/notification.service.js'
 
 function createFakeService() {
   const calls: Array<{ method: string; userId: string; input?: unknown }> = []
@@ -185,6 +187,29 @@ test('M-14 expose la création d’un signalement via HTTP sans identité civile
   }
 })
 
+test('M-15 expose la liste et le marquage lu des notifications via HTTP', async () => {
+  const fakeService: Pick<NotificationService, 'list' | 'markRead'> = {
+    list: async (userId) => [{ id: 'notification-1', userId, type: 'MESSAGE_RECEIVED', payload: { conversationId: 'conversation-1' }, readAt: null, createdAt: new Date('2026-08-22T00:00:00.000Z') }],
+    markRead: async (userId, id) => ({ id, read: true, owner: userId }),
+  }
+  @Module({ controllers: [NotificationController], providers: [{ provide: NotificationService, useValue: fakeService }] })
+  class TestModule {}
+  const app = await NestFactory.create(TestModule, { logger: false })
+  app.use((request: { user?: { userId: string } }, _response: unknown, next: () => void) => { request.user = { userId: 'notification-user' }; next() })
+  app.setGlobalPrefix('api/v1')
+  await app.listen(0, '127.0.0.1')
+  try {
+    const base = await app.getUrl()
+    const listResponse = await fetch(`${base}/api/v1/notifications`, { headers: { authorization: 'Bearer test-token' } })
+    assert.equal(listResponse.status, 200)
+    const items = await listResponse.json() as Array<Record<string, unknown>>
+    assert.equal(items[0]?.userId, 'notification-user')
+    const readResponse = await fetch(`${base}/api/v1/notifications/notification-1/read`, { method: 'PATCH', headers: { authorization: 'Bearer test-token' } })
+    assert.equal(readResponse.status, 200)
+    assert.deepEqual(await readResponse.json(), { id: 'notification-1', read: true, owner: 'notification-user' })
+  } finally { await app.close() }
+})
+
 test('M-08 expose le retour pas intéressé via HTTP', async () => {
   const calls: Array<{ userId: string; talentId: string }> = []
   const fakeService: Pick<DreamMatchScoringService, 'markNotInterested'> = {
@@ -210,6 +235,38 @@ test('M-08 expose le retour pas intéressé via HTTP', async () => {
     assert.equal(response.status, 201)
     assert.deepEqual(await response.json(), { excluded: true, talentId: 'talent-2' })
     assert.deepEqual(calls, [{ userId: 'talent-user', talentId: 'talent-2' }])
+  } finally {
+    await app.close()
+  }
+})
+
+
+test('M-16 expose la résolution d’un signalement via HTTP', async () => {
+  const calls: Array<{ actorId: string; reportId: string; input: unknown }> = []
+  const fakeService: Pick<ReportService, 'resolve'> = {
+    resolve: async (actorId, reportId, input) => {
+      calls.push({ actorId, reportId, input })
+      return { id: reportId, reporterId: 'reporter-1', status: 'RESOLVED', targetType: 'MESSAGE', targetId: 'message-2' }
+    },
+  }
+  @Module({ controllers: [ReportController], providers: [{ provide: ReportService, useValue: fakeService }] })
+  class TestModule {}
+  const app = await NestFactory.create(TestModule, { logger: false })
+  app.use((request: { user?: { userId: string } }, _response: unknown, next: () => void) => {
+    request.user = { userId: 'moderator-1' }
+    next()
+  })
+  app.setGlobalPrefix('api/v1')
+  await app.listen(0, '127.0.0.1')
+  try {
+    const response = await fetch(`${await app.getUrl()}/api/v1/reports/report-1/resolve`, {
+      method: 'PATCH',
+      headers: { authorization: 'Bearer test-token', 'content-type': 'application/json' },
+      body: JSON.stringify({ status: 'RESOLVED' }),
+    })
+    assert.equal(response.status, 200)
+    assert.deepEqual(await response.json(), { id: 'report-1', reporterId: 'reporter-1', status: 'RESOLVED', targetType: 'MESSAGE', targetId: 'message-2' })
+    assert.deepEqual(calls, [{ actorId: 'moderator-1', reportId: 'report-1', input: { status: 'RESOLVED' } }])
   } finally {
     await app.close()
   }
