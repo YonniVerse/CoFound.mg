@@ -188,56 +188,112 @@ export default function LoginPage() {
         </footer>
       </div>
 
-      {/* RIGHT COLUMN: Composition éditoriale, sans image */}
-      <div className="relative hidden min-h-screen overflow-hidden border-l border-border bg-foreground lg:col-span-6 lg:flex lg:items-center lg:justify-center xl:col-span-7">
-        {/* Grille de fond : repère visuel discret, sans dépendance à un asset */}
+      {/* RIGHT COLUMN: Composition thématique inspirée de la référence */}
+      <div className="relative hidden min-h-screen overflow-hidden border-l border-border lg:col-span-6 lg:flex lg:items-center lg:justify-center xl:col-span-7">
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-br from-primary via-impact to-secondary" />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(to_right,rgba(255,255,255,0.12)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:4rem_4rem]"
+          className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(to_right,rgba(255,255,255,0.18)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.18)_1px,transparent_1px)] [background-size:4rem_4rem]"
         />
-        <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full border border-background/10" />
-        <div aria-hidden="true" className="pointer-events-none absolute -bottom-32 -left-20 h-96 w-96 rounded-full border border-primary/30" />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full border border-white/30" />
+        <div aria-hidden="true" className="pointer-events-none absolute -bottom-28 -left-24 h-96 w-96 rounded-full border border-white/20" />
 
-        <div className="relative z-10 flex min-h-[calc(100vh-5rem)] w-full max-w-2xl flex-col justify-between rounded-2xl border border-background/15 bg-background/[0.06] p-8 text-background shadow-2xl backdrop-blur-sm lg:p-10">
-          <div className="flex items-center justify-between gap-4">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-background/60">
+        <div className="relative z-10 min-h-[680px] w-full max-w-2xl px-8 py-10 text-foreground lg:px-10">
+          <div className="flex items-center justify-between text-white">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/75">
               {t('auth.login.hero.eyebrow')}
             </span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-background/15 bg-background/10">
-              <Network className="h-4 w-4 text-primary" aria-hidden="true" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/25 bg-white/15 backdrop-blur-sm">
+              <Network className="h-4 w-4 text-white" aria-hidden="true" />
             </div>
           </div>
 
-          <div className="relative py-10">
-            <div aria-hidden="true" className="absolute -left-8 top-2 h-40 w-40 rounded-full bg-primary/20 blur-3xl" />
-            <div className="relative max-w-xl">
-              <p className="mb-5 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-                {t('auth.login.hero.brand')}
-              </p>
-              <h2 className="max-w-lg font-heading text-4xl font-black leading-[0.98] tracking-[-0.05em] text-background sm:text-5xl lg:text-6xl">
-                {t('auth.login.hero.title')}
-              </h2>
-              <p className="mt-6 max-w-md text-sm font-medium leading-relaxed text-background/70 sm:text-base">
+          <div className="relative mt-8 min-h-[560px]">
+            <div aria-hidden="true" className="absolute left-8 top-8 h-44 w-44 rounded-full bg-white/20 blur-3xl" />
+
+            {/* Grande card principale : l’espace où une équipe prend forme */}
+            <div className="relative z-20 w-[calc(100%-2rem)] rounded-2xl border border-white/70 bg-background p-6 shadow-2xl sm:p-8">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-lg font-black text-primary-foreground shadow-sm">
+                    C
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                      {t('auth.login.hero.cardProjectLabel')}
+                    </p>
+                    <h2 className="mt-1 font-heading text-xl font-black leading-tight text-foreground sm:text-2xl">
+                      {t('auth.login.hero.cardProjectTitle')}
+                    </h2>
+                    <p className="mt-1 truncate text-xs font-medium text-muted-foreground sm:text-sm">
+                      {t('auth.login.hero.cardProjectMeta')}
+                    </p>
+                  </div>
+                </div>
+                <span className="shrink-0 rounded-md bg-primary/10 px-2.5 py-1 text-[10px] font-semibold text-primary sm:text-xs">
+                  {t('auth.login.hero.cardProjectBadge')}
+                </span>
+              </div>
+
+              <p className="mt-7 max-w-lg text-sm font-medium leading-relaxed text-muted-foreground sm:text-base">
                 {t('auth.login.hero.body')}
               </p>
 
-              <div className="mt-10 grid max-w-lg grid-cols-1 gap-3 sm:grid-cols-3">
-                {["auth.login.hero.statProjects", "auth.login.hero.statTalents", "auth.login.hero.statImpact"].map((key, index) => (
-                  <div key={key} className="rounded-xl border border-background/15 bg-background/[0.06] p-4">
-                    <div className="mb-5 flex items-center justify-between">
-                      <span className="text-lg font-black text-background/90">0{index + 1}</span>
-                      <ArrowUpRight className="h-4 w-4 text-primary" aria-hidden="true" />
-                    </div>
-                    <p className="text-xs font-medium leading-snug text-background/65">{t(key as 'auth.login.hero.statProjects' | 'auth.login.hero.statTalents' | 'auth.login.hero.statImpact')}</p>
-                  </div>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {["auth.login.hero.cardProjectSkillOne", "auth.login.hero.cardProjectSkillTwo", "auth.login.hero.cardProjectSkillThree"].map((key) => (
+                  <span key={key} className="rounded-md bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
+                    {t(key as 'auth.login.hero.cardProjectSkillOne' | 'auth.login.hero.cardProjectSkillTwo' | 'auth.login.hero.cardProjectSkillThree')}
+                  </span>
                 ))}
               </div>
+
+              <div className="mt-8 grid grid-cols-2 gap-3 border-t border-border/60 pt-5">
+                <div className="rounded-lg border border-border/70 bg-muted/40 p-3">
+                  <p className="text-2xl font-black text-primary">01</p>
+                  <p className="mt-1 text-xs font-medium text-muted-foreground">{t('auth.login.hero.statProjects')}</p>
+                </div>
+                <div className="rounded-lg border border-border/70 bg-muted/40 p-3">
+                  <p className="text-2xl font-black text-secondary">02</p>
+                  <p className="mt-1 text-xs font-medium text-muted-foreground">{t('auth.login.hero.statTalents')}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Cards flottantes : les trois promesses de la plateforme */}
+            <div className="absolute -right-2 top-28 z-30 hidden w-48 rotate-3 rounded-xl border border-border/80 bg-background p-4 shadow-xl sm:block">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{t('auth.login.hero.cardMatchLabel')}</span>
+                <ArrowUpRight className="h-4 w-4 text-primary" aria-hidden="true" />
+              </div>
+              <p className="mt-6 font-heading text-base font-black leading-tight text-foreground">{t('auth.login.hero.cardMatchTitle')}</p>
+              <p className="mt-2 text-xs font-medium text-muted-foreground">{t('auth.login.hero.cardMatchMeta')}</p>
+              <div className="mt-4 flex gap-1">
+                <span className="h-1.5 flex-1 rounded-full bg-primary" />
+                <span className="h-1.5 flex-1 rounded-full bg-primary/60" />
+                <span className="h-1.5 flex-1 rounded-full bg-primary/25" />
+              </div>
+            </div>
+
+            <div className="absolute -bottom-1 left-0 z-30 w-52 -rotate-3 rounded-xl border border-white/30 bg-secondary p-5 text-secondary-foreground shadow-xl">
+              <p className="text-[10px] font-semibold uppercase tracking-wider opacity-75">{t('auth.login.hero.cardImpactLabel')}</p>
+              <p className="mt-5 font-heading text-2xl font-black leading-none">{t('auth.login.hero.cardImpactTitle')}</p>
+              <p className="mt-2 text-xs font-medium opacity-80">{t('auth.login.hero.cardImpactMeta')}</p>
+              <div className="mt-4 h-1.5 w-full rounded-full bg-secondary-foreground/20"><div className="h-full w-3/4 rounded-full bg-secondary-foreground" /></div>
+            </div>
+
+            <div className="absolute -bottom-8 right-5 z-30 w-52 rotate-2 rounded-xl border border-border/80 bg-background p-4 shadow-xl">
+              <div className="flex items-center gap-2 text-primary">
+                <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+                <span className="text-[10px] font-semibold uppercase tracking-wider">{t('auth.login.hero.cardTrustLabel')}</span>
+              </div>
+              <p className="mt-5 font-heading text-base font-black leading-tight text-foreground">{t('auth.login.hero.cardTrustTitle')}</p>
+              <p className="mt-2 text-xs font-medium text-muted-foreground">{t('auth.login.hero.cardTrustMeta')}</p>
             </div>
           </div>
 
-          <div className="flex items-center justify-between border-t border-background/15 pt-5 text-xs font-medium text-background/55">
+          <div className="mt-8 flex items-center justify-between text-xs font-medium text-white/75">
             <span>{t('auth.login.hero.brand')}</span>
-            <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-primary" /> {t('auth.login.hero.tagline')}</span>
+            <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white" /> {t('auth.login.hero.tagline')}</span>
           </div>
         </div>
       </div>
