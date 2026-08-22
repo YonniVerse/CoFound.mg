@@ -1,37 +1,37 @@
 # Reprise de session
 
 **Dernière mise à jour** : 2026-08-22
-**Phase** : LoginPage — inputs harmonisés
+**Phase** : ForgotPasswordPage — viewport verrouillé
 **Vague / ticket** : E-11 — connexion et accès
 **Branche actuelle** : `dev`
 
 ## 1. État actuel
 
-Les champs email et mot de passe de `LoginPage` utilisent maintenant une présentation commune : hauteur `h-11`, rayon `rounded-xl`, bordure `border-border/80`, fond `bg-card`, ombre légère, typographie `text-sm font-medium` et focus primaire cohérent.
+`ForgotPasswordPage` utilise maintenant `h-screen` comme `LoginPage`, avec `overflow-hidden` sur le conteneur racine. La page occupe la hauteur du viewport et ne crée plus de scroll global.
 
 ## 2. Tâches terminées
 
-Les deux inputs ont reçu les mêmes règles de taille, bordure, fond, placeholder, transition et focus. Les icônes Mail et Lock sont alignées au même emplacement avec `left-3.5`, et les paddings sont adaptés aux icônes avec `pl-10`. L’input mot de passe garde `pr-12` pour le bouton d’affichage.
+La classe racine de `apps/web/src/pages/ForgotPasswordPage.tsx` a été ajustée de `min-h-screen` vers `h-screen`. La disposition flex existante du header, du contenu centré, de la card et du footer est conservée. Le fond décoratif reste contenu dans le viewport.
 
-Le bouton œil du mot de passe utilise maintenant une zone interactive homogène `h-8 w-8 rounded-lg`, avec hover et focus en accent primaire. La logique d’authentification, les types de champ, les attributs autocomplete et la visibilité du mot de passe n’ont pas changé.
+La logique de demande de réinitialisation, l’état de succès, les routes et les contenus i18n n’ont pas été modifiés.
 
 ## 3. Fichiers importants modifiés
 
-- `apps/web/src/pages/LoginPage.tsx` : styles des inputs email/mot de passe et bouton de visibilité.
+- `apps/web/src/pages/ForgotPasswordPage.tsx` : viewport `h-screen` et scroll global verrouillé.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-Le commit de code publié est `b5c0595`.
+Le commit de code publié est `77c5557`.
 
 ## 4. Validations et problèmes connus
 
-Le typecheck web, le lint web, la compilation de `@cofound/shared` et le build web ont réussi. `dev` local et `origin/dev` sont synchronisés et propres.
+Le typecheck web, le lint web, la compilation de `@cofound/shared` et le build web ont réussi après la modification. `dev` local et `origin/dev` sont synchronisés et propres.
 
-La validation est structurelle et compilée. Une vérification visuelle reste recommandée sur `/login` en desktop et mobile afin de contrôler le rendu exact des états focus, erreur et saisie longue.
+À faible hauteur d’écran, la card et le footer peuvent devenir visuellement serrés puisque la page ne peut plus défiler par décision produit. Si nécessaire, il faudra réduire les espacements de manière responsive plutôt que réintroduire un scroll global.
 
 ## 5. Prochaine action
 
-Ouvrir `/login` et comparer les deux champs en état normal, focus, erreur et mot de passe visible. Vérifier que les labels, icônes, placeholders et le lien « mot de passe oublié » restent alignés.
+Ouvrir `/forgot-password` sur desktop et mobile, notamment autour de 1280×720 et 390×844. Vérifier que le formulaire, l’état succès, le header et le footer restent visibles dans le viewport.
 
 ## 6. Décisions et contexte de reprise
 
-Les styles des champs restent basés sur la primitive `Input` existante et sont surchargés uniquement au niveau de `LoginPage` pour correspondre au design system de la page. Aucun changement d’architecture, de données, de RBAC ou de stack n’a été introduit.
+Le comportement de `ForgotPasswordPage` est aligné sur `LoginPage` avec `h-screen overflow-hidden`. Aucun changement d’architecture, de données, de RBAC ou de stack n’a été introduit.

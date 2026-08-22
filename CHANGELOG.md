@@ -10,6 +10,19 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — ForgotPasswordPage verrouillée au viewport
+
+### Modifié
+
+- Remplacement de `min-h-screen` par `h-screen` sur `ForgotPasswordPage`.
+- Conservation de `overflow-hidden` afin d’empêcher le scroll global, comme sur `LoginPage`.
+- Header, formulaire, état de succès, card et footer conservés sans changement de logique.
+- Modification publiée sur `dev` dans le commit `77c5557`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Inputs du login harmonisés
 
 ### Modifié
