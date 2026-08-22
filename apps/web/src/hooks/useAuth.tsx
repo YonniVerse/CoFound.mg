@@ -12,6 +12,7 @@ type AuthContextValue = {
   login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
   refresh: () => Promise<boolean>
+  setAccessToken: (accessToken: string) => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -25,6 +26,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       { email, password },
     )
     apiClient.setAccessToken(response.accessToken)
+    setState({ status: 'authenticated', userId: '' })
+  }, [])
+
+  const setAccessToken = useCallback((accessToken: string) => {
+    apiClient.setAccessToken(accessToken)
     setState({ status: 'authenticated', userId: '' })
   }, [])
 
@@ -59,8 +65,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAuthenticated = state.status === 'authenticated'
 
   const value = useMemo<AuthContextValue>(
-    () => ({ state, isAuthenticated, login, logout, refresh }),
-    [state, isAuthenticated, login, logout, refresh],
+    () => ({ state, isAuthenticated, login, logout, refresh, setAccessToken }),
+    [state, isAuthenticated, login, logout, refresh, setAccessToken],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
