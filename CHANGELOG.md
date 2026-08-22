@@ -10,6 +10,19 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Fond LoginPage accordé au logo
+
+### Modifié
+
+- Remplacement du fond noir par une teinte bleu-indigo très légère `bg-primary/5`.
+- Choix basé sur la couleur dominante du logo et du hero de LandingPage.
+- Grille géométrique rétablie avec `var(--border)` et l’opacité du landing pour garder une structure discrète.
+- Modification publiée sur `dev` dans le commit `45375fb`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Test du fond noir de LoginPage
 
 ### Modifié
