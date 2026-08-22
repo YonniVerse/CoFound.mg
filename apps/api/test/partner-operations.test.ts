@@ -3,6 +3,7 @@ import { test } from 'node:test'
 import { ConflictException } from '@nestjs/common'
 import { PartnerContactService } from '../src/organization-request/partner-contact.service.js'
 import { FinancialEngagementService } from '../src/financial/financial-engagement.service.js'
+import { OffPlatformPaymentProvider } from '../src/financial/off-platform-payment.provider.js'
 import type { PrismaService } from '../src/prisma/prisma.service.js'
 import type { AuditService } from '../src/audit/audit.service.js'
 
@@ -24,7 +25,7 @@ test('B-11 crée un engagement proposé avec une référence hors plateforme', a
     project: { findUnique: async () => ({ id: 'project-1' }) },
     financialEngagement: { create: async () => ({ id: 'engagement-1', projectId: 'project-1', organizationId: 'org-1', type: 'GRANT', amount: { toString: () => '5000.00' }, currency: 'MGA', provider: 'OFF_PLATFORM', externalRef: 'OFF-ref', status: 'PROPOSED', createdAt: new Date() }) },
   } as unknown as PrismaService
-  const result = await new FinancialEngagementService(prisma, audit).create('user-1', 'org-1', { projectId: 'project-1', type: 'GRANT', amount: '5000.00', currency: 'MGA' })
+  const result = await new FinancialEngagementService(prisma, audit, new OffPlatformPaymentProvider()).create('user-1', 'org-1', { projectId: 'project-1', type: 'GRANT', amount: '5000.00', currency: 'MGA' })
   assert.equal(result.status, 'PROPOSED')
   assert.equal(result.externalRef, 'OFF-ref')
 })

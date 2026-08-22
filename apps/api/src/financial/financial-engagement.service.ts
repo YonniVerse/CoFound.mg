@@ -3,14 +3,13 @@ import { financialEngagementCreateSchema } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { AuditService } from '../audit/audit.service.js'
 import { OffPlatformPaymentProvider } from './off-platform-payment.provider.js'
-import type { PaymentProvider } from './payment-provider.port.js'
 
 @Injectable()
 export class FinancialEngagementService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
-    private readonly paymentProvider: PaymentProvider = new OffPlatformPaymentProvider(),
+    private readonly paymentProvider: OffPlatformPaymentProvider,
   ) {}
 
   async create(actorId: string, organizationId: string, body: unknown) {
