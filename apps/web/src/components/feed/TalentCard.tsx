@@ -3,6 +3,7 @@ import { Avatar } from "@/components/shared/Avatar";
 import { Button } from "@/components/ui/button";
 import { Eye, MessageSquare, Clock } from "lucide-react";
 import { ReportButton } from "@/components/shared/ReportButton";
+import { BlockButton } from "@/components/shared/BlockButton";
 
 interface TalentCardProps {
   talent: TalentFeedCard;
@@ -118,6 +119,7 @@ export function TalentCard({ talent }: TalentCardProps) {
             <span>Profil</span>
           </Button>
           <ReportButton targetType="PROFILE" targetId={talent.id} />
+          <BlockButton userId={talent.id} />
           <Button
             size="sm"
             className="h-9 px-3.5 text-xs sm:text-sm font-medium rounded-lg cursor-pointer gap-1.5"
