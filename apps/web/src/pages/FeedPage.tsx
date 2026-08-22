@@ -74,7 +74,7 @@ export default function FeedPage() {
         setSearch={setSearch}
       />
 
-      <div className="flex items-start px-4 sm:px-10 py-8 gap-6 max-w-[1400px] mx-auto w-full overflow-x-hidden">
+      <div className="flex items-start px-4 sm:px-10 py-8 gap-6 max-w-[1400px] mx-auto w-full">
         {/* Main Column: Feed */}
         <div className="flex-1 min-w-0 max-w-3xl flex flex-col gap-6">
           {isLoading && (
