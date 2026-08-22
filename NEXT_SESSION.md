@@ -14,7 +14,7 @@ Les fichiers principaux sont `apps/api/src/connection/connection-request.service
 
 ## 3. Validation exécutée
 
-Pour M-08, Prisma validate, lint API, typecheck API et les tests API passent. La suite compte **111/111 tests réussis**, dont les tests unitaires et HTTP du retour « pas intéressé ». La migration n’est pas encore déployée sur Neon ; aucune validation de recette n’a été exécutée.
+Pour M-08, Prisma validate, lint API, typecheck API, build frontend et les tests API passent. La suite compte **111/111 tests réussis**, dont les tests unitaires et HTTP du retour « pas intéressé ». La migration `20260822100000_add_dream_match_exclusions` est appliquée sur Neon. Aucun harnais Playwright/Cypress E2E n’est présent dans le dépôt ; les tests HTTP locaux constituent la validation d’intégration disponible.
 
 ## 4. Décisions techniques
 
@@ -22,8 +22,8 @@ Les routes de messagerie exigent `message:send` et vérifient l’appartenance �
 
 ## 5. Vigilance et travaux restants
 
-M-05, M-06 et M-07 sont intégrés dans `dev`. M-08 ajoute le modèle `DreamMatchExclusion`, la migration SQL, la route POST `/me/dream-match/suggestions/:talentId/not-interested`, l’upsert transactionnel idempotent et le filtre SQL `NOT EXISTS` des suggestions exclues. Le contrat de réponse reste pseudonymisé. La couche UI du bouton « pas intéressé » reste à compléter.
+M-05, M-06 et M-07 sont intégrés dans `dev`. M-08 ajoute le modèle `DreamMatchExclusion`, la migration SQL, la route POST `/me/dream-match/suggestions/:talentId/not-interested`, l’upsert transactionnel idempotent, le filtre SQL `NOT EXISTS` des suggestions exclues et le bouton frontend avec retrait optimiste et restauration en cas d’échec. Le contrat de réponse reste pseudonymisé.
 
 ## 6. Prochaine action
 
-Compléter l’interface M-08 avec le bouton et le retrait optimiste de la carte, puis lancer une migration de recette Neon avant d’ouvrir la PR. Vérifier la migration et les contrôles GitHub. Après M-08, reprendre M-14 selon le backlog. M-12, M-13, M-15 et M-16 restent à traiter par leurs propriétaires.
+Ouvrir la PR M-08 après le commit frontend, puis faire contrôler les vérifications GitHub. Ajouter ultérieurement un vrai parcours E2E Playwright/Cypress avec authentification de recette si l’environnement de test est fourni. Après M-08, reprendre M-14 selon le backlog. M-12, M-13, M-15 et M-16 restent à traiter par leurs propriétaires.

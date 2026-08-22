@@ -60,10 +60,22 @@ Retiré · En cours · Bloqué**.
 - Lint et typecheck API réussis.
 - **111/111 tests API réussis**.
 
+### Modifié
+
+- Le client API expose la mutation `markDreamMatchNotInterested`.
+- L’écran Dream-Match affiche le bouton « Pas intéressé », retire la carte de manière optimiste et la restaure en cas d’échec.
+- La migration `20260822100000_add_dream_match_exclusions` est appliquée sur Neon.
+
+### Validation
+
+- 111/111 tests API réussis.
+- Typecheck, lint et build frontend réussis.
+- Aucun harnais Playwright/Cypress présent ; les tests HTTP d’intégration M-08 sont la validation disponible.
+
 ### En cours
 
-- Ajouter le bouton frontend et le retrait optimiste de la carte.
-- Vérifier la migration sur Neon avant la PR M-08.
+- Ouvrir et faire contrôler la PR M-08.
+- Ajouter un vrai parcours E2E authentifié lorsque le harnais et les identifiants de recette seront disponibles.
 
 ---
 

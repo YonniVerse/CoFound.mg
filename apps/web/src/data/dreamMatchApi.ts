@@ -1,8 +1,10 @@
 import { apiClient } from '@/lib/api-client'
 import {
+  dreamMatchNotInterestedResponseSchema,
   dreamMatchProfileResponseSchema,
   dreamMatchSuggestionsResponseSchema,
   dreamMatchUpsertResponseSchema,
+  type DreamMatchNotInterestedResponse,
   type DreamMatchSuggestionsResponse,
   type DreamMatchUpsertRequest,
 } from '@cofound/shared'
@@ -21,4 +23,8 @@ export function getDreamMatchSuggestions(params?: { cursor?: string; limit?: num
   if (params?.limit) query.set('limit', String(params.limit))
   const suffix = query.toString() ? `?${query.toString()}` : ''
   return apiClient.get(`/me/dream-match/suggestions${suffix}`, dreamMatchSuggestionsResponseSchema)
+}
+
+export function markDreamMatchNotInterested(talentId: string): Promise<DreamMatchNotInterestedResponse> {
+  return apiClient.post(`/me/dream-match/suggestions/${encodeURIComponent(talentId)}/not-interested`, {}, dreamMatchNotInterestedResponseSchema)
 }
