@@ -1,6 +1,6 @@
 import { useState, useEffect, useTransition } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Search as SearchIcon, X, Sparkles, Building2, User, Rocket, AlertCircle } from 'lucide-react'
+import { Search as SearchIcon, X, Building2, User, Rocket, AlertCircle } from 'lucide-react'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -113,9 +113,9 @@ export default function SearchPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-6xl mx-auto px-6 sm:px-10 py-8 space-y-8">
+      <div className="mx-auto w-full max-w-[1400px] space-y-6 px-4 py-8 sm:px-10">
         {/* Search header */}
-        <div className="space-y-4 max-w-2xl">
+          <div className="max-w-3xl space-y-3">
           <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground">
             {t('search.title')}
           </h1>
@@ -131,13 +131,13 @@ export default function SearchPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t('search.placeholder')}
-              className="pl-12 pr-10 h-12 text-base rounded-xl border-border bg-card shadow-xs focus-visible:ring-2 focus-visible:ring-ring"
+              className="h-11 rounded-xl border border-border/80 bg-card pl-11 pr-11 text-sm font-medium shadow-2xs transition-[border-color,box-shadow] placeholder:text-muted-foreground/80 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 sm:text-base"
             />
             {query && (
               <button
                 type="button"
                 onClick={handleClear}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
                 aria-label={t('search.empty.reset')}
               >
                 <X className="h-4 w-4" />
@@ -148,12 +148,12 @@ export default function SearchPage() {
 
         {/* Search scope tabs when there's a active query */}
         {debouncedQuery && (
-          <div className="flex flex-wrap gap-2 border-b border-border pb-4">
+          <div className="flex flex-wrap gap-2 border-b border-border pb-3">
             <Button
               variant={activeType === 'all' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setActiveType('all')}
-              className="rounded-full gap-2"
+              className="h-9 gap-1.5 rounded-lg px-3.5 text-xs font-medium sm:text-sm"
             >
               {t('search.tab.all')}
               <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-xs">
@@ -164,7 +164,7 @@ export default function SearchPage() {
               variant={activeType === 'projects' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setActiveType('projects')}
-              className="rounded-full gap-2"
+              className="h-9 gap-1.5 rounded-lg px-3.5 text-xs font-medium sm:text-sm"
             >
               <Rocket className="h-3.5 w-3.5" />
               {t('search.tab.projects')}
@@ -176,7 +176,7 @@ export default function SearchPage() {
               variant={activeType === 'talents' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setActiveType('talents')}
-              className="rounded-full gap-2"
+              className="h-9 gap-1.5 rounded-lg px-3.5 text-xs font-medium sm:text-sm"
             >
               <User className="h-3.5 w-3.5" />
               {t('search.tab.talents')}
@@ -188,7 +188,7 @@ export default function SearchPage() {
               variant={activeType === 'opportunities' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setActiveType('opportunities')}
-              className="rounded-full gap-2"
+              className="h-9 gap-1.5 rounded-lg px-3.5 text-xs font-medium sm:text-sm"
             >
               <Building2 className="h-3.5 w-3.5" />
               {t('search.tab.opportunities')}
@@ -202,7 +202,7 @@ export default function SearchPage() {
         {/* Content area */}
         {/* State 1: Loading */}
         {isLoading && (
-          <div className="flex flex-col items-center justify-center py-16 space-y-4 text-muted-foreground">
+          <div className="flex flex-col items-center justify-center space-y-4 py-16 text-muted-foreground">
             <span className="h-8 w-8 animate-spin rounded-full border-3 border-primary border-t-transparent" />
             <p className="text-sm font-medium">{t('search.loading')}</p>
           </div>
@@ -218,10 +218,10 @@ export default function SearchPage() {
 
         {/* State 3: Empty query initial suggestions */}
         {!debouncedQuery && !isLoading && (
-          <div className="space-y-8 py-4 animate-in fade-in duration-300">
+          <div className="space-y-6 py-2">
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                <Sparkles className="h-4 w-4 text-primary" />
+                <SearchIcon className="h-4 w-4 text-primary" />
                 {t('search.suggestions.skills')}
               </div>
               <div className="flex flex-wrap gap-2">
@@ -229,7 +229,7 @@ export default function SearchPage() {
                   <button
                     key={skill}
                     onClick={() => handleSelectSuggestion(skill)}
-                    className="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-muted hover:bg-primary-light hover:text-primary-dark text-muted-foreground border border-border transition-colors"
+                    className="rounded-lg border border-border bg-card px-3.5 py-2 text-xs font-medium text-muted-foreground shadow-2xs transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
                   >
                     {skill}
                   </button>
@@ -247,7 +247,7 @@ export default function SearchPage() {
                   <button
                     key={sector}
                     onClick={() => handleSelectSuggestion(sector)}
-                    className="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-muted hover:bg-secondary-light hover:text-secondary text-muted-foreground border border-border transition-colors"
+                    className="rounded-lg border border-border bg-card px-3.5 py-2 text-xs font-medium text-muted-foreground shadow-2xs transition-colors hover:border-secondary/40 hover:bg-secondary/5 hover:text-secondary"
                   >
                     {sector}
                   </button>
@@ -259,10 +259,10 @@ export default function SearchPage() {
 
         {/* State 4: Search results */}
         {debouncedQuery && !isLoading && !error && activeResults && (
-          <div className="space-y-8 animate-in fade-in duration-300">
+          <div className="space-y-8">
             {totalCount === 0 ? (
               /* Empty search results */
-              <div className="text-center py-16 space-y-4 max-w-md mx-auto">
+              <div className="mx-auto max-w-md space-y-4 rounded-2xl border border-border bg-card p-8 text-center shadow-2xs sm:p-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted mx-auto text-muted-foreground">
                   <SearchIcon className="h-6 w-6" />
                 </div>
@@ -288,7 +288,7 @@ export default function SearchPage() {
                         <Rocket className="h-5 w-5 text-primary" />
                         {t('search.tab.projects')} ({activeResults.projects.length})
                       </h2>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         {activeResults.projects.map((proj) => (
                           <ProjectCard
                             key={proj.id}
@@ -321,7 +321,7 @@ export default function SearchPage() {
                         <User className="h-5 w-5 text-secondary" />
                         {t('search.tab.talents')} ({activeResults.talents.length})
                       </h2>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         {activeResults.talents.map((talent) => (
                           <ProfileCard
                             key={talent.pseudonym}
@@ -350,14 +350,14 @@ export default function SearchPage() {
                         <Building2 className="h-5 w-5 text-impact" />
                         {t('search.tab.opportunities')} ({activeResults.opportunities.length})
                       </h2>
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         {activeResults.opportunities.map((opp) => (
                           <div
                             key={opp.id}
-                            className="p-5 rounded-xl border border-border bg-card shadow-2xs space-y-2 hover:border-primary/40 transition-colors"
+                            className="space-y-3 rounded-xl border border-border bg-card p-5 shadow-2xs transition-all duration-150 hover:border-border/80 sm:p-6"
                           >
-                            <div className="flex items-center justify-between gap-2">
-                              <h3 className="font-heading font-semibold text-base text-foreground">
+                            <div className="flex flex-wrap items-start justify-between gap-3">
+                              <h3 className="min-w-0 flex-1 font-heading text-sm font-semibold leading-tight text-foreground sm:text-base">
                                 {opp.title}
                               </h3>
                               {opp.organizationName && (
@@ -366,7 +366,7 @@ export default function SearchPage() {
                                 </Badge>
                               )}
                             </div>
-                            <p className="text-xs text-muted-foreground line-clamp-2">
+                            <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
                               {opp.description}
                             </p>
                           </div>
