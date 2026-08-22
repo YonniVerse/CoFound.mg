@@ -764,3 +764,26 @@ Les branches E-10, E-11, E-18 et E-19 ont été synchronisées avec `dev` avant 
 Après reconstruction de `@cofound/shared`, la validation intégrée passe avec 128/128 tests API, lint, typecheck et build frontend réussis. La reconstruction du package partagé est nécessaire après les fusions lorsque les tests exécutent des exports nouvellement ajoutés.
 
 La prochaine chaîne prioritaire est désormais S-01, puis S-02 et S-03. S-04 peut être préparé en parallèle après vérification de l’audit d’accès à l’identité.
+
+
+## 2026-08-22 — E-14 et chaîne des signalements
+
+### Ajouté
+
+- Finalisation d’E-14 avec traductions FR/MG de la bannière de complétion et test HTTP de `GET /api/v1/me/profile/completion-reminder`.
+- File de modération priorisée et paginée pour les signalements ouverts ou en revue.
+- Décisions transactionnelles et sanctions `WARNING`, `FREEZE`, `DISABLE` et `CONTENT_REMOVED`.
+- Gel ou désactivation automatique du compte pour les sanctions correspondantes.
+- Notification du déclarant lors d’une résolution ou d’un classement sans suite.
+- Accès modérateur explicite à l’identité civile de la cible, avec journalisation et exclusion du genre de la réponse.
+- Propagation de `staffRole` dans les claims JWT et contrôle RBAC réservé aux rôles staff habilités.
+- Console frontend `/moderation` avec file pseudonymisée, décisions et révélation d’identité confirmée.
+- Tests unitaires de file, sanction et audit d’identité, ainsi que tests HTTP E-14 et résolution de signalement.
+
+### Validation
+
+- PR #37 d’E-14 fusionnée dans `dev`.
+- Commit de la chaîne S-01 à S-04 : `e73ae62`.
+- PR #68 ouverte vers `dev`.
+- Typecheck, lint, tests ciblés, build frontend et `git diff --check` réussis.
+- Tests ciblés signalement/RBAC/intégration : **23/23 réussis**.
