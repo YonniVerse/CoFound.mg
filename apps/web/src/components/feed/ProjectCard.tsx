@@ -42,9 +42,15 @@ export function ProjectCard({ project }: ProjectCardProps) {
     const membersCount = project.membersCount;
 
     return (
-      <div className="bg-card border border-border rounded-xl p-5 sm:p-6 shadow-2xs hover:border-border/80 transition-all duration-150 flex flex-col gap-4 group min-w-0 overflow-hidden">
+      <div className="relative bg-card border border-border rounded-xl p-5 sm:p-6 shadow-2xs hover:border-border/80 transition-all duration-150 flex flex-col gap-4 group min-w-0 overflow-hidden">
+        {/* Subtle Absolute Project Indicator Dot */}
+        <div
+          className="absolute top-3.5 left-3.5 h-2 w-2 rounded-full bg-primary"
+          title="Projet"
+        />
+
         {/* Header: Owner Avatar + Project Title & Sector + Status Badge */}
-        <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex flex-wrap items-start justify-between gap-3 pl-2">
           <div className="flex items-center gap-3.5 min-w-0 flex-1">
             <Avatar
               name={ownerName}
@@ -128,9 +134,15 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   // Prototype Mock Data Fallback
   return (
-    <div className="bg-card border border-border rounded-xl p-5 sm:p-6 shadow-2xs hover:border-border/80 transition-all duration-150 flex flex-col gap-4 group min-w-0 overflow-hidden">
+    <div className="relative bg-card border border-border rounded-xl p-5 sm:p-6 shadow-2xs hover:border-border/80 transition-all duration-150 flex flex-col gap-4 group min-w-0 overflow-hidden">
+      {/* Subtle Absolute Project Indicator Dot */}
+      <div
+        className="absolute top-3.5 left-3.5 h-2 w-2 rounded-full bg-primary"
+        title="Projet"
+      />
+
       {/* Header: Author Avatar + Title & Sector + Time ago */}
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="flex flex-wrap items-start justify-between gap-3 pl-2">
         <div className="flex items-center gap-3.5 min-w-0 flex-1">
           <Avatar
             name={project.author.name}
