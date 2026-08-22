@@ -23,3 +23,10 @@ Le backlog officiel définit S-08 comme **`seed:demo` : établissement, promotio
 
 ## Prochaine action
 Exécuter `pnpm --filter @cofound/api seed:demo` sur une base de recette dédiée, corriger les incohérences Prisma éventuelles, rejouer la commande et ajouter les tests/contrôles d’idempotence avant le commit de S-08.
+
+
+## Mise à jour S-09 — 22 août 2026
+
+La branche `feat/S-09-e2e-playwright` a été recréée depuis `origin/dev` après fusion de S-05 à S-08. Playwright et Chromium sont installés ; `playwright test --list` détecte les trois scénarios officiels. L’exécution locale a démarré correctement après construction de `@cofound/shared`, mais les trois scénarios sont ignorés faute de variables `E2E_*` et de comptes/jeton de recette. Aucun secret n’est enregistré.
+
+Les fichiers concernés sont `playwright.config.ts`, `tests/e2e/s09-critical-paths.spec.ts`, `package.json` et `pnpm-lock.yaml`. La branche est prête à être publiée, mais S-09 ne doit pas être déclaré validé E2E tant que les tests ne sont pas exécutés avec authentification réelle. La prochaine étape est de fournir l’URL de staging, trois comptes de test et un jeton d’activation valides.

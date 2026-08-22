@@ -836,3 +836,19 @@ La prochaine chaîne prioritaire est désormais S-01, puis S-02 et S-03. S-04 pe
 
 - Recette Neon avec un vrai compte staff et validation du transport email réel.
 - Préparation de S-05 : console staff d’audit, référentiels et santé produit.
+
+
+## 2026-08-22 — Préparation E2E S-09
+
+### Ajouté
+
+- Branche `feat/S-09-e2e-playwright` recréée depuis `dev`.
+- Configuration `playwright.config.ts` et trois scénarios E2E restaurés.
+- Dépendance `@playwright/test` et scripts E2E ajoutés au monorepo.
+
+### Validation
+
+- Chromium installé.
+- Package `@cofound/shared` construit avant lancement du webserver Vite.
+- `playwright test --list` détecte 3 tests.
+- Lancement local effectué ; les 3 scénarios restent ignorés faute de variables `E2E_*`, de comptes de recette et de jeton d’activation. S-09 n’est donc pas encore validé sur un parcours authentifié réel.
