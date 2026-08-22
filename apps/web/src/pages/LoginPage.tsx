@@ -189,10 +189,21 @@ export default function LoginPage() {
       </div>
 
       {/* RIGHT COLUMN: Composition thématique cohérente avec le landing */}
-      <div className="relative hidden min-h-0 overflow-hidden border-l border-border bg-primary/5 lg:col-span-6 lg:flex lg:items-center lg:justify-center xl:col-span-7">
+      <div className="relative hidden min-h-0 overflow-hidden border-l border-border bg-linear-to-br from-primary via-impact to-secondary lg:col-span-6 lg:flex lg:items-center lg:justify-center xl:col-span-7">
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full text-white/25"
+          viewBox="0 0 800 900"
+          preserveAspectRatio="none"
+          fill="none"
+        >
+          <path d="M-80 160 C 120 20, 250 300, 470 170 S 700 50, 900 210" stroke="currentColor" strokeWidth="2" />
+          <path d="M-100 470 C 140 300, 280 590, 520 430 S 730 300, 920 510" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M-100 760 C 160 590, 310 860, 560 700 S 760 600, 920 770" stroke="currentColor" strokeWidth="2" />
+        </svg>
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-60"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.14)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,#000_55%,transparent_100%)] opacity-60"
         />
 
         <div className="relative z-10 flex h-full min-h-0 w-full max-w-2xl flex-col px-6 py-8 text-foreground lg:px-10 lg:py-10">
@@ -204,7 +215,7 @@ export default function LoginPage() {
 
           <div className="mt-6 grid min-h-0 flex-1 grid-cols-2 grid-rows-[1.2fr_1fr_1fr] gap-4 pb-2">
             {/* Exploration : première card sur les deux colonnes */}
-            <div className="col-span-2 flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-primary/35 bg-primary-light/95 p-4 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5">
+              <div className="col-span-2 flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-primary/40 bg-card/95 p-4 shadow-xl shadow-foreground/15 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-5">
               <div className="flex items-center justify-between gap-2"><span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{t('auth.login.hero.cardExploreLabel')}</span><ArrowUpRight className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" /></div>
               <p className="mt-auto line-clamp-2 break-words font-heading text-xl font-black leading-tight text-foreground sm:text-2xl">{t('auth.login.hero.cardExploreTitle')}</p>
               <p className="mt-2 line-clamp-2 break-words text-xs font-medium leading-snug text-muted-foreground sm:text-sm">{t('auth.login.hero.cardExploreMeta')}</p>
@@ -212,7 +223,7 @@ export default function LoginPage() {
             </div>
 
             {/* Complémentarité */}
-            <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-impact/35 bg-impact-light/95 p-4 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5">
+              <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-impact/45 bg-impact-light/95 p-4 shadow-xl shadow-foreground/15 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-5">
               <div className="flex items-center justify-between gap-2"><span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{t('auth.login.hero.cardMatchLabel')}</span><ArrowUpRight className="h-4 w-4 shrink-0 text-impact" aria-hidden="true" /></div>
               <p className="mt-auto line-clamp-2 break-words font-heading text-base font-black leading-tight text-foreground sm:text-lg">{t('auth.login.hero.cardMatchTitle')}</p>
               <p className="mt-2 line-clamp-2 break-words text-xs font-medium leading-snug text-muted-foreground">{t('auth.login.hero.cardMatchMeta')}</p>
@@ -220,7 +231,7 @@ export default function LoginPage() {
             </div>
 
             {/* Communauté */}
-            <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-primary/80 bg-primary p-4 text-primary-foreground shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5">
+              <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-primary-foreground/45 bg-primary p-4 text-primary-foreground shadow-xl shadow-foreground/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-foreground/80">{t('auth.login.hero.cardCommunityLabel')}</p>
               <p className="mt-auto line-clamp-2 break-words font-heading text-lg font-black leading-tight text-primary-foreground sm:text-xl">{t('auth.login.hero.cardCommunityTitle')}</p>
               <p className="mt-2 line-clamp-2 break-words text-xs font-medium leading-snug text-primary-foreground/80">{t('auth.login.hero.cardCommunityMeta')}</p>
@@ -228,14 +239,14 @@ export default function LoginPage() {
             </div>
 
             {/* Impact collectif */}
-            <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-destructive/80 bg-destructive p-4 text-destructive-foreground shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5">
+              <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-destructive-foreground/45 bg-destructive p-4 text-destructive-foreground shadow-xl shadow-foreground/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-destructive-foreground/85">{t('auth.login.hero.cardImpactLabel')}</p>
               <p className="mt-auto line-clamp-2 break-words font-heading text-xl font-black leading-tight text-destructive-foreground sm:text-2xl">{t('auth.login.hero.cardImpactTitle')}</p>
               <div className="mt-3 h-1.5 w-full rounded-full bg-destructive-foreground/25"><div className="h-full w-3/4 rounded-full bg-destructive-foreground" /></div>
             </div>
 
             {/* Cadre de confiance */}
-            <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card p-4 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5">
+              <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-border/80 bg-card/95 p-4 shadow-xl shadow-foreground/15 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-5">
               <div className="flex items-center gap-2 text-primary"><ShieldCheck className="h-4 w-4 shrink-0" aria-hidden="true" /><span className="text-[10px] font-semibold uppercase tracking-wider">{t('auth.login.hero.cardTrustLabel')}</span></div>
               <p className="mt-auto line-clamp-2 break-words font-heading text-base font-black leading-tight text-foreground sm:text-lg">{t('auth.login.hero.cardTrustTitle')}</p>
               <p className="mt-2 line-clamp-2 break-words text-xs font-medium leading-snug text-muted-foreground">{t('auth.login.hero.cardTrustMeta')}</p>
