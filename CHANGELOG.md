@@ -23,8 +23,10 @@ Retiré · En cours · Bloqué**.
 ### En cours
 
 - Migration en cours des chaînes visibles restantes dans les cartes de feed, l’import, les pages métier et les composants marketing.
-- `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `ProjectsFeedPage` et une partie de `ImportMappingPage` utilisent désormais les clés FR/MG dédiées.
-- Validation build/lint et ajout d’un contrôle empêchant la réintroduction de chaînes visibles en dur.
+- `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `ProjectsFeedPage`, `ImportMappingPage` et `ImportPreviewPage` utilisent désormais les clés FR/MG dédiées.
+- Les statuts et compteurs de prévisualisation, l’erreur de chargement et les actions de navigation sont traduits.
+- Validation build/lint réussie après suppression de la constante de statuts devenue inutilisée et ajout de `t` aux dépendances du hook.
+- Migration des chaînes visibles restantes et ajout d’un contrôle empêchant leur réintroduction encore en cours.
 
 ---
 
