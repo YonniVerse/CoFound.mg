@@ -191,6 +191,13 @@ enum PaymentProvider {
   OFF_PLATFORM
   MOBILE_MONEY
 }
+enum PersonalDataExportStatus {
+  PENDING
+  PROCESSING
+  READY
+  FAILED
+  EXPIRED
+}
 
 model User {
   id                         String                    @id @default(cuid())
@@ -237,6 +244,7 @@ model User {
   moderationTargets          ModerationAction[]        @relation("ModerationTarget")
   importRows                 ImportRow[]
   bmcUpdates                 BusinessModelCanvas[]     @relation("BmcUpdater")
+  personalDataExports        PersonalDataExport[]
 }
 
 model TalentProfile {
@@ -425,6 +433,21 @@ model PasswordResetToken {
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, expiresAt])
+}
+
+model PersonalDataExport {
+  id          String                   @id @default(cuid())
+  userId      String
+  status      PersonalDataExportStatus @default(PENDING)
+  storageKey  String?
+  requestedAt DateTime                 @default(now())
+  completedAt DateTime?
+  expiresAt   DateTime?
+  errorCode   String?
+  user        User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, requestedAt])
+  @@index([status, requestedAt])
 }
 
 model Consent {

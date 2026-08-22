@@ -32,6 +32,9 @@ const ProjectChannelPage = lazy(() => import("@/pages/ProjectChannelPage"));
 const MessagesPage = lazy(() => import("@/pages/MessagesPage"));
 const NotificationsPage = lazy(() => import("@/pages/NotificationsPage"));
 const ModerationQueuePage = lazy(() => import("@/pages/ModerationQueuePage"));
+const AuditLogPage = lazy(() => import("@/pages/AuditLogPage"));
+const ReferenceDataPage = lazy(() => import("@/pages/ReferenceDataPage"));
+const ProductHealthPage = lazy(() => import("@/pages/ProductHealthPage"));
 const ProjectExportPage = lazy(() => import("@/pages/ProjectExportPage"));
 const ProjectPublicPage = lazy(() => import("@/pages/ProjectPublicPage"));
 const SearchPage = lazy(() => import("@/pages/SearchPage"));
@@ -93,6 +96,9 @@ function App() {
     <Route path="/messages" element={<MessagesPage />} />
     <Route path="/notifications" element={<NotificationsPage />} />
     <Route path="/moderation" element={<ModerationQueuePage />} />
+    <Route path="/staff/audit" element={<AuditLogPage />} />
+    <Route path="/staff/reference-data" element={<ReferenceDataPage />} />
+    <Route path="/staff/health" element={<ProductHealthPage />} />
     <Route path="/profile/me" element={<OnboardingPage />} />
     <Route path="/settings" element={<SettingsPage />} />
     <Route path="/account-status" element={<AccountStatusPage />} />
