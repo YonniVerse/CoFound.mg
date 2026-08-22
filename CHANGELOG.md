@@ -787,3 +787,31 @@ La prochaine chaîne prioritaire est désormais S-01, puis S-02 et S-03. S-04 pe
 - PR #68 ouverte vers `dev`.
 - Typecheck, lint, tests ciblés, build frontend et `git diff --check` réussis.
 - Tests ciblés signalement/RBAC/intégration : **23/23 réussis**.
+
+
+## 2026-08-22 — Stabilisation et fusion S-01 à S-04
+
+### Modifié
+
+- Ajout du formulaire frontend de sanction avec action, identifiant de cible, motif et durée.
+- Conservation de la compatibilité RBAC pour les comptes STAFF sans rôle de modération.
+- Correction du contexte JWT afin de ne renseigner `staffRole` que lorsque le claim existe.
+
+### Validation
+
+- Tests ciblés signalement, RBAC et intégration : **23/23 réussis**.
+- Typecheck package partagé, API et frontend réussis.
+- Lint API et frontend réussis.
+- Build Vite réussi avec chunks applicatifs sous 500 kB.
+- `git diff --check` réussi.
+
+### Fusion
+
+- PR #68 fusionnée dans `dev`.
+- `dev` synchronisé avec `origin/dev` au commit `32e6af7`.
+- La branche de fonctionnalité a été supprimée après fusion.
+
+### En cours
+
+- Recette Neon avec un vrai compte staff et validation du transport email réel.
+- Préparation de S-05 : console staff d’audit, référentiels et santé produit.
