@@ -2,11 +2,11 @@ import { lazy, Suspense, useEffect, type ReactNode } from "react";
 import { BrowserRouter, Routes, Route, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { accountStatusResponseSchema } from '@cofound/shared'
 import { apiClient } from '@/lib/api-client'
-import LandingPage from "@/pages/LandingPage";
-import ActivationPage from "@/pages/ActivationPage";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { AuthProvider } from "@/hooks/useAuth";
 
+const LandingPage = lazy(() => import("@/pages/LandingPage"));
+const ActivationPage = lazy(() => import("@/pages/ActivationPage"));
 const OnboardingPage = lazy(() => import("@/pages/OnboardingPage"));
 const FeedPage = lazy(() => import("@/pages/FeedPage"));
 const ProjectsFeedPage = lazy(() => import("@/pages/ProjectsFeedPage"));

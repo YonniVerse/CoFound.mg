@@ -10,6 +10,29 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — S-10 — Passe de performance frontend
+
+### Ajouté
+
+- Lazy loading du shell public (`LandingPage`, `ActivationPage`) et du graphique Recharts de la page Impact.
+- Budget Vite fixé à 400 kB brut par chunk, avec cible gzip documentée d’environ 110 kB pour le chunk analytique.
+- Script reproductible `pnpm --filter @cofound/web assets:optimize` pour générer les variantes WebP.
+- Variantes WebP de la CTA et de l’image d’authentification.
+
+### Modifié
+
+- Références d’images mises à jour avec `width`, `height`, `loading="lazy"` et `decoding="async"`.
+- Regroupement global de Recharts retiré afin que le module analytique soit chargé uniquement avec sa route.
+- Clés i18n manquantes de l’export de données ajoutées en français et en malgache, ce qui rétablit la compilation frontend de `dev`.
+
+### Validation
+
+- Build shared réussi.
+- Build frontend réussi sans avertissement de chunk supérieur à 400 kB.
+- Lint frontend réussi.
+
+---
+
 ## 2026-08-22 — PR S-07 publiée et socle S-08 initialisé
 
 ### Ajouté

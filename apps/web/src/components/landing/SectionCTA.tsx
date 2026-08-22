@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ctaImage from "@/assets/images/cta.jpg";
+import ctaImage from "@/assets/images/cta.webp";
 
 export function SectionCTA() {
   return (
@@ -54,6 +54,10 @@ export function SectionCTA() {
             <img
               src={ctaImage}
               alt="Startups sur CoFound"
+              width={1080}
+              height={1350}
+              loading="lazy"
+              decoding="async"
               className="relative w-full max-h-[400px] object-cover rounded-2xl border border-border-dark shadow-2xl"
             />
           </div>

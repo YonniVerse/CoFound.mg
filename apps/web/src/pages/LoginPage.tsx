@@ -195,8 +195,12 @@ export default function LoginPage() {
 
         <div className="w-full h-full rounded-2xl overflow-hidden relative border border-border/80 shadow-sm z-10">
           <img
-            src="/images/auth-hero.png"
+            src="/images/auth-hero.webp"
             alt="CoFound.mg Innovation & Collaboration"
+            width={1024}
+            height={1024}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover object-center"
           />
         </div>
