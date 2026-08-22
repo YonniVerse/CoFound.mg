@@ -1,37 +1,41 @@
 # Reprise de session
 
 **Dernière mise à jour** : 2026-08-22
-**Phase** : ForgotPasswordPage — viewport verrouillé
-**Vague / ticket** : E-11 — connexion et accès
+**Phase** : SearchPage — cohérence avec FeedPage
+**Vague / ticket** : E-12 — recherche et découverte
 **Branche actuelle** : `dev`
 
 ## 1. État actuel
 
-`ForgotPasswordPage` utilise maintenant `h-screen` comme `LoginPage`, avec `overflow-hidden` sur le conteneur racine. La page occupe la hauteur du viewport et ne crée plus de scroll global.
+`SearchPage` est maintenant visuellement alignée sur `FeedPage` et ses composants de référence. La logique de recherche, le debounce, la synchronisation des paramètres URL et les appels API n’ont pas été modifiés.
 
 ## 2. Tâches terminées
 
-La classe racine de `apps/web/src/pages/ForgotPasswordPage.tsx` a été ajustée de `min-h-screen` vers `h-screen`. La disposition flex existante du header, du contenu centré, de la card et du footer est conservée. Le fond décoratif reste contenu dans le viewport.
+Le conteneur principal reprend la largeur et le rythme du feed avec `max-w-[1400px]`, `w-full`, padding responsive et espacements plus sobres.
 
-La logique de demande de réinitialisation, l’état de succès, les routes et les contenus i18n n’ont pas été modifiés.
+Le champ de recherche utilise une hauteur `h-11`, un rayon `rounded-xl`, un fond `bg-card`, une bordure et un focus primaires cohérents avec les autres inputs de l’application. Le bouton d’effacement utilise la même zone interactive que le bouton œil de LoginPage.
+
+Les onglets de périmètre utilisent des boutons `h-9`, `rounded-lg`, une typographie compacte et des espacements identiques aux boutons du feed. Les suggestions sont désormais des contrôles rectangulaires sobres avec fond card, bordure et ombre légère au lieu de pills trop décoratives.
+
+Les résultats de projets et de talents continuent d’utiliser `ProjectCard` et `ProfileCard`, donc les mêmes cards que FeedPage. Les résultats d’opportunités utilisent maintenant le même langage `rounded-xl`, `bg-card`, bordure `border-border`, `shadow-2xs`, padding responsive et hover discret. L’état sans résultat est présenté dans une card feed-style.
 
 ## 3. Fichiers importants modifiés
 
-- `apps/web/src/pages/ForgotPasswordPage.tsx` : viewport `h-screen` et scroll global verrouillé.
+- `apps/web/src/pages/SearchPage.tsx` : harmonisation visuelle avec FeedPage.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-Le commit de code publié est `77c5557`.
+Le commit de code publié est `e2f0d90`.
 
 ## 4. Validations et problèmes connus
 
-Le typecheck web, le lint web, la compilation de `@cofound/shared` et le build web ont réussi après la modification. `dev` local et `origin/dev` sont synchronisés et propres.
+Le typecheck web, le lint web, la compilation de `@cofound/shared` et le build web ont réussi. `dev` local et `origin/dev` sont synchronisés et propres.
 
-À faible hauteur d’écran, la card et le footer peuvent devenir visuellement serrés puisque la page ne peut plus défiler par décision produit. Si nécessaire, il faudra réduire les espacements de manière responsive plutôt que réintroduire un scroll global.
+La page conserve son comportement responsive avec une colonne sur mobile et deux colonnes à partir de `md`. Les données de recherche peuvent encore afficher des valeurs génériques dans les cartes API, car cela relève du mapping de données et non de la refonte visuelle.
 
 ## 5. Prochaine action
 
-Ouvrir `/forgot-password` sur desktop et mobile, notamment autour de 1280×720 et 390×844. Vérifier que le formulaire, l’état succès, le header et le footer restent visibles dans le viewport.
+Ouvrir `/search` et vérifier les états suivants : recherche vide avec suggestions, recherche en cours, erreur API, aucun résultat, résultats projets, talents et opportunités. Comparer les espacements et les cards avec `/feed`.
 
 ## 6. Décisions et contexte de reprise
 
-Le comportement de `ForgotPasswordPage` est aligné sur `LoginPage` avec `h-screen overflow-hidden`. Aucun changement d’architecture, de données, de RBAC ou de stack n’a été introduit.
+Aucun effet visuel de type hero, gradient décoratif ou design IA n’a été ajouté. La page privilégie le système de cards existant, les tokens du design system, les composants `ProjectCard`/`ProfileCard` et les contrôles sobres du feed. Aucun changement d’architecture, de données, de RBAC ou de stack n’a été introduit.

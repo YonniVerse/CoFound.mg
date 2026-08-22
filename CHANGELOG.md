@@ -10,6 +10,22 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — SearchPage alignée sur FeedPage
+
+### Modifié
+
+- Conteneur, largeur et rythme d’espacement alignés sur le shell de FeedPage.
+- Champ de recherche harmonisé avec les inputs du design system : hauteur, rayon, fond, bordure et focus.
+- Onglets de recherche alignés sur les boutons compacts du feed.
+- Suggestions remplacées par des contrôles rectangulaires sobres avec surface card, bordure et ombre légère.
+- États vide et opportunités harmonisés avec les cards du feed.
+- Aucun changement apporté à la logique de recherche, au debounce, aux paramètres URL ou à l’API.
+- Modification publiée sur `dev` dans le commit `e2f0d90`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — ForgotPasswordPage verrouillée au viewport
 
 ### Modifié
