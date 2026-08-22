@@ -32,6 +32,9 @@ const ProjectExportPage = lazy(() => import("@/pages/ProjectExportPage"));
 const ProjectPublicPage = lazy(() => import("@/pages/ProjectPublicPage"));
 const SearchPage = lazy(() => import("@/pages/SearchPage"));
 const DreamMatchPage = lazy(() => import("@/pages/DreamMatchPage"));
+const LoginPage = lazy(() => import("@/pages/LoginPage"));
+const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
 
 const LayoutWrapper = () => <MainLayout><Outlet /></MainLayout>;
 const Loading = () => <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">Chargement…</div>;
@@ -39,6 +42,9 @@ const Loading = () => <div className="flex min-h-[40vh] items-center justify-cen
 function App() {
   return <AuthProvider><BrowserRouter><Suspense fallback={<Loading />}><Routes>
     <Route element={<LayoutWrapper />}><Route path="/" element={<LandingPage />} /></Route>
+    <Route path="/login" element={<LoginPage />} />
+    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+    <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
     <Route path="/activation/:token" element={<ActivationPage />} />
     <Route path="/onboarding" element={<OnboardingPage />} />
     <Route path="/feed" element={<FeedPage />} />
