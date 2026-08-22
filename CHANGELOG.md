@@ -10,6 +10,19 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Test du fond noir de LoginPage
+
+### Modifié
+
+- Remplacement du fond bleu-indigo clair par le token sombre `bg-foreground`.
+- Grille géométrique adaptée avec un tracé blanc très discret à `0.08` d’opacité.
+- Conservation de la palette du logo et des cards thématiques opaques pour maintenir le contraste.
+- Modification publiée sur `dev` dans le commit `3a59a2d`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Fond LoginPage cohérent avec le logo
 
 ### Modifié
