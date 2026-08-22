@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/shared/Avatar";
 import { SkillTag } from "@/components/shared/SkillTag";
+import { useI18n } from "@/i18n";
 
 interface HeroProfile {
   id: string;
@@ -25,6 +26,7 @@ interface SectionHeroProps {
 }
 
 export function SectionHero({ profiles, stats }: SectionHeroProps) {
+  const { t } = useI18n()
   // Configuration sémantique des cartes (plus aucune couleur brute)
   const cardStyles = [
     {
@@ -74,7 +76,7 @@ export function SectionHero({ profiles, stats }: SectionHeroProps) {
               asChild
             >
               <Link to="/feed" className="flex items-center gap-2">
-                Explorer le vivier <ArrowRight className="h-4 w-4" />
+                {t('landing.explorePool')} <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button
@@ -82,7 +84,7 @@ export function SectionHero({ profiles, stats }: SectionHeroProps) {
               size="lg"
               asChild
             >
-              <Link to="/impact">Voir l’impact</Link>
+              <Link to="/impact">{t('common.viewImpact')}</Link>
             </Button>
           </div>
 

@@ -4,14 +4,16 @@ import { ArrowRight, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LogoSVG } from "../ui/LogoSVG";
+import { useI18n } from "@/i18n";
 
 const navLinks = [
-  { label: "Explorer les profils", href: "/feed" },
-  { label: "La Méthode", href: "#how-it-works" },
-  { label: "Impact 50/50", href: "/impact" },
-];
+  { label: "nav.exploreProfiles", href: "/feed" },
+  { label: "nav.method", href: "#how-it-works" },
+  { label: "nav.impact", href: "/impact" },
+] as const;
 
 export function Navbar() {
+  const { t } = useI18n()
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -53,7 +55,7 @@ export function Navbar() {
               href={link.href}
               className="text-sm font-medium tracking-wide text-muted-foreground hover:text-foreground transition-colors duration-200 relative group"
             >
-              {link.label}
+              {t(link.label)}
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full rounded-full opacity-0 group-hover:opacity-100" />
             </a>
           ))}
@@ -67,7 +69,7 @@ export function Navbar() {
             className="text-sm font-semibold hover:bg-muted" 
             asChild
           >
-            <Link to="/login">Se connecter</Link>
+            <Link to="/login">{t('nav.login')}</Link>
           </Button>
           <Button 
             variant="default"
@@ -76,7 +78,7 @@ export function Navbar() {
             asChild
           >
             <Link to="/feed" className="flex items-center gap-1.5">
-              Rejoindre l'écosystème <ArrowRight className="h-3.5 w-3.5" />
+              {t('nav.join')} <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </Button>
         </div>
@@ -86,7 +88,7 @@ export function Navbar() {
           type="button"
           className="md:hidden p-2 rounded-lg text-foreground hover:bg-muted transition-colors"
           onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
+          aria-label={mobileOpen ? t('nav.closeMenu') : t('nav.openMenu')}
           aria-expanded={mobileOpen}
           aria-controls="mobile-navigation"
         >
@@ -96,7 +98,7 @@ export function Navbar() {
 
       {/* Menu Mobile déroulant */}
       {mobileOpen && (
-        <div id="mobile-navigation" className="absolute top-full left-0 right-0 bg-background border-b border-border px-6 py-6 flex flex-col gap-4 animate-in fade-in slide-in-from-top-2 duration-200 shadow-lg" role="dialog" aria-label="Navigation mobile">
+        <div id="mobile-navigation" className="absolute top-full left-0 right-0 bg-background border-b border-border px-6 py-6 flex flex-col gap-4 animate-in fade-in slide-in-from-top-2 duration-200 shadow-lg" role="dialog" aria-label={t('nav.mobileNavigation')}>
           {navLinks.map((link) => (
             <a
               key={link.label}
@@ -104,15 +106,15 @@ export function Navbar() {
               className="text-base font-semibold text-foreground/80 hover:text-primary py-2 transition-colors"
               onClick={() => setMobileOpen(false)}
             >
-              {link.label}
+              {t(link.label)}
             </a>
           ))}
           <div className="flex flex-col gap-3 pt-4 border-t border-border/50">
             <Button variant="outline" className="w-full justify-center font-semibold" asChild>
-              <Link to="/login">Se connecter</Link>
+              <Link to="/login">{t('nav.login')}</Link>
             </Button>
             <Button variant="default" className="w-full justify-center font-semibold" asChild>
-              <Link to="/feed">Rejoindre l'écosystème</Link>
+              <Link to="/feed">{t('nav.join')}</Link>
             </Button>
           </div>
         </div>

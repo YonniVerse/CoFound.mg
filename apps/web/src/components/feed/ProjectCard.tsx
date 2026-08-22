@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import type { ProjectFeedCard } from "@cofound/shared";
 import { Users, Briefcase } from "lucide-react";
 import { ReportButton } from "@/components/shared/ReportButton";
+import { useI18n } from "@/i18n";
 
 export interface ProjectData {
   id: string;
@@ -32,6 +33,7 @@ function isApiProject(p: ProjectData | ProjectFeedCard): p is ProjectFeedCard {
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
+  const { t } = useI18n()
   if (isApiProject(project)) {
     const title = project.title;
     const pitch = project.pitch;
@@ -95,10 +97,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
           <div className="flex items-center gap-2">
             <ReportButton targetType="PROJECT" targetId={project.id} />
             <Button variant="outline" size="sm" className="h-8 text-xs" asChild>
-              <Link to={`/projects/${project.id}`}>Voir le projet</Link>
+              <Link to={`/projects/${project.id}`}>{t('common.viewProject')}</Link>
             </Button>
             <Button size="sm" className="h-8 text-xs" asChild>
-              <Link to={`/projects/${project.id}`}>Postuler</Link>
+              <Link to={`/projects/${project.id}`}>{t('common.apply')}</Link>
             </Button>
           </div>
         </div>
@@ -136,7 +138,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-bold text-foreground uppercase tracking-widest opacity-60">Recherche :</span>
+          <span className="text-xs font-bold text-foreground uppercase tracking-widest opacity-60">{t('common.seeking')} :</span>
           <div className="flex flex-wrap gap-1.5">
             {project.seekingSkills.map((skill) => (
               <SkillTag key={skill} label={skill} variant="indigo" />
@@ -151,10 +153,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" className="h-8 text-xs" asChild>
-            <Link to={`/projects/${project.id}`}>Voir le projet</Link>
+            <Link to={`/projects/${project.id}`}>{t('common.viewProject')}</Link>
           </Button>
           <Button size="sm" className="h-8 text-xs" asChild>
-            <Link to={`/projects/${project.id}`}>Postuler</Link>
+            <Link to={`/projects/${project.id}`}>{t('common.apply')}</Link>
           </Button>
         </div>
       </div>

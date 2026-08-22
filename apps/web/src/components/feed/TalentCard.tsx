@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Eye, MessageSquare, Clock } from "lucide-react";
 import { ReportButton } from "@/components/shared/ReportButton";
 import { BlockButton } from "@/components/shared/BlockButton";
+import { useI18n } from "@/i18n";
 
 interface TalentCardProps {
   talent: TalentFeedCard;
 }
 
 export function TalentCard({ talent }: TalentCardProps) {
+  const { t } = useI18n()
   const fieldLabel = talent.field?.labelKey ?? null;
   const availabilityLabel = talent.availabilityHours
     ? `${talent.availabilityHours}h/sem`
@@ -33,7 +35,7 @@ export function TalentCard({ talent }: TalentCardProps) {
             <div className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground font-medium mt-0.5 truncate">
               {fieldLabel && <span>{fieldLabel}</span>}
               {fieldLabel && talent.cohortYear && <span>·</span>}
-              {talent.cohortYear && <span>Promo {talent.cohortYear}</span>}
+              {talent.cohortYear && <span>{t('common.cohort')} {talent.cohortYear}</span>}
             </div>
           </div>
         </div>
@@ -48,7 +50,7 @@ export function TalentCard({ talent }: TalentCardProps) {
                 : "bg-muted text-muted-foreground"
           }`}
         >
-          {talent.completion}% complété
+          {talent.completion}% {t('common.completed')}
         </span>
       </div>
 
@@ -65,7 +67,7 @@ export function TalentCard({ talent }: TalentCardProps) {
           </p>
         ) : (
           <p className="text-xs text-muted-foreground/60 italic">
-            Biographie non renseignée.
+            {t('common.bioMissing')}
           </p>
         )}
       </div>
@@ -103,7 +105,7 @@ export function TalentCard({ talent }: TalentCardProps) {
         {availabilityLabel ? (
           <div className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground font-medium">
             <Clock className="h-3.5 w-3.5 opacity-70" />
-            <span>Dispo : {availabilityLabel}</span>
+            <span>{t('common.availability')}: {availabilityLabel}</span>
           </div>
         ) : (
           <div />
@@ -116,7 +118,7 @@ export function TalentCard({ talent }: TalentCardProps) {
             className="h-9 px-3.5 text-xs sm:text-sm font-medium rounded-lg border-border hover:bg-accent cursor-pointer gap-1.5"
           >
             <Eye className="h-4 w-4" />
-            <span>Profil</span>
+            <span>{t('common.profile')}</span>
           </Button>
           <ReportButton targetType="PROFILE" targetId={talent.id} />
           <BlockButton userId={talent.id} />
@@ -125,7 +127,7 @@ export function TalentCard({ talent }: TalentCardProps) {
             className="h-9 px-3.5 text-xs sm:text-sm font-medium rounded-lg cursor-pointer gap-1.5"
           >
             <MessageSquare className="h-4 w-4" />
-            <span>Contacter</span>
+            <span>{t('common.contact')}</span>
           </Button>
         </div>
       </div>

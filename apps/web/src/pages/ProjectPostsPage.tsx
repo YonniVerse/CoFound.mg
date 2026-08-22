@@ -4,15 +4,17 @@ import { projectPostCreateSchema, type ProjectPost, type ProjectPostType } from 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { createProjectPost, deleteProjectPost, getProjectPosts } from "@/data/projectApi";
 import { ReportButton } from "@/components/shared/ReportButton";
+import { useI18n } from "@/i18n";
 
-const postTypes: Array<{ value: ProjectPostType; label: string }> = [
-  { value: "UPDATE", label: "Actualité" },
-  { value: "SEEKING_COLLABORATOR", label: "Recherche de collaborateur" },
-  { value: "SEEKING_MENTORSHIP", label: "Recherche de mentorat" },
-  { value: "SEEKING_FUNDING", label: "Recherche de financement" },
+const postTypes: Array<{ value: ProjectPostType; labelKey: 'projectsPosts.update' | 'projectsPosts.collaborator' | 'projectsPosts.mentorship' | 'projectsPosts.funding' }> = [
+  { value: "UPDATE", labelKey: "projectsPosts.update" },
+  { value: "SEEKING_COLLABORATOR", labelKey: "projectsPosts.collaborator" },
+  { value: "SEEKING_MENTORSHIP", labelKey: "projectsPosts.mentorship" },
+  { value: "SEEKING_FUNDING", labelKey: "projectsPosts.funding" },
 ];
 
 export default function ProjectPostsPage() {
+  const { t } = useI18n()
   const { id: projectId = "" } = useParams<{ id: string }>();
   const [posts, setPosts] = useState<ProjectPost[]>([]);
   const [type, setType] = useState<ProjectPostType>("UPDATE");
@@ -27,17 +29,17 @@ export default function ProjectPostsPage() {
     getProjectPosts(projectId).then((result) => {
       if (active) setPosts(result.posts);
     }).catch(() => {
-      if (active) setError("Impossible de charger les publications du projet.");
+      if (active) setError(t('projectsPosts.loadError'));
     }).finally(() => {
       if (active) setLoading(false);
     });
     return () => { active = false; };
-  }, [projectId]);
+  }, [projectId, t]);
 
   const publish = async () => {
     const parsed = projectPostCreateSchema.safeParse({ type, content });
     if (!parsed.success) {
-      setError("Le contenu doit contenir entre 1 et 2 000 caractères.");
+      setError(t('projectsPosts.contentError'));
       return;
     }
     setBusy(true);
@@ -47,7 +49,7 @@ export default function ProjectPostsPage() {
       const result = await getProjectPosts(projectId);
       setPosts(result.posts);
     } catch {
-      setError("La publication n’a pas pu être créée.");
+      setError(t('projectsPosts.createError'));
     } finally {
       setBusy(false);
     }
@@ -59,7 +61,7 @@ export default function ProjectPostsPage() {
       await deleteProjectPost(projectId, post.id);
       setPosts((current) => current.filter((item) => item.id !== post.id));
     } catch {
-      setError("La publication n’a pas pu être supprimée.");
+      setError(t('projectsPosts.deleteError'));
     } finally {
       setBusy(false);
     }
@@ -69,37 +71,37 @@ export default function ProjectPostsPage() {
     <DashboardLayout>
       <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-6 py-8">
         <header>
-          <p className="text-sm font-semibold uppercase tracking-wide text-primary">Feed projet</p>
-          <h1 className="mt-2 text-3xl font-bold">Publications du projet</h1>
-          <p className="mt-2 text-muted-foreground">Partagez les avancées et les besoins de l’équipe sans exposer d’identité civile.</p>
+          <p className="text-sm font-semibold uppercase tracking-wide text-primary">{t('projectsPosts.eyebrow')}</p>
+          <h1 className="mt-2 text-3xl font-bold">{t('projectsPosts.title')}</h1>
+          <p className="mt-2 text-muted-foreground">{t('projectsPosts.subtitle')}</p>
         </header>
         <section className="rounded-2xl border bg-card p-5 shadow-sm">
           <div className="flex flex-col gap-3">
-            <label className="text-sm font-medium" htmlFor="post-type">Type de publication</label>
+            <label className="text-sm font-medium" htmlFor="post-type">{t('projectsPosts.typeLabel')}</label>
             <select id="post-type" className="rounded-lg border bg-background px-3 py-2" value={type} onChange={(event) => setType(event.target.value as ProjectPostType)}>
-              {postTypes.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+              {postTypes.map((item) => <option key={item.value} value={item.value}>{t(item.labelKey)}</option>)}
             </select>
-            <label className="text-sm font-medium" htmlFor="post-content">Message</label>
-            <textarea id="post-content" className="min-h-32 rounded-lg border bg-background px-3 py-2" value={content} onChange={(event) => setContent(event.target.value)} maxLength={2000} placeholder="Partagez une actualité du projet…" />
-            <button type="button" className="self-end rounded-lg bg-primary px-4 py-2 font-semibold text-primary-foreground disabled:opacity-50" onClick={() => void publish()} disabled={busy || !projectId}>Publier</button>
+            <label className="text-sm font-medium" htmlFor="post-content">{t('projectsPosts.messageLabel')}</label>
+            <textarea id="post-content" className="min-h-32 rounded-lg border bg-background px-3 py-2" value={content} onChange={(event) => setContent(event.target.value)} maxLength={2000} placeholder={t('projectsPosts.placeholder')} />
+            <button type="button" className="self-end rounded-lg bg-primary px-4 py-2 font-semibold text-primary-foreground disabled:opacity-50" onClick={() => void publish()} disabled={busy || !projectId}>{t('projectsPosts.publish')}</button>
           </div>
         </section>
         {error && <p role="alert" className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">{error}</p>}
         <section className="flex flex-col gap-4" aria-live="polite">
-          {loading && <p className="text-muted-foreground">Chargement des publications…</p>}
-          {!loading && posts.length === 0 && <p className="rounded-xl border border-dashed p-8 text-center text-muted-foreground">Aucune publication pour le moment.</p>}
+          {loading && <p className="text-muted-foreground">{t('projectsPosts.loading')}</p>}
+          {!loading && posts.length === 0 && <p className="rounded-xl border border-dashed p-8 text-center text-muted-foreground">{t('projectsPosts.empty')}</p>}
           {posts.map((post) => (
             <article key={post.id} className="rounded-2xl border bg-card p-5 shadow-sm">
               <div className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
-                <span>{postTypes.find((item) => item.value === post.type)?.label ?? post.type}</span>
+                <span>{t(postTypes.find((item) => item.value === post.type)?.labelKey ?? 'projectsPosts.update')}</span>
                 <time dateTime={post.createdAt.toISOString()}>{post.createdAt.toLocaleDateString("fr-FR")}</time>
               </div>
               <p className="mt-3 whitespace-pre-wrap">{post.content}</p>
               <div className="mt-4 flex items-center justify-between gap-3">
-                <p className="text-xs text-muted-foreground">Publié par {post.authorPseudonym}</p>
+                <p className="text-xs text-muted-foreground">{t('projectsPosts.publishedBy')} {post.authorPseudonym}</p>
                 <ReportButton targetType="POST" targetId={post.id} />
               </div>
-              <button type="button" className="mt-3 text-sm font-medium text-destructive" onClick={() => void remove(post)} disabled={busy}>Supprimer</button>
+              <button type="button" className="mt-3 text-sm font-medium text-destructive" onClick={() => void remove(post)} disabled={busy}>{t('projectsPosts.delete')}</button>
             </article>
           ))}
         </section>

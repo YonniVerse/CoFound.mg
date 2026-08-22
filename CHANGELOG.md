@@ -10,6 +10,39 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — S-12 — Audit i18n commencé
+
+### Ajouté
+
+- Clés communes FR/MG pour les actions de feed, les états d’erreur, les filtres de projets et les libellés d’import.
+
+### Modifié
+
+- `FeedErrorWidget` utilise désormais `useI18n`, y compris pour ses messages par défaut et le code d’erreur affiché.
+
+### En cours
+
+- Migration en cours des chaînes visibles restantes dans les cartes de feed, l’import, les pages métier et les composants marketing.
+- `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `ProjectsFeedPage`, `ImportMappingPage` et `ImportPreviewPage` utilisent désormais les clés FR/MG dédiées.
+- Les statuts et compteurs de prévisualisation, l’erreur de chargement et les actions de navigation sont traduits.
+- `SectionHero` utilise les clés i18n pour ses appels à l’action d’exploration et d’impact.
+- `TalentCard` utilise les clés i18n pour la promo, la complétion, la biographie, la disponibilité et ses actions.
+- `SectionCTA` et `ApplyModal` utilisent les clés FR/MG pour leurs textes visibles, validations et actions.
+- `Navbar` utilise les clés FR/MG pour les liens, les actions de connexion et les contrôles du menu mobile.
+- La note de sécurité d’`ActivationPage` utilise désormais une clé FR/MG dédiée.
+- `DreamMatchPage` utilise les clés FR/MG pour le consentement, la confirmation et l’action de sauvegarde.
+- `ForgotPasswordPage` et `ResetPasswordPage` utilisent des clés FR/MG dédiées pour leurs notes de sécurité.
+- `MyApplicationsPage` utilise les clés FR/MG pour son en-tête, ses filtres, ses statuts et les informations de candidature.
+- `ProductHealthPage` utilise les clés FR/MG pour l’accès RBAC, l’en-tête, la description, les projets par état et le seuil de confidentialité.
+- `ProjectPostsPage` utilise les clés FR/MG pour les types, les erreurs, le formulaire, les états et les actions du feed projet.
+- Les avertissements de dépendances `t` des hooks de santé produit et de publications ont été corrigés.
+- La notice de confidentialité de `ImportMappingPage` utilise désormais une clé FR/MG dédiée.
+- L’audit anti-chaînes visibles ne relève plus que des faux positifs techniques et les détails internes des métriques de santé à confirmer en revue.
+- Validation build/lint réussie après suppression de la constante de statuts devenue inutilisée et ajout de `t` aux dépendances du hook.
+- Migration des chaînes visibles restantes et ajout d’un contrôle empêchant leur réintroduction encore en cours.
+
+---
+
 ## 2026-08-22 — S-11 — Passe accessibilité et responsive mobile
 
 ### Ajouté
