@@ -10,6 +10,12 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Vague 5 — Clôture technique
+
+- Fusion des PR #79 (S-12), #80 (S-13) et #81 (S-14) dans `dev`, après résolution des conflits de rebase et validations locales réussies.
+- `dev` validée par `git diff --check`, build shared, build web et lint web.
+- Handoff mis à jour avec les réserves S-09 recette et revue juridique S-14.
+
 ## 2026-08-22 — S-12 — Audit i18n commencé
 
 ### Ajouté
