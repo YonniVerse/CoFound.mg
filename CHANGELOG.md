@@ -10,6 +10,19 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Fond coloré cohérent pour LoginPage
+
+### Modifié
+
+- Ajout d’un fond bleu très clair `bg-primary-light` dans la section droite de LoginPage.
+- Conservation de la grille géométrique et des tokens du design system.
+- Fond volontairement discret pour ne pas concurrencer les cards thématiques.
+- Modification publiée sur `dev` dans le commit `7e5101b`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Fond LoginPage aligné sur LandingPage
 
 ### Modifié

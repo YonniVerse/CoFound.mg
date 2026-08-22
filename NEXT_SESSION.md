@@ -1,37 +1,39 @@
 # Reprise de session
 
 **Dernière mise à jour** : 2026-08-22
-**Phase** : LoginPage — fond aligné sur LandingPage
+**Phase** : LoginPage — fond coloré cohérent
 **Vague / ticket** : E-11 — connexion et accès
 **Branche actuelle** : `dev`
 
 ## 1. État actuel
 
-La section droite de `LoginPage` utilise maintenant le même fond clair et la même grille géométrique sémantique que `LandingPage`/`SectionHero`. Le gradient violet-orange et les anneaux décoratifs ont été retirés.
+La section droite de `LoginPage` utilise un fond bleu très clair basé sur le token `bg-primary-light`. Ce fond ajoute une couleur cohérente avec la plateforme tout en conservant la grille géométrique inspirée de `LandingPage`.
 
 ## 2. Tâches terminées
 
-Le conteneur droit utilise `bg-background`, une grille basée sur `var(--border)`, une taille de grille `4rem`, le même masque radial et la même opacité `60` que le landing. L’icône Network a été adaptée au fond clair avec une surface `bg-card`, bordure `border-border`, ombre légère et couleur primaire.
+Le fond de la colonne droite a été remplacé de `bg-background` par `bg-primary-light`. La grille sémantique utilisant `var(--border)`, `bg-[size:4rem_4rem]`, le masque radial et l’opacité `60` reste en place.
 
-Les cards thématiques de LoginPage restent présentes au-dessus du motif, avec leurs fonds et accents propres. Aucun changement n’a été apporté à la logique de connexion, aux textes, à l’i18n ou au comportement responsive.
+La couleur a été choisie à partir du design system existant, dont `--primary-light` est un bleu/indigo très pâle. Aucun hexadécimal arbitraire, gradient supplémentaire ou nouvel asset image n’a été ajouté.
+
+Les cards thématiques bleue et rouge gardent leurs fonds opaques, bordures et textes contrastés. L’icône Network reste adaptée au fond clair.
 
 ## 3. Fichiers importants modifiés
 
-- `apps/web/src/pages/LoginPage.tsx` : fond et élément décoratif supérieur de la section droite.
+- `apps/web/src/pages/LoginPage.tsx` : fond `bg-primary-light` de la section droite.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-Le commit de code publié est `61ea9f2`.
+Le commit de code publié est `7e5101b`.
 
 ## 4. Validations et problèmes connus
 
 Le typecheck web, le lint web, la compilation de `@cofound/shared` et le build web ont réussi. `dev` local et `origin/dev` sont synchronisés et propres.
 
-Le fond est désormais principalement clair comme le landing. Les cards bleue et rouge conservent volontairement leurs fonds opaques afin de maintenir leur hiérarchie visuelle et leur contraste.
+Le fond coloré est volontairement très léger pour éviter de concurrencer les cards. Si une teinte plus marquée est souhaitée, elle devra rester basée sur les tokens de la palette primaire ou de surface.
 
 ## 5. Prochaine action
 
-Ouvrir `/login` et comparer visuellement la section droite à `/`. Vérifier le rendu du motif de grille, la lisibilité des six cards et l’équilibre entre le fond clair et les accents primaires.
+Ouvrir `/login` sur desktop et comparer le fond droit avec le landing. Vérifier la visibilité de la grille, le contraste des cards et la cohérence entre la surface claire et les accents bleu/rouge.
 
 ## 6. Décisions et contexte de reprise
 
-Le fond de LoginPage réutilise les mêmes tokens et le même motif CSS que `SectionHero` au lieu d’introduire un gradient ou un décor propre à la page. Aucun changement d’architecture, de données, de RBAC ou de stack n’a été introduit.
+Le fond réutilise `primary-light` plutôt qu’une couleur brute. La structure, l’authentification, l’i18n et les comportements responsive restent inchangés. Aucun changement d’architecture, de données, de RBAC ou de stack n’a été introduit.
