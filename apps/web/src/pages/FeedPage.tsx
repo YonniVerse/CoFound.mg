@@ -74,7 +74,7 @@ export default function FeedPage() {
         setSearch={setSearch}
       />
 
-      <div className="flex px-4 sm:px-10 py-8 gap-6 max-w-[1400px] mx-auto w-full overflow-x-hidden">
+      <div className="flex items-start px-4 sm:px-10 py-8 gap-6 max-w-[1400px] mx-auto w-full overflow-x-hidden">
         {/* Main Column: Feed */}
         <div className="flex-1 min-w-0 max-w-3xl flex flex-col gap-6">
           {isLoading && (
@@ -156,7 +156,7 @@ export default function FeedPage() {
         </div>
 
         {/* Right Fixed/Sticky Panel */}
-        <div className="hidden lg:flex w-[320px] flex-col gap-6 sticky top-[90px] h-fit shrink-0">
+        <div className="hidden lg:flex w-[320px] flex-col gap-6 sticky top-[90px] h-fit shrink-0 self-start">
           <ParityWidget percentage={38} />
           <SuggestedProfilesWidget profiles={suggestedProfiles} />
         </div>
