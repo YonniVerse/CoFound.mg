@@ -33,6 +33,7 @@ Retiré · En cours · Bloqué**.
 - `DreamMatchPage` utilise les clés FR/MG pour le consentement, la confirmation et l’action de sauvegarde.
 - `ForgotPasswordPage` et `ResetPasswordPage` utilisent des clés FR/MG dédiées pour leurs notes de sécurité.
 - `MyApplicationsPage` utilise les clés FR/MG pour son en-tête, ses filtres, ses statuts et les informations de candidature.
+- `ProductHealthPage` utilise les clés FR/MG pour l’accès RBAC, l’en-tête, la description, les projets par état et le seuil de confidentialité.
 - Validation build/lint réussie après suppression de la constante de statuts devenue inutilisée et ajout de `t` aux dépendances du hook.
 - Migration des chaînes visibles restantes et ajout d’un contrôle empêchant leur réintroduction encore en cours.
 
