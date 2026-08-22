@@ -12,7 +12,7 @@ S-09 est publié dans la [PR #76](https://github.com/YonniVerse/CoFound.mg/pull/
 
 S-10 et S-11 ont été fusionnés dans `dev` via les PR [#77](https://github.com/YonniVerse/CoFound.mg/pull/77) et [#78](https://github.com/YonniVerse/CoFound.mg/pull/78). Les validations locales correspondantes sont réussies.
 
-S-12 progresse depuis `origin/dev`. Le dictionnaire FR/MG et les composants suivants utilisent maintenant i18n pour leurs textes visibles structurants : `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `TalentCard`, `ProjectsFeedPage`, `ImportMappingPage`, `ImportPreviewPage`, `SectionHero`, `SectionCTA`, `ApplyModal`, `Navbar` et la note de sécurité d’`ActivationPage`. Sont couverts les actions de feed, les états d’erreur, la navigation, les filtres, les états vides, l’import, les statuts de ligne, les compteurs, les CTA marketing, le formulaire de candidature et la note de sécurité d’activation.
+S-12 progresse depuis `origin/dev`. Les composants `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `TalentCard`, `ProjectsFeedPage`, `ImportMappingPage`, `ImportPreviewPage`, `SectionHero`, `SectionCTA`, `ApplyModal`, `Navbar`, `ActivationPage` et `DreamMatchPage` utilisent maintenant les clés FR/MG pour leurs textes visibles structurants. Sont couverts les actions de feed, erreurs, navigation, filtres, états vides, import, statuts de ligne, compteurs, CTA marketing, candidature, activation et consentement Dream Match.
 
 ## Commits S-12 déjà poussés
 
@@ -22,11 +22,12 @@ S-12 progresse depuis `origin/dev`. Le dictionnaire FR/MG et les composants suiv
 - `8a0bb30 refactor(vague5): traduire la carte talent`
 - `9093086 refactor(vague5): traduire la candidature et la cta`
 - `daa4bf8 refactor(vague5): traduire la navigation`
+- `c90d9de refactor(vague5): traduire la note d activation`
 
 ## Fichiers modifiés depuis le dernier checkpoint
 
-- `apps/web/src/i18n.tsx` : clés FR/MG de la note de sécurité d’activation.
-- `apps/web/src/pages/ActivationPage.tsx` : note de sécurité traduite.
+- `apps/web/src/i18n.tsx` : clés FR/MG du consentement et des actions Dream Match.
+- `apps/web/src/pages/DreamMatchPage.tsx` : consentement, confirmation et sauvegarde traduits.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : suivi actualisé.
 
 ## Validations récentes
@@ -40,7 +41,7 @@ S-12 progresse depuis `origin/dev`. Le dictionnaire FR/MG et les composants suiv
 
 ## Reste à faire pour S-12
 
-Migrer les chaînes visibles restantes dans `DreamMatchPage`, `ForgotPasswordPage`, `ResetPasswordPage`, `MyApplicationsPage`, `ProductHealthPage`, `ProjectPostsPage` et la notice d’information de `ImportMappingPage`. Ajouter ensuite un contrôle ciblé contre la réintroduction de textes visibles en dur, relancer les validations finales, créer le commit de clôture et ouvrir la PR S-12.
+Migrer les chaînes visibles restantes dans `ForgotPasswordPage`, `ResetPasswordPage`, `MyApplicationsPage`, `ProductHealthPage`, `ProjectPostsPage` et la notice d’information de `ImportMappingPage`. Ajouter ensuite un contrôle ciblé contre la réintroduction de textes visibles en dur, relancer les validations finales, créer le commit de clôture et ouvrir la PR S-12.
 
 ## Suite de la Vague 5
 

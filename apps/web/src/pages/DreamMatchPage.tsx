@@ -3,6 +3,7 @@ import type { FormEvent } from 'react'
 import { Check, HeartHandshake, Loader2, Sparkles } from 'lucide-react'
 import { getDreamMatchProfile, getDreamMatchSuggestions, markDreamMatchNotInterested, saveDreamMatchProfile } from '@/data/dreamMatchApi'
 import type { DreamMatchSuggestionsResponse, DreamMatchUpsertRequest } from '@cofound/shared'
+import { useI18n } from '@/i18n'
 
 const emptyForm: Omit<DreamMatchUpsertRequest, 'consent'> = {
   minAvailability: null,
@@ -19,6 +20,7 @@ const factorLabels = [
 ] as const
 
 export default function DreamMatchPage() {
+  const { t } = useI18n()
   const [form, setForm] = useState(emptyForm)
   const [consent, setConsent] = useState(false)
   const [suggestions, setSuggestions] = useState<DreamMatchSuggestionsResponse | null>(null)
@@ -115,11 +117,11 @@ export default function DreamMatchPage() {
         </label>
         <label className="flex items-start gap-3 rounded-2xl border bg-muted/30 p-4 text-sm">
           <input className="mt-1 h-4 w-4" type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} />
-          <span>J’accepte que ces préférences soient utilisées pour calculer des suggestions de collaboration. Je peux retirer ce consentement à tout moment.</span>
+          <span>{t('dreamMatch.consent')}</span>
         </label>
         {error && <p role="alert" className="rounded-xl bg-destructive/10 p-3 text-sm text-destructive">{error}</p>}
-        {saved && <p role="status" className="flex items-center gap-2 rounded-xl bg-emerald-500/10 p-3 text-sm text-emerald-700"><Check className="h-4 w-4" />Préférences enregistrées.</p>}
-        <button type="submit" disabled={isSaving} className="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-60">{isSaving ? 'Enregistrement…' : 'Enregistrer mes préférences'}</button>
+        {saved && <p role="status" className="flex items-center gap-2 rounded-xl bg-emerald-500/10 p-3 text-sm text-emerald-700"><Check className="h-4 w-4" />{t('dreamMatch.saved')}</p>}
+        <button type="submit" disabled={isSaving} className="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-60">{isSaving ? t('dreamMatch.saving') : t('dreamMatch.save')}</button>
       </form>
 
       <section aria-labelledby="suggestions-title" className="mt-10 space-y-4">
