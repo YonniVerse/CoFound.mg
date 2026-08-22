@@ -37,6 +37,9 @@ jobs:
       - name: Installer les dépendances
         run: pnpm install --frozen-lockfile
 
+      - name: Générer le client Prisma
+        run: pnpm --filter @cofound/api prisma:generate
+
       - name: Vérifier le lint
         run: pnpm lint
 
