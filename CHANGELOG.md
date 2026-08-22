@@ -10,35 +10,48 @@ Retiré · En cours · Bloqué**.
 
 ---
 
-## 2026-08-22 — S-05 : console staff, référentiels et santé produit
-
-### Décidé
-
-- Les référentiels sont désactivés et jamais supprimés, car les profils et projets existants doivent conserver des références valides.
-- Les indicateurs de santé appliquent `MIN_AGGREGATION_THRESHOLD` et n’exposent aucune donnée nominative, afin de préserver le pseudonymat strict.
-- Les écrans staff sont chargés en lazy chunks, afin de maintenir le budget frontend sous 500 kB par chunk.
+## 2026-08-22 — S-06 : worker asynchrone et tests HTTP
 
 ### Ajouté
 
-- API staff d’audit avec export CSV authentifié et export lui-même journalisé.
-- CRUD contrôlé des référentiels `Skill`, `Field`, `Sector` et `Region`, avec usages affichés et mutations transactionnelles.
-- API `/staff/health` avec agrégats d’activation, complétion, projets, mise en relation, candidatures, modération et rebonds.
-- Interfaces `/staff/audit`, `/staff/reference-data` et `/staff/health`.
-- Permissions RBAC `reference-data:manage` pour SUPER_ADMIN et `product-health:read` pour OPS_ADMIN/SUPER_ADMIN.
-- Seed `seed:recette` idempotent, préfixé `recette-`, couvrant activation, profil, candidature, modération et import.
-- Tests unitaires S-05 pour pagination, filtres et sanitisation du journal.
+- Worker pg-boss `cofound.privacy.personal-data-export` intégré au processus de fond.
+- Génération d’une archive JSON complète du compte demandeur, exclusion des credentials et tokens, stockage privé via `PERSONAL_EXPORT_DIR` et expiration de 24 heures.
+- Passage transactionnel des exports de `PENDING` à `PROCESSING`, puis `READY` ou `FAILED`.
+- Endpoint de téléchargement authentifié avec contrôle du propriétaire, de l’état, de l’expiration et du nom de fichier.
+- Tests HTTP de demande, statut et téléchargement, en plus des tests unitaires d’idempotence et d’isolation.
+- Plan de S-07 documenté pour les écrans de compte gelé, sortant et alumni.
 
 ### Validation
 
-- Tests API complets : **140/140 réussis**.
-- Typecheck shared/API/frontend, lint API/frontend, build Vite et `git diff --check` réussis.
-- Chunks frontend applicatifs sous 500 kB.
-- `prisma validate` et deux exécutions successives du seed sur Neon réussies.
+- Typechecks shared/API/frontend, lint ciblé et `git diff --check` réussis.
+- Tests S-06 unitaires et HTTP : **5/5 réussis**.
+- Build frontend validé avec les chunks sous 500 kB.
 
 ### En cours
 
-- Tests HTTP de permission des trois nouvelles routes et recette visuelle authentifiée avec les trois niveaux staff.
-- Commit, Pull Request et revue de S-05 non encore réalisés.
+- Contrôle de confidentialité de l’archive produite sur Neon et démarrage complet du processus pg-boss restent à finaliser.
+- Commit/PR S-06 après recette ; S-07 est planifié mais aucun code n’est encore modifié.
+
+## 2026-08-22 — PR S-05 publiée et socle S-06 initialisé
+
+### Ajouté
+
+- Commit `ad9ff1f feat(staff): finaliser la console d audit et les referentiels` et branche `feat/S-05-console-staff` poussés sur GitHub.
+- Pull Request [#69](https://github.com/YonniVerse/CoFound.mg/pull/69) ouverte vers `dev`.
+- Modèle Prisma `PersonalDataExport`, statuts de cycle de vie et migration `20260822150000_add_personal_data_exports` pour S-06.
+- Routes authentifiées `POST /me/privacy/exports` et `GET /me/privacy/exports/:id` avec confirmation explicite, idempotence par utilisateur et audit minimal.
+- Interface initiale d’export dans `/settings`, avec traductions françaises et malgaches.
+- Tests unitaires initiaux S-06 sur la confirmation, l’idempotence et l’isolation utilisateur.
+
+### Validation
+
+- S-05 : 140/140 tests API, typechecks, lint, build frontend et budget chunks validés avant publication.
+- S-06 : `prisma generate`, `prisma validate`, typechecks, lint ciblé, build frontend et tests ciblés réussis.
+
+### En cours
+
+- Worker asynchrone, génération et stockage privé de l’archive, notification de disponibilité et téléchargement authentifié S-06.
+- Revue et contrôles GitHub de la PR #69.
 
 ## 2026-08-22 — CI staging et initialisation M-14
 

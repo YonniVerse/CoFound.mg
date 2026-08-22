@@ -832,3 +832,12 @@ export const productHealthSchema = z.object({ generatedAt: z.coerce.date(), thre
 export type ReferenceKind = z.infer<typeof referenceKindSchema>
 export type ReferenceCreateInput = z.infer<typeof referenceCreateSchema>
 export type ReferencePatchInput = z.infer<typeof referencePatchSchema>
+
+export const personalDataExportStatusSchema = z.enum(['PENDING', 'PROCESSING', 'READY', 'FAILED', 'EXPIRED'])
+export const personalDataExportRequestSchema = z.object({ confirmation: z.literal(true) })
+export const personalDataExportSchema = z.object({ id: idSchema, status: personalDataExportStatusSchema, requestedAt: z.coerce.date(), completedAt: z.coerce.date().nullable(), expiresAt: z.coerce.date().nullable(), downloadAvailable: z.boolean() })
+export const personalDataExportResponseSchema = z.object({ export: personalDataExportSchema })
+export type PersonalDataExportStatus = z.infer<typeof personalDataExportStatusSchema>
+export type PersonalDataExportRequest = z.infer<typeof personalDataExportRequestSchema>
+export type PersonalDataExport = z.infer<typeof personalDataExportSchema>
+export type PersonalDataExportResponse = z.infer<typeof personalDataExportResponseSchema>

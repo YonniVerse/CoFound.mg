@@ -1,41 +1,41 @@
 # Context Handoff — Reprise de session CoFound.mg
 **Dernière mise à jour** : 2026-08-22
-**Phase** : Vague 5 — S-05 (console staff) en cours de finalisation
-**Branche** : `dev`
-**État du workspace** : modifications locales non committées. Le dépôt était synchronisé avec `origin/dev` avant cette session.
+**Phase** : Vague 5 — S-06 implémenté localement ; S-07 planifié
+**Branche** : `feat/S-06-export-donnees-personnelles`
+**État du workspace** : modifications S-06 non committées. S-05 est poussé dans la PR #69.
 
 ## 1. Travail réalisé
-Le journal d’audit S-05 est raccordé de bout en bout : service de lecture filtrée et paginée, sanitisation des métadonnées, contrôleur staff, export CSV lui-même journalisé, interface `/staff/audit` et client frontend pour téléchargement authentifié.
+S-05 est publié dans la PR #69 vers `dev`, avec le commit `ad9ff1f feat(staff): finaliser la console d audit et les referentiels`. La PR reste ouverte et GitHub indique `UNSTABLE` pour son statut de fusion.
 
-Les deux autres volets de S-05 sont implémentés. Le module `reference-data` expose `GET/POST /api/v1/staff/reference-data/:kind` et `PATCH /api/v1/staff/reference-data/:kind/:id` pour `skills`, `fields`, `sectors` et `regions`. Les entrées sont désactivables mais non supprimables et le nombre d’usages est calculé avant affichage. L’interface `/staff/reference-data` permet de consulter les onglets, créer une entrée et désactiver/réactiver une entrée.
+S-06 est implémenté sur sa branche dédiée. Le modèle Prisma `PersonalDataExport`, les statuts `PENDING`, `PROCESSING`, `READY`, `FAILED`, `EXPIRED` et la migration `20260822150000_add_personal_data_exports` sont présents. Le service garantit la confirmation explicite, l’idempotence par utilisateur, l’isolation du statut et la journalisation minimale.
 
-Le module de santé produit expose `GET /api/v1/staff/health`. Il fournit les agrégats MVP demandés : activation, complétion moyenne, projets par état, mise en relation acceptée, délai médian de réponse aux candidatures, volume/délai médian de modération et rebond des invitations. Le seuil `MIN_AGGREGATION_THRESHOLD` est appliqué ; aucune identité civile, aucun genre et aucune donnée individuelle ne sont renvoyés. L’interface `/staff/health` affiche les cartes agrégées et explique les valeurs masquées.
+Le worker pg-boss `cofound.privacy.personal-data-export` réclame les exports en attente, construit une archive JSON complète avec les données du compte demandeur, exclut les credentials et tokens, la stocke dans `PERSONAL_EXPORT_DIR`, renseigne une expiration de 24 heures et passe l’export à `READY`. Les erreurs passent l’export à `FAILED`. Le processus `apps/api/src/worker.ts` démarre désormais le worker notifications et le worker d’exports.
 
-Un seed Neon de recette idempotent a été ajouté. Il crée des données préfixées `recette-` couvrant un compte staff SUPER_ADMIN, un talent activé, un compte invité, référentiels, affiliation, projet, candidature, signalement et import/invitation. Il a été exécuté deux fois sur Neon avec succès ; la seconde exécution n’a pas créé de doublons.
+Les routes sont `POST /api/v1/me/privacy/exports`, `GET /api/v1/me/privacy/exports/:id` et `GET /api/v1/me/privacy/exports/:id/download`. Le téléchargement vérifie le propriétaire, le statut, la présence du fichier et l’expiration. `/settings` propose la demande d’export avec traductions FR/MG.
 
 ## 2. Fichiers importants
-- `apps/api/src/audit/` et `apps/web/src/pages/AuditLogPage.tsx` : journal et export.
-- `apps/api/src/reference-data/` et `apps/web/src/pages/ReferenceDataPage.tsx` : UI-54 et API des référentiels.
-- `apps/api/src/health/product-health.*` et `apps/web/src/pages/ProductHealthPage.tsx` : UI-55 et API santé.
-- `apps/api/src/rbac/permissions.ts` et `permission.guard.ts` : permissions `reference-data:manage` et `product-health:read`.
-- `packages/shared/src/schemas.ts` : contrats Zod S-05.
-- `apps/api/prisma/seed-recette.ts` et `apps/api/package.json` : commande `pnpm --filter api seed:recette`.
-- `apps/api/test/audit.test.ts` : tests de pagination, filtres et sanitisation.
+- `apps/api/prisma/schema.prisma` et `apps/api/prisma/migrations/20260822150000_add_personal_data_exports/migration.sql` : persistance S-06.
+- `apps/api/src/privacy/personal-data-export.service.ts` : demande, idempotence, statut et téléchargement.
+- `apps/api/src/privacy/personal-data-export.controller.ts` : routes S-06.
+- `apps/api/src/privacy/personal-data-export-job.ts` et `personal-data-export-queue.service.ts` : contrat et file pg-boss.
+- `apps/api/src/privacy/personal-data-export.worker.ts` et `apps/api/src/worker.ts` : traitement asynchrone.
+- `packages/shared/src/schemas.ts` : contrats Zod de demande et statut.
+- `apps/web/src/pages/SettingsPage.tsx` et `apps/web/src/i18n.tsx` : interface et traductions.
+- `apps/api/test/personal-data-export.test.ts` : tests unitaires.
+- `apps/api/test/personal-data-export.integration.test.ts` : tests HTTP.
 
 ## 3. Validation
-Les tests API complets passent : **140/140**. Les tests S-05 audit et RBAC passent. Les typechecks shared/API/frontend, les lints API/frontend, le build Vite et `git diff --check` passent. Le plus gros chunk frontend reste sous 500 kB ; les nouveaux écrans sont chargés en lazy chunks.
+S-06 passe `prisma generate`, `prisma validate`, `prisma migrate deploy` sur Neon, les typechecks shared/API/frontend, le lint ciblé, le build frontend et `git diff --check`. Les tests ciblés unitaires et HTTP passent à **5/5** ; la vérification réelle du worker produit `READY`, une clé de stockage et une expiration. Le test HTTP vérifie la demande, le statut et le téléchargement avec Content-Disposition contrôlé.
 
-`prisma validate` passe lorsque `DATABASE_URL` est fourni. Le seed `seed:recette` a été exécuté deux fois sur Neon avec succès. La recette HTTP authentifiée avec un vrai compte navigateur staff et le contrôle visuel des trois écrans restent à effectuer.
+La migration S-06 a été appliquée sur Neon avec `prisma migrate deploy`. Une exécution réelle de `processExport` contre l’utilisateur de recette a produit un export `READY` avec une clé de stockage et une date d’expiration. Le démarrage du processus pg-boss complet reste à tester en recette avec `DATABASE_URL` et `PERSONAL_EXPORT_DIR` configurés.
 
 ## 4. Fusion
-Aucun commit ni aucune PR n’a été créé pour les modifications de cette session, conformément au workflow de handoff. Les changements sont actuellement locaux sur `dev`. Les fusions antérieures restent S-01 à S-04 via PR #68 et les chaînes précédentes documentées dans le changelog.
+S-06 n’a pas encore de commit ni de PR. Les modifications restent locales sur `feat/S-06-export-donnees-personnelles`. La migration Neon et la vérification réelle du worker sont réussies ; il reste à contrôler la confidentialité du fichier produit, effectuer la validation complète finale, puis committer et ouvrir la PR.
 
-## 5. Points restant à vérifier
-Le contrôleur frontend et la console doivent être vérifiés dans le navigateur avec un compte staff réellement muni du `staffRole` attendu. Vérifier que SUPER_ADMIN accède à l’audit et aux référentiels, que OPS_ADMIN accède à la santé produit et qu’un MODERATOR est refusé sur ces deux écrans.
+## 5. Plan S-07
+Le backlog officiel définit S-07 comme **« Écrans de gel, de compte sortant, de compte alumni »**, dépendant de S-02 et relevant de la responsabilité N. La spécification UI-05 couvre `/account-status` pour les comptes `FROZEN`, `LEAVING` et `ALUMNI`. En `FROZEN`, cette route doit être la seule accessible ; `LEAVING` conserve une lecture limitée avec explication ; `ALUMNI` conserve la lecture des projets existants mais ne peut plus candidater.
 
-Ajouter si nécessaire des tests HTTP dédiés aux nouveaux endpoints staff et un test de service pour les agrégats PostgreSQL sur une base de test. Contrôler également que la route d’export utilise le préfixe API attendu dans l’environnement de staging.
-
-Les tickets suivants de la Vague 5 restent à traiter : S-06 export des données personnelles, S-07 écrans de compte gelé/sortant/alumni, S-08 `seed:demo` complet et S-09 E2E Playwright. S-05 ne doit pas être déclaré fusionné avant commit, revue et PR.
+Le plan proposé pour S-07 est : vérifier les transitions de statut et le guard, définir les réponses d’accès par statut, construire l’écran `/account-status` en FR/MG avec états gelé/sortant/alumni, vérifier les restrictions d’écriture côté candidatures et projets, ajouter les tests HTTP et les tests de navigation, puis effectuer la recette avec trois comptes de statut différent. Aucun code S-07 n’a encore été modifié.
 
 ## 6. Prochaine action
-Sur la branche `dev`, ajouter les tests HTTP de permission pour `/staff/audit`, `/staff/reference-data/:kind` et `/staff/health`, puis exécuter `pnpm --filter api test` et préparer le commit conventionnel S-05 sans fusionner tant que la revue n’est pas faite.
+Finaliser la recette Neon de S-06 : appliquer la migration, démarrer le worker avec `PERSONAL_EXPORT_DIR` privé, créer une demande authentifiée, vérifier le passage à `READY` et télécharger l’archive en contrôlant l’absence de credentials/tokens ; ensuite seulement committer S-06 et ouvrir sa PR avant d’implémenter S-07.
