@@ -51,7 +51,7 @@ export class AuthService {
       })
     }
 
-    const session = await this.createSession(user.id, user.platformRole, user.status)
+    const session = await this.createSession(user.id, user.platformRole, user.status, user.staffRole)
     await this.prisma.user.update({
       where: { id: user.id },
       data: { lastLoginAt: new Date() },
@@ -91,7 +91,7 @@ export class AuthService {
       })
     })
 
-    return this.createSession(user.id, user.platformRole, user.status)
+    return this.createSession(user.id, user.platformRole, user.status, user.staffRole)
   }
 
   async refresh(refreshToken: string): Promise<AuthSession> {
@@ -146,7 +146,7 @@ export class AuthService {
       })
 
       return {
-        accessToken: await this.createAccessToken(current.userId, current.user.platformRole, current.user.status),
+        accessToken: await this.createAccessToken(current.userId, current.user.platformRole, current.user.status, current.user.staffRole),
         refreshToken: nextRawToken,
         refreshTokenExpiresAt: nextExpiresAt,
       }
@@ -200,7 +200,7 @@ export class AuthService {
     ])
   }
 
-  private async createSession(userId: string, platformRole: string, status: string): Promise<AuthSession> {
+  private async createSession(userId: string, platformRole: string, status: string, staffRole?: string | null): Promise<AuthSession> {
     const rawRefreshToken = this.createRawToken()
     const refreshTokenExpiresAt = new Date(Date.now() + REFRESH_TOKEN_TTL_SECONDS * 1000)
     await this.prisma.refreshToken.create({
@@ -212,14 +212,14 @@ export class AuthService {
       },
     })
     return {
-      accessToken: await this.createAccessToken(userId, platformRole, status),
+      accessToken: await this.createAccessToken(userId, platformRole, status, staffRole),
       refreshToken: rawRefreshToken,
       refreshTokenExpiresAt,
     }
   }
 
-  private async createAccessToken(userId: string, platformRole: string, status: string): Promise<string> {
-    return new SignJWT({ platformRole, status })
+  private async createAccessToken(userId: string, platformRole: string, status: string, staffRole?: string | null): Promise<string> {
+    return new SignJWT({ platformRole, status, ...(staffRole ? { staffRole } : {}) })
       .setProtectedHeader({ alg: 'HS256' })
       .setSubject(userId)
       .setIssuedAt()

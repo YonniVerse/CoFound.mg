@@ -747,3 +747,45 @@ export type ReportCreateInput = z.infer<typeof reportCreateSchema>
 export type ReportResponse = z.infer<typeof reportResponseSchema>
 export type ReportTargetType = z.infer<typeof reportTargetTypeSchema>
 
+// ─── Modération et signalements (S-01 à S-04) ────────────────────────────────
+export const moderationQueueQuerySchema = z.object({
+  status: z.enum(['OPEN', 'IN_REVIEW', 'RESOLVED', 'DISMISSED']).default('OPEN'),
+  cursor: z.string().min(1).optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+})
+export const moderationDecisionSchema = z.object({
+  status: z.enum(['IN_REVIEW', 'RESOLVED', 'DISMISSED']),
+  action: z.enum(['WARNING', 'FREEZE', 'DISABLE', 'CONTENT_REMOVED']).optional(),
+  targetUserId: idSchema.optional(),
+  reason: z.string().trim().min(3).max(500).optional(),
+  durationDays: z.number().int().positive().max(365).nullable().optional(),
+})
+export const moderationQueueItemSchema = z.object({
+  id: idSchema,
+  targetType: reportTargetTypeSchema,
+  targetId: idSchema,
+  reason: reportReasonSchema,
+  description: z.string().nullable(),
+  status: z.enum(['OPEN', 'IN_REVIEW', 'RESOLVED', 'DISMISSED']),
+  priority: z.number().int(),
+  createdAt: z.coerce.date(),
+  assignedToId: idSchema.nullable(),
+})
+export const moderationQueueResponseSchema = z.object({
+  items: z.array(moderationQueueItemSchema),
+  nextCursor: idSchema.nullable(),
+  hasMore: z.boolean(),
+})
+export const moderationIdentitySchema = z.object({
+  userId: idSchema,
+  email: z.string().email(),
+  firstName: z.string(),
+  lastName: z.string(),
+  reason: z.string(),
+  accessedAt: z.coerce.date(),
+})
+export type ModerationQueueQuery = z.infer<typeof moderationQueueQuerySchema>
+export type ModerationDecision = z.infer<typeof moderationDecisionSchema>
+export type ModerationQueueResponse = z.infer<typeof moderationQueueResponseSchema>
+export type ModerationIdentity = z.infer<typeof moderationIdentitySchema>
+

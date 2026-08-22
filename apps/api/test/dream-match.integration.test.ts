@@ -248,7 +248,7 @@ test('M-16 expose la résolution d’un signalement via HTTP', async () => {
   const fakeService: Pick<ReportService, 'resolve'> = {
     resolve: async (actorId, reportId, input) => {
       calls.push({ actorId, reportId, input })
-      return { id: reportId, reporterId: 'reporter-1', status: 'RESOLVED', targetType: 'MESSAGE', targetId: 'message-2' }
+      return { id: reportId, reporterId: 'reporter-1', status: 'RESOLVED', targetType: 'MESSAGE', targetId: 'message-2', assignedToId: actorId, resolvedAt: new Date('2026-08-22T00:00:00.000Z') }
     },
   }
   @Module({ controllers: [ReportController], providers: [{ provide: ReportService, useValue: fakeService }] })
@@ -267,7 +267,7 @@ test('M-16 expose la résolution d’un signalement via HTTP', async () => {
       body: JSON.stringify({ status: 'RESOLVED' }),
     })
     assert.equal(response.status, 200)
-    assert.deepEqual(await response.json(), { id: 'report-1', reporterId: 'reporter-1', status: 'RESOLVED', targetType: 'MESSAGE', targetId: 'message-2' })
+    assert.deepEqual(await response.json(), { id: 'report-1', reporterId: 'reporter-1', status: 'RESOLVED', targetType: 'MESSAGE', targetId: 'message-2', assignedToId: 'moderator-1', resolvedAt: '2026-08-22T00:00:00.000Z' })
     assert.deepEqual(calls, [{ actorId: 'moderator-1', reportId: 'report-1', input: { status: 'RESOLVED' } }])
   } finally {
     await app.close()

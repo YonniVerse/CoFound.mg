@@ -28,6 +28,7 @@ const ProjectPostsPage = lazy(() => import("@/pages/ProjectPostsPage"));
 const ProjectChannelPage = lazy(() => import("@/pages/ProjectChannelPage"));
 const MessagesPage = lazy(() => import("@/pages/MessagesPage"));
 const NotificationsPage = lazy(() => import("@/pages/NotificationsPage"));
+const ModerationQueuePage = lazy(() => import("@/pages/ModerationQueuePage"));
 const ProjectExportPage = lazy(() => import("@/pages/ProjectExportPage"));
 const ProjectPublicPage = lazy(() => import("@/pages/ProjectPublicPage"));
 const SearchPage = lazy(() => import("@/pages/SearchPage"));
@@ -74,6 +75,7 @@ function App() {
     <Route path="/profiles" element={<TalentsFeedPage />} />
     <Route path="/messages" element={<MessagesPage />} />
     <Route path="/notifications" element={<NotificationsPage />} />
+    <Route path="/moderation" element={<ModerationQueuePage />} />
     <Route path="/profile/me" element={<OnboardingPage />} />
     <Route path="/settings" element={<SettingsPage />} />
   </Routes></Suspense></BrowserRouter></AuthProvider>;

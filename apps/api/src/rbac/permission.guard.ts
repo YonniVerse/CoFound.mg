@@ -36,7 +36,9 @@ export class PermissionGuard implements CanActivate {
     }
 
     const granted = PLATFORM_ROLE_PERMISSIONS[request.user.platformRole] ?? []
-    if (!requiredPermissions.every((permission) => granted.includes(permission))) {
+    const staffCanAct = request.user.platformRole === 'STAFF' && ['MODERATOR', 'OPS_ADMIN', 'SUPER_ADMIN'].includes(request.user.staffRole ?? '')
+    const hasPermissions = requiredPermissions.every((permission) => permission === 'moderation:act' ? staffCanAct : granted.includes(permission))
+    if (!hasPermissions) {
       throw new ForbiddenException({
         code: 'FORBIDDEN',
         messageKey: 'rbac.errors.insufficientPermissions',
