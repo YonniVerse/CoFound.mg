@@ -2,37 +2,36 @@
 
 **Dernière mise à jour** : 2026-08-22
 **Vague** : Vague 5 — Sécurité et finition
-**État** : S-12, S-13 et S-14 fusionnés dans `dev`
+**État** : Vague 5 fusionnée dans `dev` ; préparation staging en cours
 **Branche actuelle** : `dev`
-**Commit actuel** : `bf547d7` avant la mise à jour de ce handoff
 
-## État final de la Vague 5
+## État staging
 
-S-10 et S-11 avaient été fusionnés dans `dev` via les PR #77 et #78. La suite de la Vague 5 est maintenant fusionnée dans l’ordre prévu : S-12 via la PR #79, S-13 via la PR #80 et S-14 via la PR #81.
+Le workflow `.github/workflows/deploy-staging.yml` existe et se déclenche sur push vers `dev` ou manuellement via `workflow_dispatch`. Il publie les images API et backup dans GHCR avec un tag SHA et le tag `staging`, puis déploie via SSH les fichiers Compose/Caddy et recrée les services.
 
-S-12 a centralisé les chaînes visibles principales en français et malgache dans les feeds, la landing, la navigation, l’import, les candidatures, l’authentification, Dream Match, la console santé et le feed projet. Les validations locales étaient vertes.
+La commande `gh secret list --env staging` indique actuellement **aucun secret staging configuré**. Les valeurs n’ont pas été demandées ni affichées. Le déploiement réel ne doit donc pas être lancé avant la configuration humaine des secrets et du fichier `.env` sur le serveur staging.
 
-S-13 a ajouté `docs/runbook-exploitation.md`, qui documente le déploiement, les prérequis VPS, les sauvegardes hors machine, la restauration vers une base jetable, la classification P0–P3 et la réponse aux incidents. Aucun secret réel n’est documenté.
+## Travail réalisé
 
-S-14 a ajouté `apps/web/src/pages/LegalPage.tsx`, les routes `/legal/terms` et `/legal/privacy`, les liens légaux dans le Footer et les labels FR/MG. Le contenu couvre les CGU, le pseudonymat, les consentements, les droits, l’export et l’engagement de portabilité. Il est explicitement soumis à une revue juridique humaine avant publication contractuelle.
+Création de `docs/staging-deployment-checklist.md` avec la liste des secrets attendus, la préparation du serveur, la séparation staging/production, les contrôles de santé, le seed `demo-`, la validation E2E S-09, les critères de sortie et le retour arrière. Aucun secret ou identifiant réel n’y figure.
 
-## Validations finales
+## Pré-requis bloquants
 
-- `git diff --check` : réussi.
-- `pnpm --filter @cofound/shared build` : réussi.
-- `pnpm --filter @cofound/web build` : réussi.
-- `pnpm --filter @cofound/web lint` : réussi sans erreur ni avertissement.
-- `dev` est alignée sur `origin/dev` et le workspace est propre.
-- Le chunk analytique reste lazy à environ 358 kB brut / 104 kB gzip.
+Configurer dans l’environnement GitHub `staging` : `STAGING_DEPLOY_SSH_KEY`, `STAGING_KNOWN_HOSTS`, `STAGING_DEPLOY_HOST`, `STAGING_DEPLOY_USER`, `STAGING_DEPLOY_PATH`, `GHCR_USERNAME` et `GHCR_READ_TOKEN`. Préparer hors Git le fichier `${STAGING_DEPLOY_PATH}/deploy/.env` avec une base Neon de staging et un `RESTORE_DATABASE_URL` jetable distinct.
 
-## Points non clôturés
+Fournir également, dans un environnement d’exécution séparé, les variables `E2E_*` et les comptes de démonstration nécessaires à S-09. Ne jamais les ajouter au dépôt.
 
-La validation E2E réelle de S-09 sur recette reste à exécuter avec les variables `E2E_*`, les comptes authentifiés et le jeton d’activation fournis par l’équipe. Les CGU et la politique de confidentialité doivent recevoir une validation juridique humaine avant utilisation contractuelle.
+## Validations
 
-Les PR ouvertes de Vague 4 #73, #74 et #75 restent indépendantes de la clôture technique de la Vague 5.
+- `dev` est alignée sur `origin/dev`.
+- Le build shared, le build web et le lint web de la Vague 5 sont verts.
+- Les PR #79, #80 et #81 sont fusionnées.
+- Aucune valeur de secret n’a été exposée.
 
 ## Prochaines étapes
 
-1. Fournir les variables et comptes de recette, puis exécuter S-09 sur l’environnement réel.
-2. Organiser la revue juridique de S-14 et remplacer les coordonnées génériques par les contacts officiels hors dépôt.
-3. Mettre à jour `audit-vagues-2026-08-22.md` avec cette clôture technique et les réserves restantes.
+1. Configurer les secrets GitHub de l’environnement `staging` et le `.env` du serveur hors dépôt.
+2. Vérifier manuellement la cible SSH, la base staging, le SHA précédent et le jeu de données `demo-`.
+3. Déclencher le workflow `Déploiement staging` avec confirmation humaine.
+4. Contrôler les endpoints de santé, les services, les parcours Vague 5 et les trois scénarios E2E S-09.
+5. Documenter le résultat dans l’audit global.

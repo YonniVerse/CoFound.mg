@@ -10,6 +10,13 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Préparation déploiement staging — Vague 5
+
+- Ajout de `docs/staging-deployment-checklist.md` couvrant les secrets attendus, la configuration serveur, le lancement contrôlé, les contrôles post-déploiement, S-09 E2E et le retour arrière.
+- Le workflow `deploy-staging.yml` a été audité et reste prêt à être déclenché sur `dev` ou manuellement.
+- `gh secret list --env staging` ne trouve actuellement aucun secret ; aucun déploiement réel n’a été lancé.
+- Handoff mis à jour avec les prérequis bloquants et l’interdiction d’ajouter des secrets au dépôt.
+
 ## 2026-08-22 — Vague 5 — Clôture technique
 
 - Fusion des PR #79 (S-12), #80 (S-13) et #81 (S-14) dans `dev`, après résolution des conflits de rebase et validations locales réussies.
