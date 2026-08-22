@@ -10,6 +10,20 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Cards du login alignées sur le landing
+
+### Modifié
+
+- Correction du débordement du titre dans la card Projet principal avec une zone de texte flexible et des retours à la ligne maîtrisés.
+- Alignement des six cards sur le style du hero landing : `rounded-2xl`, `bg-card`, bordure fine, `shadow-2xs`, padding homogène et hover discret.
+- Conservation d’une grille régulière de deux colonnes sans superposition, rotation ni animation.
+- Utilisation de bordures supérieures `primary` et `secondary` pour les cards Communauté et Impact collectif, au lieu de fonds pleins.
+- Modification publiée sur `dev` dans le commit `d4cfe7c`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Grille statique du panneau de connexion
 
 ### Modifié
