@@ -1,6 +1,7 @@
 import { Avatar } from "@/components/shared/Avatar";
 import { Button } from "@/components/ui/button";
 import { Eye, MessageSquare } from "lucide-react";
+import { ReportButton } from "@/components/shared/ReportButton";
 
 export interface ProfileData {
   id: string;
@@ -79,6 +80,7 @@ export function ProfileCard({ profile }: { profile: ProfileData }) {
           <Eye className="h-3.5 w-3.5" />
           <span>Profil</span>
         </Button>
+        <ReportButton targetType="PROFILE" targetId={profile.id} />
         <Button
           size="sm"
           className="h-8 px-3 text-xs font-medium rounded-lg cursor-pointer gap-1.5"

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { projectPostCreateSchema, type ProjectPost, type ProjectPostType } from "@cofound/shared";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { createProjectPost, deleteProjectPost, getProjectPosts } from "@/data/projectApi";
+import { ReportButton } from "@/components/shared/ReportButton";
 
 const postTypes: Array<{ value: ProjectPostType; label: string }> = [
   { value: "UPDATE", label: "Actualité" },
@@ -94,7 +95,10 @@ export default function ProjectPostsPage() {
                 <time dateTime={post.createdAt.toISOString()}>{post.createdAt.toLocaleDateString("fr-FR")}</time>
               </div>
               <p className="mt-3 whitespace-pre-wrap">{post.content}</p>
-              <p className="mt-4 text-xs text-muted-foreground">Publié par {post.authorPseudonym}</p>
+              <div className="mt-4 flex items-center justify-between gap-3">
+                <p className="text-xs text-muted-foreground">Publié par {post.authorPseudonym}</p>
+                <ReportButton targetType="POST" targetId={post.id} />
+              </div>
               <button type="button" className="mt-3 text-sm font-medium text-destructive" onClick={() => void remove(post)} disabled={busy}>Supprimer</button>
             </article>
           ))}

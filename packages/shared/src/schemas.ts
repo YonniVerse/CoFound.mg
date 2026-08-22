@@ -730,4 +730,5 @@ export const reportResponseSchema = z.object({
 })
 export type ReportCreateInput = z.infer<typeof reportCreateSchema>
 export type ReportResponse = z.infer<typeof reportResponseSchema>
+export type ReportTargetType = z.infer<typeof reportTargetTypeSchema>
 
