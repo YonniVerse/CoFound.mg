@@ -20,34 +20,34 @@ export function ProjectActionCard({ project, onApply, isApplying }: ProjectActio
 
   return (
     <>
-      <div className="bg-background border border-border shadow-xs rounded-2xl p-6 flex flex-col gap-5 animate-in fade-in slide-in-from-right-8 duration-500 delay-100">
+      <div className="bg-card border border-border rounded-xl p-5 sm:p-6 shadow-2xs flex flex-col gap-4 animate-in fade-in slide-in-from-right-8 duration-500 delay-100">
         <Button
-          size="xl"
-          className="w-full text-base font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-shadow"
+          size="sm"
+          className="h-9 w-full rounded-lg px-3.5 text-xs font-medium shadow-none transition-colors sm:text-sm"
           onClick={() => setIsApplyOpen(true)}
           disabled={isApplying}
         >
           {isApplying ? "Envoi en cours…" : "Postuler à ce projet"}
         </Button>
 
-        <div className="flex gap-2">
-          <Button variant="outline" className="flex-1 bg-muted/50 font-semibold">Sauvegarder</Button>
-          <Button variant="outline" className="px-3 bg-muted/50" title="Partager" aria-label="Partager le projet">
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" className="h-9 flex-1 rounded-lg px-3.5 text-xs font-medium sm:text-sm">Sauvegarder</Button>
+          <Button variant="outline" size="sm" className="h-9 w-9 rounded-lg p-0" title="Partager" aria-label="Partager le projet">
             <Share2 className="h-4 w-4 text-muted-foreground" />
           </Button>
         </div>
 
-        <div className="border-t border-border pt-5 space-y-4">
+        <div className="border-t border-border/50 pt-4 space-y-3">
           <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-1">Stade actuel</p>
-            <p className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Stade actuel</p>
+            <p className="flex items-center gap-2 text-xs font-medium text-foreground sm:text-sm">
               <span className="h-2 w-2 rounded-full bg-secondary" />
               {project.status}
             </p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-1">Disponibilité souhaitée</p>
-            <p className="text-sm font-semibold text-foreground">{project.availability}</p>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Disponibilité souhaitée</p>
+            <p className="text-xs font-medium text-foreground sm:text-sm">{project.availability}</p>
           </div>
         </div>
       </div>
