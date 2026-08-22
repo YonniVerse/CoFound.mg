@@ -8,6 +8,8 @@ import { DreamMatchScoringService } from '../src/dream-match/dream-match-scoring
 import { DreamMatchService } from '../src/dream-match/dream-match.service.js'
 import { ReportController } from '../src/report/report.controller.js'
 import { ReportService } from '../src/report/report.service.js'
+import { BlockController } from '../src/block/block.controller.js'
+import { BlockService } from '../src/block/block.service.js'
 
 function createFakeService() {
   const calls: Array<{ method: string; userId: string; input?: unknown }> = []
@@ -119,6 +121,36 @@ test('M-06 expose GET /api/v1/me/dream-match/suggestions via HTTP', async () => 
   }
 })
 
+
+test('M-13 expose le blocage utilisateur via HTTP sans identité civile', async () => {
+  const calls: Array<{ blockerId: string; blockedId: string }> = []
+  const fakeService: Pick<BlockService, 'create'> = {
+    create: async (blockerId, blockedId) => {
+      calls.push({ blockerId, blockedId })
+      return { blocked: true, blockedId }
+    },
+  }
+  @Module({ controllers: [BlockController], providers: [{ provide: BlockService, useValue: fakeService }] })
+  class TestModule {}
+  const app = await NestFactory.create(TestModule, { logger: ['error'] })
+  app.use((request: { user?: { userId: string } }, _response: unknown, next: () => void) => {
+    request.user = { userId: 'blocker-1' }
+    next()
+  })
+  app.setGlobalPrefix('api/v1')
+  await app.listen(0, '127.0.0.1')
+  try {
+    const response = await fetch(`${await app.getUrl()}/api/v1/blocks/talent-2`, { method: 'POST', headers: { authorization: 'Bearer test-token' } })
+    const rawBody = await response.text()
+    assert.equal(response.status, 201, rawBody)
+    const body = JSON.parse(rawBody) as Record<string, unknown>
+    assert.deepEqual(body, { blocked: true, blockedId: 'talent-2' })
+    assert.equal('blockerId' in body, false)
+    assert.deepEqual(calls, [{ blockerId: 'blocker-1', blockedId: 'talent-2' }])
+  } finally {
+    await app.close()
+  }
+})
 
 test('M-14 expose la création d’un signalement via HTTP sans identité civile', async () => {
   const calls: Array<{ reporterId: string; input: unknown }> = []

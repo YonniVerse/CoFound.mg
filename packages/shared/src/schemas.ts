@@ -560,6 +560,11 @@ export type ConversationMessageCreateInput = z.infer<typeof conversationMessageC
 export type ConversationMessage = z.infer<typeof conversationMessageSchema>
 export const conversationMessagesResponseSchema = z.object({ items: z.array(conversationMessageSchema) })
 export type ConversationMessagesResponse = z.infer<typeof conversationMessagesResponseSchema>
+export const conversationListSchema = z.array(conversationSchema)
+export const blockResultSchema = z.object({ blocked: z.boolean(), blockedId: idSchema })
+export const blockedUserSchema = z.object({ blockedId: idSchema, createdAt: z.coerce.date() })
+export const blockedUsersResponseSchema = z.array(blockedUserSchema)
+export type BlockResult = z.infer<typeof blockResultSchema>
 export const projectFeedQuerySchema = z.object({
   status: z.nativeEnum(ProjectStatus).optional(),
   sectorId: idSchema.optional(),

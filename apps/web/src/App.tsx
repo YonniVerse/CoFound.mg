@@ -21,6 +21,7 @@ const ProjectTeamPage = lazy(() => import("@/pages/ProjectTeamPage"));
 const ProjectTasksPage = lazy(() => import("@/pages/ProjectTasksPage"));
 const ProjectPostsPage = lazy(() => import("@/pages/ProjectPostsPage"));
 const ProjectChannelPage = lazy(() => import("@/pages/ProjectChannelPage"));
+const MessagesPage = lazy(() => import("@/pages/MessagesPage"));
 const ProjectExportPage = lazy(() => import("@/pages/ProjectExportPage"));
 const ProjectPublicPage = lazy(() => import("@/pages/ProjectPublicPage"));
 const SearchPage = lazy(() => import("@/pages/SearchPage"));
@@ -56,7 +57,7 @@ function App() {
     <Route path="/institution/imports/:id/preview" element={<ImportPreviewPage />} />
     <Route path="/projects" element={<ComingSoonPage />} />
     <Route path="/profiles" element={<ComingSoonPage />} />
-    <Route path="/messages" element={<ComingSoonPage />} />
+    <Route path="/messages" element={<MessagesPage />} />
     <Route path="/profile/me" element={<ComingSoonPage />} />
     <Route path="/settings" element={<SettingsPage />} />
   </Routes></Suspense></BrowserRouter>;

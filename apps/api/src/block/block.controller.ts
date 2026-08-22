@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post, Req } from '@nestjs/common'
+import { Controller, Delete, Get, Inject, Param, Post, Req } from '@nestjs/common'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
 import { Permission } from '../rbac/permissions.js'
 import { RequirePermissions } from '../rbac/rbac.decorators.js'
@@ -6,7 +6,7 @@ import { BlockService } from './block.service.js'
 
 @Controller('blocks')
 export class BlockController {
-  constructor(private readonly service: BlockService) {}
+  constructor(@Inject(BlockService) private readonly service: BlockService) {}
 
   @Post(':userId')
   @RequirePermissions(Permission.TALENT_READ)
