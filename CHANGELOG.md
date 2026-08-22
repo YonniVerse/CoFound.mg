@@ -10,6 +10,14 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Vague 4 — validations et blocages traités
+
+- Validation correcte des branches B-01, B-02 et de la synthèse B-02 à B-11 après `shared build` et `prisma generate` : 139/139, 145/145 et 157/157 tests API réussis.
+- Typecheck, build web et lint web réussis sur les trois branches.
+- Vérification que le workflow CI applique déjà l’ordre reproductible Prisma puis shared avant les contrôles.
+- Maintien justifié des PR #73, #74 et #75 ouvertes : stockage binaire des justificatifs, migrations Neon et recette partenaire nécessitent encore une décision ou un accès externe.
+- Handoff et audit Vague 4 actualisés sans modifier le backlog officiel.
+
 ## 2026-08-22 — Audit — Vague 4
 
 - Ajout de `audit-vague-4-2026-08-22.md` avec l’état B-01 à B-11, les PR #73 à #75, les dépendances et les risques résiduels.

@@ -2,31 +2,27 @@
 
 **Dernière mise à jour** : 2026-08-22
 **Vague** : Vague 4 — Le côté payant
-**État** : audit réalisé, Vague 4 non fusionnée
+**État** : validations locales terminées ; PR #73, #74 et #75 restent ouvertes
 **Branche actuelle** : `dev`
 
-## Audit Vague 4
+## Travail effectué sans intervention externe
 
-Le rapport complet est dans `audit-vague-4-2026-08-22.md`. Les trois PR ouvertes sont #73 pour B-01, #74 pour B-02 et #75 pour la synthèse B-02 à B-11. Aucune n’est fusionnée dans `dev`.
+Les PR #73 (B-01), #74 (B-02) et #75 (synthèse B-02 à B-11) ont été auditées. Les branches ont été testées après la séquence correcte du monorepo : `@cofound/shared build`, `prisma generate`, tests API et typecheck, puis build/lint web.
 
-B-01 et B-02 ont été testés sur leurs branches respectives après reconstruction de `@cofound/shared` et `prisma generate` : B-01 passe 139/139 tests API et B-02 passe 145/145. La branche de synthèse B-02 à B-11 passe 157/157 tests API. Les typechecks, builds web et lint web passent sur les trois branches.
+Résultats : B-01 passe 139/139 tests API, B-02 passe 145/145, et la synthèse B-02 à B-11 passe 157/157. Les typechecks, builds frontend et lint frontend passent sur les trois branches. Le workflow CI officiel contient déjà `prisma generate` et `shared build` avant lint, typecheck, tests, build et budget ; aucune correction CI supplémentaire n’a été nécessaire.
 
-## Blocages réels
+Le rapport complet est `audit-vague-4-2026-08-22.md`. Il documente le stockage binaire absent pour les justificatifs, les migrations Neon non appliquées, le risque de doublon B-02 entre #74 et #75, les validations staging encore manquantes, les notifications, l’unicité du contact B-09, le pseudonymat RECRUIT et l’absence de paiement réel.
 
-B-01 ne stocke actuellement que les métadonnées des justificatifs ; aucun adaptateur R2/S3 binaire n’est présent. La clôture documentaire complète est donc bloquée jusqu’à décision et implémentation du stockage.
+## Pourquoi les PR n’ont pas été fusionnées
 
-Les migrations Neon de la Vague 4 doivent être appliquées et testées en staging avec une sauvegarde et une possibilité de retour arrière. Les écrans partenaires, les notifications de décisions, l’unicité du contact B-09, le pseudonymat RECRUIT de B-10 et l’absence de paiement réel pour B-11 doivent être démontrés sur staging.
+B-01 est fonctionnel côté demande et métadonnées, mais le stockage binaire des justificatifs n’est pas implémenté. Fusionner en annonçant le parcours documentaire complet serait inexact. B-02 est empilée sur B-01 et doit être rebasée après sa décision. La PR #75 reprend une partie du périmètre B-02 et doit être comparée après #74 pour éviter un doublon ou une fusion incohérente.
 
-La PR #74 est empilée sur #73. La PR #75 reprend une partie du périmètre B-02 tout en ciblant `dev` ; il faut éviter un doublon lors de la fusion.
+Les migrations et les données de staging ne peuvent pas être appliquées sans accès Neon/staging et secrets de déploiement. Aucun secret n’a été demandé, exposé ou ajouté au dépôt.
 
-## Validation et reproductibilité
+## Prochaines étapes nécessitant une intervention ou un accès
 
-Les premiers tests de branche échouaient avant `shared build` et `prisma generate`, avec exports shared absents et client Prisma obsolète. La procédure correcte est désormais documentée : reconstruire shared, générer Prisma, puis lancer tests/typecheck/build/lint. Les contrôles GitHub détaillés ne sont pas accessibles via l’intégration actuelle ; seuls les résultats locaux sont confirmés.
-
-## Prochaines étapes
-
-1. Revoir #73 et trancher le stockage des justificatifs.
-2. Fusionner #73, rebaser #74 sur `dev`, puis retester et fusionner #74.
-3. Rebaser #75 sur `dev`, vérifier les doublons B-02 et fusionner uniquement après validation.
-4. Appliquer les migrations Neon sur staging, exécuter le seed `demo-` et réaliser la recette B-01 à B-11.
-5. Ne déclarer la Vague 4 terminée qu’après validation documentaire, RBAC, pseudonymat, contact unique, notifications et port financier hors plateforme.
+1. Décider si B-01 peut être fusionné avec stockage de métadonnées uniquement, ou implémenter l’adaptateur R2/S3 avant fusion.
+2. Configurer les secrets et la cible staging, puis appliquer les migrations avec sauvegarde et retour arrière.
+3. Exécuter le seed `demo-` dans Neon staging et tester B-01 à B-11 avec comptes pseudonymisés.
+4. Rebaser #74 après décision B-01, comparer #75 après #74, puis fusionner dans l’ordre validé.
+5. Ne déclarer la Vague 4 terminée qu’après validation des justificatifs, notifications, interfaces partenaires, RBAC, pseudonymat et absence de paiement réel.

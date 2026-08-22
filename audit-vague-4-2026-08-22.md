@@ -66,7 +66,9 @@ Les validations ont été rejouées sur les trois branches après `pnpm --filter
 
 Les premiers tests lancés sans reconstruire shared ni générer Prisma échouaient avec des exports shared absents et un client Prisma obsolète. Ce n’est pas un échec fonctionnel confirmé des branches, mais cela révèle un **risque de reproductibilité CI/local** : le pipeline doit garantir `shared build` et `prisma generate` avant les tests.
 
-Les contrôles GitHub détaillés ne sont pas lisibles depuis la session actuelle : l’API renvoie `Resource not accessible by integration` pour le champ de statut. Cela ne permet pas de conclure que les contrôles distants sont verts ; seule la validation locale ci-dessus est confirmée.
+Le workflow CI officiel garantit bien l’ordre reproductible `pnpm --filter @cofound/api prisma:generate` puis `pnpm --filter @cofound/shared build`, avant lint, typecheck, tests, build et contrôle de budget. Les erreurs initiales observées localement provenaient donc d’un ordre d’exécution incomplet, non d’un défaut confirmé du code des branches.
+
+Les contrôles GitHub détaillés ne sont pas lisibles depuis la session actuelle : l’API renvoie `Resource not accessible by integration` pour le champ de statut. Cela ne permet pas de conclure que les contrôles distants sont verts ; seules les validations locales sont confirmées.
 
 ## Risques résiduels
 
@@ -93,7 +95,7 @@ Les contrôles GitHub détaillés ne sont pas lisibles depuis la session actuell
 
 ## Conclusion
 
-La Vague 4 est **bien avancée mais non terminée**. B-01 et B-02 sont dans des PR ouvertes ; B-03 à B-11 sont annoncés et largement codés dans une PR de synthèse ouverte, mais ils ne sont ni fusionnés ni démontrés sur staging. Le principal risque n’est pas le nombre de tickets manquants : c’est la mise en production prématurée d’un parcours partenaire dont le stockage documentaire, les migrations, les notifications et les contrôles de confidentialité ne sont pas encore validés en conditions réelles.
+La Vague 4 est **bien avancée mais non terminée**. Les corrections réalisables sans accès externe ont été menées jusqu’à la validation locale des trois branches ; aucune fusion n’a été effectuée car le stockage documentaire et la recette staging restent des conditions de clôture. B-01 et B-02 sont dans des PR ouvertes ; B-03 à B-11 sont annoncés et largement codés dans une PR de synthèse ouverte, mais ils ne sont ni fusionnés ni démontrés sur staging. Le principal risque n’est pas le nombre de tickets manquants : c’est la mise en production prématurée d’un parcours partenaire dont le stockage documentaire, les migrations, les notifications et les contrôles de confidentialité ne sont pas encore validés en conditions réelles.
 
 ## Références
 
