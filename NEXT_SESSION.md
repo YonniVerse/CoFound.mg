@@ -12,18 +12,20 @@ S-09 est publié dans la [PR #76](https://github.com/YonniVerse/CoFound.mg/pull/
 
 S-10 et S-11 ont été fusionnés dans `dev` via les PR [#77](https://github.com/YonniVerse/CoFound.mg/pull/77) et [#78](https://github.com/YonniVerse/CoFound.mg/pull/78). Les validations locales correspondantes sont réussies.
 
-S-12 progresse depuis `origin/dev`. Les clés FR/MG couvrent les actions de feed, les états d’erreur, les filtres projets et toute la chaîne d’import visible. `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `TalentCard`, `ProjectsFeedPage`, `ImportMappingPage`, `ImportPreviewPage` et `SectionHero` utilisent désormais i18n pour leurs textes visibles structurants, avec les statuts de ligne, les compteurs, les actions, les erreurs de chargement et les états vides.
+S-12 progresse depuis `origin/dev`. Le dictionnaire FR/MG et les composants suivants utilisent maintenant i18n pour leurs textes visibles structurants : `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `TalentCard`, `ProjectsFeedPage`, `ImportMappingPage`, `ImportPreviewPage`, `SectionHero`, `SectionCTA` et `ApplyModal`. Sont couverts les actions de feed, erreurs, filtres, états vides, import, statuts de ligne, compteurs, CTA marketing et formulaire de candidature.
 
 ## Commits S-12 déjà poussés
 
 - `e435abc refactor(vague5): centraliser les libelles i18n des feeds`
 - `24b733d refactor(vague5): traduire la previsualisation d import`
 - `2051f87 refactor(vague5): traduire les actions de la landing`
+- `8a0bb30 refactor(vague5): traduire la carte talent`
 
-## Fichiers S-12 modifiés depuis le dernier checkpoint
+## Fichiers modifiés depuis le dernier checkpoint
 
-- `apps/web/src/i18n.tsx` : clés FR/MG de TalentCard.
-- `apps/web/src/components/feed/TalentCard.tsx` : promo, complétion, biographie, disponibilité et actions traduits.
+- `apps/web/src/i18n.tsx` : clés FR/MG des CTA et du formulaire de candidature.
+- `apps/web/src/components/landing/SectionCTA.tsx` : textes CTA traduits.
+- `apps/web/src/components/applications/ApplyModal.tsx` : titre, validations, labels et actions traduits.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : suivi actualisé.
 
 ## Validations récentes
@@ -37,7 +39,7 @@ S-12 progresse depuis `origin/dev`. Les clés FR/MG couvrent les actions de feed
 
 ## Reste à faire pour S-12
 
-Migrer les chaînes visibles restantes dans `SectionCTA`, `Navbar`, `ApplyModal`, `ActivationPage`, `DreamMatchPage`, `ForgotPasswordPage`, `ResetPasswordPage`, `MyApplicationsPage`, `ProductHealthPage`, `ProjectPostsPage` et la notice d’information de `ImportMappingPage`. Ajouter ensuite un contrôle ciblé contre la réintroduction de textes visibles en dur, relancer les validations finales, créer le commit de clôture et ouvrir la PR S-12.
+Migrer les chaînes visibles restantes dans `Navbar`, `ActivationPage`, `DreamMatchPage`, `ForgotPasswordPage`, `ResetPasswordPage`, `MyApplicationsPage`, `ProductHealthPage`, `ProjectPostsPage` et la notice d’information de `ImportMappingPage`. Ajouter ensuite un contrôle ciblé contre la réintroduction de textes visibles en dur, relancer les validations finales, créer le commit de clôture et ouvrir la PR S-12.
 
 ## Suite de la Vague 5
 

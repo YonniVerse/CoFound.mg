@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Send, X, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { useI18n } from "@/i18n";
 
 interface PositionOption {
   id: string;
@@ -25,6 +26,7 @@ export function ApplyModal({
   positions = [],
   onSubmit,
 }: ApplyModalProps) {
+  const { t } = useI18n()
   const [selectedPositionId, setSelectedPositionId] = useState<string>("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,7 +37,7 @@ export function ApplyModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim().length < 10) {
-      setError("Votre message doit contenir au moins 10 caractères.");
+      setError(t('application.messageTooShort'));
       return;
     }
 
@@ -51,7 +53,7 @@ export function ApplyModal({
       setSelectedPositionId("");
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Une erreur est survenue lors de l'envoi.");
+      setError(err instanceof Error ? err.message : t('application.submitError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -62,7 +64,9 @@ export function ApplyModal({
       <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-lg relative space-y-5 animate-in zoom-in-95 duration-200">
         {/* Close Button */}
         <button
+          type="button"
           onClick={onClose}
+          aria-label={t('common.close')}
           className="absolute top-5 right-5 text-muted-foreground hover:text-foreground transition-colors"
         >
           <X className="h-5 w-5" />
@@ -71,7 +75,7 @@ export function ApplyModal({
         {/* Header */}
         <div>
           <h2 className="font-heading font-bold text-lg sm:text-xl text-foreground">
-            Candidater au projet
+            {t('application.title')}
           </h2>
           <p className="text-xs sm:text-sm text-primary font-medium mt-0.5">
             {projectTitle}
@@ -90,14 +94,14 @@ export function ApplyModal({
           {positions.length > 0 && (
             <div className="space-y-1.5">
               <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Poste recherché (optionnel)
+                {t('application.positionOptional')}
               </label>
               <select
                 value={selectedPositionId}
                 onChange={(e) => setSelectedPositionId(e.target.value)}
                 className="w-full h-10 px-3 text-xs sm:text-sm rounded-xl border border-border bg-background text-foreground focus:ring-1 focus:ring-primary focus:outline-none"
               >
-                <option value="">Candidature spontanée (aucun poste spécifique)</option>
+                <option value="">{t('import.spontaneousApplication')}</option>
                 {positions.map((pos) => (
                   <option key={pos.id} value={pos.id}>
                     {pos.title}
@@ -110,17 +114,17 @@ export function ApplyModal({
           {/* Motivation Message */}
           <div className="space-y-1.5">
             <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Message de motivation
+              {t('application.motivationLabel')}
             </label>
             <Textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Présentez brièvement vos compétences, votre expérience et la valeur ajoutée que vous souhaitez apporter à ce projet..."
+              placeholder={t('application.motivationPlaceholder')}
               className="min-h-[120px] text-xs sm:text-sm rounded-xl border-border bg-background focus-visible:ring-1 focus-visible:ring-primary leading-relaxed"
               rows={4}
             />
             <p className="text-[11px] text-muted-foreground/70 font-mono text-right">
-              {message.length}/2000 caractères (min 10)
+              {message.length}/2000 {t('application.characterCount')}
             </p>
           </div>
 
@@ -133,7 +137,7 @@ export function ApplyModal({
               onClick={onClose}
               className="h-9 px-4 text-xs font-semibold rounded-xl cursor-pointer"
             >
-              Annuler
+              {t('common.cancel')}
             </Button>
             <Button
               type="submit"
@@ -142,7 +146,7 @@ export function ApplyModal({
               className="h-9 px-5 text-xs font-semibold rounded-xl gap-2 cursor-pointer"
             >
               <Send className="h-3.5 w-3.5" />
-              <span>{isSubmitting ? "Envoi..." : "Envoyer ma candidature"}</span>
+              <span>{isSubmitting ? t('application.submitting') : t('application.submit')}</span>
             </Button>
           </div>
         </form>

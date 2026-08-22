@@ -27,6 +27,7 @@ Retiré · En cours · Bloqué**.
 - Les statuts et compteurs de prévisualisation, l’erreur de chargement et les actions de navigation sont traduits.
 - `SectionHero` utilise les clés i18n pour ses appels à l’action d’exploration et d’impact.
 - `TalentCard` utilise les clés i18n pour la promo, la complétion, la biographie, la disponibilité et ses actions.
+- `SectionCTA` et `ApplyModal` utilisent les clés FR/MG pour leurs textes visibles, validations et actions.
 - Validation build/lint réussie après suppression de la constante de statuts devenue inutilisée et ajout de `t` aux dépendances du hook.
 - Migration des chaînes visibles restantes et ajout d’un contrôle empêchant leur réintroduction encore en cours.
 
