@@ -1,56 +1,41 @@
 # Context Handoff — Reprise de session CoFound.mg
-
 **Dernière mise à jour** : 2026-08-22
-**Phase** : Vague 5 — S-01 à S-04 fusionnés ; préparation de S-05
+**Phase** : Vague 5 — S-05 (console staff) en cours de finalisation
 **Branche** : `dev`
-**État du workspace** : E-14 est fusionné via PR #37. S-01 à S-04 sont fusionnés via PR #68. `dev` est synchronisé avec `origin/dev` au commit `32e6af7`.
+**État du workspace** : modifications locales non committées. Le dépôt était synchronisé avec `origin/dev` avant cette session.
 
 ## 1. Travail réalisé
+Le journal d’audit S-05 est raccordé de bout en bout : service de lecture filtrée et paginée, sanitisation des métadonnées, contrôleur staff, export CSV lui-même journalisé, interface `/staff/audit` et client frontend pour téléchargement authentifié.
 
-E-14 a été synchronisé avec `dev`, complété avec les traductions française et malgache de la bannière, puis fusionné. Un test HTTP couvre `GET /api/v1/me/profile/completion-reminder`.
+Les deux autres volets de S-05 sont implémentés. Le module `reference-data` expose `GET/POST /api/v1/staff/reference-data/:kind` et `PATCH /api/v1/staff/reference-data/:kind/:id` pour `skills`, `fields`, `sectors` et `regions`. Les entrées sont désactivables mais non supprimables et le nombre d’usages est calculé avant affichage. L’interface `/staff/reference-data` permet de consulter les onglets, créer une entrée et désactiver/réactiver une entrée.
 
-La chaîne des signalements comprend une file priorisée et paginée (`GET /api/v1/reports/moderation-queue`), des décisions transactionnelles (`PATCH /api/v1/reports/:id/decision`), la résolution/classement (`PATCH /api/v1/reports/:id/resolve`), les sanctions `WARNING`, `FREEZE`, `DISABLE` et `CONTENT_REMOVED`, ainsi que le gel/désactivation automatique pour les actions correspondantes.
+Le module de santé produit expose `GET /api/v1/staff/health`. Il fournit les agrégats MVP demandés : activation, complétion moyenne, projets par état, mise en relation acceptée, délai médian de réponse aux candidatures, volume/délai médian de modération et rebond des invitations. Le seuil `MIN_AGGREGATION_THRESHOLD` est appliqué ; aucune identité civile, aucun genre et aucune donnée individuelle ne sont renvoyés. L’interface `/staff/health` affiche les cartes agrégées et explique les valeurs masquées.
 
-La résolution notifie le déclarant via `NotificationService`. L’accès à l’identité civile de la cible est séparé de la file pseudonymisée (`GET /api/v1/reports/:id/identity`), protégé par `moderation:act` et journalisé par `AuditService`. Le genre n’est jamais renvoyé dans la réponse d’identité.
-
-Le contexte JWT transporte désormais `staffRole`. Le guard autorise les actions sensibles uniquement pour un compte `STAFF` ayant `MODERATOR`, `OPS_ADMIN` ou `SUPER_ADMIN`. Un compte STAFF sans rôle étendu reste refusé.
-
-Une console frontend `/moderation` affiche la file pseudonymisée, permet la prise en revue, la résolution, le classement sans suite, la saisie d’une sanction et une révélation d’identité explicitement confirmée.
+Un seed Neon de recette idempotent a été ajouté. Il crée des données préfixées `recette-` couvrant un compte staff SUPER_ADMIN, un talent activé, un compte invité, référentiels, affiliation, projet, candidature, signalement et import/invitation. Il a été exécuté deux fois sur Neon avec succès ; la seconde exécution n’a pas créé de doublons.
 
 ## 2. Fichiers importants
-
-- `apps/api/src/report/report.service.ts` : file, décisions, sanctions, notification et résolution de cible.
-- `apps/api/src/report/report.controller.ts` : routes publiques de signalement et routes staff.
-- `apps/api/src/rbac/access-token.guard.ts` et `permission.guard.ts` : propagation et contrôle de `staffRole`.
-- `apps/api/src/auth/auth.service.ts` et `auth-request.ts` : claims JWT et contexte authentifié.
-- `packages/shared/src/schemas.ts` : contrats de file, décision et identité modérateur.
-- `apps/web/src/pages/ModerationQueuePage.tsx` : console staff pseudonymisée et formulaire de sanction.
-- `apps/web/src/App.tsx` : route `/moderation`.
-- `apps/api/test/report.test.ts` : tests de file, sanction et audit d’identité.
-- `apps/api/test/dream-match.integration.test.ts` : tests HTTP E-14 et résolution de signalement.
+- `apps/api/src/audit/` et `apps/web/src/pages/AuditLogPage.tsx` : journal et export.
+- `apps/api/src/reference-data/` et `apps/web/src/pages/ReferenceDataPage.tsx` : UI-54 et API des référentiels.
+- `apps/api/src/health/product-health.*` et `apps/web/src/pages/ProductHealthPage.tsx` : UI-55 et API santé.
+- `apps/api/src/rbac/permissions.ts` et `permission.guard.ts` : permissions `reference-data:manage` et `product-health:read`.
+- `packages/shared/src/schemas.ts` : contrats Zod S-05.
+- `apps/api/prisma/seed-recette.ts` et `apps/api/package.json` : commande `pnpm --filter api seed:recette`.
+- `apps/api/test/audit.test.ts` : tests de pagination, filtres et sanitisation.
 
 ## 3. Validation
+Les tests API complets passent : **140/140**. Les tests S-05 audit et RBAC passent. Les typechecks shared/API/frontend, les lints API/frontend, le build Vite et `git diff --check` passent. Le plus gros chunk frontend reste sous 500 kB ; les nouveaux écrans sont chargés en lazy chunks.
 
-Le package partagé, l’API et le frontend passent le typecheck. Le lint API/frontend, le build Vite et `git diff --check` passent. Les tests ciblés signalement/RBAC/intégration passent avec **23/23 réussis**. Le build frontend produit un chunk applicatif maximal inférieur à 500 kB.
+`prisma validate` passe lorsque `DATABASE_URL` est fourni. Le seed `seed:recette` a été exécuté deux fois sur Neon avec succès. La recette HTTP authentifiée avec un vrai compte navigateur staff et le contrôle visuel des trois écrans restent à effectuer.
 
 ## 4. Fusion
-
-PR #68 : https://github.com/YonniVerse/CoFound.mg/pull/68 — fusionnée.
-
-Commit fonctionnel : `e73ae62 feat(moderation): finaliser la chaine des signalements`.
-
-Commit de stabilisation frontend : `0ee1f47 fix(moderation): stabiliser les decisions staff`.
-
-La branche distante de fonctionnalité a été supprimée après fusion. `dev` a été mis à jour automatiquement et reste propre après la synchronisation.
+Aucun commit ni aucune PR n’a été créé pour les modifications de cette session, conformément au workflow de handoff. Les changements sont actuellement locaux sur `dev`. Les fusions antérieures restent S-01 à S-04 via PR #68 et les chaînes précédentes documentées dans le changelog.
 
 ## 5. Points restant à vérifier
+Le contrôleur frontend et la console doivent être vérifiés dans le navigateur avec un compte staff réellement muni du `staffRole` attendu. Vérifier que SUPER_ADMIN accède à l’audit et aux référentiels, que OPS_ADMIN accède à la santé produit et qu’un MODERATOR est refusé sur ces deux écrans.
 
-La recette authentifiée avec un utilisateur staff réellement porteur d’un `StaffRole` dans Neon reste à exécuter. Il faut également vérifier le transport email réel et les retries pg-boss lors d’une résolution.
+Ajouter si nécessaire des tests HTTP dédiés aux nouveaux endpoints staff et un test de service pour les agrégats PostgreSQL sur une base de test. Contrôler également que la route d’export utilise le préfixe API attendu dans l’environnement de staging.
 
-Les nouvelles routes doivent encore recevoir des tests dédiés de permission en environnement HTTP complet, ainsi qu’un test d’idempotence d’une décision répétée. La résolution est actuellement protégée par le guard et la mutation empêche le traitement d’un signalement déjà résolu, mais cette garantie doit être conservée par les tests de régression.
-
-Les écrans complets S-05 (`/staff/audit`, `/staff/reference-data`, `/staff/health`) ne sont pas encore construits. Les écrans S-07 de compte gelé, sortant et alumni, le seed `seed:demo`, les E2E Playwright, la passe accessibilité/i18n et la documentation d’exploitation restent à réaliser.
+Les tickets suivants de la Vague 5 restent à traiter : S-06 export des données personnelles, S-07 écrans de compte gelé/sortant/alumni, S-08 `seed:demo` complet et S-09 E2E Playwright. S-05 ne doit pas être déclaré fusionné avant commit, revue et PR.
 
 ## 6. Prochaine action
-
-Effectuer la recette réelle de la chaîne S-01 à S-04 sur Neon, puis commencer S-05 — console staff d’audit, référentiels et santé produit. Ne pas modifier les backlogs officiels sans demande explicite.
+Sur la branche `dev`, ajouter les tests HTTP de permission pour `/staff/audit`, `/staff/reference-data/:kind` et `/staff/health`, puis exécuter `pnpm --filter api test` et préparer le commit conventionnel S-05 sans fusionner tant que la revue n’est pas faite.

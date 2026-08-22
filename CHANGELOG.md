@@ -10,6 +10,36 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — S-05 : console staff, référentiels et santé produit
+
+### Décidé
+
+- Les référentiels sont désactivés et jamais supprimés, car les profils et projets existants doivent conserver des références valides.
+- Les indicateurs de santé appliquent `MIN_AGGREGATION_THRESHOLD` et n’exposent aucune donnée nominative, afin de préserver le pseudonymat strict.
+- Les écrans staff sont chargés en lazy chunks, afin de maintenir le budget frontend sous 500 kB par chunk.
+
+### Ajouté
+
+- API staff d’audit avec export CSV authentifié et export lui-même journalisé.
+- CRUD contrôlé des référentiels `Skill`, `Field`, `Sector` et `Region`, avec usages affichés et mutations transactionnelles.
+- API `/staff/health` avec agrégats d’activation, complétion, projets, mise en relation, candidatures, modération et rebonds.
+- Interfaces `/staff/audit`, `/staff/reference-data` et `/staff/health`.
+- Permissions RBAC `reference-data:manage` pour SUPER_ADMIN et `product-health:read` pour OPS_ADMIN/SUPER_ADMIN.
+- Seed `seed:recette` idempotent, préfixé `recette-`, couvrant activation, profil, candidature, modération et import.
+- Tests unitaires S-05 pour pagination, filtres et sanitisation du journal.
+
+### Validation
+
+- Tests API complets : **140/140 réussis**.
+- Typecheck shared/API/frontend, lint API/frontend, build Vite et `git diff --check` réussis.
+- Chunks frontend applicatifs sous 500 kB.
+- `prisma validate` et deux exécutions successives du seed sur Neon réussies.
+
+### En cours
+
+- Tests HTTP de permission des trois nouvelles routes et recette visuelle authentifiée avec les trois niveaux staff.
+- Commit, Pull Request et revue de S-05 non encore réalisés.
+
 ## 2026-08-22 — CI staging et initialisation M-14
 
 ### Ajouté

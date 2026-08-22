@@ -37,7 +37,9 @@ export class PermissionGuard implements CanActivate {
 
     const granted = PLATFORM_ROLE_PERMISSIONS[request.user.platformRole] ?? []
     const staffCanAct = request.user.platformRole === 'STAFF' && ['MODERATOR', 'OPS_ADMIN', 'SUPER_ADMIN'].includes(request.user.staffRole ?? '')
-    const hasPermissions = requiredPermissions.every((permission) => permission === 'moderation:act' ? staffCanAct : granted.includes(permission))
+    const canReadAudit = request.user.platformRole === 'STAFF' && request.user.staffRole === 'SUPER_ADMIN'
+    const canReadProductHealth = request.user.platformRole === 'STAFF' && ['OPS_ADMIN', 'SUPER_ADMIN'].includes(request.user.staffRole ?? '')
+    const hasPermissions = requiredPermissions.every((permission) => permission === 'moderation:act' ? staffCanAct : permission === 'audit:read' || permission === 'reference-data:manage' ? canReadAudit : permission === 'product-health:read' ? canReadProductHealth : granted.includes(permission))
     if (!hasPermissions) {
       throw new ForbiddenException({
         code: 'FORBIDDEN',
