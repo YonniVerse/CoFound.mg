@@ -50,9 +50,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-12 bg-background font-sans">
+    <div className="grid h-screen grid-cols-1 overflow-hidden bg-background font-sans lg:grid-cols-12">
       {/* LEFT COLUMN: Form Container */}
-      <div className="lg:col-span-6 xl:col-span-5 flex flex-col justify-between p-6 sm:p-10 lg:p-14 relative z-10">
+      <div className="relative z-10 flex min-h-0 flex-col justify-between overflow-hidden p-6 sm:p-10 lg:col-span-6 lg:p-14 xl:col-span-5">
         {/* Top Header Navigation */}
         <header className="flex items-center justify-between">
           <Link
@@ -66,7 +66,7 @@ export default function LoginPage() {
         </header>
 
         {/* Main Form Center */}
-        <main className="my-auto py-8 max-w-md w-full mx-auto space-y-6">
+        <main className="my-auto w-full max-w-md space-y-6 py-8 mx-auto">
           {/* Brand Identity & Heading */}
           <div className="space-y-3">
             <Link to="/" aria-label="CoFound.mg" className="inline-block">
@@ -198,71 +198,56 @@ export default function LoginPage() {
         <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full border border-white/30" />
         <div aria-hidden="true" className="pointer-events-none absolute -bottom-28 -left-24 h-96 w-96 rounded-full border border-white/20" />
 
-        <div className="relative z-10 min-h-[680px] w-full max-w-2xl px-8 py-10 text-foreground lg:px-10">
+        <div className="relative z-10 flex h-full min-h-0 w-full max-w-2xl flex-col px-6 py-8 text-foreground lg:px-10 lg:py-10">
           <div className="flex items-center justify-end text-white">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/25 bg-white/15 backdrop-blur-sm">
               <Network className="h-4 w-4 text-white" aria-hidden="true" />
             </div>
           </div>
 
-          <div className="relative mt-8 min-h-[620px]">
-            <div aria-hidden="true" className="absolute left-8 top-8 h-44 w-44 rounded-full bg-white/20 blur-3xl" />
-
-            {/* Grande card principale : l’espace où une équipe prend forme */}
-            <div className="relative z-20 mx-auto w-[calc(100%-4rem)] max-w-[32rem] rounded-2xl border border-white/70 bg-background p-5 shadow-2xl sm:p-6">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex min-w-0 items-center gap-3">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-lg font-black text-primary-foreground shadow-sm">
+          <div className="mt-6 grid min-h-0 flex-1 grid-cols-2 grid-rows-3 gap-4 pb-2">
+            {/* Projet principal */}
+            <div className="flex h-full min-h-0 w-full flex-col rounded-xl border border-white/70 bg-background p-4 shadow-xl sm:p-5">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary text-base font-black text-primary-foreground shadow-sm">
                     C
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-                      {t('auth.login.hero.cardProjectLabel')}
-                    </p>
-                    <h2 className="mt-1 font-heading text-xl font-black leading-tight text-foreground sm:text-2xl">
-                      {t('auth.login.hero.cardProjectTitle')}
-                    </h2>
-                    <p className="mt-1 truncate text-xs font-medium text-muted-foreground sm:text-sm">
-                      {t('auth.login.hero.cardProjectMeta')}
-                    </p>
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-primary">{t('auth.login.hero.cardProjectLabel')}</p>
+                    <h2 className="mt-1 font-heading text-base font-black leading-tight text-foreground sm:text-lg">{t('auth.login.hero.cardProjectTitle')}</h2>
+                    <p className="mt-1 truncate text-[10px] font-medium text-muted-foreground sm:text-xs">{t('auth.login.hero.cardProjectMeta')}</p>
                   </div>
                 </div>
-                <span className="shrink-0 rounded-md bg-primary/10 px-2.5 py-1 text-[10px] font-semibold text-primary sm:text-xs">
-                  {t('auth.login.hero.cardProjectBadge')}
-                </span>
+                <span className="shrink-0 rounded-md bg-primary/10 px-2 py-1 text-[9px] font-semibold text-primary">{t('auth.login.hero.cardProjectBadge')}</span>
               </div>
-
-              <p className="mt-7 max-w-lg text-sm font-medium leading-relaxed text-muted-foreground sm:text-base">
-                {t('auth.login.hero.body')}
-              </p>
-
-              <div className="mt-6 flex flex-wrap gap-2">
+              <p className="mt-3 line-clamp-2 text-xs font-medium leading-relaxed text-muted-foreground">{t('auth.login.hero.body')}</p>
+              <div className="mt-3 flex flex-wrap gap-1.5">
                 {["auth.login.hero.cardProjectSkillOne", "auth.login.hero.cardProjectSkillTwo", "auth.login.hero.cardProjectSkillThree"].map((key) => (
-                  <span key={key} className="rounded-md bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
+                  <span key={key} className="rounded-md bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
                     {t(key as 'auth.login.hero.cardProjectSkillOne' | 'auth.login.hero.cardProjectSkillTwo' | 'auth.login.hero.cardProjectSkillThree')}
                   </span>
                 ))}
               </div>
-
-              <div className="mt-8 grid grid-cols-2 gap-3 border-t border-border/60 pt-5">
-                <div className="rounded-lg border border-border/70 bg-muted/40 p-3">
-                  <p className="text-2xl font-black text-primary">01</p>
-                  <p className="mt-1 text-xs font-medium text-muted-foreground">{t('auth.login.hero.statProjects')}</p>
+              <div className="mt-auto grid grid-cols-2 gap-2 border-t border-border/60 pt-3">
+                <div className="rounded-lg border border-border/70 bg-muted/40 p-2">
+                  <p className="text-lg font-black text-primary">01</p>
+                  <p className="mt-0.5 text-[10px] font-medium leading-tight text-muted-foreground">{t('auth.login.hero.statProjects')}</p>
                 </div>
-                <div className="rounded-lg border border-border/70 bg-muted/40 p-3">
-                  <p className="text-2xl font-black text-secondary">02</p>
-                  <p className="mt-1 text-xs font-medium text-muted-foreground">{t('auth.login.hero.statTalents')}</p>
+                <div className="rounded-lg border border-border/70 bg-muted/40 p-2">
+                  <p className="text-lg font-black text-secondary">02</p>
+                  <p className="mt-0.5 text-[10px] font-medium leading-tight text-muted-foreground">{t('auth.login.hero.statTalents')}</p>
                 </div>
               </div>
             </div>
 
-            {/* Cards flottantes : des repères vivants autour de l’écosystème */}
-            <div className="animate-cof-float-slow absolute -left-1 top-4 z-30 hidden w-44 -rotate-6 rounded-xl border border-border/80 bg-background p-4 shadow-xl sm:block">
+            {/* Exploration */}
+            <div className="flex h-full min-h-0 w-full flex-col rounded-xl border border-border/80 bg-background p-4 shadow-lg sm:p-5">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{t('auth.login.hero.cardExploreLabel')}</span>
                 <ArrowUpRight className="h-4 w-4 text-primary" aria-hidden="true" />
               </div>
-              <p className="mt-5 font-heading text-base font-black leading-tight text-foreground">{t('auth.login.hero.cardExploreTitle')}</p>
+              <p className="mt-auto font-heading text-base font-black leading-tight text-foreground sm:text-lg">{t('auth.login.hero.cardExploreTitle')}</p>
               <p className="mt-2 text-xs font-medium leading-snug text-muted-foreground">{t('auth.login.hero.cardExploreMeta')}</p>
               <div className="mt-4 flex gap-1">
                 <span className="h-1.5 flex-1 rounded-full bg-primary" />
@@ -271,13 +256,14 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="animate-cof-float absolute -right-1 top-20 z-30 hidden w-48 rotate-3 rounded-xl border border-border/80 bg-background p-4 shadow-xl sm:block">
+            {/* Complémentarité */}
+            <div className="flex h-full min-h-0 w-full flex-col rounded-xl border border-border/80 bg-background p-4 shadow-lg sm:p-5">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{t('auth.login.hero.cardMatchLabel')}</span>
                 <ArrowUpRight className="h-4 w-4 text-primary" aria-hidden="true" />
               </div>
-              <p className="mt-5 font-heading text-base font-black leading-tight text-foreground">{t('auth.login.hero.cardMatchTitle')}</p>
-              <p className="mt-2 text-xs font-medium text-muted-foreground">{t('auth.login.hero.cardMatchMeta')}</p>
+              <p className="mt-auto font-heading text-base font-black leading-tight text-foreground sm:text-lg">{t('auth.login.hero.cardMatchTitle')}</p>
+              <p className="mt-2 text-xs font-medium leading-snug text-muted-foreground">{t('auth.login.hero.cardMatchMeta')}</p>
               <div className="mt-4 flex gap-1">
                 <span className="h-1.5 flex-1 rounded-full bg-primary" />
                 <span className="h-1.5 flex-1 rounded-full bg-primary/60" />
@@ -285,9 +271,10 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="animate-cof-float-slow absolute -right-2 top-72 z-30 hidden w-44 rotate-[-4deg] rounded-xl border border-white/30 bg-primary p-4 text-primary-foreground shadow-xl sm:block">
+            {/* Communauté */}
+            <div className="flex h-full min-h-0 w-full flex-col rounded-xl border border-white/30 bg-primary p-4 text-primary-foreground shadow-lg sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-foreground/75">{t('auth.login.hero.cardCommunityLabel')}</p>
-              <p className="mt-5 font-heading text-xl font-black leading-none">{t('auth.login.hero.cardCommunityTitle')}</p>
+              <p className="mt-auto font-heading text-xl font-black leading-none">{t('auth.login.hero.cardCommunityTitle')}</p>
               <p className="mt-2 text-xs font-medium leading-snug text-primary-foreground/75">{t('auth.login.hero.cardCommunityMeta')}</p>
               <div className="mt-4 flex -space-x-1">
                 <span className="h-6 w-6 rounded-full border-2 border-primary bg-secondary" />
@@ -296,23 +283,24 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="animate-cof-float absolute -bottom-1 left-1 z-30 w-48 -rotate-3 rounded-xl border border-white/30 bg-secondary p-4 text-secondary-foreground shadow-xl">
+            {/* Impact collectif */}
+            <div className="flex h-full min-h-0 w-full flex-col rounded-xl border border-white/30 bg-secondary p-4 text-secondary-foreground shadow-lg sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-wider opacity-75">{t('auth.login.hero.cardImpactLabel')}</p>
-              <p className="mt-5 font-heading text-2xl font-black leading-none">{t('auth.login.hero.cardImpactTitle')}</p>
+              <p className="mt-auto font-heading text-2xl font-black leading-none">{t('auth.login.hero.cardImpactTitle')}</p>
               <p className="mt-2 text-xs font-medium opacity-80">{t('auth.login.hero.cardImpactMeta')}</p>
               <div className="mt-4 h-1.5 w-full rounded-full bg-secondary-foreground/20"><div className="h-full w-3/4 rounded-full bg-secondary-foreground" /></div>
             </div>
 
-            <div className="animate-cof-float-slow absolute -bottom-5 right-3 z-30 w-48 rotate-2 rounded-xl border border-border/80 bg-background p-4 shadow-xl">
+            {/* Cadre de confiance */}
+            <div className="flex h-full min-h-0 w-full flex-col rounded-xl border border-border/80 bg-background p-4 shadow-lg sm:p-5">
               <div className="flex items-center gap-2 text-primary">
                 <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                 <span className="text-[10px] font-semibold uppercase tracking-wider">{t('auth.login.hero.cardTrustLabel')}</span>
               </div>
-              <p className="mt-5 font-heading text-base font-black leading-tight text-foreground">{t('auth.login.hero.cardTrustTitle')}</p>
-              <p className="mt-2 text-xs font-medium text-muted-foreground">{t('auth.login.hero.cardTrustMeta')}</p>
+              <p className="mt-auto font-heading text-base font-black leading-tight text-foreground sm:text-lg">{t('auth.login.hero.cardTrustTitle')}</p>
+              <p className="mt-2 text-xs font-medium leading-snug text-muted-foreground">{t('auth.login.hero.cardTrustMeta')}</p>
             </div>
           </div>
-
         </div>
       </div>
     </div>
