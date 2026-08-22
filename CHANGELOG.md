@@ -18,7 +18,7 @@ Retiré · En cours · Bloqué**.
 - Réduction de la grande card principale pour libérer de l’espace visuel.
 - Ajout et repositionnement de cinq cards thématiques : Explorer, Complémentarité, Communauté, Impact collectif et Cadre de confiance.
 - Ajout de deux rythmes de flottement CSS décalés, avec conservation des rotations décoratives et respect de `prefers-reduced-motion`.
-- Commits publiés séparément sur `dev` : `1bd44eb`, `51ab703` et `58da98d`.
+- Commits publiés séparément sur `dev` : `1bd44eb`, `51ab703`, `58da98d` et `b26846a`.
 
 ### Validé
 

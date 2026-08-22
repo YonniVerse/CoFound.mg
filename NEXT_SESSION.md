@@ -22,7 +22,7 @@ Les cards flottent avec deux rythmes d’animation CSS décalés. L’animation 
 - `apps/web/src/i18n.tsx` : libellés français et malgaches des cards Explorer et Communauté.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-Commits publiés séparément : `1bd44eb` pour les animations CSS, `51ab703` pour les textes des nouvelles cards et `58da98d` pour la composition visuelle finale.
+Commits publiés séparément : `1bd44eb` pour les animations CSS, `51ab703` pour les textes des nouvelles cards, `58da98d` pour la composition visuelle finale et `b26846a` pour préserver les rotations pendant le flottement.
 
 ## 4. Validations et problèmes connus
 
