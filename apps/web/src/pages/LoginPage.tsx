@@ -197,17 +197,8 @@ export default function LoginPage() {
           preserveAspectRatio="none"
           fill="none"
         >
-          <path d="M0 0H34C52 78 8 156 34 244C54 330 10 418 34 510C56 596 8 684 34 776C48 830 42 866 24 900H0Z" fill="currentColor" />
-          <path d="M34 0C52 78 8 156 34 244C54 330 10 418 34 510C56 596 8 684 34 776C48 830 42 866 24 900" stroke="var(--border)" strokeWidth="1.5" />
-        </svg>
-        <svg
-          aria-hidden="true"
-          className="pointer-events-none absolute left-0 top-1/2 z-30 h-20 w-12 -translate-y-1/2 text-background"
-          viewBox="0 0 64 112"
-          preserveAspectRatio="none"
-          fill="none"
-        >
-          <path d="M0 0L64 56L0 112Z" fill="currentColor" stroke="var(--border)" strokeWidth="1.5" />
+          <path d="M0 0H18L50 450L18 900H0Z" fill="currentColor" />
+          <path d="M18 0L50 450L18 900" stroke="var(--border)" strokeWidth="1.5" />
         </svg>
         <svg
           aria-hidden="true"
