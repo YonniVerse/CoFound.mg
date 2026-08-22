@@ -223,19 +223,18 @@ export default function LoginPage() {
             </div>
 
             {/* Communauté */}
-            <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-primary/45 bg-primary/10 p-4 text-foreground shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-primary">{t('auth.login.hero.cardCommunityLabel')}</p>
-              <p className="mt-auto line-clamp-2 break-words font-heading text-lg font-black leading-tight text-foreground sm:text-xl">{t('auth.login.hero.cardCommunityTitle')}</p>
-              <p className="mt-2 line-clamp-2 break-words text-xs font-medium leading-snug text-muted-foreground">{t('auth.login.hero.cardCommunityMeta')}</p>
-              <div className="mt-3 flex -space-x-1"><span className="h-6 w-6 rounded-full border-2 border-card bg-secondary" /><span className="h-6 w-6 rounded-full border-2 border-card bg-impact" /><span className="h-6 w-6 rounded-full border-2 border-card bg-background" /></div>
+            <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-primary/80 bg-primary p-4 text-primary-foreground shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-foreground/80">{t('auth.login.hero.cardCommunityLabel')}</p>
+              <p className="mt-auto line-clamp-2 break-words font-heading text-lg font-black leading-tight text-primary-foreground sm:text-xl">{t('auth.login.hero.cardCommunityTitle')}</p>
+              <p className="mt-2 line-clamp-2 break-words text-xs font-medium leading-snug text-primary-foreground/80">{t('auth.login.hero.cardCommunityMeta')}</p>
+              <div className="mt-3 flex -space-x-1"><span className="h-6 w-6 rounded-full border-2 border-primary bg-secondary" /><span className="h-6 w-6 rounded-full border-2 border-primary bg-impact" /><span className="h-6 w-6 rounded-full border-2 border-primary bg-primary-foreground" /></div>
             </div>
 
             {/* Impact collectif */}
-            <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-secondary/45 bg-secondary-light/95 p-4 text-foreground shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-secondary">{t('auth.login.hero.cardImpactLabel')}</p>
-              <p className="mt-auto line-clamp-2 break-words font-heading text-xl font-black leading-tight text-foreground sm:text-2xl">{t('auth.login.hero.cardImpactTitle')}</p>
-              <p className="mt-2 line-clamp-2 break-words text-xs font-medium text-muted-foreground">{t('auth.login.hero.cardImpactMeta')}</p>
-              <div className="mt-3 h-1.5 w-full rounded-full bg-secondary/20"><div className="h-full w-3/4 rounded-full bg-secondary" /></div>
+            <div className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden rounded-2xl border border-destructive/80 bg-destructive p-4 text-destructive-foreground shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-destructive-foreground/85">{t('auth.login.hero.cardImpactLabel')}</p>
+              <p className="mt-auto line-clamp-2 break-words font-heading text-xl font-black leading-tight text-destructive-foreground sm:text-2xl">{t('auth.login.hero.cardImpactTitle')}</p>
+              <div className="mt-3 h-1.5 w-full rounded-full bg-destructive-foreground/25"><div className="h-full w-3/4 rounded-full bg-destructive-foreground" /></div>
             </div>
 
             {/* Cadre de confiance */}
