@@ -11,6 +11,11 @@ export class OpportunityService {
     return this.prisma.opportunity.findMany({ where: { status: 'PUBLISHED' }, orderBy: [{ deadline: 'asc' }, { createdAt: 'desc' }], select: this.opportunitySelect() })
   }
 
+  async listForOrganization(actorId: string, organizationId: string) {
+    await this.assertCapability(actorId, organizationId, 'PUBLISH_OPPORTUNITY')
+    return this.prisma.opportunity.findMany({ where: { organizationId }, orderBy: { createdAt: 'desc' }, select: this.opportunitySelect() })
+  }
+
   async create(actorId: string, organizationId: string, input: unknown) {
     await this.assertCapability(actorId, organizationId, 'PUBLISH_OPPORTUNITY')
     const parsed = opportunityCreateSchema.safeParse(input)

@@ -26,6 +26,11 @@ export class PublicOpportunityController {
 export class OrganizationOpportunityController {
   constructor(private readonly service: OpportunityService) {}
 
+  @Get()
+  listForOrganization(@Param('organizationId') organizationId: string, @Req() request: AuthenticatedRequest) {
+    return this.service.listForOrganization(request.user!.userId, organizationId)
+  }
+
   @Post()
   create(@Param('organizationId') organizationId: string, @Body() body: unknown, @Req() request: AuthenticatedRequest) {
     return this.service.create(request.user!.userId, organizationId, body)

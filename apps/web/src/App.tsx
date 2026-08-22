@@ -3,6 +3,10 @@ import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import LandingPage from "@/pages/LandingPage";
 import OrganizationRequestPage from "@/pages/OrganizationRequestPage";
 import StaffOrganizationsPage from "@/pages/StaffOrganizationsPage";
+import OrganizationProfilePage from "@/pages/OrganizationProfilePage";
+import PartnerProjectsPage from "@/pages/PartnerProjectsPage";
+import PartnerTalentsPage from "@/pages/PartnerTalentsPage";
+import PartnerOpportunitiesPage from "@/pages/PartnerOpportunitiesPage";
 import ActivationPage from "@/pages/ActivationPage";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { AuthProvider } from "@/hooks/useAuth";
@@ -51,6 +55,10 @@ function App() {
     <Route path="/activation/:token" element={<ActivationPage />} />
     <Route path="/organization-request" element={<OrganizationRequestPage />} />
     <Route path="/staff/organizations" element={<StaffOrganizationsPage />} />
+    <Route path="/organizations/:organizationId/profile" element={<OrganizationProfilePage />} />
+    <Route path="/organizations/:organizationId/projects" element={<PartnerProjectsPage />} />
+    <Route path="/organizations/:organizationId/talents" element={<PartnerTalentsPage />} />
+    <Route path="/organizations/:organizationId/opportunities" element={<PartnerOpportunitiesPage />} />
     <Route path="/onboarding" element={<OnboardingPage />} />
     <Route path="/feed" element={<FeedPage />} />
     <Route path="/search" element={<SearchPage />} />
