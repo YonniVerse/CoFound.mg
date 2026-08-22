@@ -1,39 +1,39 @@
 # Reprise de session
 
 **Dernière mise à jour** : 2026-08-22
-**Phase** : panneau droit de connexion — grille simplifiée
+**Phase** : panneau droit de connexion — cards colorées
 **Vague / ticket** : E-11 — connexion et accès
 **Branche actuelle** : `dev`
 
 ## 1. État actuel
 
-Le panneau droit de `LoginPage` utilise maintenant une grille de deux colonnes, sans lignes pointillées, sans SVG de connexion et sans la card Projet principal. Il reste cinq cards thématiques, dont la première card restante, Exploration, occupe les deux colonnes avec `col-span-2`.
+La card Communauté affiche désormais un fond bleu opaque `bg-primary`, avec texte en `text-primary-foreground` et bordure `border-primary/80`. La card Impact collectif affiche désormais un fond rouge sémantique `bg-destructive`, avec texte `text-destructive-foreground` et bordure `border-destructive/80`.
 
 ## 2. Tâches terminées
 
-La card Projet principal a été retirée de la composition. Toutes les liaisons SVG, tirets, cercles et chemins décoratifs entre les cards ont été supprimés.
+Le contraste de la card « Avancer ensemble » a été corrigé : le fond n’est plus transparent et le titre, le label, la méta-information et les avatars restent lisibles sur le bleu.
 
-Les cards restantes sont structurées ainsi : Exploration sur deux colonnes en première ligne, puis Complémentarité et Communauté, puis Impact collectif et Cadre de confiance. Le layout utilise `grid-cols-2` et `grid-rows-[1.2fr_1fr_1fr]`, avec des cards `w-full`, `h-full`, `min-h-0` et `overflow-hidden`.
+Le texte `Chaque parcours compte` a été supprimé de la card « 50/50 en mouvement ». La barre de progression a été adaptée au nouveau fond rouge en utilisant `destructive-foreground` avec une opacité maîtrisée.
 
-Les fonds différenciés, bordures d’accent, rayons et ombres du design system sont conservés. Les contenus restent protégés par `line-clamp`, `break-words` et `overflow-hidden`. La page reste verrouillée en `h-screen overflow-hidden`.
+Les autres éléments du panneau restent inchangés : cinq cards en grille de deux colonnes, première card sur `col-span-2`, aucune liaison SVG ni tiret entre les cards, et page verrouillée en `h-screen overflow-hidden`.
 
 ## 3. Fichiers importants modifiés
 
-- `apps/web/src/pages/LoginPage.tsx` : suppression de la card Projet principal et des connecteurs, grille de deux colonnes.
+- `apps/web/src/pages/LoginPage.tsx` : fonds, bordures et contrastes des cards Communauté et Impact ; retrait de la méta-information Impact.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-Le commit de code publié est `32f770d`. Le commit précédent de stabilisation était `7ee0a6d`.
+Le commit de code publié est `957a308`. Le commit précédent de structure est `32f770d`.
 
 ## 4. Validations et problèmes connus
 
-Le typecheck web, le lint web, la compilation de `@cofound/shared` et le build web ont réussi après la modification. `dev` local et `origin/dev` sont synchronisés et propres.
+Le typecheck web, le lint web, la compilation de `@cofound/shared` et le build web ont réussi. `dev` local et `origin/dev` sont synchronisés et propres.
 
-La composition est affichée uniquement sur desktop à partir de `lg`. À faible hauteur d’écran, le layout `h-screen overflow-hidden` peut rendre la grille dense ; vérifier particulièrement 1280×720.
+La card Communauté utilise le token primaire opaque et la card Impact le token sémantique destructif. Si la charte produit demande un rouge spécifique différent du token `destructive`, il faudra remplacer ce token par une couleur de marque validée.
 
 ## 5. Prochaine action
 
-Ouvrir `/login` en viewport desktop. Vérifier que la première card Exploration occupe bien les deux colonnes, que les quatre cards inférieures ont des hauteurs équilibrées, que tous les éléments restent visibles et qu’il n’y a plus de tirets ni de card Projet principal.
+Ouvrir `/login` sur un viewport desktop et vérifier le contraste du bleu et du rouge en français et en malgache. Vérifier que le texte supprimé n’apparaît plus et que les cards restent entièrement visibles.
 
 ## 6. Décisions et contexte de reprise
 
-La grille régulière est privilégiée à la composition en cascade pour la lisibilité et la stabilité des contenus. Le style conserve les surfaces et accents inspirés du landing mais aucun connecteur graphique n’est maintenu dans cette version. Aucun changement d’architecture, de données, de RBAC ou de stack n’a été introduit.
+Les couleurs ont été réalisées avec les tokens du design system plutôt qu’avec des hexadécimaux arbitraires. Aucun changement d’architecture, de données, de RBAC ou de stack n’a été introduit.

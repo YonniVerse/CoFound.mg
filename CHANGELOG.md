@@ -10,6 +10,20 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Cards Communauté et Impact contrastées
+
+### Modifié
+
+- Card « Avancer ensemble » passée sur un fond bleu opaque `bg-primary` avec texte `primary-foreground` et bordure primaire cohérente.
+- Card « 50/50 en mouvement » passée sur un fond rouge sémantique `bg-destructive` avec texte `destructive-foreground` et bordure destructive cohérente.
+- Suppression de la phrase `Chaque parcours compte`.
+- Adaptation de la barre de progression de la card Impact au fond rouge.
+- Modification publiée sur `dev` dans le commit `957a308`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
 ## 2026-08-22 — Grille simplifiée du panneau de connexion
 
 ### Modifié
