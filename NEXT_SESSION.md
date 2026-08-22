@@ -4,7 +4,7 @@
 
 ## 1. État actuel
 
-M-05 est fusionné dans `dev` via la PR #60, M-06 via la PR #61, M-07 via la PR #62 et M-08 via la PR #63. La PR #64 prépare la correction CI et le staging. La branche active est `feat/M-14-reporting`, créée depuis `dev` après la fusion de M-08.
+M-05 est fusionné dans `dev` via la PR #60, M-06 via la PR #61, M-07 via la PR #62, M-08 via la PR #63, la correction CI/staging via la PR #64 et M-14 via la PR #65. La branche active est `dev`, synchronisée avec `origin/dev` au commit `c5c2522`.
 
 ## 2. Livrables de cette session
 
@@ -14,7 +14,7 @@ Les fichiers principaux sont `apps/api/src/connection/connection-request.service
 
 ## 3. Validation exécutée
 
-Pour M-08, Prisma validate, lint API, typecheck API, build frontend et les tests API passent. La suite compte **111/111 tests réussis**. La migration `20260822100000_add_dream_match_exclusions` est appliquée sur Neon. Pour M-14, Prisma generate, lint API, typecheck API, lint/build frontend et la suite API passent avec **114/114 tests réussis**, dont le test HTTP du endpoint de signalement. La PR #64 ajoute `prisma generate` au CI et un workflow staging dédié ; son déploiement effectif dépend des secrets GitHub staging.
+Pour M-08, Prisma validate, lint API, typecheck API, build frontend et les tests API passent. La suite compte **111/111 tests réussis**. La migration `20260822100000_add_dream_match_exclusions` est appliquée sur Neon. Pour M-14, Prisma generate, lint API, typecheck API, lint/build frontend et la suite API passent avec **114/114 tests réussis**, dont le test HTTP du endpoint de signalement. La PR #64 ajoute `prisma generate`, la construction de `@cofound/shared` au CI et un workflow staging dédié. Le workflow staging existe mais son exécution dépend encore de la création de l’environnement GitHub et des secrets staging.
 
 ## 4. Décisions techniques
 
@@ -22,8 +22,8 @@ Les routes de messagerie exigent `message:send` et vérifient l’appartenance �
 
 ## 5. Vigilance et travaux restants
 
-M-05 à M-08 sont intégrés dans `dev`. M-14 ajoute les contrats Zod du signalement, `ReportService`, `ReportController`, `ReportModule`, la route POST `/reports` pour les cibles PROFILE, MESSAGE, PROJECT et POST, ainsi qu’une création transactionnelle sans identité civile dans la réponse. Le socle API, les boutons frontend et les tests HTTP M-14 sont implémentés sur `feat/M-14-reporting`. Le composant réutilisable est intégré aux profils/talents, projets, publications et messages du canal projet.
+M-05 à M-08 sont intégrés dans `dev`. M-14 ajoute les contrats Zod du signalement, `ReportService`, `ReportController`, `ReportModule`, la route POST `/reports` pour les cibles PROFILE, MESSAGE, PROJECT et POST, ainsi qu’une création transactionnelle sans identité civile dans la réponse. Le socle API, les boutons frontend et les tests HTTP M-14 sont fusionnés dans `dev`. Le composant réutilisable est intégré aux profils/talents, projets, publications et messages du canal projet. Les tickets M-12, M-13, M-15 et M-16 restent non implémentés.
 
 ## 6. Prochaine action
 
-Faire relire et fusionner la PR #64 après vérification de ses secrets staging. Relire les changements M-14, vérifier les contrôles GitHub, puis ouvrir la PR M-14. Un test E2E navigateur reste à ajouter lorsque le harnais et les identifiants staging seront disponibles. Le workflow staging ne pourra s’exécuter qu’après configuration de `STAGING_*`, `GHCR_READ_TOKEN` et `GHCR_USERNAME` dans l’environnement GitHub `staging`. Après M-14, suivre `S-01 → S-02 → S-03/S-04`. M-12, M-13, M-15 et M-16 restent à traiter par leurs propriétaires.
+Configurer l’environnement GitHub `staging` et ses secrets, puis lancer le workflow après fusion de #64. Ajouter un vrai test E2E authentifié lorsque le harnais et les identifiants staging seront disponibles. Les tickets Vague 2 restants sont M-12, M-13, M-15 et M-16 ; ils doivent être traités par leurs propriétaires avant la clôture de la vague. La chaîne Rino suivante est `S-01 → S-02 → S-03/S-04`.
