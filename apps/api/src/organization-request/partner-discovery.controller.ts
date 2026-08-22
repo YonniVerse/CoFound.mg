@@ -14,6 +14,11 @@ export class PartnerDiscoveryController {
     return this.service.search(request.user!.userId, organizationId, query)
   }
 
+  @Get('talents/search')
+  searchTalents(@Param('organizationId') organizationId: string, @Query() query: unknown, @Req() request: AuthenticatedRequest) {
+    return this.service.searchTalents(request.user!.userId, organizationId, query)
+  }
+
   @Get('project-watches')
   listWatches(@Param('organizationId') organizationId: string, @Req() request: AuthenticatedRequest) {
     return this.service.listWatches(request.user!.userId, organizationId)

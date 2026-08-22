@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
-import { partnerProjectSearchSchema, projectWatchInputSchema } from '@cofound/shared'
+import { partnerProjectSearchSchema, partnerTalentSearchSchema, projectWatchInputSchema } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 
 @Injectable()
@@ -36,6 +36,25 @@ export class PartnerDiscoveryService {
         createdAt: project.createdAt,
       })),
     }
+  }
+
+  async searchTalents(actorId: string, organizationId: string, input: unknown) {
+    await this.assertRecruiter(actorId, organizationId)
+    const parsed = partnerTalentSearchSchema.safeParse(input)
+    if (!parsed.success) throw new BadRequestException({ code: 'VALIDATION_ERROR', issues: parsed.error.issues })
+    const q = parsed.data.q?.trim()
+    const profiles = await this.prisma.talentProfile.findMany({
+      where: {
+        visibleInTalentFeed: true,
+        user: { status: 'ACTIVE' },
+        ...(parsed.data.fieldId ? { fieldId: parsed.data.fieldId } : {}),
+        ...(q ? { OR: [{ pseudonym: { contains: q, mode: 'insensitive' } }, { headline: { contains: q, mode: 'insensitive' } }, { bio: { contains: q, mode: 'insensitive' } }] } : {}),
+      },
+      orderBy: [{ completion: 'desc' }, { updatedAt: 'desc' }],
+      take: parsed.data.limit,
+      select: { pseudonym: true, avatarSeed: true, headline: true, bio: true, fieldId: true, completion: true },
+    })
+    return { items: profiles.map((profile) => ({ ...profile, revealed: false as const })) }
   }
 
   async listWatches(actorId: string, organizationId: string) {

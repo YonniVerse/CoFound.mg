@@ -273,6 +273,25 @@ export const opportunityApplicationSchema = z.object({
 })
 export type OpportunityCreate = z.infer<typeof opportunityCreateSchema>
 export type OpportunityApplicationCreate = z.infer<typeof opportunityApplicationCreateSchema>
+export const organizationProjectContactSchema = z.object({
+  id: idSchema,
+  organizationId: idSchema,
+  projectId: idSchema,
+  message: z.string(),
+  createdAt: z.coerce.date(),
+})
+export const organizationProjectContactInputSchema = z.object({ message: z.string().trim().min(10).max(2_000) })
+export const partnerTalentSearchSchema = z.object({ q: z.string().trim().max(160).optional(), fieldId: idSchema.optional(), limit: z.coerce.number().int().min(1).max(50).default(25) })
+export const partnerTalentSearchResultSchema = z.object({ revealed: z.literal(false), pseudonym: z.string(), avatarSeed: z.string(), headline: z.string().nullable(), bio: z.string().nullable(), fieldId: idSchema.nullable(), completion: z.number().int().min(0).max(100) })
+export const partnerTalentSearchResponseSchema = z.object({ items: z.array(partnerTalentSearchResultSchema) })
+export const financialEngagementCreateSchema = z.object({
+  projectId: idSchema,
+  type: z.enum(['INVESTMENT', 'DONATION', 'GRANT', 'PRIZE']),
+  amount: z.string().trim().regex(/^\d+(\.\d{1,2})?$/),
+  currency: z.string().trim().length(3).toUpperCase(),
+  provider: z.enum(['OFF_PLATFORM', 'MOBILE_MONEY']).default('OFF_PLATFORM'),
+  externalRef: z.string().trim().max(255).optional(),
+})
 
 export const privateTalentProfileSchema = z.object({
   user: z.object({ id: idSchema, email: z.string().email(), locale: localeSchema }),

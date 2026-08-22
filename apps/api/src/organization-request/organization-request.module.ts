@@ -10,10 +10,12 @@ import { PartnerDiscoveryController } from './partner-discovery.controller.js'
 import { PartnerDiscoveryService } from './partner-discovery.service.js'
 import { PublicOpportunityController, OrganizationOpportunityController } from './opportunity.controller.js'
 import { OpportunityService } from './opportunity.service.js'
+import { PartnerContactController } from './partner-contact.controller.js'
+import { PartnerContactService } from './partner-contact.service.js'
 
 @Module({
   imports: [PrismaModule],
-  controllers: [OrganizationRequestController, OrganizationRequestStaffController, OrganizationCapabilityController, OrganizationProfileController, PartnerDiscoveryController, PublicOpportunityController, OrganizationOpportunityController],
-  providers: [OrganizationRequestService, OrganizationRequestStaffService, OrganizationProfileService, PartnerDiscoveryService, OpportunityService],
+  controllers: [OrganizationRequestController, OrganizationRequestStaffController, OrganizationCapabilityController, OrganizationProfileController, PartnerDiscoveryController, PublicOpportunityController, OrganizationOpportunityController, PartnerContactController],
+  providers: [OrganizationRequestService, OrganizationRequestStaffService, OrganizationProfileService, PartnerDiscoveryService, OpportunityService, PartnerContactService],
 })
 export class OrganizationRequestModule {}
