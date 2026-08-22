@@ -72,9 +72,14 @@ Retiré · En cours · Bloqué**.
 - Typecheck, lint et build frontend réussis.
 - Aucun harnais Playwright/Cypress présent ; les tests HTTP d’intégration M-08 sont la validation disponible.
 
+### Modifié
+
+- La PR #63 de M-08 est fusionnée dans `dev`.
+
 ### En cours
 
-- Ouvrir et faire contrôler la PR M-08.
+- Le staging n’est pas déployable depuis le dépôt : seul le workflow `production` existe et le Preview Vercel est bloqué par la vérification du compte auteur.
+- Le CI GitHub doit exécuter `prisma generate` avant le typecheck.
 - Ajouter un vrai parcours E2E authentifié lorsque le harnais et les identifiants de recette seront disponibles.
 
 ---

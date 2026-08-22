@@ -4,7 +4,7 @@
 
 ## 1. État actuel
 
-M-05 est fusionné dans `dev` via la PR #60, M-06 via la PR #61 et M-07 via la PR #62. La branche active est `feat/M-08-not-interested`, créée depuis `dev` après ces fusions.
+M-05 est fusionné dans `dev` via la PR #60, M-06 via la PR #61, M-07 via la PR #62 et M-08 via la PR #63. La branche active est `dev`, synchronisée avec `origin/dev` au commit `4b3fddf`.
 
 ## 2. Livrables de cette session
 
@@ -14,7 +14,7 @@ Les fichiers principaux sont `apps/api/src/connection/connection-request.service
 
 ## 3. Validation exécutée
 
-Pour M-08, Prisma validate, lint API, typecheck API, build frontend et les tests API passent. La suite compte **111/111 tests réussis**, dont les tests unitaires et HTTP du retour « pas intéressé ». La migration `20260822100000_add_dream_match_exclusions` est appliquée sur Neon. Aucun harnais Playwright/Cypress E2E n’est présent dans le dépôt ; les tests HTTP locaux constituent la validation d’intégration disponible.
+Pour M-08, Prisma validate, lint API, typecheck API, build frontend et les tests API passent. La suite compte **111/111 tests réussis**, dont les tests unitaires et HTTP du retour « pas intéressé ». La migration `20260822100000_add_dream_match_exclusions` est appliquée sur Neon. Aucun harnais Playwright/Cypress E2E n’est présent dans le dépôt ; les tests HTTP locaux constituent la validation d’intégration disponible. Après fusion, le CI GitHub échoue sur des types Prisma préexistants car le workflow ne régénère pas le client Prisma avant le typecheck.
 
 ## 4. Décisions techniques
 
@@ -26,4 +26,4 @@ M-05, M-06 et M-07 sont intégrés dans `dev`. M-08 ajoute le modèle `DreamMatc
 
 ## 6. Prochaine action
 
-Ouvrir la PR M-08 après le commit frontend, puis faire contrôler les vérifications GitHub. Ajouter ultérieurement un vrai parcours E2E Playwright/Cypress avec authentification de recette si l’environnement de test est fourni. Après M-08, reprendre M-14 selon le backlog. M-12, M-13, M-15 et M-16 restent à traiter par leurs propriétaires.
+Le déploiement staging n’a pas pu être lancé : le dépôt ne contient qu’un workflow de déploiement `production`, aucun workflow staging, et le déploiement Vercel Preview est bloqué par la vérification du compte auteur du commit. Prochaine action technique : corriger le workflow CI pour exécuter `prisma generate` avant le typecheck et définir une cible staging explicite. Côté backlog Rino, M-14 est le prochain ticket recommandé, suivi de S-01 puis S-02. M-12, M-13, M-15 et M-16 restent à traiter par leurs propriétaires.
