@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { LogIn, Mail, Lock, Eye, EyeOff, ArrowLeft, AlertCircle, ShieldCheck } from 'lucide-react'
+import { LogIn, Mail, Lock, Eye, EyeOff, ArrowLeft, AlertCircle, ShieldCheck, ArrowUpRight, Network } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -111,7 +111,7 @@ export default function LoginPage() {
                   placeholder={t('auth.login.emailPlaceholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-9 h-10 text-xs sm:text-sm rounded-xl border-border bg-card shadow-2xs focus-visible:ring-2 focus-visible:ring-primary"
+                  className="h-11 rounded-lg border-border bg-card pl-9 text-xs shadow-2xs focus-visible:ring-2 focus-visible:ring-primary sm:text-sm"
                   aria-invalid={error ? true : undefined}
                 />
               </div>
@@ -145,7 +145,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                   aria-label={showPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -157,7 +157,7 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-10 rounded-xl text-sm font-semibold shadow-xs hover:shadow-sm transition-all duration-200 gap-2 mt-1"
+              className="mt-1 h-9 w-full gap-1.5 rounded-lg px-3.5 text-xs font-medium shadow-none transition-colors sm:text-sm"
             >
               {isSubmitting ? (
                 <>
@@ -188,21 +188,57 @@ export default function LoginPage() {
         </footer>
       </div>
 
-      {/* RIGHT COLUMN: Image Area (Desktop only) with same Geometric Grid Background as Forgot Password */}
-      <div className="hidden lg:flex lg:col-span-6 xl:col-span-7 relative p-6 sm:p-8 lg:p-10 bg-background items-center justify-center overflow-hidden border-l border-border">
-        {/* Background Geometric Grid Pattern (Same as Forgot Password) */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-50 pointer-events-none" />
+      {/* RIGHT COLUMN: Composition éditoriale, sans image */}
+      <div className="relative hidden min-h-screen overflow-hidden border-l border-border bg-foreground lg:col-span-6 lg:flex lg:items-center lg:justify-center xl:col-span-7">
+        {/* Grille de fond : repère visuel discret, sans dépendance à un asset */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(to_right,rgba(255,255,255,0.12)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:4rem_4rem]"
+        />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full border border-background/10" />
+        <div aria-hidden="true" className="pointer-events-none absolute -bottom-32 -left-20 h-96 w-96 rounded-full border border-primary/30" />
 
-        <div className="w-full h-full rounded-2xl overflow-hidden relative border border-border/80 shadow-sm z-10">
-          <img
-            src="/images/auth-hero.webp"
-            alt="CoFound.mg Innovation & Collaboration"
-            width={1024}
-            height={1024}
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-cover object-center"
-          />
+        <div className="relative z-10 flex min-h-[calc(100vh-5rem)] w-full max-w-2xl flex-col justify-between rounded-2xl border border-background/15 bg-background/[0.06] p-8 text-background shadow-2xl backdrop-blur-sm lg:p-10">
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-background/60">
+              {t('auth.login.hero.eyebrow')}
+            </span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-background/15 bg-background/10">
+              <Network className="h-4 w-4 text-primary" aria-hidden="true" />
+            </div>
+          </div>
+
+          <div className="relative py-10">
+            <div aria-hidden="true" className="absolute -left-8 top-2 h-40 w-40 rounded-full bg-primary/20 blur-3xl" />
+            <div className="relative max-w-xl">
+              <p className="mb-5 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+                {t('auth.login.hero.brand')}
+              </p>
+              <h2 className="max-w-lg font-heading text-4xl font-black leading-[0.98] tracking-[-0.05em] text-background sm:text-5xl lg:text-6xl">
+                {t('auth.login.hero.title')}
+              </h2>
+              <p className="mt-6 max-w-md text-sm font-medium leading-relaxed text-background/70 sm:text-base">
+                {t('auth.login.hero.body')}
+              </p>
+
+              <div className="mt-10 grid max-w-lg grid-cols-1 gap-3 sm:grid-cols-3">
+                {["auth.login.hero.statProjects", "auth.login.hero.statTalents", "auth.login.hero.statImpact"].map((key, index) => (
+                  <div key={key} className="rounded-xl border border-background/15 bg-background/[0.06] p-4">
+                    <div className="mb-5 flex items-center justify-between">
+                      <span className="text-lg font-black text-background/90">0{index + 1}</span>
+                      <ArrowUpRight className="h-4 w-4 text-primary" aria-hidden="true" />
+                    </div>
+                    <p className="text-xs font-medium leading-snug text-background/65">{t(key as 'auth.login.hero.statProjects' | 'auth.login.hero.statTalents' | 'auth.login.hero.statImpact')}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between border-t border-background/15 pt-5 text-xs font-medium text-background/55">
+            <span>{t('auth.login.hero.brand')}</span>
+            <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-primary" /> {t('auth.login.hero.tagline')}</span>
+          </div>
         </div>
       </div>
     </div>
