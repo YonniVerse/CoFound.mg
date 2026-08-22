@@ -10,6 +10,20 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-22 — Correction du panneau sticky du feed
+
+### Modifié
+
+- `apps/web/src/pages/FeedPage.tsx` : ajout de `items-start` au conteneur flex des colonnes et de `self-start` au panneau latéral afin d’empêcher son étirement et de permettre à `sticky top-[90px]` de fonctionner correctement.
+
+### En cours
+
+- Validation visuelle à faire dans un navigateur en viewport desktop sur `/feed`.
+
+### Bloqué
+
+- L’installation complète des dépendances échoue sur la compilation native d’`argon2` faute de compilateur C dans l’environnement ; le typecheck, le lint et le build web ont été validés avec l’installation `--ignore-scripts`.
+
 ## 2026-08-22 — Audit global du projet
 
 - Ajout de `audit-global-2026-08-22.md` couvrant les six vagues et les 92 tickets du backlog.
