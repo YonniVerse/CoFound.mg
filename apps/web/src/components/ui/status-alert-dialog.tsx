@@ -46,7 +46,8 @@ export function StatusAlertDialog({
     }
   }, [open])
 
-  if (!open) return null
+  const numericStatusCode = Number(statusCode)
+  if (!open || !Number.isFinite(numericStatusCode) || numericStatusCode <= 500) return null
 
   function stopBackgroundInteraction(event: MouseEvent<HTMLDivElement>) {
     event.stopPropagation()
