@@ -10,6 +10,22 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-23 — Alerte modale réutilisable pour les états bloquants
+
+### Ajouté
+
+- Création de `StatusAlertDialog`, composant réutilisable basé sur la primitive `Dialog` existante.
+- Ajout d’une grande icône Lucide, d’un titre, d’une description et d’un badge de code statut configurable.
+- Blocage des interactions avec la page derrière l’alerte : aucun bouton de fermeture, Escape et clic extérieur neutralisés.
+- Intégration dans l’état vide de `/projects` avec `SearchX` et le code statut `204`.
+- Composant publié sur `dev` dans le commit `97b7080`, intégration publiée dans `6d8aa0c`.
+
+### Validé
+
+- Typecheck web, lint web et `git diff --check` réussis.
+
+---
+
 ## 2026-08-23 — Harmonisation de la page Notifications
 
 ### Modifié
