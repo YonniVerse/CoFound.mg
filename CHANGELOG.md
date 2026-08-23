@@ -17,11 +17,13 @@ Retiré · En cours · Bloqué**.
 - Création de `StatusAlertDialog`, composant réutilisable basé sur la primitive `Dialog` existante.
 - Ajout d’une grande icône Lucide, d’un titre, d’une description et d’un badge de code statut configurable.
 - Blocage des interactions avec la page derrière l’alerte : aucun bouton de fermeture, Escape et clic extérieur neutralisés.
+- Ajout des boutons configurables `Retour` et `Réessayer`, ainsi que d’un message explicatif du code statut.
 - Correction du rendu avec un overlay React fixe `z-[100]`, un voile semi-opaque, un flou léger et un verrouillage de `document.body` en `overflow: hidden`.
 - Intégration dans l’état vide de `/projects` avec `SearchX` et le code statut `204`.
 - Intégration dans `/notifications` : erreur de chargement avec ton destructif et code `503`, absence de notifications avec code `204`.
+- Ajout du bouton `Réessayer` qui relance l’appel API et du bouton `Retour` qui utilise l’historique du navigateur.
 - Suppression des messages inline concurrents afin d’afficher une seule boîte modale bloquante.
-- Composant publié sur `dev` dans les commits `97b7080`, `8f2f370` et `afa6ab2`, intégrations publiées dans `6d8aa0c` et `9eb7135`.
+- Composant publié sur `dev` dans les commits `97b7080`, `8f2f370`, `afa6ab2` et `8b03dcc`, intégrations publiées dans `6d8aa0c`, `9eb7135` et `4bb9fe0`.
 
 ### Validé
 
