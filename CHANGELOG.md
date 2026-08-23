@@ -10,6 +10,22 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-23 — Simplification de la récupération de compte
+
+### Modifié
+
+- Suppression de la section droite thématique de `ForgotPasswordPage`.
+- Recentrage de la carte de récupération sur une page `h-screen` sans scroll.
+- Ajout d’un fond en grille discret utilisant les tokens `border` et `background`.
+- Conservation des inputs, boutons, logo, sélecteur de langue, retour vers LoginPage et état de succès.
+- Modification publiée sur `dev` dans le commit `1c17ff3`.
+
+### Validé
+
+- Typecheck web, lint web et `git diff --check` réussis.
+
+---
+
 ## 2026-08-23 — Harmonisation de la création de projet
 
 ### Modifié
