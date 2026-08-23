@@ -3,6 +3,7 @@ import { Bell, BellRing, CircleAlert, FileText, MessageCircle, UserRound } from 
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { listNotifications, markNotificationRead } from '@/data/notificationApi'
 import type { NotificationView } from '@cofound/shared'
+import { StatusAlertDialog } from '@/components/ui/status-alert-dialog'
 
 function formatNotificationType(type: string) {
   return type
@@ -104,25 +105,15 @@ export default function NotificationsPage() {
               </button>
             </div>
 
-            {error && (
-              <div role="alert" className="flex items-start gap-2.5 rounded-xl border border-destructive/20 bg-destructive/10 p-3.5 text-sm text-destructive">
-                <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-                <span className="font-medium leading-snug">{error}</span>
-              </div>
-            )}
-
             <section className="space-y-3" aria-live="polite" aria-label="Liste des notifications">
-              {visibleItems.length === 0 ? (
-                <div className="p-12 text-center text-muted-foreground">
-                  <Bell className="mx-auto mb-3 h-8 w-8 text-primary" aria-hidden="true" />
-                  <p className="font-semibold text-foreground">
-                    {showUnreadOnly ? 'Aucune notification non lue.' : 'Aucune notification.'}
-                  </p>
-                  <p className="mt-1 text-sm">
-                    {showUnreadOnly ? 'Vous êtes à jour pour le moment.' : 'Les nouvelles activités apparaîtront ici.'}
-                  </p>
-                </div>
-              ) : (
+              {!error && visibleItems.length === 0 ? (
+                <StatusAlertDialog
+                  icon={Bell}
+                  title={showUnreadOnly ? 'Aucune notification non lue.' : 'Aucune notification.'}
+                  description={showUnreadOnly ? 'Vous êtes à jour pour le moment.' : 'Les nouvelles activités apparaîtront ici.'}
+                  statusCode="204"
+                />
+              ) : !error ? (
                 visibleItems.map((item) => {
                   const Icon = getNotificationIcon(item.type)
                   const isUnread = !item.readAt
@@ -160,8 +151,18 @@ export default function NotificationsPage() {
                     </button>
                   )
                 })
-              )}
+              ) : null}
             </section>
+
+            {error && (
+              <StatusAlertDialog
+                icon={CircleAlert}
+                title="Impossible de charger les notifications."
+                description="Le service de notifications est temporairement indisponible. Réessayez plus tard."
+                statusCode="503"
+                tone="destructive"
+              />
+            )}
           </main>
 
           <aside className="sticky top-[90px] hidden h-fit shrink-0 self-start lg:flex lg:w-[320px] lg:flex-col lg:gap-4">
