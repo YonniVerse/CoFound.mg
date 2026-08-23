@@ -19,7 +19,9 @@ Retiré · En cours · Bloqué**.
 - Blocage des interactions avec la page derrière l’alerte : aucun bouton de fermeture, Escape et clic extérieur neutralisés.
 - Correction du rendu avec un overlay React fixe `z-[100]`, un voile semi-opaque, un flou léger et un verrouillage de `document.body` en `overflow: hidden`.
 - Intégration dans l’état vide de `/projects` avec `SearchX` et le code statut `204`.
-- Composant publié sur `dev` dans les commits `97b7080` et `8f2f370`, intégration publiée dans `6d8aa0c`.
+- Intégration dans `/notifications` : erreur de chargement avec ton destructif et code `503`, absence de notifications avec code `204`.
+- Suppression des messages inline concurrents afin d’afficher une seule boîte modale bloquante.
+- Composant publié sur `dev` dans les commits `97b7080`, `8f2f370` et `afa6ab2`, intégrations publiées dans `6d8aa0c` et `9eb7135`.
 
 ### Validé
 
