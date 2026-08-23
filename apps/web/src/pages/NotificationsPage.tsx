@@ -168,7 +168,7 @@ export default function NotificationsPage() {
               <StatusAlertDialog
                 icon={CircleAlert}
                 title="Impossible de charger les notifications."
-                description="Le service de notifications est temporairement indisponible. Réessayez plus tard."
+                description=""
                 statusCode="503"
                 statusMessage="Le code 503 indique que le service est temporairement indisponible."
                 tone="destructive"
