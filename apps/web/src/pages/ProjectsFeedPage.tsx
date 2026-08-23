@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useFeedData } from '@/hooks/useFeedData'
 import { useI18n } from '@/i18n'
+import { StatusAlertDialog } from '@/components/ui/status-alert-dialog'
 
 export default function ProjectsFeedPage() {
   const { t } = useI18n()
@@ -108,11 +109,12 @@ export default function ProjectsFeedPage() {
             {error && <FeedErrorWidget message={error} onRetry={() => window.location.reload()} />}
 
             {!isLoading && !error && apiProjects.length === 0 && (
-              <div className="p-12 text-center text-muted-foreground">
-                <SearchX className="mx-auto mb-3 h-8 w-8 text-primary" aria-hidden="true" />
-                <p className="font-semibold text-foreground">{t('projects.emptyTitle')}</p>
-                <p className="mt-1 text-sm">{t('projects.emptyHint')}</p>
-              </div>
+              <StatusAlertDialog
+                icon={SearchX}
+                title={t('projects.emptyTitle')}
+                description={t('projects.emptyHint')}
+                statusCode="204"
+              />
             )}
 
             {!isLoading && !error && apiProjects.length > 0 && (

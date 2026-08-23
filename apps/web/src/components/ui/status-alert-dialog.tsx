@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import type { LucideIcon } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
 
 interface StatusAlertDialogProps {
   open?: boolean
-  icon: ComponentType<{ className?: string; 'aria-hidden'?: string | boolean }>
+  icon: LucideIcon
   title: string
   description: string
   statusCode: string | number
