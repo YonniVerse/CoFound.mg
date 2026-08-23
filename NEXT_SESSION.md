@@ -1,22 +1,23 @@
 # Reprise de session
 
 **Dernière mise à jour** : 2026-08-23
-**Phase** : Allègement de l’état vide de `/projects`
+**Phase** : Harmonisation de `/notifications`
 **Vague / ticket** : E-11 — connexion et accès
 **Branche actuelle** : `dev`
 
 ## 1. État actuel
 
-La page `/projects` conserve son interface harmonisée avec FeedPage, SearchPage et LoginPage. Son état vide utilise désormais une icône `SearchX` plus adaptée à l’absence de résultats, avec un message léger sans fond, bordure ni ombre. `/forgot-password` reste une page centrée avec fond en grille, sans section droite.
+La page `/notifications` est maintenant harmonisée avec FeedPage, SearchPage et ProjectsFeedPage : en-tête sobre, compteur des notifications non lues, filtres compacts, cartes lisibles et rail latéral sticky. `/projects` conserve son état vide allégé avec `SearchX`, et `/forgot-password` reste une page centrée avec fond en grille.
 
 ## 2. Tâches terminées
 
-L’état vide de `ProjectsFeedPage` utilise `SearchX` et un conteneur `p-12 text-center text-muted-foreground`, sans `bg-card`, `border` ni `shadow`. La recherche, les filtres, la pagination, les cards et les actions restent inchangés.
+`NotificationsPage` utilise un conteneur partagé `max-w-[1400px]`, une hiérarchie typographique cohérente, deux filtres `Toutes` / `Non lues`, des cartes `rounded-xl` différenciant les notifications non lues, des icônes selon le type et un état vide sans décor lourd. Le clic conserve le marquage API comme lu, avec mise à jour optimiste locale et gestion d’erreur. Le type de notification est formaté depuis le contrat existant sans supposer de champs supplémentaires.
 
-La validation `projectCreateSchema`, la création API, la redirection vers le projet créé, les états d’erreur et le mode brouillon sont conservés. Des compteurs de caractères et un message d’erreur visuel cohérent ont été ajoutés. Aucun décor génératif, image ou effet visuel artificiel n’a été ajouté.
+L’état vide de `ProjectsFeedPage` utilise `SearchX` et un conteneur `p-12 text-center text-muted-foreground`, sans `bg-card`, `border` ni `shadow`. Aucun décor génératif, image ou effet visuel artificiel n’a été ajouté.
 
 ## 3. Fichiers importants modifiés
 
+- `apps/web/src/pages/NotificationsPage.tsx` : interface harmonisée avec filtres, cartes, icônes par type et rail sticky.
 - `apps/web/src/pages/ProjectsFeedPage.tsx` : état vide allégé avec icône `SearchX`, sans fond ni bordure.
 - `apps/web/src/pages/ForgotPasswordPage.tsx` : page centrée sans section droite, fond en grille et formulaire harmonisé.
 - `apps/web/src/pages/ProjectCreatePage.tsx` : interface `/projects/new` harmonisée avec les autres pages et retour vers `/projects`.
@@ -24,7 +25,7 @@ La validation `projectCreateSchema`, la création API, la redirection vers le pr
 - `apps/web/src/pages/LoginPage.tsx` : cards revenues à `h-full`.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-Les commits de code publiés sont `a61daa3` pour l’état vide de ProjectsFeedPage, `1c17ff3` pour la simplification de ForgotPasswordPage, `1b52dfc` pour le retour de ProjectCreatePage, `397087f` pour le bouton de ProjectsFeedPage, `d6d4282` pour la refonte de ProjectCreatePage et `0571b06` pour ProjectsFeedPage.
+Les commits de code publiés sont `85caef1` pour l’harmonisation de NotificationsPage après intégration du commit distant `8090412`, `a61daa3` pour l’état vide de ProjectsFeedPage, `1c17ff3` pour la simplification de ForgotPasswordPage et les commits précédents de navigation et de refonte des pages projets.
 
 ## 4. Validations et problèmes connus
 
@@ -34,7 +35,7 @@ La séparation wave est visible uniquement sur desktop comme la section droite e
 
 ## 5. Prochaine action
 
-Ouvrir `/projects` en desktop et mobile avec un résultat vide pour vérifier l’icône `SearchX`, l’absence de fond et de bordure autour du message, puis vérifier que `/projects/new` et `/forgot-password` conservent leurs actions et leur navigation.
+Ouvrir `/notifications` en desktop et mobile pour vérifier les filtres, l’affichage des cartes lues/non lues, le rail sticky et l’état vide. Vérifier aussi qu’un clic marque bien une notification comme lue et que `/projects`, `/projects/new` et `/forgot-password` conservent leurs actions et leur navigation.
 
 ## 6. Décisions et contexte de reprise
 
