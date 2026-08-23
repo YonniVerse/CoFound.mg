@@ -1,27 +1,28 @@
 # Reprise de session
 
 **Dernière mise à jour** : 2026-08-22
-**Phase** : Harmonisation LoginPage / ForgotPasswordPage
+**Phase** : Harmonisation de la page `/projects`
 **Vague / ticket** : E-11 — connexion et accès
 **Branche actuelle** : `dev`
 
 ## 1. État actuel
 
-La section droite de `LoginPage` possède maintenant une séparation en wave sur son bord gauche, entre la colonne du formulaire et la composition colorée. La forme suit exactement deux périodes arrondies, reprend la surface de la colonne gauche et crée une transition graphique souple. Le fond décoratif conserve deux waves, et le contenu du panneau droit dispose d’un padding plus généreux (`px-8 py-10`, puis `lg:px-14 lg:py-12`) afin de laisser davantage d’espace autour des cards. Les cards de LoginPage utilisent désormais leur hauteur naturelle de cellule avec `h-full`. ForgotPasswordPage reprend la même composition desktop, la même grille thématique, le même gradient et les mêmes conventions de formulaire.
+La page `/projects`, rendue par `ProjectsFeedPage`, est maintenant harmonisée avec le langage visuel de `FeedPage`, `SearchPage` et `LoginPage`. Elle utilise une largeur maximale commune, une hiérarchie typographique sobre, une barre de recherche avec les mêmes dimensions que SearchPage, des filtres compacts et un rail droit sticky aligné sur celui du feed. La logique de recherche, de statut, de pagination et de récupération des profils suggérés est conservée.
 
 ## 2. Tâches terminées
 
-Un SVG positionné en `absolute inset-y-0 left-0` dessine une wave verticale avec exactement deux périodes arrondies dans un `viewBox` adapté. Sa forme remplie utilise `currentColor` avec le token `background`, et son contour utilise `var(--border)`. Le SVG est non interactif et se place au-dessus de la séparation sans modifier le contenu du formulaire.
+La page `/projects` adopte une structure en deux zones : contenu principal des projets à gauche et widgets `ParityWidget` / `SuggestedProfilesWidget` à droite avec `sticky top-[90px]`, comme dans FeedPage. Les filtres de statut utilisent les mêmes boutons compacts et arrondis que SearchPage. Le champ de recherche reprend `h-11`, `rounded-xl`, `border-border/80`, `bg-card`, `shadow-2xs` et le focus primaire.
 
-Le gradient de marque bleu-violet-mauve-orange, les deux waves décoratives du fond et la grille restent inchangés. Les cards thématiques de LoginPage utilisent `h-full`, sans dépassement de 2 px. ForgotPasswordPage réutilise les mêmes cards thématiques pour rester cohérente avec la page de connexion. La séparation sur le bord gauche est désormais une wave unique à deux périodes, sans triangle ni découpe angulaire. La bordure `border-l` du panneau droit a été retirée afin d’éviter une double séparation.
+Les cards projet existantes restent utilisées afin de préserver leurs actions et leurs données. Le chargement utilise désormais `ProjectCardSkeleton` au lieu de `TalentCardSkeleton`, et les états vide ainsi que la pagination reprennent les espacements, bordures et animations discrètes du feed. Aucun décor génératif, image ou effet visuel artificiel n’a été ajouté.
 
 ## 3. Fichiers importants modifiés
 
+- `apps/web/src/pages/ProjectsFeedPage.tsx` : interface `/projects` harmonisée avec FeedPage et SearchPage.
 - `apps/web/src/pages/LoginPage.tsx` : cards revenues à `h-full`.
 - `apps/web/src/pages/ForgotPasswordPage.tsx` : layout desktop inspiré de LoginPage, champs harmonisés, panneau gradient et grille de cards.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-Les commits de code publiés sont `8a0af26` pour LoginPage et `063c9d9` pour ForgotPasswordPage.
+Les commits de code publiés sont `0571b06` pour ProjectsFeedPage, `8a0af26` pour LoginPage et `063c9d9` pour ForgotPasswordPage.
 
 ## 4. Validations et problèmes connus
 
@@ -31,7 +32,7 @@ La séparation wave est visible uniquement sur desktop comme la section droite e
 
 ## 5. Prochaine action
 
-Ouvrir `/login` en desktop et vérifier que la wave à deux périodes suit toute la hauteur, que les deux waves décoratives restent discrètes, que le padding laisse assez d’espace autour des cards et que les deux pages conservent une hauteur d’écran sans scroll et que la séparation ne masque pas les cards, et que l’ensemble forme une transition élégante avec la colonne blanche du formulaire.
+Ouvrir `/projects` en desktop et mobile pour vérifier l’alignement de la recherche, le comportement des filtres, la largeur des cards projet, le rail sticky et le skeleton projet. Vérifier également que `/login` et `/forgot-password` conservent leur composition sans scroll.
 
 ## 6. Décisions et contexte de reprise
 
