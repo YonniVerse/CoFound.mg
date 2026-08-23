@@ -10,6 +10,22 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-23 — Dream Match harmonisé avec le design system
+
+### Modifié
+
+- Alignement de `/dream-match` sur `DashboardLayout`, FeedPage, LoginPage et le dialogue de candidature.
+- Remplacement des champs HTML bruts par le composant `Input` et harmonisation des bordures, fonds, rayons, ombres et états de focus.
+- Harmonisation des boutons d’enregistrement et « Pas intéressé » avec le composant `Button` et le style de LoginPage.
+- Remplacement de `Sparkles` par `SlidersHorizontal`, réduction des rayons et ombres excessifs et adoption d’un rendu sobre sans esthétique IA.
+
+### Validé
+
+- Typecheck web, lint web, `git diff --check` et build de production web réussis.
+- Modification publiée sur `dev` dans le commit `f6a879e`.
+
+---
+
 ## 2026-08-23 — Dialogue de candidature aligné sur LoginPage
 
 ### Modifié

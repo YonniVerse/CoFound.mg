@@ -1,41 +1,42 @@
 # Reprise de session
 
 **Dernière mise à jour** : 2026-08-23
-**Phase** : Harmonisation du dialogue de candidature projet
-**Vague / ticket** : Projects / Project detail UX
+**Phase** : Harmonisation de la page Dream Match
+**Vague / ticket** : Dream Match / UX design system
 **Branche actuelle** : `dev`
 
 ## 1. État actuel
 
-Le dialogue d’application de `/projects/:id` est harmonisé avec les contrôles de `LoginPage`. Le select utilise maintenant le composant partagé, avec une hauteur de 44 px, fond `bg-card`, bordure renforcée, rayon `rounded-xl` et focus primaire. Le textarea reprend les mêmes conventions de fond, bordure, typographie, ombrage et anneau de focus. Les boutons utilisent la hauteur, le rayon, le poids et les espacements du bouton de connexion.
+`/dream-match` utilise désormais `DashboardLayout` et une structure visuelle alignée sur FeedPage, LoginPage et le dialogue de candidature. Les champs numériques et l’environnement préféré utilisent le composant `Input` avec les mêmes dimensions, fond, bordure, rayon, ombrage et focus que LoginPage. Le bouton d’enregistrement et les actions « Pas intéressé » utilisent le composant `Button` et les mêmes conventions compactes.
+
+L’esthétique de type IA a été réduite : l’icône `Sparkles` a été remplacée par `SlidersHorizontal`, les cartes utilisent des bordures et ombres sobres du design system, et les traitements visuels excessifs ont été supprimés.
 
 `dev` et `origin/dev` sont synchronisés et propres. Le typecheck, le lint, `git diff --check` et le build de production web ont réussi.
 
 ## 2. Tâches terminées
 
-- Remplacement du select natif par `Select`, `SelectTrigger`, `SelectContent` et `SelectItem` partagés.
-- Ajout d’une valeur neutre `none` pour conserver la candidature spontanée sans envoyer de `positionId`.
-- Harmonisation du select et du textarea avec les classes de formulaire de LoginPage.
-- Harmonisation des boutons Annuler et Envoyer avec le bouton primaire de LoginPage.
-- Publication dans `9300dcc`.
+- Intégration de `DashboardLayout` dans l’état de chargement et le rendu principal.
+- Harmonisation des inputs de préférences avec LoginPage.
+- Harmonisation du bouton principal, du bouton « Pas intéressé » et des états d’erreur/succès.
+- Réduction des rayons excessifs `rounded-3xl` et des ombres fortes au profit de `rounded-xl` et `shadow-2xs`.
+- Remplacement de l’icône `Sparkles` pour éviter une impression de design IA.
+- Publication du code dans `f6a879e`.
 
 ## 3. Fichiers importants modifiés
 
-- `apps/web/src/components/applications/ApplyModal.tsx` : select, textarea, labels et boutons du dialogue.
+- `apps/web/src/pages/DreamMatchPage.tsx` : structure, champs, cartes, actions et styles de Dream Match.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
 ## 4. Validations et problèmes connus
 
 Les commandes suivantes ont réussi : `pnpm --filter @cofound/web typecheck`, `pnpm --filter @cofound/web lint`, `git diff --check` et `pnpm --filter @cofound/web build`.
 
-Aucun blocage connu. Une vérification visuelle dans le navigateur reste recommandée sur `/projects/:id`, notamment l’ouverture du select, l’état focus du textarea et l’affichage mobile des boutons.
+Aucun blocage connu. Une vérification visuelle dans le navigateur reste recommandée sur `/dream-match`, notamment la responsive mobile, l’ouverture des préférences et l’affichage des suggestions.
 
 ## 5. Prochaine action
 
-Ouvrir un projet sur `/projects/:id`, ouvrir le dialogue de candidature et vérifier visuellement le select, le textarea et les boutons sur desktop et mobile ; si un écart persiste, ajuster uniquement `ApplyModal.tsx`, puis relancer `pnpm --filter @cofound/web build`.
+Ouvrir `/dream-match` sur desktop et mobile, tester l’enregistrement des préférences et le retrait d’une suggestion, puis corriger uniquement les éventuels écarts visuels dans `DreamMatchPage.tsx`.
 
 ## 6. Décisions et contexte de reprise
 
-Le select partagé a été choisi plutôt qu’un select natif afin de réutiliser le système de composants existant et d’obtenir un comportement cohérent avec les autres contrôles. Le fond `bg-card`, la bordure `border-border/80`, le rayon `rounded-xl`, l’ombre légère et le focus primaire reprennent directement les conventions de LoginPage.
-
-Aucun changement d’architecture, de modèle de données, de RBAC ou de périmètre n’a été introduit.
+Les contrôles réutilisent les primitives existantes `Input` et `Button` plutôt que des éléments HTML stylés séparément, afin de rester cohérents avec LoginPage et les autres pages. Aucun changement d’architecture, de modèle de données, de RBAC ou de périmètre n’a été introduit.
