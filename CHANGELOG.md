@@ -10,6 +10,24 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-23 — Harmonisation de la page Notifications
+
+### Modifié
+
+- Refonte de `NotificationsPage` pour aligner `/notifications` avec FeedPage, SearchPage et ProjectsFeedPage.
+- Ajout d’un en-tête sobre avec compteur des notifications non lues et icône dédiée.
+- Ajout de filtres compacts `Toutes` et `Non lues` avec le même traitement que les contrôles du feed.
+- Harmonisation des cartes : `rounded-xl`, bordures du design system, distinction visuelle lue/non lue, icône selon le type et indicateur de notification non lue.
+- Ajout d’un état vide léger et d’un rail latéral sticky avec résumé de l’activité.
+- Conservation du marquage API comme lu, de la mise à jour locale optimiste et de la gestion d’erreur.
+- Modification publiée sur `dev` dans le commit `85caef1`.
+
+### Validé
+
+- Typecheck web, lint web et `git diff --check` réussis.
+
+---
+
 ## 2026-08-23 — Allègement de l’état vide de Projects
 
 ### Modifié
