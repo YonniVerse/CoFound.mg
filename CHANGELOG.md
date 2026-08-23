@@ -10,6 +10,22 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-23 — Raffinement visuel de Dream Match
+
+### Modifié
+
+- Amélioration de la hiérarchie de `/dream-match` avec un en-tête séparé et une carte de préférences structurée.
+- Rééquilibrage des espacements et des surfaces pour un rendu moderne et élégant cohérent avec LoginPage, FeedPage et Projects.
+- Raffinement des cartes de suggestions avec avatar, séparateur des facteurs, barres de progression plus discrètes et action secondaire mieux intégrée.
+- Conservation d’un rendu sobre sans dégradé, décoration excessive ni esthétique de design IA.
+
+### Validé
+
+- Typecheck web, lint web, `git diff --check` et build de production web réussis.
+- Modification publiée sur `dev` dans le commit `0a2a3a7`.
+
+---
+
 ## 2026-08-23 — Dream Match harmonisé avec le design system
 
 ### Modifié
