@@ -1,4 +1,5 @@
 import { ImpactBadge } from "@/components/shared/ImpactBadge";
+import { useI18n } from '@/i18n';
 import { 
   Shield, 
   Users, 
@@ -24,6 +25,8 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 export function SectionInclusion({ features }: SectionInclusionProps) {
+  const { t } = useI18n()
+  const translate = (key: string) => t(key as Parameters<typeof t>[0])
   return (
     <section className="py-24 bg-impact-light/50 border-t border-b border-impact/10">
       <div className="max-w-7xl mx-auto px-6">
@@ -33,8 +36,8 @@ export function SectionInclusion({ features }: SectionInclusionProps) {
           <div className="lg:col-span-8">
             <ImpactBadge className="mb-6 scale-110 origin-left" />
             <h2 className="font-sans font-black text-4xl sm:text-5xl lg:text-6xl text-foreground tracking-tight leading-[1.05]">
-              50% des talents.<br/>
-              <span className="text-impact">Pleinement impliquées.</span>
+              {t('landing.inclusion.titleLead')}<br/>
+              <span className="text-impact">{t('landing.inclusion.titleAccent')}</span>
             </h2>
           </div>
           <div className="lg:col-span-4 lg:text-right">
@@ -43,7 +46,7 @@ export function SectionInclusion({ features }: SectionInclusionProps) {
                 <span className="text-4xl align-top">&lt;</span>20%
               </span>
               <span className="text-xs uppercase font-bold tracking-wider text-muted-foreground block mt-2">
-                Des fondateurs en Afrique sont des femmes.
+                {t('landing.inclusion.statLabel')}
               </span>
             </div>
           </div>
@@ -62,10 +65,10 @@ export function SectionInclusion({ features }: SectionInclusionProps) {
                   <Icon className="w-6 h-6" strokeWidth={2} />
                 </div>
               <h3 className="font-sans font-bold text-lg text-foreground mb-3">
-                {feature.title}
+                {translate(`landing.inclusion.inclusion-${feature.id}.title`)}
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed font-normal">
-                {feature.description}
+                {translate(`landing.inclusion.inclusion-${feature.id}.description`)}
               </p>
             </div>
             );
@@ -75,7 +78,7 @@ export function SectionInclusion({ features }: SectionInclusionProps) {
         {/* Citation de Manifeste épuré */}
         <div className="max-w-4xl mx-auto border-l-4 border-impact pl-8 py-2">
           <p className="font-heading font-semibold italic text-2xl md:text-3xl text-foreground/90 leading-tight">
-            « Nous refusons de reproduire les mêmes biais à Madagascar. CoFound supprime les barrières structurelles invisibles dès le premier jour. »
+            {t('landing.inclusion.manifesto')}
           </p>
         </div>
 
