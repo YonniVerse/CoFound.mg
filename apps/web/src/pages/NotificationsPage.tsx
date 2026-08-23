@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Bell, BellRing, CircleAlert, FileText, MessageCircle, UserRound } from 'lucide-react'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { listNotifications, markNotificationRead } from '@/data/notificationApi'
@@ -24,20 +24,27 @@ export default function NotificationsPage() {
   const [items, setItems] = useState<NotificationView[]>([])
   const [error, setError] = useState('')
   const [showUnreadOnly, setShowUnreadOnly] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    let active = true
-    void listNotifications()
-      .then((result) => {
-        if (active) setItems(result)
-      })
-      .catch(() => {
-        if (active) setError('Impossible de charger les notifications.')
-      })
-    return () => {
-      active = false
+  const loadNotifications = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      const result = await listNotifications()
+      setItems(result)
+      setError('')
+    } catch {
+      setError('Impossible de charger les notifications.')
+    } finally {
+      setIsLoading(false)
     }
   }, [])
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      void loadNotifications()
+    }, 0)
+    return () => window.clearTimeout(timer)
+  }, [loadNotifications])
 
   async function read(item: NotificationView) {
     if (item.readAt) return
@@ -106,12 +113,14 @@ export default function NotificationsPage() {
             </div>
 
             <section className="space-y-3" aria-live="polite" aria-label="Liste des notifications">
-              {!error && visibleItems.length === 0 ? (
+              {!error && !isLoading && visibleItems.length === 0 ? (
                 <StatusAlertDialog
                   icon={Bell}
                   title={showUnreadOnly ? 'Aucune notification non lue.' : 'Aucune notification.'}
                   description={showUnreadOnly ? 'Vous êtes à jour pour le moment.' : 'Les nouvelles activités apparaîtront ici.'}
                   statusCode="204"
+                  statusMessage="Le code 204 indique qu’aucune notification n’est disponible pour le moment."
+                  onBack={() => window.history.back()}
                 />
               ) : !error ? (
                 visibleItems.map((item) => {
@@ -160,7 +169,10 @@ export default function NotificationsPage() {
                 title="Impossible de charger les notifications."
                 description="Le service de notifications est temporairement indisponible. Réessayez plus tard."
                 statusCode="503"
+                statusMessage="Le code 503 indique que le service est temporairement indisponible."
                 tone="destructive"
+                onBack={() => window.history.back()}
+                onRetry={() => void loadNotifications()}
               />
             )}
           </main>
