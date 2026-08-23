@@ -10,6 +10,21 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-23 — Carte promotionnelle Dream Match plus compacte
+
+### Modifié
+
+- Réduction de la largeur maximale desktop de la carte publicitaire à `max-w-xs`.
+- Réduction légère du padding, des formes décoratives, de l’icône, des espacements et de la taille du titre.
+- Conservation de la lisibilité, du sticky desktop et de l’empilement responsive mobile.
+
+### Validé
+
+- Typecheck web, lint web, `git diff --check` et build de production web réussis.
+- Modification publiée sur `dev` dans le commit `ef85c6f`.
+
+---
+
 ## 2026-08-23 — Carte promotionnelle Dream Match
 
 ### Ajouté
