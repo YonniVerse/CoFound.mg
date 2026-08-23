@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Check, HeartHandshake, Loader2, SlidersHorizontal } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { ArrowRight, Check, HeartHandshake, Loader2, SlidersHorizontal } from 'lucide-react'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -118,8 +119,9 @@ export default function DreamMatchPage() {
             </div>
           </header>
 
-          <section aria-labelledby="preferences-title" className="max-w-3xl">
-            <form onSubmit={submit} className="overflow-hidden rounded-xl border border-border/70 bg-card shadow-2xs">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+            <section aria-labelledby="preferences-title" className="min-w-0 flex-1 lg:max-w-3xl">
+              <form onSubmit={submit} className="overflow-hidden rounded-xl border border-border/70 bg-card shadow-2xs">
               <div className="border-b border-border/60 px-5 py-4 sm:px-6">
                 <h2 id="preferences-title" className="text-base font-bold tracking-tight text-foreground">Vos préférences</h2>
                 <p className="mt-1 text-sm text-muted-foreground">Ajustez les critères utilisés pour identifier des profils complémentaires.</p>
@@ -154,8 +156,38 @@ export default function DreamMatchPage() {
                   {isSaving ? t('dreamMatch.saving') : t('dreamMatch.save')}
                 </Button>
               </div>
-            </form>
-          </section>
+              </form>
+            </section>
+
+            <aside aria-labelledby="promo-title" className="w-full lg:sticky lg:top-[90px] lg:max-w-sm">
+              <div className="relative overflow-hidden rounded-xl border border-border-dark/70 bg-foreground p-6 text-background shadow-2xs">
+                <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full border border-primary/20" />
+                <div className="pointer-events-none absolute -bottom-12 -left-10 h-28 w-28 rounded-full border border-secondary/20" />
+                <div className="relative">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-primary-light/30 bg-primary/15 text-primary-light">
+                    <HeartHandshake className="h-5 w-5" />
+                  </div>
+                  <p className="mt-6 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-light">{t('dreamMatch.promo.eyebrow')}</p>
+                  <h2 id="promo-title" className="mt-3 text-2xl font-bold leading-tight tracking-tight">{t('dreamMatch.promo.title')}</h2>
+                  <p className="mt-4 text-sm leading-relaxed text-background/70">{t('dreamMatch.promo.body')}</p>
+                  <ul className="mt-6 space-y-3 border-t border-border-dark/60 pt-5">
+                    {[t('dreamMatch.promo.item1'), t('dreamMatch.promo.item2'), t('dreamMatch.promo.item3')].map((item) => (
+                      <li key={item} className="flex items-start gap-2 text-sm text-background/85">
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary-light" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button asChild variant="outline" size="sm" className="mt-6 h-9 w-full gap-1.5 rounded-lg border-border-dark bg-background/10 px-3.5 text-xs font-medium text-background shadow-none transition-colors hover:bg-background/15 hover:text-background sm:text-sm">
+                    <Link to="/feed">
+                      {t('dreamMatch.promo.cta')}
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </aside>
+          </div>
 
           <section aria-labelledby="suggestions-title" className="mt-12 space-y-5">
             <div className="flex items-start gap-3 border-b border-border/60 pb-4">
