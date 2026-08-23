@@ -362,6 +362,10 @@ const messages = {
         "landing.createProfile": "Créer mon profil fondateur",
         "landing.hero.eyebrow": "L'élite entrepreneuriale étudiante",
         "landing.hero.titleLead": "Ne cherche pas une idée. Trouve ton",
+        "landing.hero.titleLine1": "Ne cherche pas une",
+        "landing.hero.titleLine2": "idée. Trouve ton",
+        "landing.hero.titleAccentStart": "Co-",
+        "landing.hero.titleAccentEnd": "fondateur.",
         "landing.hero.titleAccent": "Co-fondateur.",
         "landing.hero.body":
             "L'algorithme de CoFound.mg n'associe pas les profils similaires. Il connecte la rigueur technique du codeur avec la vision stratégique du marketeur.",
@@ -857,6 +861,10 @@ const messages = {
         "landing.createProfile": "Hamorona ny mombamomba ahy",
         "landing.hero.eyebrow": "Ireo mpianatra mpanorina ambony",
         "landing.hero.titleLead": "Aza mitady hevitra fotsiny. Tadiavo ny ",
+        "landing.hero.titleLine1": "Aza mitady hevitra",
+        "landing.hero.titleLine2": "fotsiny. Tadiavo ny",
+        "landing.hero.titleAccentStart": "mpiara-",
+        "landing.hero.titleAccentEnd": "mpanorina anao.",
         "landing.hero.titleAccent": "mpiara-mpanorina anao.",
         "landing.hero.body":
             "Ny algorithman’ny CoFound.mg dia mampifandray ny fahaiza-manao ara-teknikan’ny mpandrindra kaody amin’ny fahitana stratejikan’ny mpandraharaha.",
