@@ -89,9 +89,11 @@ export function StatusAlertDialog({
             <h2 id="status-alert-title" className="font-heading text-xl font-bold tracking-tight text-foreground sm:text-2xl">
               {title}
             </h2>
-            <p id="status-alert-description" className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-              {description}
-            </p>
+            {description && (
+              <p id="status-alert-description" className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                {description}
+              </p>
+            )}
           </div>
 
           <div className="inline-flex items-center gap-2 rounded-lg bg-muted px-3 py-1.5 font-mono text-xs font-semibold text-muted-foreground">
