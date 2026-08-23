@@ -1,4 +1,5 @@
 import { Zap, MessageSquare, Rocket, LineChart, type LucideIcon } from "lucide-react";
+import { useI18n } from '@/i18n';
 
 interface Feature {
   id: string;
@@ -19,6 +20,8 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 export function SectionFeatures({ features }: SectionFeaturesProps) {
+  const { t } = useI18n()
+  const translate = (key: string) => t(key as Parameters<typeof t>[0])
   return (
     <section className="py-24 bg-background border-t border-border/40">
       <div className="max-w-7xl mx-auto px-6">
@@ -26,14 +29,14 @@ export function SectionFeatures({ features }: SectionFeaturesProps) {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 rounded-full bg-muted border border-border px-4 py-1.5 mb-6">
             <span className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
-              Tout ce dont vous avez besoin
+              {t('landing.features.eyebrow')}
             </span>
           </div>
           <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground">
-            Les outils pour réussir
+            {t('landing.features.title')}
           </h2>
           <p className="mt-4 text-muted-foreground text-lg max-w-2xl mx-auto">
-            Une plateforme pensée pour faciliter les rencontres et accélérer vos premiers pas d'entrepreneurs.
+            {t('landing.features.body')}
           </p>
         </div>
 
@@ -51,10 +54,10 @@ export function SectionFeatures({ features }: SectionFeaturesProps) {
                   <Icon className="w-6 h-6 text-foreground" strokeWidth={1.5} />
                 </div>
                 <h3 className="font-heading font-bold text-lg text-foreground mb-3">
-                  {feature.title}
+                  {translate(`landing.features.feature-${feature.id}.title`)}
                 </h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  {feature.description}
+                  {translate(`landing.features.feature-${feature.id}.description`)}
                 </p>
               </div>
             );
