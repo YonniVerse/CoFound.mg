@@ -10,6 +10,24 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-23 — Harmonisation de la création de projet
+
+### Modifié
+
+- Refonte de `ProjectCreatePage` pour aligner `/projects/new` avec `FeedPage`, `SearchPage`, `LoginPage` et `/projects`.
+- Intégration dans `DashboardLayout` avec le même fond, les mêmes espacements et une navigation de retour vers la liste des projets.
+- Harmonisation des `Input`, `Textarea`, `Label` et `Button` : hauteurs, rayons, bordures, ombres, typographie et états de focus.
+- Ajout de compteurs de caractères, d’un message d’erreur visuel et d’un rail d’aide sticky sobre.
+- Conservation de la validation `projectCreateSchema`, de la création API, du statut brouillon et de la redirection vers le projet créé.
+- Aucun visuel génératif, aucune image et aucun décor de type IA ajouté.
+- Modification publiée sur `dev` dans le commit `d6d4282`.
+
+### Validé
+
+- Typecheck web, lint web et `git diff --check` réussis.
+
+---
+
 ## 2026-08-23 — Harmonisation de la page Projects
 
 ### Modifié
