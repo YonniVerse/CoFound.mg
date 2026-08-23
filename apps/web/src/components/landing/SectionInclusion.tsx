@@ -65,10 +65,10 @@ export function SectionInclusion({ features }: SectionInclusionProps) {
                   <Icon className="w-6 h-6" strokeWidth={2} />
                 </div>
               <h3 className="font-sans font-bold text-lg text-foreground mb-3">
-                {translate(`landing.inclusion.inclusion-${feature.id}.title`)}
+                {translate(`landing.inclusion.${feature.id}.title`)}
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed font-normal">
-                {translate(`landing.inclusion.inclusion-${feature.id}.description`)}
+                {translate(`landing.inclusion.${feature.id}.description`)}
               </p>
             </div>
             );
