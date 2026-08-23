@@ -47,12 +47,13 @@ export default function ProjectCreatePage() {
               Commencez par un titre et un pitch. Vous pourrez compléter le BMC ensuite.
             </p>
           </div>
-          <Button asChild variant="outline" className="h-9 w-fit gap-1.5 rounded-lg px-3.5 text-xs font-medium sm:text-sm">
-            <Link to="/projects">
-              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-              Retour aux projets
-            </Link>
-          </Button>
+          <Link
+            to="/projects"
+            className="group inline-flex h-9 w-fit shrink-0 items-center gap-2 rounded-lg px-2 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:text-sm"
+          >
+            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" aria-hidden="true" />
+            Retour aux projets
+          </Link>
         </header>
 
         <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
