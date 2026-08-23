@@ -27,6 +27,17 @@ interface SectionHeroProps {
 
 export function SectionHero({ profiles, stats }: SectionHeroProps) {
   const { t } = useI18n()
+  const translate = (key: string) => t(key as Parameters<typeof t>[0])
+  const profileRoles: Record<string, string> = {
+    'hero-1': translate('landing.heroProfiles.hero-1.role'),
+    'hero-2': translate('landing.heroProfiles.hero-2.role'),
+    'hero-3': translate('landing.heroProfiles.hero-3.role'),
+  }
+  const statLabels: Record<string, string> = {
+    'stat-1': translate('landing.stats.stat-1'),
+    'stat-2': translate('landing.stats.stat-2'),
+    'stat-3': translate('landing.stats.stat-3'),
+  }
   // Configuration sémantique des cartes (plus aucune couleur brute)
   const cardStyles = [
     {
@@ -55,18 +66,17 @@ export function SectionHero({ profiles, stats }: SectionHeroProps) {
         
         {/* COLONNE GAUCHE (Contenu textuel & métriques) */}
         <div className="lg:col-span-7 flex flex-col items-start">
-          {/* <div className="inline-flex items-center gap-2 rounded-full bg-foreground text-background px-3.5 py-1.5 mb-6 shadow-sm">
-            <Sparkles className="h-3.5 w-3.5 text-secondary fill-secondary" />
-            <span className="text-xs font-semibold tracking-wider uppercase">L'élite entrepreneuriale étudiante</span>
-          </div> */}
+          <div className="inline-flex items-center gap-2 rounded-full bg-foreground text-background px-3.5 py-1.5 mb-6 shadow-sm">
+            <span className="text-xs font-semibold tracking-wider uppercase">{t('landing.hero.eyebrow')}</span>
+          </div>
 
           <h1 className="font-sans font-black text-5xl sm:text-6xl xl:text-[68px] text-foreground mt-4 leading-[0.95] tracking-tight">
-            Ne cherche pas une idée.<br />
-            Trouve ton <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Co-fondateur</span>.
+            {t('landing.hero.titleLead')}<br />
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">{t('landing.hero.titleAccent')}</span>
           </h1>
 
           <p className="mt-8 text-lg sm:text-xl text-muted-foreground max-w-xl leading-relaxed font-normal">
-            L'algorithme de CoFound.mg n'associe pas les profils similaires. Il connecte la rigueur technique du codeur avec la vision stratégique du marketeur.
+            {t('landing.hero.body')}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mt-10 w-full sm:w-auto">
@@ -92,7 +102,7 @@ export function SectionHero({ profiles, stats }: SectionHeroProps) {
             {stats.map((stat) => (
               <div key={stat.id} className="flex flex-col">
                 <span className="font-sans font-black text-3xl text-foreground tracking-tight">{stat.value}</span>
-                <span className="text-muted-foreground text-xs font-medium mt-1">{stat.label}</span>
+                <span className="text-muted-foreground text-xs font-medium mt-1">{statLabels[stat.id] ?? stat.label}</span>
               </div>
             ))}
           </div>
@@ -147,7 +157,7 @@ export function SectionHero({ profiles, stats }: SectionHeroProps) {
                       {profile.name}
                     </h4>
                     <p className="text-[11px] text-muted-foreground/80 font-medium truncate mt-0.5">
-                      {profile.role} · <span className="text-muted-foreground font-semibold">{profile.school}</span>
+                      {profileRoles[profile.id] ?? profile.role} · <span className="text-muted-foreground font-semibold">{profile.school}</span>
                     </p>
                   </div>
                 </div>
