@@ -14,8 +14,10 @@ Retiré · En cours · Bloqué**.
 
 ### Modifié
 
-- Réorganisation du titre Hero en trois lignes : « Ne cherche pas une », « idée. Trouve ton Co- » et « fondateur. ».
-- Conservation du dégradé `from-primary to-secondary` sur le mot « Co-fondateur ».
+- Réorganisation du titre Hero en quatre lignes : « Ne cherche pas une », « idée. », « Trouve ton » et « Co-fondateur. ».
+- Conservation du dégradé `from-primary to-secondary` sur le mot « Co-fondateur » malgré les retours à la ligne.
+- Ajout de la clé i18n `landing.hero.titleLine3` pour « Trouve ton » et son équivalent malgache.
+- Correction publiée sur `dev` dans les commits `23b65ab` et `0cb1937`.
 - Ajout de clés i18n FR/MG dédiées afin de conserver la même composition visuelle dans les deux langues.
 - Résolution du conflit de rebase dans `i18n.tsx` sans écraser les changements distants.
 
