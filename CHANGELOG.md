@@ -10,6 +10,21 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-23 — Allègement de l’état vide de Projects
+
+### Modifié
+
+- Remplacement de l’icône Briefcase par `SearchX` pour mieux représenter l’absence de résultats.
+- Suppression du fond `bg-card`, de la bordure et de l’ombre autour du message vide.
+- Conservation du texte d’état vide, de la recherche, des filtres et des actions de la page.
+- Modification publiée sur `dev` dans le commit `a61daa3`.
+
+### Validé
+
+- Typecheck web, lint web et `git diff --check` réussis.
+
+---
+
 ## 2026-08-23 — Simplification de la récupération de compte
 
 ### Modifié
