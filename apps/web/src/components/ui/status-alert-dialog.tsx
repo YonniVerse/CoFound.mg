@@ -1,5 +1,7 @@
 import { useEffect, type MouseEvent } from 'react'
+import { ArrowLeft, RefreshCw } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 interface StatusAlertDialogProps {
@@ -11,6 +13,11 @@ interface StatusAlertDialogProps {
   statusLabel?: string
   className?: string
   tone?: 'primary' | 'destructive'
+  statusMessage?: string
+  onBack?: () => void
+  onRetry?: () => void
+  backLabel?: string
+  retryLabel?: string
 }
 
 export function StatusAlertDialog({
@@ -22,6 +29,11 @@ export function StatusAlertDialog({
   statusLabel = 'Code statut',
   className,
   tone = 'primary',
+  statusMessage,
+  onBack,
+  onRetry,
+  backLabel = 'Retour',
+  retryLabel = 'Réessayer',
 }: StatusAlertDialogProps) {
   useEffect(() => {
     if (!open) return
@@ -85,6 +97,25 @@ export function StatusAlertDialog({
             <span className="uppercase tracking-wider">{statusLabel}</span>
             <span className="text-foreground">{statusCode}</span>
           </div>
+
+          {statusMessage && <p className="max-w-sm text-xs leading-relaxed text-muted-foreground">{statusMessage}</p>}
+
+          {(onBack || onRetry) && (
+            <div className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-center">
+              {onBack && (
+                <Button type="button" variant="outline" onClick={onBack} className="h-9 w-full gap-1.5 rounded-lg px-3.5 text-xs font-medium sm:w-auto sm:text-sm">
+                  <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                  {backLabel}
+                </Button>
+              )}
+              {onRetry && (
+                <Button type="button" onClick={onRetry} className="h-9 w-full gap-1.5 rounded-lg px-3.5 text-xs font-medium shadow-none sm:w-auto sm:text-sm">
+                  <RefreshCw className="h-4 w-4" aria-hidden="true" />
+                  {retryLabel}
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
