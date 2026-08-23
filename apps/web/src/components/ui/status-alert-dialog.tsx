@@ -10,6 +10,7 @@ interface StatusAlertDialogProps {
   statusCode: string | number
   statusLabel?: string
   className?: string
+  tone?: 'primary' | 'destructive'
 }
 
 export function StatusAlertDialog({
@@ -20,6 +21,7 @@ export function StatusAlertDialog({
   statusCode,
   statusLabel = 'Code statut',
   className,
+  tone = 'primary',
 }: StatusAlertDialogProps) {
   useEffect(() => {
     if (!open) return
@@ -51,14 +53,22 @@ export function StatusAlertDialog({
     >
       <div
         className={cn(
-          'w-full max-w-lg rounded-2xl border border-border bg-card p-8 text-center shadow-2xl sm:p-10',
+          'w-full max-w-lg rounded-2xl border bg-card p-8 text-center shadow-2xl sm:p-10',
+          tone === 'destructive' ? 'border-destructive/25' : 'border-border',
           className,
         )}
         onClick={stopBackgroundInteraction}
         onPointerDown={stopBackgroundInteraction}
       >
         <div className="flex flex-col items-center gap-5">
-          <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary shadow-2xs sm:h-28 sm:w-28">
+          <div
+            className={cn(
+              'flex h-24 w-24 items-center justify-center rounded-2xl border shadow-2xs sm:h-28 sm:w-28',
+              tone === 'destructive'
+                ? 'border-destructive/25 bg-destructive/10 text-destructive'
+                : 'border-primary/20 bg-primary/10 text-primary',
+            )}
+          >
             <Icon className="h-12 w-12 sm:h-14 sm:w-14" aria-hidden="true" />
           </div>
 
