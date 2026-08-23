@@ -4,7 +4,7 @@ import { ArrowRight, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LogoSVG } from "../ui/LogoSVG";
-import { useI18n } from "@/i18n";
+import { LanguageSwitcher, useI18n } from "@/i18n";
 
 const navLinks = [
   { label: "nav.exploreProfiles", href: "/feed" },
@@ -63,22 +63,23 @@ export function Navbar() {
 
         {/* Boutons d'actions Grand Écran */}
         <div className="hidden md:flex items-center gap-3">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="text-sm font-semibold hover:bg-muted" 
+          <LanguageSwitcher />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-sm font-semibold hover:bg-muted"
             asChild
           >
             <Link to="/login">{t('nav.login')}</Link>
           </Button>
-          <Button 
+          <Button
             variant="default"
-            size="sm" 
-            className="font-semibold shadow-sm hover:shadow-md transition-shadow"
+            size="icon-sm"
+            className="rounded-lg bg-primary text-primary-foreground shadow-sm transition-shadow hover:bg-primary/80 hover:shadow-md"
             asChild
           >
-            <Link to="/feed" className="flex items-center gap-1.5">
-              {t('nav.join')} <ArrowRight className="h-3.5 w-3.5" />
+            <Link to="/feed" aria-label={t('nav.exploreProfiles')}>
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
         </div>
@@ -109,13 +110,23 @@ export function Navbar() {
               {t(link.label)}
             </a>
           ))}
-          <div className="flex flex-col gap-3 pt-4 border-t border-border/50">
-            <Button variant="outline" className="w-full justify-center font-semibold" asChild>
-              <Link to="/login">{t('nav.login')}</Link>
-            </Button>
-            <Button variant="default" className="w-full justify-center font-semibold" asChild>
-              <Link to="/feed">{t('nav.join')}</Link>
-            </Button>
+          <div className="flex flex-col gap-3 border-t border-border/50 pt-4">
+            <div className="flex items-center justify-between gap-3">
+              <LanguageSwitcher />
+              <Button variant="ghost" className="font-semibold" asChild>
+                <Link to="/login">{t('nav.login')}</Link>
+              </Button>
+              <Button
+                variant="default"
+                size="icon-sm"
+                className="rounded-lg bg-primary text-primary-foreground shadow-sm"
+                asChild
+              >
+                <Link to="/feed" aria-label={t('nav.exploreProfiles')}>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       )}
