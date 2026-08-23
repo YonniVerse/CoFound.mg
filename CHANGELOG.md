@@ -10,6 +10,22 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-23 — Réorganisation de la Navbar publique
+
+### Modifié
+
+- Remplacement du bouton « Rejoindre l’écosystème » par le sélecteur de langue dans les actions publiques.
+- Positionnement du bouton « Se connecter » à droite du sélecteur de langue.
+- Ajout d’un bouton primaire compact avec `ArrowRight`, fond `primary` et lien vers `/feed`.
+- Harmonisation de la même hiérarchie dans le menu mobile.
+- Modification publiée sur `dev` dans le commit `3642155`.
+
+### Validé
+
+- Typecheck web, lint web et `git diff --check` réussis.
+
+---
+
 ## 2026-08-23 — Alerte modale réutilisable pour les états bloquants
 
 ### Ajouté
