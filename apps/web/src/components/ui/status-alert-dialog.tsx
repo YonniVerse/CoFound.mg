@@ -1,11 +1,6 @@
+import { useEffect, type MouseEvent } from 'react'
 import type { LucideIcon } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { cn } from '@/lib/utils'
 
 interface StatusAlertDialogProps {
   open?: boolean
@@ -14,6 +9,7 @@ interface StatusAlertDialogProps {
   description: string
   statusCode: string | number
   statusLabel?: string
+  className?: string
 }
 
 export function StatusAlertDialog({
@@ -23,35 +19,64 @@ export function StatusAlertDialog({
   description,
   statusCode,
   statusLabel = 'Code statut',
+  className,
 }: StatusAlertDialogProps) {
-  return (
-    <Dialog open={open} modal onOpenChange={() => undefined}>
-      <DialogContent
-        showCloseButton={false}
-        onEscapeKeyDown={(event) => event.preventDefault()}
-        onPointerDownOutside={(event) => event.preventDefault()}
-        onInteractOutside={(event) => event.preventDefault()}
-        className="max-w-lg rounded-2xl border border-border bg-card p-8 text-center shadow-2xl sm:p-10"
-      >
-        <DialogHeader className="items-center gap-4">
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary shadow-2xs sm:h-24 sm:w-24">
-            <Icon className="h-10 w-10 sm:h-12 sm:w-12" aria-hidden="true" />
-          </div>
-          <div className="space-y-2">
-            <DialogTitle className="font-heading text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-              {title}
-            </DialogTitle>
-            <DialogDescription className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-              {description}
-            </DialogDescription>
-          </div>
-        </DialogHeader>
+  useEffect(() => {
+    if (!open) return
 
-        <div className="mx-auto mt-2 inline-flex items-center gap-2 rounded-lg bg-muted px-3 py-1.5 font-mono text-xs font-semibold text-muted-foreground">
-          <span className="uppercase tracking-wider">{statusLabel}</span>
-          <span className="text-foreground">{statusCode}</span>
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [open])
+
+  if (!open) return null
+
+  function stopBackgroundInteraction(event: MouseEvent<HTMLDivElement>) {
+    event.stopPropagation()
+  }
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="status-alert-title"
+      aria-describedby="status-alert-description"
+      className="fixed inset-0 z-[100] flex min-h-screen items-center justify-center overflow-y-auto bg-background/80 p-4 backdrop-blur-sm sm:p-6"
+      onClick={stopBackgroundInteraction}
+      onPointerDown={stopBackgroundInteraction}
+      onContextMenu={stopBackgroundInteraction}
+    >
+      <div
+        className={cn(
+          'w-full max-w-lg rounded-2xl border border-border bg-card p-8 text-center shadow-2xl sm:p-10',
+          className,
+        )}
+        onClick={stopBackgroundInteraction}
+        onPointerDown={stopBackgroundInteraction}
+      >
+        <div className="flex flex-col items-center gap-5">
+          <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary shadow-2xs sm:h-28 sm:w-28">
+            <Icon className="h-12 w-12 sm:h-14 sm:w-14" aria-hidden="true" />
+          </div>
+
+          <div className="space-y-2">
+            <h2 id="status-alert-title" className="font-heading text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+              {title}
+            </h2>
+            <p id="status-alert-description" className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+              {description}
+            </p>
+          </div>
+
+          <div className="inline-flex items-center gap-2 rounded-lg bg-muted px-3 py-1.5 font-mono text-xs font-semibold text-muted-foreground">
+            <span className="uppercase tracking-wider">{statusLabel}</span>
+            <span className="text-foreground">{statusCode}</span>
+          </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   )
 }
