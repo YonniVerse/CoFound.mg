@@ -10,6 +10,22 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-23 — Composition du titre Hero alignée sur la référence
+
+### Modifié
+
+- Réorganisation du titre Hero en trois lignes : « Ne cherche pas une », « idée. Trouve ton Co- » et « fondateur. ».
+- Conservation du dégradé `from-primary to-secondary` sur le mot « Co-fondateur ».
+- Ajout de clés i18n FR/MG dédiées afin de conserver la même composition visuelle dans les deux langues.
+- Résolution du conflit de rebase dans `i18n.tsx` sans écraser les changements distants.
+
+### Validé
+
+- Typecheck web, lint web, `git diff --check` et build de production web réussis.
+- Modification publiée sur `dev` dans les commits `177f301` et `904055d`.
+
+---
+
 ## 2026-08-23 — Internationalisation FR/MG de la landing page
 
 ### Décidé
