@@ -10,6 +10,22 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-23 — Carte promotionnelle Dream Match
+
+### Ajouté
+
+- Ajout d’une carte promotionnelle à droite du formulaire Dream Match sur desktop.
+- Ajout d’un affichage flex responsive avec empilement automatique sur mobile.
+- Ajout d’un contenu localisé FR/MG : titre, description, trois bénéfices et CTA vers `/feed`.
+- Construction de la carte en CSS avec les tokens CoFound et les composants partagés, sans asset génératif ni esthétique IA.
+
+### Validé
+
+- Typecheck web, lint web, `git diff --check` et build de production web réussis.
+- Modifications publiées sur `dev` dans les commits `452f34d` et `9bb2648`.
+
+---
+
 ## 2026-08-23 — Raffinement visuel de Dream Match
 
 ### Modifié
