@@ -1,4 +1,5 @@
 import { SkillTag } from "@/components/shared/SkillTag";
+import { useI18n } from '@/i18n';
 import { 
   ArrowRightLeft,
   Laptop,
@@ -30,15 +31,17 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 export function SectionForWho({ profileTypes }: SectionForWhoProps) {
+  const { t } = useI18n()
+  const translate = (key: string) => t(key as Parameters<typeof t>[0])
   return (
     <section className="py-24 bg-foreground text-background relative">
       <div className="max-w-7xl mx-auto px-6">
         
         {/* Header Minimaliste style YC */}
         <div className="max-w-3xl mb-20">
-          <p className="text-xs uppercase font-bold tracking-widest text-primary-light/80 mb-3">La loi de la complémentarité</p>
+          <p className="text-xs uppercase font-bold tracking-widest text-primary-light/80 mb-3">{t('landing.forWho.eyebrow')}</p>
           <h2 className="font-sans font-black text-4xl sm:text-5xl tracking-tight leading-none text-background">
-            Peu importe ta formation, ta pièce manquante est ici.
+            {t('landing.forWho.title')}
           </h2>
         </div>
 
@@ -54,7 +57,7 @@ export function SectionForWho({ profileTypes }: SectionForWhoProps) {
               <div>
                 {/* Top Section */}
                 <div className="flex items-center justify-between border-b border-border-dark/40 pb-4 mb-5">
-                  <h3 className="font-bold text-lg tracking-tight text-background">{profile.title}</h3>
+                  <h3 className="font-bold text-lg tracking-tight text-background">{translate(`landing.profileTypes.${profile.id}.title`)}</h3>
                   <div className="p-2.5 bg-border-dark/30 rounded-xl group-hover:scale-110 transition-transform">
                     <Icon className="w-6 h-6 text-background" strokeWidth={1.5} />
                   </div>
@@ -63,11 +66,11 @@ export function SectionForWho({ profileTypes }: SectionForWhoProps) {
                 {/* Loquet "Brings" (Superpouvoirs) */}
                 <div className="mb-6">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-primary-light block mb-2">
-                    Superpouvoirs à offrir
+                    {t('landing.forWho.brings')}
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {profile.brings.map((skill) => (
-                      <SkillTag key={skill} label={skill} variant="indigo" className="bg-primary/20 text-primary-light border-none" />
+                      <SkillTag key={skill} label={translate(`landing.profileTypes.${profile.id}.bring-${profile.brings.indexOf(skill)}`)} variant="indigo" className="bg-primary/20 text-primary-light border-none" />
                     ))}
                   </div>
                 </div>
@@ -78,12 +81,12 @@ export function SectionForWho({ profileTypes }: SectionForWhoProps) {
                 <div className="flex items-center gap-1.5 mb-2">
                   <ArrowRightLeft className="h-3 w-3 text-secondary" />
                   <span className="text-[10px] font-bold uppercase tracking-wider text-secondary block">
-                    Besoins critiques recherchés
+                    {t('landing.forWho.seeks')}
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {profile.seeks.map((skill) => (
-                    <SkillTag key={skill} label={skill} variant="orange" className="bg-secondary/20 text-secondary-light border-none" />
+                      <SkillTag key={skill} label={translate(`landing.profileTypes.${profile.id}.seek-${profile.seeks.indexOf(skill)}`)} variant="orange" className="bg-secondary/20 text-secondary-light border-none" />
                   ))}
                 </div>
               </div>
