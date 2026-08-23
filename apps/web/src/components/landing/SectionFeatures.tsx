@@ -54,10 +54,10 @@ export function SectionFeatures({ features }: SectionFeaturesProps) {
                   <Icon className="w-6 h-6 text-foreground" strokeWidth={1.5} />
                 </div>
                 <h3 className="font-heading font-bold text-lg text-foreground mb-3">
-                  {translate(`landing.features.feature-${feature.id}.title`)}
+                  {translate(`landing.features.${feature.id}.title`)}
                 </h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  {translate(`landing.features.feature-${feature.id}.description`)}
+                  {translate(`landing.features.${feature.id}.description`)}
                 </p>
               </div>
             );
