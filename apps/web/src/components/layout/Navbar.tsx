@@ -65,21 +65,14 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-3">
           <LanguageSwitcher />
           <Button
-            variant="ghost"
-            size="sm"
-            className="text-sm font-semibold hover:bg-muted"
-            asChild
-          >
-            <Link to="/login">{t('nav.login')}</Link>
-          </Button>
-          <Button
             variant="default"
-            size="icon-sm"
-            className="rounded-lg bg-primary text-primary-foreground shadow-sm transition-shadow hover:bg-primary/80 hover:shadow-md"
+            size="sm"
+            className="gap-1.5 rounded-lg bg-primary text-sm font-semibold text-primary-foreground shadow-sm transition-shadow hover:bg-primary/80 hover:shadow-md"
             asChild
           >
-            <Link to="/feed" aria-label={t('nav.exploreProfiles')}>
-              <ArrowRight className="h-4 w-4" />
+            <Link to="/login">
+              {t('nav.login')}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </Button>
         </div>
@@ -113,17 +106,14 @@ export function Navbar() {
           <div className="flex flex-col gap-3 border-t border-border/50 pt-4">
             <div className="flex items-center justify-between gap-3">
               <LanguageSwitcher />
-              <Button variant="ghost" className="font-semibold" asChild>
-                <Link to="/login">{t('nav.login')}</Link>
-              </Button>
               <Button
                 variant="default"
-                size="icon-sm"
-                className="rounded-lg bg-primary text-primary-foreground shadow-sm"
+                className="gap-1.5 rounded-lg bg-primary font-semibold text-primary-foreground shadow-sm"
                 asChild
               >
-                <Link to="/feed" aria-label={t('nav.exploreProfiles')}>
-                  <ArrowRight className="h-4 w-4" />
+                <Link to="/login">
+                  {t('nav.login')}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
               </Button>
             </div>
