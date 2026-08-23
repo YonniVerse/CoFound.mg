@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Briefcase, Plus, Search, SlidersHorizontal } from 'lucide-react'
+import { Plus, Search, SearchX, SlidersHorizontal } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { ProjectCard } from '@/components/feed/ProjectCard'
@@ -108,8 +108,8 @@ export default function ProjectsFeedPage() {
             {error && <FeedErrorWidget message={error} onRetry={() => window.location.reload()} />}
 
             {!isLoading && !error && apiProjects.length === 0 && (
-              <div className="rounded-xl border border-border bg-card p-12 text-center text-muted-foreground shadow-2xs">
-                <Briefcase className="mx-auto mb-3 h-8 w-8 text-primary" aria-hidden="true" />
+              <div className="p-12 text-center text-muted-foreground">
+                <SearchX className="mx-auto mb-3 h-8 w-8 text-primary" aria-hidden="true" />
                 <p className="font-semibold text-foreground">{t('projects.emptyTitle')}</p>
                 <p className="mt-1 text-sm">{t('projects.emptyHint')}</p>
               </div>
