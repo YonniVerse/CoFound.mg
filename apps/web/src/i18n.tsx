@@ -346,6 +346,13 @@ const messages = {
         "dreamMatch.saved": "Préférences enregistrées.",
         "dreamMatch.saving": "Enregistrement…",
         "dreamMatch.save": "Enregistrer mes préférences",
+        "dreamMatch.promo.eyebrow": "COFOUND.MG POUR VOUS",
+        "dreamMatch.promo.title": "Trouvez la complémentarité qui fera avancer votre projet.",
+        "dreamMatch.promo.body": "Des profils engagés, des compétences qui se complètent et un espace pensé pour construire ensemble.",
+        "dreamMatch.promo.item1": "Des profils complémentaires",
+        "dreamMatch.promo.item2": "Des projets qui recrutent",
+        "dreamMatch.promo.item3": "Un cadre respectueux et confidentiel",
+        "dreamMatch.promo.cta": "Explorer les profils",
         "auth.activation.securityNote":
             "Activation sécurisée par token individuel",
         "auth.forgotPassword.securityNote":
@@ -846,6 +853,13 @@ const messages = {
         "dreamMatch.saved": "Voatahiry ny safidy.",
         "dreamMatch.saving": "Eo am-pitahirizana…",
         "dreamMatch.save": "Hitahiry ny safidiko",
+        "dreamMatch.promo.eyebrow": "COFOUND.MG HO ANAO",
+        "dreamMatch.promo.title": "Tadiavo ny fifamenoana hampandroso ny tetikasanao.",
+        "dreamMatch.promo.body": "Mpanorina mazoto, fahaiza-manao mifameno ary sehatra natao hananganana miaraka.",
+        "dreamMatch.promo.item1": "Profil mifameno",
+        "dreamMatch.promo.item2": "Tetikasa mitady mpikambana",
+        "dreamMatch.promo.item3": "Sehatra manaja sy mitahiry tsiambaratelo",
+        "dreamMatch.promo.cta": "Hijery ireo profil",
         "auth.activation.securityNote":
             "Fampahavitrihana azo antoka amin’ny token manokana",
         "auth.forgotPassword.securityNote":
