@@ -10,6 +10,28 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-23 — Internationalisation FR/MG de la landing page
+
+### Décidé
+
+- Conserver les données mock dans `landing.json` et traduire les contenus affichés par des identifiants stables, afin de séparer les données de présentation du texte utilisateur.
+
+### Modifié
+
+- Localisation du hero : accroche, titre, paragraphe, rôles et statistiques.
+- Localisation des sections étapes, fonctionnalités, profils, inclusion et témoignages.
+- Ajout du sous-texte FR/MG des témoignages et traduction des citations et domaines dynamiques.
+- Localisation de l’état de chargement de `LandingPage`.
+- Correction des chemins de clés dynamiques pour les cartes `feat-*` et `inclusion-*`.
+- Mise à jour de `NEXT_SESSION.md` avec l’état vivant et la prochaine vérification visuelle.
+
+### Validé
+
+- Typecheck web, lint web, `git diff --check` et build de production web réussis.
+- Modifications publiées sur `dev` dans les commits `f1fbe33`, `a34af10`, `eebbe58`, `dcb0f00`, `d81a5d4`, `7ba5488`, `a768dff`, `4c01288`, `dc3ddad`, `952e08b`, `57d521f`, `0331010` et `f4039fd`.
+
+---
+
 ## 2026-08-23 — Réorganisation de la Navbar publique
 
 ### Modifié

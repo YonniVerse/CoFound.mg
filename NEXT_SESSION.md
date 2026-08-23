@@ -1,45 +1,50 @@
 # Reprise de session
 
 **Dernière mise à jour** : 2026-08-23
-**Phase** : Harmonisation de la Navbar publique
-**Vague / ticket** : E-11 — connexion et accès
+**Phase** : Internationalisation complète de la landing page
+**Vague / ticket** : Landing / i18n FR-MG
 **Branche actuelle** : `dev`
 
 ## 1. État actuel
 
-La Navbar publique utilise maintenant le sélecteur de langue à la place du bouton « Rejoindre l’écosystème ». Le bouton « Se connecter » est placé à droite avec un fond `primary` et contient directement une flèche droite. Il mène vers `/login`. La disposition est harmonisée sur desktop et mobile.
+La landing page est câblée sur le contexte i18n pour ses sections publiques principales. Les traductions FR et MG existent dans `apps/web/src/i18n.tsx`, et les composants utilisent désormais `t()` pour les contenus de hero, étapes, fonctionnalités, profils, inclusion, témoignages et chargement.
+
+`dev` et `origin/dev` sont synchronisés. Le typecheck, le lint et le build de production web ont réussi après les dernières modifications. Aucun fichier de code n’est en attente de commit.
 
 ## 2. Tâches terminées
 
-`Navbar` affiche désormais `LanguageSwitcher`, puis un bouton primaire « Se connecter » contenant directement `ArrowRight`. Le bouton flèche séparé et le lien vers `/feed` ont été supprimés des actions publiques. Le menu mobile reprend la même hiérarchie.
-
-`StatusAlertDialog` ignore les codes non numériques ou inférieurs/égaux à 500. `ProjectsFeedPage` et `NotificationsPage` affichent donc leurs états vides `204` directement dans la page. Dans `/notifications`, seule l’erreur de chargement `503` utilise l’alerte destructrice avec Retour, Réessayer et explication du statut. Le bouton Réessayer relance réellement l’appel API et le bouton Retour utilise l’historique du navigateur.
+- Traduction du hero : accroche, titre, paragraphe, rôles des profils et libellés des statistiques.
+- Traduction de la section étapes : eyebrow, titre, titres et descriptions des trois étapes.
+- Traduction de la section fonctionnalités : eyebrow, titre, description et cartes `feat-*`.
+- Traduction de la section « Pour qui » : eyebrow, titre, labels « à offrir »/« recherchés », titres et compétences des profils `type-*`.
+- Traduction de la section inclusion : titres, métrique, label statistique, cartes `inclusion-*` et manifeste.
+- Traduction des témoignages : eyebrow, titre, sous-texte, domaine, citations et libellés d’accessibilité des contrôles.
+- Traduction de l’état de chargement dans `LandingPage.tsx`.
+- Corrections des chemins de clés dynamiques pour les fonctionnalités et l’inclusion.
 
 ## 3. Fichiers importants modifiés
 
-- `apps/web/src/components/layout/Navbar.tsx` : actions publiques réorganisées avec langue, connexion et flèche primaire.
-- `apps/web/src/components/ui/status-alert-dialog.tsx` : composant réutilisable d’alerte modale bloquante avec code statut, message et actions.
-- `apps/web/src/pages/ProjectsFeedPage.tsx` : état vide classique sans dialogue pour le statut `204`.
-- `apps/web/src/pages/NotificationsPage.tsx` : interface harmonisée et dialogue réservé au statut `503`.
-- `apps/web/src/pages/NotificationsPage.tsx` : interface harmonisée avec filtres, cartes, icônes par type et rail sticky.
-- `apps/web/src/pages/ForgotPasswordPage.tsx` : page centrée sans section droite, fond en grille et formulaire harmonisé.
-- `apps/web/src/pages/ProjectCreatePage.tsx` : interface `/projects/new` harmonisée avec les autres pages et retour vers `/projects`.
-- `apps/web/src/pages/ProjectsFeedPage.tsx` : interface `/projects` harmonisée avec FeedPage et SearchPage, bouton « Nouveau projet ».
-- `apps/web/src/pages/LoginPage.tsx` : cards revenues à `h-full`.
-- `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
-
-Les commits de code publiés pour cette session sont `3642155` pour la première réorganisation de Navbar et `947f0bf` pour l’intégration finale de la flèche dans le bouton primaire « Se connecter ». Les commits précédents restent documentés dans l’historique Git.
+- `apps/web/src/i18n.tsx` : clés FR/MG de la landing et sous-texte des témoignages.
+- `apps/web/src/pages/LandingPage.tsx` : contexte i18n pour l’état de chargement.
+- `apps/web/src/components/landing/SectionHero.tsx` : hero et données visibles localisés.
+- `apps/web/src/components/landing/SectionHowItWorks.tsx` : pipeline localisé.
+- `apps/web/src/components/landing/SectionFeatures.tsx` : cartes et textes localisés.
+- `apps/web/src/components/landing/SectionForWho.tsx` : profils, compétences et labels localisés.
+- `apps/web/src/components/landing/SectionInclusion.tsx` : impact et cartes d’inclusion localisés.
+- `apps/web/src/components/landing/SectionTestimonials.tsx` : contenus et contrôles localisés.
 
 ## 4. Validations et problèmes connus
 
-Le typecheck web et le lint web ont réussi après l’intégration finale de la flèche dans le bouton de connexion. Le build shared et le build web doivent être rejoués avant la prochaine livraison. `dev` local et `origin/dev` sont synchronisés et propres.
+Les commandes suivantes ont réussi : `pnpm --filter @cofound/web typecheck`, `pnpm --filter @cofound/web lint`, `git diff --check` et `pnpm --filter @cofound/web build`.
 
-L’alerte de statut s’affiche au-dessus de toute la page avec un voile semi-opaque et un flou léger. Elle reste sans bouton de fermeture et sans animation interactive.
+Aucun blocage connu. Une vérification visuelle FR/MG reste nécessaire pour confirmer les longueurs de texte sur desktop et mobile, notamment le hero, les cartes de profils et les témoignages malgaches.
 
 ## 5. Prochaine action
 
-Ouvrir la landing page en desktop et mobile pour vérifier l’ordre langue → bouton primaire « Se connecter » avec flèche et la fermeture correcte du menu mobile. Contrôler ensuite `/notifications` et `/projects` pour confirmer que les alertes précédentes restent inchangées.
+Ouvrir la landing en FR puis en MG sur desktop et mobile, vérifier les six sections et corriger uniquement les éventuels débordements de texte dans `SectionHero.tsx`, `SectionForWho.tsx` et `SectionTestimonials.tsx`, puis relancer `pnpm --filter @cofound/web build`.
 
 ## 6. Décisions et contexte de reprise
 
-`StatusAlertDialog` utilise un overlay React autonome et les tokens du design system afin de garantir un rendu visible dans tous les environnements. Aucun changement d’architecture, de données, de RBAC, d’i18n ou de logique d’authentification n’a été introduit.
+Les contenus de landing sont traduits par identifiants stables (`feat-*`, `type-*`, `inclusion-*`, `testimonial-*`) afin de conserver les données mock séparées du texte affiché. Aucun changement durable d’architecture, de modèle de données, de RBAC ou de périmètre n’a été introduit pendant cette session.
+
+Les commits de cette session sont publiés sur `dev`, notamment `f1fbe33`, `a34af10`, `eebbe58`, `dcb0f00`, `d81a5d4`, `7ba5488`, `a768dff`, `4c01288`, `dc3ddad`, `952e08b`, `57d521f`, `0331010` et `f4039fd`.
