@@ -10,6 +10,24 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-23 — Harmonisation de la page Projects
+
+### Modifié
+
+- Refonte de `ProjectsFeedPage` pour aligner `/projects` avec `FeedPage`, `SearchPage` et le design system existant.
+- Harmonisation de la hiérarchie visuelle, des espacements, de la barre de recherche (`h-11`, `rounded-xl`, `bg-card`, `shadow-2xs`) et des boutons de filtres.
+- Ajout du rail droit sticky avec `ParityWidget` et `SuggestedProfilesWidget`, comme dans FeedPage.
+- Remplacement de `TalentCardSkeleton` par `ProjectCardSkeleton` pour un chargement cohérent avec les cartes projet.
+- Conservation de la recherche, du filtre de statut, de la pagination infinie, des actions des cards et des données existantes.
+- Aucun visuel génératif, image ou effet décoratif de type IA ajouté.
+- Modification publiée sur `dev` dans le commit `0571b06`.
+
+### Validé
+
+- Typecheck web, lint web et `git diff --check` réussis.
+
+---
+
 ## 2026-08-22 — Séparation ondulée de LoginPage
 
 ### Modifié
