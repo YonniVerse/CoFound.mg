@@ -10,6 +10,22 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-23 — Dialogue de candidature aligné sur LoginPage
+
+### Modifié
+
+- Remplacement du select natif par le composant Select partagé.
+- Harmonisation du select et du textarea avec les contrôles de LoginPage : hauteur, fond `bg-card`, bordure, rayon, typographie, ombrage et focus primaire.
+- Harmonisation des boutons Annuler et Envoyer avec le bouton primaire de LoginPage.
+- Conservation de la candidature spontanée via la valeur neutre `none`, sans transmission de `positionId`.
+
+### Validé
+
+- Typecheck web, lint web, `git diff --check` et build de production web réussis.
+- Modification publiée sur `dev` dans le commit `9300dcc`.
+
+---
+
 ## 2026-08-23 — Composition du titre Hero alignée sur la référence
 
 ### Modifié
