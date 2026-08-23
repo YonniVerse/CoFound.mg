@@ -11,7 +11,7 @@ Un composant réutilisable `StatusAlertDialog` est maintenant disponible pour af
 
 ## 2. Tâches terminées
 
-`StatusAlertDialog` repose sur la primitive Dialog existante, masque le bouton de fermeture, bloque Escape et les clics hors boîte, affiche une grande icône Lucide, un titre, une description et un badge de code statut. Il est conçu pour être réutilisé sur d’autres pages avec une simple configuration de props.
+`StatusAlertDialog` utilise désormais un overlay fixe contrôlé, avec `z-[100]`, `aria-modal`, grande icône Lucide, titre, description et badge de code statut. Il verrouille `document.body` avec `overflow: hidden` et intercepte les clics, pointeurs et menus contextuels afin qu’aucune interaction avec la page sous-jacente ne soit possible. Il est conçu pour être réutilisé sur d’autres pages avec une simple configuration de props.
 
 `ProjectsFeedPage` affiche cette alerte lorsque la liste est vide : `SearchX`, les textes de l’état vide et le code `204` sont transmis par la page. Les données, la recherche, les filtres, la pagination et les actions restent inchangés. Aucun décor génératif, image ou effet visuel artificiel n’a été ajouté.
 
@@ -26,13 +26,13 @@ Un composant réutilisable `StatusAlertDialog` est maintenant disponible pour af
 - `apps/web/src/pages/LoginPage.tsx` : cards revenues à `h-full`.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-Les commits de code publiés sont `6d8aa0c` pour l’intégration de l’alerte dans ProjectsFeedPage, `97b7080` pour la création et le typage de StatusAlertDialog, `85caef1` pour NotificationsPage après intégration du commit distant `8090412`, et les commits précédents de refonte des pages.
+Les commits de code publiés sont `8f2f370` pour rendre l’overlay réellement visible et bloquant, `6d8aa0c` pour son intégration dans ProjectsFeedPage, `97b7080` pour la création et le typage de StatusAlertDialog, `85caef1` pour NotificationsPage après intégration du commit distant `8090412`, et les commits précédents de refonte des pages.
 
 ## 4. Validations et problèmes connus
 
-Le typecheck web, le lint web, la compilation de `@cofound/shared` et le build web ont réussi. `dev` local et `origin/dev` sont synchronisés et propres.
+Le typecheck web et le lint web ont réussi après le correctif d’overlay. Le build shared et le build web doivent être rejoués avant la prochaine livraison. `dev` local et `origin/dev` sont synchronisés et propres.
 
-La séparation wave est visible uniquement sur desktop comme la section droite elle-même. Elle reste statique et décorative, sans animation automatique.
+L’alerte de statut s’affiche au-dessus de toute la page avec un voile semi-opaque et un flou léger. Elle reste sans bouton de fermeture et sans animation interactive.
 
 ## 5. Prochaine action
 
@@ -40,4 +40,4 @@ Ouvrir `/projects` avec une liste vide pour vérifier la boîte d’alerte, la g
 
 ## 6. Décisions et contexte de reprise
 
-`StatusAlertDialog` utilise la primitive Dialog et les tokens du design system ; son ouverture contrôlée empêche les interactions sous-jacentes. Le fond en grille continue d’utiliser `border` et `background`. Aucun changement d’architecture, de données, de RBAC, d’i18n ou de logique d’authentification n’a été introduit.
+`StatusAlertDialog` utilise un overlay React autonome et les tokens du design system afin de garantir un rendu visible dans tous les environnements. Aucun changement d’architecture, de données, de RBAC, d’i18n ou de logique d’authentification n’a été introduit.
