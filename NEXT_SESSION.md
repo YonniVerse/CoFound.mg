@@ -7,11 +7,11 @@
 
 ## 1. État actuel
 
-La Navbar publique utilise maintenant le sélecteur de langue à la place du bouton « Rejoindre l’écosystème ». Le bouton « Se connecter » est placé à droite, suivi d’une action primaire compacte avec une flèche droite vers `/feed`. La disposition est harmonisée sur desktop et mobile.
+La Navbar publique utilise maintenant le sélecteur de langue à la place du bouton « Rejoindre l’écosystème ». Le bouton « Se connecter » est placé à droite avec un fond `primary` et contient directement une flèche droite. Il mène vers `/login`. La disposition est harmonisée sur desktop et mobile.
 
 ## 2. Tâches terminées
 
-`Navbar` affiche désormais `LanguageSwitcher`, puis le lien de connexion et un bouton carré primaire contenant `ArrowRight`. Le bouton primaire conserve le lien vers `/feed`, tandis que le texte « Rejoindre l’écosystème » n’est plus affiché dans les actions de navigation. Le menu mobile reprend la même hiérarchie avec les trois actions.
+`Navbar` affiche désormais `LanguageSwitcher`, puis un bouton primaire « Se connecter » contenant directement `ArrowRight`. Le bouton flèche séparé et le lien vers `/feed` ont été supprimés des actions publiques. Le menu mobile reprend la même hiérarchie.
 
 `StatusAlertDialog` ignore les codes non numériques ou inférieurs/égaux à 500. `ProjectsFeedPage` et `NotificationsPage` affichent donc leurs états vides `204` directement dans la page. Dans `/notifications`, seule l’erreur de chargement `503` utilise l’alerte destructrice avec Retour, Réessayer et explication du statut. Le bouton Réessayer relance réellement l’appel API et le bouton Retour utilise l’historique du navigateur.
 
@@ -28,17 +28,17 @@ La Navbar publique utilise maintenant le sélecteur de langue à la place du bou
 - `apps/web/src/pages/LoginPage.tsx` : cards revenues à `h-full`.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-Le commit de code publié pour cette session est `3642155` pour la réorganisation de Navbar. Les commits précédents concernant les alertes et les pages harmonisées restent documentés dans l’historique Git.
+Les commits de code publiés pour cette session sont `3642155` pour la première réorganisation de Navbar et `947f0bf` pour l’intégration finale de la flèche dans le bouton primaire « Se connecter ». Les commits précédents restent documentés dans l’historique Git.
 
 ## 4. Validations et problèmes connus
 
-Le typecheck web et le lint web ont réussi après la réorganisation de Navbar. Le build shared et le build web doivent être rejoués avant la prochaine livraison. `dev` local et `origin/dev` sont synchronisés et propres.
+Le typecheck web et le lint web ont réussi après l’intégration finale de la flèche dans le bouton de connexion. Le build shared et le build web doivent être rejoués avant la prochaine livraison. `dev` local et `origin/dev` sont synchronisés et propres.
 
 L’alerte de statut s’affiche au-dessus de toute la page avec un voile semi-opaque et un flou léger. Elle reste sans bouton de fermeture et sans animation interactive.
 
 ## 5. Prochaine action
 
-Ouvrir la landing page en desktop et mobile pour vérifier l’ordre langue → connexion → flèche primaire, le lien vers `/feed` et la fermeture correcte du menu mobile. Contrôler ensuite `/notifications` et `/projects` pour confirmer que les alertes précédentes restent inchangées.
+Ouvrir la landing page en desktop et mobile pour vérifier l’ordre langue → bouton primaire « Se connecter » avec flèche et la fermeture correcte du menu mobile. Contrôler ensuite `/notifications` et `/projects` pour confirmer que les alertes précédentes restent inchangées.
 
 ## 6. Décisions et contexte de reprise
 
