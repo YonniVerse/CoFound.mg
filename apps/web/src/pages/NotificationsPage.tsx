@@ -114,14 +114,15 @@ export default function NotificationsPage() {
 
             <section className="space-y-3" aria-live="polite" aria-label="Liste des notifications">
               {!error && !isLoading && visibleItems.length === 0 ? (
-                <StatusAlertDialog
-                  icon={Bell}
-                  title={showUnreadOnly ? 'Aucune notification non lue.' : 'Aucune notification.'}
-                  description={showUnreadOnly ? 'Vous êtes à jour pour le moment.' : 'Les nouvelles activités apparaîtront ici.'}
-                  statusCode="204"
-                  statusMessage="Le code 204 indique qu’aucune notification n’est disponible pour le moment."
-                  onBack={() => window.history.back()}
-                />
+                <div className="p-12 text-center text-muted-foreground">
+                  <Bell className="mx-auto mb-3 h-10 w-10 text-primary" aria-hidden="true" />
+                  <p className="font-semibold text-foreground">
+                    {showUnreadOnly ? 'Aucune notification non lue.' : 'Aucune notification.'}
+                  </p>
+                  <p className="mt-1 text-sm">
+                    {showUnreadOnly ? 'Vous êtes à jour pour le moment.' : 'Les nouvelles activités apparaîtront ici.'}
+                  </p>
+                </div>
               ) : !error ? (
                 visibleItems.map((item) => {
                   const Icon = getNotificationIcon(item.type)
