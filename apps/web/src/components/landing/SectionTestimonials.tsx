@@ -18,6 +18,7 @@ interface SectionTestimonialsProps {
 
 export function SectionTestimonials({ testimonials }: SectionTestimonialsProps) {
   const { t } = useI18n();
+  const translate = (key: string) => t(key as Parameters<typeof t>[0])
   const [active, setActive] = useState(0);
 
   const handleNext = React.useCallback(() => {
@@ -123,10 +124,10 @@ export function SectionTestimonials({ testimonials }: SectionTestimonialsProps) 
                       {current.name}
                     </h3>
                     <p className="text-sm text-muted-foreground font-medium mt-1">
-                      {current.school} <span className="mx-1">·</span> {current.field}
+                      {current.school} <span className="mx-1">·</span> {translate(`landing.testimonials.${current.id}.field`)}
                     </p>
                     <motion.p className="mt-8 text-lg text-foreground/90 leading-relaxed italic">
-                      "{current.quote}"
+                      "{translate(`landing.testimonials.${current.id}.quote`)}"
                     </motion.p>
                   </div>
                 </motion.div>
