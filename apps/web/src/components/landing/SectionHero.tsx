@@ -69,7 +69,9 @@ export function SectionHero({ profiles, stats }: SectionHeroProps) {
                     <h1 className="font-sans font-black text-5xl sm:text-6xl xl:text-[68px] text-foreground mt-4 leading-[0.95] tracking-tight">
                         {t("landing.hero.titleLine1")}
                         <br />
-                        {t("landing.hero.titleLine2")} {" "}
+                        {t("landing.hero.titleLine2")}
+                        <br />
+                        {t("landing.hero.titleLine3")} {" "}
                         <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">
                             {t("landing.hero.titleAccentStart")}
                             <br />
