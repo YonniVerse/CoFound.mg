@@ -159,26 +159,26 @@ export default function DreamMatchPage() {
               </form>
             </section>
 
-            <aside aria-labelledby="promo-title" className="w-full lg:sticky lg:top-[90px] lg:max-w-sm">
-              <div className="relative overflow-hidden rounded-xl border border-border-dark/70 bg-foreground p-6 text-background shadow-2xs">
-                <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full border border-primary/20" />
-                <div className="pointer-events-none absolute -bottom-12 -left-10 h-28 w-28 rounded-full border border-secondary/20" />
+            <aside aria-labelledby="promo-title" className="w-full lg:sticky lg:top-[90px] lg:max-w-xs lg:shrink-0">
+              <div className="relative overflow-hidden rounded-xl border border-border-dark/70 bg-foreground p-5 text-background shadow-2xs">
+                <div className="pointer-events-none absolute -right-7 -top-7 h-24 w-24 rounded-full border border-primary/20" />
+                <div className="pointer-events-none absolute -bottom-10 -left-8 h-24 w-24 rounded-full border border-secondary/20" />
                 <div className="relative">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-primary-light/30 bg-primary/15 text-primary-light">
-                    <HeartHandshake className="h-5 w-5" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-primary-light/30 bg-primary/15 text-primary-light">
+                    <HeartHandshake className="h-4 w-4" />
                   </div>
-                  <p className="mt-6 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-light">{t('dreamMatch.promo.eyebrow')}</p>
-                  <h2 id="promo-title" className="mt-3 text-2xl font-bold leading-tight tracking-tight">{t('dreamMatch.promo.title')}</h2>
-                  <p className="mt-4 text-sm leading-relaxed text-background/70">{t('dreamMatch.promo.body')}</p>
-                  <ul className="mt-6 space-y-3 border-t border-border-dark/60 pt-5">
+                  <p className="mt-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary-light">{t('dreamMatch.promo.eyebrow')}</p>
+                  <h2 id="promo-title" className="mt-2.5 text-xl font-bold leading-tight tracking-tight">{t('dreamMatch.promo.title')}</h2>
+                  <p className="mt-3 text-sm leading-relaxed text-background/70">{t('dreamMatch.promo.body')}</p>
+                  <ul className="mt-5 space-y-2.5 border-t border-border-dark/60 pt-4">
                     {[t('dreamMatch.promo.item1'), t('dreamMatch.promo.item2'), t('dreamMatch.promo.item3')].map((item) => (
                       <li key={item} className="flex items-start gap-2 text-sm text-background/85">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary-light" />
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary-light" />
                         <span>{item}</span>
                       </li>
                     ))}
                   </ul>
-                  <Button asChild variant="outline" size="sm" className="mt-6 h-9 w-full gap-1.5 rounded-lg border-border-dark bg-background/10 px-3.5 text-xs font-medium text-background shadow-none transition-colors hover:bg-background/15 hover:text-background sm:text-sm">
+                  <Button asChild variant="outline" size="sm" className="mt-5 h-9 w-full gap-1.5 rounded-lg border-border-dark bg-background/10 px-3.5 text-xs font-medium text-background shadow-none transition-colors hover:bg-background/15 hover:text-background sm:text-sm">
                     <Link to="/feed">
                       {t('dreamMatch.promo.cta')}
                       <ArrowRight className="h-4 w-4" />
