@@ -18,11 +18,15 @@ Retiré · En cours · Bloqué**.
 - Ajout d’une grande icône Lucide, d’un titre, d’une description et d’un badge de code statut configurable.
 - Blocage des interactions avec la page derrière l’alerte : aucun bouton de fermeture, Escape et clic extérieur neutralisés.
 - Ajout des boutons configurables `Retour` et `Réessayer`, ainsi que d’un message explicatif du code statut.
+- Limitation du dialogue aux codes HTTP numériques strictement supérieurs à `500` ; les statuts `204` et autres statuts normaux ne sont plus modalisés.
+- Description rendue optionnelle afin de supprimer le texte de service indisponible du dialogue `503`.
 - Correction du rendu avec un overlay React fixe `z-[100]`, un voile semi-opaque, un flou léger et un verrouillage de `document.body` en `overflow: hidden`.
 - Intégration dans l’état vide de `/projects` avec `SearchX` et le code statut `204`.
 - Intégration dans `/notifications` : erreur de chargement avec ton destructif et code `503`, absence de notifications avec code `204`.
 - Ajout du bouton `Réessayer` qui relance l’appel API et du bouton `Retour` qui utilise l’historique du navigateur.
-- Suppression des messages inline concurrents afin d’afficher une seule boîte modale bloquante.
+- Retour aux états vides classiques et non bloquants pour les statuts `204` dans `/notifications` et `/projects`.
+- Suppression des messages inline concurrents uniquement pour l’erreur `503` afin d’afficher une boîte modale bloquante.
+- Suppression du texte « Le service de notifications est temporairement indisponible. Réessayez plus tard. » du dialogue `503`.
 - Composant publié sur `dev` dans les commits `97b7080`, `8f2f370`, `afa6ab2` et `8b03dcc`, intégrations publiées dans `6d8aa0c`, `9eb7135` et `4bb9fe0`.
 
 ### Validé
