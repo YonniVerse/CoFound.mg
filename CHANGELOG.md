@@ -20,7 +20,9 @@ Retiré · En cours · Bloqué**.
 - Ajout de compteurs de caractères, d’un message d’erreur visuel et d’un rail d’aide sticky sobre.
 - Conservation de la validation `projectCreateSchema`, de la création API, du statut brouillon et de la redirection vers le projet créé.
 - Aucun visuel génératif, aucune image et aucun décor de type IA ajouté.
-- Modification publiée sur `dev` dans le commit `d6d4282`.
+- Ajout d’un bouton « Nouveau projet » dans l’en-tête de `/projects`, avec lien vers `/projects/new`.
+- Remplacement du bouton outline de `/projects/new` par un retour textuel avec flèche et déplacement au survol, inspiré de LoginPage.
+- Modifications publiées sur `dev` dans les commits `397087f` et `1b52dfc`.
 
 ### Validé
 
