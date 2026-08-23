@@ -16,9 +16,11 @@ Retiré · En cours · Bloqué**.
 
 - Remplacement du bouton « Rejoindre l’écosystème » par le sélecteur de langue dans les actions publiques.
 - Positionnement du bouton « Se connecter » à droite du sélecteur de langue.
-- Ajout d’un bouton primaire compact avec `ArrowRight`, fond `primary` et lien vers `/feed`.
+- Transformation du bouton « Se connecter » en bouton primaire avec fond `primary`.
+- Intégration directe de `ArrowRight` dans le bouton de connexion, avec lien vers `/login`.
+- Suppression du bouton flèche séparé et du lien d’action vers `/feed` dans la Navbar publique.
 - Harmonisation de la même hiérarchie dans le menu mobile.
-- Modification publiée sur `dev` dans le commit `3642155`.
+- Modification publiée sur `dev` dans le commit `947f0bf`.
 
 ### Validé
 
