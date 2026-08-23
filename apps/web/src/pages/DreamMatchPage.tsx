@@ -22,6 +22,8 @@ const factorLabels = [
   { key: 'availability', label: 'Disponibilité compatible', maximum: 25 },
 ] as const
 
+const fieldClassName = 'h-11 rounded-xl border border-border/80 bg-card px-4 text-sm font-medium shadow-2xs transition-[border-color,box-shadow] placeholder:text-muted-foreground/80 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20'
+
 export default function DreamMatchPage() {
   const { t } = useI18n()
   const [form, setForm] = useState(emptyForm)
@@ -104,79 +106,101 @@ export default function DreamMatchPage() {
   return (
     <DashboardLayout>
       <main className="min-h-screen bg-muted/20">
-        <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-10">
-          <div className="mb-8 flex items-start gap-4">
-            <div className="rounded-xl border border-primary/20 bg-primary/10 p-3 text-primary"><HeartHandshake className="h-6 w-6" /></div>
-        <div>
-            <div>
+        <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-10 lg:py-10">
+          <header className="mb-10 flex items-start gap-4 border-b border-border/60 pb-8">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary">
+              <HeartHandshake className="h-5 w-5" />
+            </div>
+            <div className="min-w-0">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Dream-Match</p>
-              <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground">Décrivez la collaboration que vous recherchez</h1>
+              <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Décrivez la collaboration que vous recherchez</h1>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">Ces préférences servent à proposer des complémentarités. Votre identité et votre genre ne sont jamais exposés dans les suggestions.</p>
             </div>
-        </div>
-          </div>
+          </header>
 
-          <form onSubmit={submit} className="space-y-6 rounded-xl border border-border/70 bg-card p-5 shadow-2xs sm:p-6">
-        <div className="grid gap-5 sm:grid-cols-2">
-            <label className="space-y-1.5">
-              <span className="text-xs font-semibold text-foreground">Disponibilité minimale (heures/semaine)</span>
-              <Input className="h-11 rounded-xl border border-border/80 bg-card px-4 text-sm font-medium shadow-2xs transition-[border-color,box-shadow] focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20" type="number" min="0" max="168" value={form.minAvailability ?? ''} onChange={(event) => setForm({ ...form, minAvailability: event.target.value ? Number(event.target.value) : null })} />
-            </label>
-            <label className="space-y-1.5">
-              <span className="text-xs font-semibold text-foreground">Taille d’équipe souhaitée</span>
-              <Input className="h-11 rounded-xl border border-border/80 bg-card px-4 text-sm font-medium shadow-2xs transition-[border-color,box-shadow] focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20" type="number" min="2" max="20" value={form.preferredTeamSize ?? ''} onChange={(event) => setForm({ ...form, preferredTeamSize: event.target.value ? Number(event.target.value) : null })} />
-            </label>
-        </div>
-          <label className="block space-y-1.5">
-            <span className="text-xs font-semibold text-foreground">Établissement ou environnement préféré</span>
-            <Input className="h-11 rounded-xl border border-border/80 bg-card px-4 text-sm font-medium shadow-2xs transition-[border-color,box-shadow] placeholder:text-muted-foreground/80 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20" maxLength={160} value={form.institutionPref ?? ''} onChange={(event) => setForm({ ...form, institutionPref: event.target.value || null })} placeholder="Ex. école, incubateur, secteur…" />
-          </label>
-          <label className="flex items-start gap-3 rounded-xl border border-border/70 bg-muted/30 p-4 text-sm leading-relaxed">
-            <input className="mt-0.5 h-4 w-4 rounded border-border accent-primary" type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} />
-          <span>{t('dreamMatch.consent')}</span>
-        </label>
-          {error && <p role="alert" className="rounded-xl border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">{error}</p>}
-          {saved && <p role="status" className="flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm text-emerald-700"><Check className="h-4 w-4" />{t('dreamMatch.saved')}</p>}
-          <Button type="submit" disabled={isSaving} className="h-9 gap-1.5 rounded-lg px-3.5 text-xs font-medium shadow-none transition-colors sm:text-sm">{isSaving ? t('dreamMatch.saving') : t('dreamMatch.save')}</Button>
-        </form>
+          <section aria-labelledby="preferences-title" className="max-w-3xl">
+            <form onSubmit={submit} className="overflow-hidden rounded-xl border border-border/70 bg-card shadow-2xs">
+              <div className="border-b border-border/60 px-5 py-4 sm:px-6">
+                <h2 id="preferences-title" className="text-base font-bold tracking-tight text-foreground">Vos préférences</h2>
+                <p className="mt-1 text-sm text-muted-foreground">Ajustez les critères utilisés pour identifier des profils complémentaires.</p>
+              </div>
 
-          <section aria-labelledby="suggestions-title" className="mt-10 space-y-4">
-            <div className="flex items-center gap-3">
-              <SlidersHorizontal className="h-5 w-5 text-primary" />
+              <div className="space-y-6 p-5 sm:p-6">
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <label className="space-y-1.5">
+                    <span className="text-xs font-semibold text-foreground">Disponibilité minimale (heures/semaine)</span>
+                    <Input className={fieldClassName} type="number" min="0" max="168" value={form.minAvailability ?? ''} onChange={(event) => setForm({ ...form, minAvailability: event.target.value ? Number(event.target.value) : null })} />
+                  </label>
+                  <label className="space-y-1.5">
+                    <span className="text-xs font-semibold text-foreground">Taille d’équipe souhaitée</span>
+                    <Input className={fieldClassName} type="number" min="2" max="20" value={form.preferredTeamSize ?? ''} onChange={(event) => setForm({ ...form, preferredTeamSize: event.target.value ? Number(event.target.value) : null })} />
+                  </label>
+                </div>
+
+                <label className="block space-y-1.5">
+                  <span className="text-xs font-semibold text-foreground">Établissement ou environnement préféré</span>
+                  <Input className={fieldClassName} maxLength={160} value={form.institutionPref ?? ''} onChange={(event) => setForm({ ...form, institutionPref: event.target.value || null })} placeholder="Ex. école, incubateur, secteur…" />
+                </label>
+
+                <label className="flex items-start gap-3 rounded-xl border border-border/70 bg-muted/20 p-4 text-sm leading-relaxed">
+                  <input className="mt-0.5 h-4 w-4 rounded border-border accent-primary" type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} />
+                  <span>{t('dreamMatch.consent')}</span>
+                </label>
+
+                {error && <p role="alert" className="rounded-xl border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">{error}</p>}
+                {saved && <p role="status" className="flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm text-emerald-700"><Check className="h-4 w-4" />{t('dreamMatch.saved')}</p>}
+
+                <Button type="submit" disabled={isSaving} className="h-9 w-full gap-1.5 rounded-lg px-3.5 text-xs font-medium shadow-none transition-colors sm:text-sm">
+                  {isSaving ? t('dreamMatch.saving') : t('dreamMatch.save')}
+                </Button>
+              </div>
+            </form>
+          </section>
+
+          <section aria-labelledby="suggestions-title" className="mt-12 space-y-5">
+            <div className="flex items-start gap-3 border-b border-border/60 pb-4">
+              <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
+                <SlidersHorizontal className="h-4 w-4" />
+              </div>
               <div>
                 <h2 id="suggestions-title" className="text-xl font-bold tracking-tight text-foreground">Pourquoi ces profils vous sont proposés</h2>
-                <p className="mt-1 text-sm text-muted-foreground">Les facteurs sont expliqués sans score numérique et sans identité civile.</p>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Les facteurs sont expliqués sans score numérique et sans identité civile.</p>
               </div>
             </div>
+
             {suggestionsError && <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">{suggestionsError}</p>}
             {!suggestionsError && suggestions?.items.length === 0 && <p className="rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">Aucune suggestion pour le moment. Complétez vos préférences pour élargir la recherche.</p>}
-        <div className="grid gap-4 md:grid-cols-2">
-          {suggestions?.items.map((suggestion) => (
-              <article key={suggestion.talentId} className="rounded-xl border border-border/70 bg-card p-5 shadow-2xs">
-              <div className="flex items-start gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 font-semibold text-primary" aria-hidden="true">{suggestion.pseudonym.slice(0, 1).toUpperCase()}</div>
-                <div className="min-w-0">
-                  <h3 className="font-semibold">{suggestion.pseudonym}</h3>
-                  {suggestion.headline && <p className="text-sm text-muted-foreground">{suggestion.headline}</p>}
-                </div>
-              </div>
-              {suggestion.bio && <p className="mt-4 line-clamp-3 text-sm text-muted-foreground">{suggestion.bio}</p>}
-              <div className="mt-5 space-y-3" aria-label={`Facteurs explicatifs pour ${suggestion.pseudonym}`}>
-                {factorLabels.map(({ key, label, maximum }) => {
-                  const value = suggestion.factors[key]
-                  return <div key={key}>
-                    <div className="mb-1 flex justify-between text-xs font-medium"><span>{label}</span><span className="text-muted-foreground">{value > 0 ? 'Présent' : 'Non déterminant'}</span></div>
-                    <div className="h-2 overflow-hidden rounded-full bg-muted"><div className="h-full rounded-full bg-primary transition-[width]" style={{ width: `${Math.min(100, (value / maximum) * 100)}%` }} /></div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              {suggestions?.items.map((suggestion) => (
+                <article key={suggestion.talentId} className="rounded-xl border border-border/70 bg-card p-5 shadow-2xs transition-colors hover:border-primary/30">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 font-semibold text-primary" aria-hidden="true">{suggestion.pseudonym.slice(0, 1).toUpperCase()}</div>
+                    <div className="min-w-0">
+                      <h3 className="truncate font-semibold text-foreground">{suggestion.pseudonym}</h3>
+                      {suggestion.headline && <p className="mt-0.5 truncate text-sm text-muted-foreground">{suggestion.headline}</p>}
+                    </div>
                   </div>
-                })}
-              </div>
-                <Button type="button" variant="outline" size="sm" onClick={() => void markNotInterested(suggestion.talentId)} disabled={excludingTalentId !== null} className="mt-5 h-9 w-full rounded-lg px-3.5 text-xs font-medium shadow-none transition-colors hover:border-destructive hover:text-destructive disabled:cursor-wait disabled:opacity-60 sm:text-sm" aria-label={`Ne plus proposer ${suggestion.pseudonym}`}>
-                  {excludingTalentId === suggestion.talentId ? 'Enregistrement…' : 'Pas intéressé'}
-                </Button>
-            </article>
-          ))}
-        </div>
-      </section>
+
+                  {suggestion.bio && <p className="mt-4 line-clamp-3 text-sm leading-relaxed text-muted-foreground">{suggestion.bio}</p>}
+
+                  <div className="mt-5 space-y-3 border-t border-border/60 pt-4" aria-label={`Facteurs explicatifs pour ${suggestion.pseudonym}`}>
+                    {factorLabels.map(({ key, label, maximum }) => {
+                      const value = suggestion.factors[key]
+                      return <div key={key}>
+                        <div className="mb-1 flex justify-between gap-3 text-xs font-medium"><span>{label}</span><span className="shrink-0 text-muted-foreground">{value > 0 ? 'Présent' : 'Non déterminant'}</span></div>
+                        <div className="h-1.5 overflow-hidden rounded-full bg-muted"><div className="h-full rounded-full bg-primary transition-[width]" style={{ width: `${Math.min(100, (value / maximum) * 100)}%` }} /></div>
+                      </div>
+                    })}
+                  </div>
+
+                  <Button type="button" variant="outline" size="sm" onClick={() => void markNotInterested(suggestion.talentId)} disabled={excludingTalentId !== null} className="mt-5 h-9 w-full rounded-lg px-3.5 text-xs font-medium shadow-none transition-colors hover:border-destructive hover:text-destructive disabled:cursor-wait disabled:opacity-60 sm:text-sm" aria-label={`Ne plus proposer ${suggestion.pseudonym}`}>
+                    {excludingTalentId === suggestion.talentId ? 'Enregistrement…' : 'Pas intéressé'}
+                  </Button>
+                </article>
+              ))}
+            </div>
+          </section>
         </div>
       </main>
     </DashboardLayout>
