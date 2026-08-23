@@ -61,7 +61,7 @@ export function SectionTestimonials({ testimonials }: SectionTestimonialsProps) 
             {t('landing.testimonials.title')}
           </h2>
           <p className="text-base text-muted-foreground mt-3 font-normal">
-            Ils ont rencontré leur moitié business ou technique sur la plateforme.
+            {t('landing.testimonials.body')}
           </p>
         </div>
 
