@@ -38,7 +38,7 @@ test('E-16 contrôleurs exposent les permissions et audits attendus', () => {
   assert.equal(Reflect.getMetadata(route, InstitutionOverviewController.prototype.getOverview), 'overview')
   assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, InstitutionOverviewController.prototype.getOverview), ['org:read'])
   assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, InstitutionMembersController.prototype.list), ['org:read'])
-  assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, InstitutionMembersController.prototype.invite), ['org:manage'])
+  assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, InstitutionMembersController.prototype.invite), ['org:read'])
   assert.deepEqual(Reflect.getMetadata(AUDIT_ACTION_KEY, InstitutionMembersController.prototype.invite), { action: 'ORGANIZATION_MEMBER_INVITE', targetType: 'OrganizationMember' })
   assert.deepEqual(Reflect.getMetadata(AUDIT_ACTION_KEY, InstitutionMembersController.prototype.update), { action: 'ORGANIZATION_MEMBER_ROLE_UPDATE', targetType: 'OrganizationMember' })
   assert.deepEqual(Reflect.getMetadata(AUDIT_ACTION_KEY, InstitutionMembersController.prototype.remove), { action: 'ORGANIZATION_MEMBER_REMOVE', targetType: 'OrganizationMember' })
