@@ -1,59 +1,49 @@
 # Context Handoff — Reprise de session CoFound.mg
 
 **Dernière mise à jour** : 2026-08-24
-**Phase** : seed multi-comptes et multi-rôles fusionné dans main
+**Phase** : auto-seed Render de développement implémenté, documentation à publier
 **Branche locale** : `main`
-**État Git** : `main` suit `origin/main` sur le merge de la PR #94 ; le workspace est propre après le commit de ce handoff.
+**État Git** : commit fonctionnel local `8c6602b` à pousser ; documentation Render et Blueprint Render restent à committer.
 
 ## 1. État courant
 
-`main` est la branche de livraison. La PR #94 a étendu le seed admin existant aux rôles de plateforme `TALENT`, `ORG_MEMBER` et `STAFF`, avec `SUPER_ADMIN`, `OPS_ADMIN` ou `MODERATOR` pour les comptes staff.
+`main` est la branche de livraison. Le seed multi-comptes et multi-rôles est déjà fusionné via la PR #94. Cette session ajoute l’exécution automatique du seed au démarrage de l’API lorsque Render est explicitement configuré pour l’instance de développement.
 
-Le seed est idempotent, séparé du démarrage normal de l’API, et force les comptes seedés à `ACTIVE`. Les mots de passe sont hachés avec Argon2id et ne sont jamais écrits dans les logs, le dépôt ou le frontend.
+L’auto-seed s’exécute avant l’ouverture du port HTTP. Il met à jour ou crée les comptes présents dans `SEED_ACCOUNTS_JSON` à chaque redéploiement, sans supprimer les autres comptes. Les mots de passe restent dans les variables secrètes Render et sont hachés avec Argon2id.
 
 ## 2. Travail livré cette session
 
-- Ajout de `platformRole` dans la configuration des comptes.
-- Compatibilité conservée avec `ADMIN_ACCOUNTS_JSON` : une entrée sans `platformRole` crée un compte `STAFF/SUPER_ADMIN`.
-- Ajout de `SEED_ACCOUNTS_JSON` comme variable recommandée pour les configurations multi-rôles.
-- Validation stricte des rôles et refus de `staffRole` sur `TALENT` ou `ORG_MEMBER`.
-- Ajout de `pnpm --filter @cofound/api seed:accounts`, avec maintien de `seed:admin`.
-- Tests unitaires du parsing et documentation Render multi-comptes.
-- PR #94 fusionnée dans `main` après trois contrôles verts : CI, Vercel et Preview Comments.
+- Ajout de `runAutoSeed` au démarrage NestJS, après création de l’application et avant `app.listen`.
+- Activation conditionnée par `SEED_ACCOUNTS_ON_START=true`, la présence de `SEED_ACCOUNTS_JSON` et un environnement non production ou explicitement marqué `SEED_ACCOUNTS_MODE=development`.
+- Extraction de la routine d’upsert dans `src/account-seed/seed-accounts.ts`, réutilisée par le seed manuel et l’auto-seed.
+- Déplacement du parseur dans `src/account-seed/seed-accounts-config.ts` afin qu’il soit inclus dans le build de production.
+- Ajout des variables commentées dans `apps/api/.env.example`.
+- Commit fonctionnel local : `8c6602b feat(seed): automatiser le provisionnement Render`.
 
 ## 3. Validation
 
-Réussis sur la branche fusionnée : `pnpm --filter @cofound/api typecheck`, `pnpm --filter @cofound/api test` avec **177/177 tests**, `pnpm --filter @cofound/api lint` et `git diff --check`.
+Réussis : `pnpm --filter @cofound/api typecheck`, `pnpm --filter @cofound/api build`, `pnpm --filter @cofound/api test` avec **178/178 tests**, `pnpm --filter @cofound/api lint`, `git diff --check`, et vérification que `dist/main.js` référence `runAutoSeed`.
 
-Aucun nouveau seed réel n’a été exécuté depuis le sandbox. La création de nouveaux comptes nécessite que le propriétaire définisse temporairement `SEED_ACCOUNTS_JSON` comme variable secrète dans Render.
+Le seed réel n’a pas été exécuté depuis le sandbox. Aucun mot de passe réel n’est présent dans Git. La configuration Render doit être renseignée par le propriétaire dans les variables secrètes du service.
 
 ## 4. Points ouverts
 
-Pour créer les comptes souhaités, définir dans Render une variable temporaire `SEED_ACCOUNTS_JSON` contenant la matrice d’adresses, `platformRole`, `staffRole` et mots de passe choisis, puis exécuter :
+La documentation `deploy/README.md` et `render.yaml` doivent être committés et poussés après vérification. Le service Render doit conserver la commande Start normale ; l’auto-seed est déclenché par le code de `main.ts` uniquement lorsque les variables dédiées sont définies.
 
-```bash
-pnpm --filter @cofound/api seed:accounts
-```
+Pour l’instance Render de développement, conserver `SEED_ACCOUNTS_ON_START=true`, `SEED_ACCOUNTS_MODE=development` et `SEED_ACCOUNTS_JSON` dans les variables secrètes du service. Ne jamais ajouter ces variables à Vercel, au frontend ou à Git.
 
-Après réussite, supprimer immédiatement `SEED_ACCOUNTS_JSON` et conserver la commande Start normale :
-
-```bash
-pnpm --filter @cofound/api prisma:migrate:deploy && pnpm --filter @cofound/api start
-```
-
-Ne jamais envoyer les mots de passe dans le chat. Tester ensuite les comptes sur `https://co-found-mg.vercel.app/login` avec leurs identifiants conservés côté utilisateur.
-
-L’issue #90 reste ouverte pour les écrans frontend encore mockés. Le test réel B-01/Cloudinary reste à faire avec des comptes de recette.
+Après le déploiement, vérifier `/api/v1/health` et les connexions sur `https://co-found-mg.vercel.app/login`. L’issue #90 reste ouverte pour les écrans frontend encore mockés.
 
 ## 5. Fichiers importants
 
-- `apps/api/prisma/seed-admin.ts` : exécution du seed multi-comptes.
-- `apps/api/prisma/seed-accounts-config.ts` : parsing, normalisation et validation.
-- `apps/api/test/seed-accounts-config.test.ts` : tests de configuration.
-- `apps/api/package.json` : commandes `seed:accounts` et `seed:admin`.
-- `deploy/README.md` : procédure Render et exemple multi-rôles sans secret réel.
-- `.claude/commands/handoff.md` : workflow obligatoire de reprise/clôture.
+- `apps/api/src/main.ts` : appelle l’auto-seed avant l’écoute HTTP.
+- `apps/api/src/account-seed/auto-seed.ts` : garde-fous et orchestration.
+- `apps/api/src/account-seed/seed-accounts.ts` : upsert idempotent et hash Argon2id.
+- `apps/api/src/account-seed/seed-accounts-config.ts` : parsing et validation.
+- `apps/api/prisma/seed-admin.ts` : commande manuelle compatible.
+- `apps/api/.env.example` : variables d’exemple désactivées.
+- `deploy/README.md` et `render.yaml` : documentation et configuration à publier.
 
 ## 6. Prochaine action
 
-Définir dans Render la variable secrète temporaire `SEED_ACCOUNTS_JSON` avec la matrice de comptes choisie, exécuter `pnpm --filter @cofound/api seed:accounts`, supprimer la variable, puis vérifier les connexions et `/api/v1/health`.
+Committer et pousser `deploy/README.md`, `render.yaml` et le handoff, puis vérifier dans Render que les trois variables secrètes d’auto-seed sont configurées avant le prochain redéploiement.

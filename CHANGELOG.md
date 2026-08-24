@@ -10,6 +10,30 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-24 — Automatiser le seed des comptes au démarrage Render
+
+### Ajouté
+
+- Auto-seed avant `app.listen` lorsque `SEED_ACCOUNTS_ON_START=true`, `SEED_ACCOUNTS_JSON` est présent et que l’environnement est autorisé.
+- `SEED_ACCOUNTS_MODE=development` permet explicitement ce fonctionnement sur l’instance Render de développement malgré `NODE_ENV=production` fourni par Render.
+- La routine d’upsert est partagée entre la commande manuelle et le démarrage automatique.
+
+### Décidé
+
+- Les mots de passe restent dans les variables secrètes Render et ne sont jamais inscrits dans le code, car l’auto-seed ne doit pas transformer des identifiants administrateurs en secrets versionnés.
+- L’auto-seed reste désactivé par défaut et une configuration invalide bloque le démarrage, afin d’éviter un provisionnement silencieux ou partiel.
+
+### Validation
+
+- Typecheck, build API, lint et **178/178 tests API réussis**.
+- Le build compilé contient bien le lanceur d’auto-seed dans `dist`.
+
+### En cours
+
+- Pousser le commit fonctionnel et la documentation, puis configurer une seule fois les trois variables secrètes dans Render pour les redéploiements de développement.
+
+---
+
 ## 2026-08-24 — Fusionner le seed multi-comptes et multi-rôles
 
 ### Modifié

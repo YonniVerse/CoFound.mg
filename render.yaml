@@ -1,11 +1,11 @@
 # Render Blueprint for CoFound.mg API + notification worker.
 # DATABASE_URL and CORS_ORIGIN are requested securely in the Render Dashboard.
-# Switch branch to dev after merging the deployment-ready PR.
+# The delivery branch is main; the Render dashboard must use the same branch.
 services:
   - type: web
     name: cofound-api
     runtime: docker
-    branch: feat/B-09-team-contact
+    branch: main
     region: frankfurt
     plan: starter
     dockerfilePath: ./deploy/api.Dockerfile
@@ -26,7 +26,7 @@ services:
   - type: worker
     name: cofound-notification-worker
     runtime: docker
-    branch: feat/B-09-team-contact
+    branch: main
     region: frankfurt
     plan: starter
     dockerfilePath: ./deploy/api.Dockerfile
