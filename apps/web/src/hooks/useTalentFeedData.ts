@@ -3,6 +3,8 @@ import { apiClient } from "@/lib/api-client";
 import { talentFeedResponseSchema, type TalentFeedCard, type TalentFeedQuery } from "@cofound/shared";
 import { MOCK_PROFILES } from "@/data/mockFeed";
 
+const ALLOW_MOCK_FALLBACK = import.meta.env.DEV;
+
 const FALLBACK_TALENTS: TalentFeedCard[] = MOCK_PROFILES.map((p, idx) => ({
   id: `mock-talent-${idx + 1}`,
   pseudonym: p.name,
@@ -56,25 +58,28 @@ export function useTalentFeedData() {
         if (response.items.length > 0) {
           setTalents(response.items);
         } else {
-          // If database is empty, fallback to mock talents for demo
-          setTalents(FALLBACK_TALENTS);
+          setTalents(ALLOW_MOCK_FALLBACK ? FALLBACK_TALENTS : []);
         }
       }
 
       setNextCursor(response.nextCursor);
       setHasMore(response.hasMore);
     } catch {
-      // Fallback to mock data if API endpoint or backend is offline during local dev
       if (!isLoadMore) {
-        const filtered = search
-          ? FALLBACK_TALENTS.filter(
-              (t) =>
-                t.pseudonym.toLowerCase().includes(search.toLowerCase()) ||
-                (t.headline && t.headline.toLowerCase().includes(search.toLowerCase())) ||
-                (t.bio && t.bio.toLowerCase().includes(search.toLowerCase())),
-            )
-          : FALLBACK_TALENTS;
-        setTalents(filtered);
+        if (ALLOW_MOCK_FALLBACK) {
+          const filtered = search
+            ? FALLBACK_TALENTS.filter(
+                (t) =>
+                  t.pseudonym.toLowerCase().includes(search.toLowerCase()) ||
+                  (t.headline && t.headline.toLowerCase().includes(search.toLowerCase())) ||
+                  (t.bio && t.bio.toLowerCase().includes(search.toLowerCase())),
+              )
+            : FALLBACK_TALENTS;
+          setTalents(filtered);
+        } else {
+          setTalents([]);
+          setError('Le flux des talents est temporairement indisponible.');
+        }
       }
     } finally {
       setIsLoading(false);

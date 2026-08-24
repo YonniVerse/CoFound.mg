@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { ProjectCard, type ProjectData } from "@/components/feed/ProjectCard";
-import { ProfileCard, type ProfileData } from "@/components/feed/ProfileCard";
+import { ProjectCard } from "@/components/feed/ProjectCard";
 import { FeedFilters, type FeedFilterType } from "@/components/feed/FeedFilters";
 import { ParityWidget } from "@/components/feed/ParityWidget";
 import { SuggestedProfilesWidget } from "@/components/feed/SuggestedProfilesWidget";
@@ -14,7 +13,7 @@ import { Users } from "lucide-react";
 
 export default function FeedPage() {
   const [filter, setFilter] = useState<FeedFilterType>("all");
-  const { feedItems, suggestedProfiles, isLoading: isLoadingMock, error: mockError } = useFeedData();
+  const { feedItems, apiProjects, suggestedProfiles, isLoading: isLoadingProjects, error: projectsError } = useFeedData();
 
   const {
     talents,
@@ -54,16 +53,16 @@ export default function FeedPage() {
     };
   }, [hasMoreTalents, isLoadingMoreTalents, isLoadingTalents, loadMoreTalents, showTalents]);
 
-  const mockFilteredItems = feedItems.filter((item) => {
-    if (filter === "all") return true;
-    if (filter === "projects") return item.type === "project";
-    if (filter === "profiles") return item.type === "profile";
-    return true;
-  });
-
+  const allowMockFallback = import.meta.env.DEV;
+  const displayedProjects = apiProjects.length > 0
+    ? apiProjects
+    : allowMockFallback
+      ? feedItems.flatMap((item) => item.type === "project" ? [item.data] : [])
+      : [];
+  const displayedSuggestedProfiles = allowMockFallback ? suggestedProfiles : [];
   const hasTalents = talents.length > 0;
-  const isLoading = isLoadingMock || (showTalents && isLoadingTalents);
-  const error = mockError || talentError;
+  const isLoading = isLoadingProjects || (showTalents && isLoadingTalents);
+  const error = projectsError || talentError;
 
   return (
     <DashboardLayout>
@@ -127,24 +126,20 @@ export default function FeedPage() {
                 </div>
               )}
 
-              {/* ── Projects & Prototype Feed Items ── */}
+              {/* ── Projects from the API ── */}
               {showProjects &&
-                mockFilteredItems.map((item, index) => (
+                displayedProjects.map((project, index) => (
                   <div
-                    key={`${item.type}-${item.data.id}-${index}`}
+                    key={`project-${project.id}-${index}`}
                     className="animate-in fade-in slide-in-from-bottom-3 duration-400"
                     style={{ animationDelay: `${(index % 5) * 60}ms` }}
                   >
-                    {item.type === "project" ? (
-                      <ProjectCard project={item.data as ProjectData} />
-                    ) : (
-                      !hasTalents && <ProfileCard profile={item.data as ProfileData} />
-                    )}
+                    <ProjectCard project={project} />
                   </div>
                 ))}
 
               {/* Empty state */}
-              {!hasTalents && mockFilteredItems.length === 0 && (
+              {!hasTalents && displayedProjects.length === 0 && (
                 <div className="text-center py-20 text-muted-foreground font-medium bg-card border border-border rounded-xl p-8">
                   Aucun résultat ne correspond à vos critères de recherche.
                 </div>
@@ -156,7 +151,7 @@ export default function FeedPage() {
         {/* Right Fixed/Sticky Panel */}
         <div className="hidden lg:flex w-[320px] flex-col gap-6 sticky top-[90px] h-fit shrink-0">
           <ParityWidget percentage={38} />
-          <SuggestedProfilesWidget profiles={suggestedProfiles} />
+          <SuggestedProfilesWidget profiles={displayedSuggestedProfiles} />
         </div>
       </div>
     </DashboardLayout>

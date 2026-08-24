@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { profileCompletionReminderSchema, type ProfileCompletionReminder } from "@cofound/shared";
 import { apiClient } from "@/lib/api-client";
 import { 
@@ -16,16 +16,23 @@ import { LogoSVG } from "../ui/LogoSVG";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
+import { useAuth } from "@/hooks/useAuth";
 
 interface DashboardLayoutProps {
   children: ReactNode;
 }
 
+type CurrentProfile = {
+  user?: { email?: string | null };
+  identity?: { firstName?: string | null; lastName?: string | null } | null;
+  profile?: { pseudonym?: string | null } | null;
+};
+
 const NAVIGATION = [
   { name: "Feed", href: "/feed", icon: Home },
   { name: "Recherche", href: "/search", icon: Search },
   { name: "Explorer Projets", href: "/projects", icon: Users },
-  { name: "Messages", href: "/messages", icon: MessageSquare, badge: 3 },
+  { name: "Messages", href: "/messages", icon: MessageSquare },
   { name: "Impact & Parité", href: "/impact", icon: BarChart2 },
   { name: "Mon Profil", href: "/profile/me", icon: User },
   { name: "Paramètres", href: "/settings", icon: Settings },
@@ -33,16 +40,29 @@ const NAVIGATION = [
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
   const { t } = useI18n();
   const [completionReminder, setCompletionReminder] = useState<ProfileCompletionReminder | null>(null);
+  const [currentProfile, setCurrentProfile] = useState<CurrentProfile | null>(null);
 
   useEffect(() => {
     let active = true;
+    if (!isAuthenticated) return () => { active = false; };
     void apiClient.get('/me/profile/completion-reminder', profileCompletionReminderSchema)
       .then((reminder) => { if (active) setCompletionReminder(reminder); })
       .catch(() => { if (active) setCompletionReminder(null); });
     return () => { active = false; };
-  }, [location.pathname]);
+  }, [isAuthenticated, location.pathname]);
+
+  useEffect(() => {
+    let active = true;
+    if (!isAuthenticated) return () => { active = false; };
+    void apiClient.get<CurrentProfile>('/me/profile')
+      .then((profile) => { if (active) setCurrentProfile(profile); })
+      .catch(() => { if (active) setCurrentProfile(null); });
+    return () => { active = false; };
+  }, [isAuthenticated]);
 
   const navContent = NAVIGATION.map((item) => {
     const isActive = location.pathname === item.href || location.pathname.startsWith(item.href + '/');
@@ -60,26 +80,32 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <item.icon className={`h-5 w-5 ${isActive ? "text-primary-foreground" : "text-muted-foreground"}`} />
           {item.name}
         </div>
-        {item.badge && (
-          <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-            {item.badge}
-          </span>
-        )}
       </Link>
     )
   });
 
+  const identityName = [currentProfile?.identity?.firstName, currentProfile?.identity?.lastName].filter(Boolean).join(' ').trim();
+  const displayName = identityName || currentProfile?.profile?.pseudonym || currentProfile?.user?.email || 'Compte CoFound';
+  const displaySecondary = currentProfile?.user?.email || currentProfile?.profile?.pseudonym || 'Profil personnel';
+  const initial = displayName.charAt(0).toUpperCase() || 'C';
   const profileContent = (
-    <Link to="/profile/me" className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-muted transition-colors">
-      <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-        M
-      </div>
-      <div className="flex flex-col">
-        <span className="text-sm font-bold text-foreground">Mialy Randria</span>
-        <span className="text-xs text-muted-foreground font-medium">ISCAM</span>
-      </div>
-    </Link>
+    <div className="space-y-2">
+      <Link to="/profile/me" className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-muted transition-colors">
+        <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+          {initial}
+        </div>
+        <div className="flex min-w-0 flex-col">
+          <span className="truncate text-sm font-bold text-foreground">{displayName}</span>
+          <span className="truncate text-xs text-muted-foreground font-medium">{displaySecondary}</span>
+        </div>
+      </Link>
+      <Button variant="ghost" size="sm" className="w-full justify-start text-xs text-muted-foreground" onClick={() => { void logout().then(() => navigate('/login', { replace: true })); }}>
+        Se déconnecter
+      </Button>
+    </div>
   );
+
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   return (
     <div className="min-h-screen bg-muted/20 flex flex-col lg:flex-row">
