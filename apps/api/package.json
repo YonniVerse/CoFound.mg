@@ -19,6 +19,7 @@
     "seed:reference": "tsx prisma/seed-reference.ts",
     "seed:recette": "tsx prisma/seed-recette.ts",
     "seed:admin": "tsx prisma/seed-admin.ts",
+    "seed:accounts": "tsx prisma/seed-admin.ts",
     "seed:demo": "tsx prisma/seed-demo.ts"
   },
   "dependencies": {
