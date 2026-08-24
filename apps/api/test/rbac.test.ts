@@ -7,7 +7,7 @@ import { Reflector } from '@nestjs/core'
 import { AccessTokenGuard } from '../src/rbac/access-token.guard.js'
 import { PermissionGuard } from '../src/rbac/permission.guard.js'
 import { PERMISSIONS_KEY } from '../src/rbac/rbac.decorators.js'
-import { Permission } from '../src/rbac/permissions.js'
+import { Permission, PLATFORM_ROLE_PERMISSIONS } from '../src/rbac/permissions.js'
 import { SignJWT } from 'jose'
 import { getJwtSecret } from '../src/auth/jwt-secret.js'
 
@@ -59,6 +59,18 @@ for (const [description, platformRole, permission] of negativeCases) {
     )
   })
 }
+
+test('F-20 — les parcours personnels TALENT ne sont pas accordés aux ORG_MEMBER', () => {
+  assert.equal(PLATFORM_ROLE_PERMISSIONS.TALENT.includes(Permission.TALENT_SELF), true)
+  assert.equal(PLATFORM_ROLE_PERMISSIONS.ORG_MEMBER.includes(Permission.TALENT_SELF), false)
+  assert.equal(PLATFORM_ROLE_PERMISSIONS.STAFF.includes(Permission.TALENT_SELF), false)
+
+  const talent: Request = { headers: {}, user: { userId: 'talent', platformRole: 'TALENT', status: 'ACTIVE' } }
+  const orgAdmin: Request = { headers: {}, user: { userId: 'admin', platformRole: 'ORG_MEMBER', status: 'ACTIVE' } }
+
+  assert.equal(permissionGuard.canActivate(contextFor(talent, [Permission.TALENT_SELF])), true)
+  assert.throws(() => permissionGuard.canActivate(contextFor(orgAdmin, [Permission.TALENT_SELF])), ForbiddenException)
+})
 
 test('B-02 — seul SUPER_ADMIN peut consulter et gérer les organisations', () => {
   const superAdmin = { headers: {}, user: { userId: 'admin', platformRole: 'STAFF', status: 'ACTIVE', staffRole: 'SUPER_ADMIN' } }
