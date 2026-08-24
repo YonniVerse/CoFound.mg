@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useCallback, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useContext, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { apiClient, ApiClientError } from '@/lib/api-client'
 
 type AuthState =
@@ -19,6 +19,7 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>({ status: 'idle' })
+  const refreshInFlight = useRef<Promise<boolean> | null>(null)
 
   const login = useCallback(async (email: string, password: string) => {
     const response = await apiClient.post<{ accessToken: string }>(
@@ -45,22 +46,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const refresh = useCallback(async (): Promise<boolean> => {
-    try {
-      const response = await apiClient.post<{ accessToken: string }>(
-        '/auth/refresh',
-        {},
-      )
-      apiClient.setAccessToken(response.accessToken)
-      setState({ status: 'authenticated', userId: '' })
-      return true
-    } catch (error) {
-      if (error instanceof ApiClientError && error.status === 401) {
-        apiClient.setAccessToken(null)
-        setState({ status: 'idle' })
+    if (refreshInFlight.current) return refreshInFlight.current
+
+    const request = (async () => {
+      try {
+        const response = await apiClient.post<{ accessToken: string }>(
+          '/auth/refresh',
+          {},
+        )
+        apiClient.setAccessToken(response.accessToken)
+        setState({ status: 'authenticated', userId: '' })
+        return true
+      } catch (error) {
+        if (error instanceof ApiClientError && error.status === 401) {
+          apiClient.setAccessToken(null)
+          setState({ status: 'idle' })
+        }
+        return false
       }
-      return false
+    })()
+
+    refreshInFlight.current = request
+    try {
+      return await request
+    } finally {
+      if (refreshInFlight.current === request) refreshInFlight.current = null
     }
   }, [])
+
+  useEffect(() => {
+    apiClient.setRefreshHandler(refresh)
+    return () => apiClient.setRefreshHandler(null)
+  }, [refresh])
+
+  useEffect(() => {
+    void refresh()
+  }, [refresh])
 
   const isAuthenticated = state.status === 'authenticated'
 

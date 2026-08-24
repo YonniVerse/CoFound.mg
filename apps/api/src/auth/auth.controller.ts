@@ -10,6 +10,7 @@ import {
 } from '@cofound/shared'
 
 const REFRESH_COOKIE = 'cofound_refresh_token'
+const REFRESH_COOKIE_PATH = '/api/v1/auth'
 const REFRESH_COOKIE_MAX_AGE = 30 * 24 * 60 * 60
 
 type ResponseWithHeaders = {
@@ -21,6 +22,20 @@ type RequestWithCookies = {
   cookies?: Record<string, string | undefined>
 }
 
+export function serializeRefreshCookie(token: string, expiresAt: Date, env: NodeJS.ProcessEnv = process.env): string {
+  const isProduction = env.NODE_ENV === 'production'
+  const sameSite = isProduction ? 'None' : 'Lax'
+  const secure = isProduction ? '; Secure' : ''
+  return `${REFRESH_COOKIE}=${token}; HttpOnly; Path=${REFRESH_COOKIE_PATH}; SameSite=${sameSite}; Max-Age=${REFRESH_COOKIE_MAX_AGE}; Expires=${expiresAt.toUTCString()}${secure}`
+}
+
+export function serializeExpiredRefreshCookie(env: NodeJS.ProcessEnv = process.env): string {
+  const isProduction = env.NODE_ENV === 'production'
+  const sameSite = isProduction ? 'None' : 'Lax'
+  const secure = isProduction ? '; Secure' : ''
+  return `${REFRESH_COOKIE}=; HttpOnly; Path=${REFRESH_COOKIE_PATH}; Max-Age=0; SameSite=${sameSite}${secure}`
+}
+
 @AllowAnonymous()
 @Controller('auth')
 export class AuthController {
@@ -30,7 +45,7 @@ export class AuthController {
   @Post('login')
   async login(@Body() body: unknown, @Res({ passthrough: true }) response: ResponseWithHeaders) {
     const session = await this.authService.login(loginInputSchema.parse(body))
-    this.setRefreshCookie(response, session.refreshToken, session.refreshTokenExpiresAt)
+    response.setHeader('Set-Cookie', serializeRefreshCookie(session.refreshToken, session.refreshTokenExpiresAt))
     return { accessToken: session.accessToken }
   }
 
@@ -38,7 +53,7 @@ export class AuthController {
   @Post('activate')
   async activate(@Body() body: unknown, @Res({ passthrough: true }) response: ResponseWithHeaders) {
     const session = await this.authService.activate(activationInputSchema.parse(body))
-    this.setRefreshCookie(response, session.refreshToken, session.refreshTokenExpiresAt)
+    response.setHeader('Set-Cookie', serializeRefreshCookie(session.refreshToken, session.refreshTokenExpiresAt))
     return { accessToken: session.accessToken }
   }
 
@@ -50,7 +65,7 @@ export class AuthController {
       throw new UnauthorizedException('Refresh token manquant.')
     }
     const session = await this.authService.refresh(refreshToken)
-    this.setRefreshCookie(response, session.refreshToken, session.refreshTokenExpiresAt)
+    response.setHeader('Set-Cookie', serializeRefreshCookie(session.refreshToken, session.refreshTokenExpiresAt))
     return { accessToken: session.accessToken }
   }
 
@@ -58,7 +73,7 @@ export class AuthController {
   @Post('logout')
   async logout(@Req() request: RequestWithCookies, @Res({ passthrough: true }) response: ResponseWithHeaders) {
     await this.authService.logout(this.readRefreshCookie(request))
-    response.setHeader('Set-Cookie', `${REFRESH_COOKIE}=; HttpOnly; Path=/api/v1/auth; Max-Age=0; SameSite=Lax`)
+    response.setHeader('Set-Cookie', serializeExpiredRefreshCookie())
     return { ok: true }
   }
 
@@ -85,17 +100,5 @@ export class AuthController {
     if (!rawCookie) return undefined
     const cookie = rawCookie.split(';').find((part) => part.trim().startsWith(`${REFRESH_COOKIE}=`))
     return cookie?.split('=').slice(1).join('=')
-  }
-
-  private setRefreshCookie(
-    response: ResponseWithHeaders,
-    token: string,
-    expiresAt: Date,
-  ): void {
-    const secure = process.env.NODE_ENV === 'production' ? '; Secure' : ''
-    response.setHeader(
-      'Set-Cookie',
-      `${REFRESH_COOKIE}=${token}; HttpOnly; Path=/api/v1/auth; SameSite=Lax; Max-Age=${REFRESH_COOKIE_MAX_AGE}; Expires=${expiresAt.toUTCString()}${secure}`,
-    )
   }
 }
