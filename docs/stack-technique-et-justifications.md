@@ -274,6 +274,12 @@ code, et ça change l'expérience réelle d'un utilisateur à Antsiranana.
 
 Accès via le SDK S3 standard : changer de fournisseur reste une modification de configuration.
 
+### ▶ **Cloudinary — exception opérationnelle pour les justificatifs B-01.**
+
+Le déploiement actuel utilise Cloudinary pour les pièces justificatives des demandes d’organisation, car le compte et le service Render sont déjà disponibles. Ces assets sont téléversés côté API avec des requêtes signées, stockés avec le type de livraison `authenticated`, et consultables par le staff uniquement via une URL temporaire signée. L’API persiste les métadonnées et la référence Cloudinary, jamais les octets du fichier.
+
+Cette décision ne remplace pas encore R2 pour les avatars, les pièces jointes de projet et les fichiers d’import : elle limite le périmètre Cloudinary au flux B-01 afin de ne pas mélanger une migration générale de stockage avec la livraison de la Vague 4. Toute extension à d’autres types de fichiers devra reprendre les mêmes exigences de secret côté serveur, contrôle d’accès, durée d’URL et audit.
+
 ---
 
 ## 9. Hébergement — **désaccord partiel avec le cahier des charges**

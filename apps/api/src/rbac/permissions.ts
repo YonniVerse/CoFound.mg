@@ -11,6 +11,9 @@ export const Permission = {
   ORG_MANAGE: 'org:manage',
   MODERATION_READ: 'moderation:read',
   MODERATION_ACT: 'moderation:act',
+  ORGANIZATION_REQUEST_READ: 'organization-request:read',
+  ORGANIZATION_REQUEST_MANAGE: 'organization-request:manage',
+  ORGANIZATION_CAPABILITY_MANAGE: 'organization-capability:manage',
 } as const
 
 export type Permission = (typeof Permission)[keyof typeof Permission]

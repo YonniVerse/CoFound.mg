@@ -13,7 +13,7 @@ import { getJwtSecret } from '../src/auth/jwt-secret.js'
 
 type Request = {
   headers: { authorization?: string }
-  user?: { userId: string; platformRole: string; status: string }
+  user?: { userId: string; platformRole: string; status: string; staffRole?: string }
 }
 
 function contextFor(request: Request, permissions?: Permission[]): ExecutionContext {
@@ -59,6 +59,14 @@ for (const [description, platformRole, permission] of negativeCases) {
     )
   })
 }
+
+test('B-02 — seul SUPER_ADMIN peut consulter et gérer les organisations', () => {
+  const superAdmin = { headers: {}, user: { userId: 'admin', platformRole: 'STAFF', status: 'ACTIVE', staffRole: 'SUPER_ADMIN' } }
+  const opsAdmin = { headers: {}, user: { userId: 'ops', platformRole: 'STAFF', status: 'ACTIVE', staffRole: 'OPS_ADMIN' } }
+  assert.equal(permissionGuard.canActivate(contextFor(superAdmin, [Permission.ORGANIZATION_REQUEST_READ])), true)
+  assert.equal(permissionGuard.canActivate(contextFor(superAdmin, [Permission.ORGANIZATION_REQUEST_MANAGE])), true)
+  assert.throws(() => permissionGuard.canActivate(contextFor(opsAdmin, [Permission.ORGANIZATION_REQUEST_READ])), ForbiddenException)
+})
 
 test('F-19 — une route protégée sans Bearer est refusée', async () => {
   const accessGuard = new AccessTokenGuard(new Reflector())

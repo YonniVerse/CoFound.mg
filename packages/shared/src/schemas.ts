@@ -121,6 +121,183 @@ export const affiliationUpdateSchema = z.object({ status: affiliationStatusSchem
 export const affiliationBulkStatusSchema = z.object({ affiliationIds: z.array(idSchema).min(1).max(1000), status: affiliationStatusSchema, confirmation: z.string().min(1) })
 export const institutionDirectoryQuerySchema = z.object({ organizationId: idSchema, search: z.string().trim().min(1).optional(), cohortYear: z.coerce.number().int().optional(), status: z.string().min(1).optional() })
 
+export const organizationTypeSchema = z.enum(['INSTITUTION', 'INCUBATOR', 'COMPANY', 'NGO', 'PUBLIC', 'ASSOCIATION'])
+export const organizationRequestDocumentSchema = z.object({
+  fileName: z.string().trim().min(1).max(255),
+  contentType: z.string().trim().min(1).max(120),
+  sizeBytes: z.number().int().positive().max(10_000_000),
+})
+export const organizationRequestInputSchema = z.object({
+  organizationType: organizationTypeSchema,
+  organizationName: z.string().trim().min(2).max(160),
+  countryCode: z.string().trim().length(2).toUpperCase().default('MG'),
+  region: z.string().trim().min(2).max(120),
+  website: z.string().trim().url().max(255).optional().or(z.literal('')),
+  description: z.string().trim().min(20).max(2_000),
+  sectorsOfInterest: z.array(z.string().trim().min(1).max(80)).max(20).default([]),
+  contactName: z.string().trim().min(2).max(160),
+  contactRole: z.string().trim().min(2).max(120),
+  contactEmail: z.string().trim().email().max(255),
+  contactPhone: z.string().trim().min(7).max(40).optional().or(z.literal('')),
+  supportingDocuments: z.array(organizationRequestDocumentSchema).max(5).default([]),
+})
+export const organizationRequestStatusSchema = z.enum(['PENDING', 'APPROVED', 'REJECTED'])
+export const organizationRequestResponseSchema = z.object({
+  requestId: idSchema,
+  status: organizationRequestStatusSchema,
+  receivedAt: z.coerce.date(),
+})
+export const organizationRequestDocumentUrlSchema = z.object({
+  fileName: z.string().min(1),
+  url: z.string().url(),
+  expiresAt: z.coerce.date(),
+})
+export type OrganizationRequestInput = z.infer<typeof organizationRequestInputSchema>
+export type OrganizationRequestResponse = z.infer<typeof organizationRequestResponseSchema>
+
+export const organizationRequestQueueQuerySchema = z.object({
+  status: organizationRequestStatusSchema.default('PENDING'),
+  cursor: idSchema.optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(25),
+})
+export const organizationRequestDecisionSchema = z.object({
+  action: z.enum(['APPROVE', 'REJECT']),
+  reason: z.string().trim().min(5).max(1_000).optional(),
+}).superRefine((value, context) => {
+  if (value.action === 'REJECT' && !value.reason) context.addIssue({ code: z.ZodIssueCode.custom, path: ['reason'], message: 'A reason is required when rejecting a request.' })
+})
+export const organizationCapabilitySchema = z.enum(['CERTIFY_AFFILIATION', 'PUBLISH_OPPORTUNITY', 'RECRUIT', 'MENTOR', 'FUND', 'SURVEY', 'ANALYTICS'])
+export const organizationCapabilityUpdateSchema = z.object({ capability: organizationCapabilitySchema })
+export const organizationRequestQueueItemSchema = z.object({
+  id: idSchema,
+  organizationType: organizationTypeSchema,
+  organizationName: z.string(),
+  countryCode: z.string(),
+  region: z.string(),
+  website: z.string().nullable(),
+  description: z.string(),
+  sectorsOfInterest: z.array(z.string()),
+  contactName: z.string(),
+  contactRole: z.string(),
+  contactEmail: z.string().email(),
+  contactPhone: z.string().nullable(),
+  supportingDocuments: z.array(organizationRequestDocumentSchema),
+  status: organizationRequestStatusSchema,
+  decisionReason: z.string().nullable(),
+  decidedAt: z.coerce.date().nullable(),
+  createdAt: z.coerce.date(),
+  approvedOrganizationId: idSchema.nullable(),
+  capabilities: z.array(organizationCapabilitySchema).default([]),
+})
+export const organizationRequestQueueSchema = z.object({
+  items: z.array(organizationRequestQueueItemSchema),
+  nextCursor: idSchema.nullable(),
+  hasMore: z.boolean(),
+})
+export type OrganizationRequestDecision = z.infer<typeof organizationRequestDecisionSchema>
+export type OrganizationCapabilityUpdate = z.infer<typeof organizationCapabilityUpdateSchema>
+export type OrganizationRequestQueueItem = z.infer<typeof organizationRequestQueueItemSchema>
+export const organizationProfileSchema = z.object({
+  id: idSchema,
+  name: z.string(),
+  type: organizationTypeSchema,
+  countryCode: z.string(),
+  logoKey: z.string().nullable(),
+  description: z.string().nullable(),
+  verificationStatus: z.literal('VERIFIED'),
+  capabilities: z.array(organizationCapabilitySchema),
+})
+export type OrganizationProfile = z.infer<typeof organizationProfileSchema>
+export const partnerProjectSearchSchema = z.object({
+  q: z.string().trim().max(160).optional(),
+  sectorId: idSchema.optional(),
+  regionId: idSchema.optional(),
+  minMaturity: z.coerce.number().int().min(0).max(100).default(0),
+  maxMaturity: z.coerce.number().int().min(0).max(100).default(100),
+  limit: z.coerce.number().int().min(1).max(50).default(25),
+}).refine((value) => value.minMaturity <= value.maxMaturity, { path: ['maxMaturity'], message: 'Maximum maturity must be greater than or equal to minimum maturity.' })
+export const partnerProjectSearchResultSchema = z.object({
+  id: idSchema,
+  title: z.string(),
+  pitch: z.string(),
+  status: z.string(),
+  maturity: z.number().int().min(0).max(100),
+  sectorId: idSchema.nullable(),
+  regionId: idSchema.nullable(),
+  createdAt: z.coerce.date(),
+})
+export const partnerProjectSearchResponseSchema = z.object({ items: z.array(partnerProjectSearchResultSchema) })
+export const projectWatchInputSchema = z.object({ note: z.string().trim().max(1_000).optional() })
+export const projectWatchSchema = z.object({ id: idSchema, projectId: idSchema, note: z.string().nullable(), createdAt: z.coerce.date(), updatedAt: z.coerce.date() })
+export const projectWatchListSchema = z.object({ items: z.array(projectWatchSchema) })
+export type PartnerProjectSearch = z.infer<typeof partnerProjectSearchSchema>
+export type ProjectWatchInput = z.infer<typeof projectWatchInputSchema>
+export const opportunityTypeSchema = z.enum(['CALL_FOR_APPLICATIONS', 'CONTEST', 'INCUBATION_PROGRAM', 'FUNDING_OFFER', 'EVENT', 'INTERNSHIP'])
+export const opportunityStatusSchema = z.enum(['DRAFT', 'PUBLISHED', 'CLOSED', 'ARCHIVED'])
+export const opportunityCreateSchema = z.object({
+  type: opportunityTypeSchema.default('CALL_FOR_APPLICATIONS'),
+  title: z.string().trim().min(3).max(180),
+  description: z.string().trim().min(20).max(4_000),
+  eligibility: z.string().trim().max(2_000).optional(),
+  deadline: z.coerce.date().nullable().optional(),
+  seats: z.number().int().positive().max(100_000).nullable().optional(),
+})
+export const opportunityApplicationCreateSchema = z.object({
+  applicantType: z.enum(['TALENT', 'PROJECT']),
+  applicantId: idSchema,
+  message: z.string().trim().min(10).max(2_000),
+})
+export const opportunityApplicationDecisionSchema = z.object({
+  status: z.enum(['ACCEPTED', 'REJECTED']),
+  rejectionReason: z.string().trim().min(5).max(1_000).optional(),
+}).superRefine((value, context) => {
+  if (value.status === 'REJECTED' && !value.rejectionReason) context.addIssue({ code: z.ZodIssueCode.custom, path: ['rejectionReason'], message: 'A rejection reason is required.' })
+})
+export const opportunitySchema = z.object({
+  id: idSchema,
+  organizationId: idSchema,
+  type: opportunityTypeSchema,
+  title: z.string(),
+  description: z.string(),
+  eligibility: z.string().nullable(),
+  deadline: z.coerce.date().nullable(),
+  seats: z.number().int().nullable(),
+  status: opportunityStatusSchema,
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+export const opportunityApplicationSchema = z.object({
+  id: idSchema,
+  opportunityId: idSchema,
+  applicantType: z.enum(['TALENT', 'PROJECT']),
+  applicantId: idSchema,
+  message: z.string(),
+  status: z.enum(['PENDING', 'ACCEPTED', 'REJECTED', 'WITHDRAWN']),
+  rejectionReason: z.string().nullable(),
+  createdAt: z.coerce.date(),
+})
+export type OpportunityCreate = z.infer<typeof opportunityCreateSchema>
+export type OpportunityApplicationCreate = z.infer<typeof opportunityApplicationCreateSchema>
+export const organizationProjectContactSchema = z.object({
+  id: idSchema,
+  organizationId: idSchema,
+  projectId: idSchema,
+  message: z.string(),
+  createdAt: z.coerce.date(),
+})
+export const organizationProjectContactInputSchema = z.object({ message: z.string().trim().min(10).max(2_000) })
+export const partnerTalentSearchSchema = z.object({ q: z.string().trim().max(160).optional(), fieldId: idSchema.optional(), limit: z.coerce.number().int().min(1).max(50).default(25) })
+export const partnerTalentSearchResultSchema = z.object({ revealed: z.literal(false), pseudonym: z.string(), avatarSeed: z.string(), headline: z.string().nullable(), bio: z.string().nullable(), fieldId: idSchema.nullable(), completion: z.number().int().min(0).max(100) })
+export const partnerTalentSearchResponseSchema = z.object({ items: z.array(partnerTalentSearchResultSchema) })
+export const financialEngagementCreateSchema = z.object({
+  projectId: idSchema,
+  type: z.enum(['INVESTMENT', 'DONATION', 'GRANT', 'PRIZE']),
+  amount: z.string().trim().regex(/^\d+(\.\d{1,2})?$/),
+  currency: z.string().trim().length(3).toUpperCase(),
+  provider: z.enum(['OFF_PLATFORM', 'MOBILE_MONEY']).default('OFF_PLATFORM'),
+  externalRef: z.string().trim().max(255).optional(),
+})
+
 export const privateTalentProfileSchema = z.object({
   user: z.object({ id: idSchema, email: z.string().email(), locale: localeSchema }),
   identity: z.object({ firstName: z.string(), lastName: z.string(), photoKey: z.string().nullable(), phone: z.string().nullable(), regionId: idSchema.nullable() }).nullable(),

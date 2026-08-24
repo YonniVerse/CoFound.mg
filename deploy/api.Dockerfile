@@ -3,7 +3,7 @@
 FROM node:22-alpine AS build
 WORKDIR /workspace
 
-RUN corepack enable
+RUN npm install --global pnpm@11.9.0
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 COPY apps/api/package.json apps/api/package.json
 COPY packages/shared/package.json packages/shared/package.json

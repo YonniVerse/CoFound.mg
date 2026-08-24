@@ -3,7 +3,7 @@ import type { CanActivate, ExecutionContext } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
 import { ANONYMOUS_KEY, PERMISSIONS_KEY } from './rbac.decorators.js'
-import { PLATFORM_ROLE_PERMISSIONS, type Permission } from './permissions.js'
+import { PLATFORM_ROLE_PERMISSIONS, Permission, type Permission as PermissionType } from './permissions.js'
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
@@ -16,7 +16,7 @@ export class PermissionGuard implements CanActivate {
     ])
     if (isAnonymous) return true
 
-    const requiredPermissions = this.reflector.getAllAndOverride<Permission[]>(PERMISSIONS_KEY, [
+    const requiredPermissions = this.reflector.getAllAndOverride<PermissionType[]>(PERMISSIONS_KEY, [
       context.getHandler(),
       context.getClass(),
     ])
@@ -37,7 +37,13 @@ export class PermissionGuard implements CanActivate {
 
     const granted = PLATFORM_ROLE_PERMISSIONS[request.user.platformRole] ?? []
     const staffCanAct = request.user.platformRole === 'STAFF' && ['MODERATOR', 'OPS_ADMIN', 'SUPER_ADMIN'].includes(request.user.staffRole ?? '')
-    const hasPermissions = requiredPermissions.every((permission) => permission === 'moderation:act' ? staffCanAct : granted.includes(permission))
+    const superAdminOnly = request.user.platformRole === 'STAFF' && request.user.staffRole === 'SUPER_ADMIN'
+    const hasPermissions = requiredPermissions.every((permission) => {
+      if (permission === Permission.MODERATION_ACT) return staffCanAct
+      const superAdminPermissions: readonly PermissionType[] = [Permission.ORGANIZATION_REQUEST_READ, Permission.ORGANIZATION_REQUEST_MANAGE, Permission.ORGANIZATION_CAPABILITY_MANAGE]
+      if (superAdminPermissions.includes(permission)) return superAdminOnly
+      return granted.includes(permission)
+    })
     if (!hasPermissions) {
       throw new ForbiddenException({
         code: 'FORBIDDEN',

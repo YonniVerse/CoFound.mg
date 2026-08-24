@@ -66,6 +66,10 @@ class ApiClient {
     return this.request(path, { method: 'PATCH', body: JSON.stringify(body) }, schema)
   }
 
+  delete<T>(path: string, schema?: Schema<T>) {
+    return this.request(path, { method: 'DELETE' }, schema)
+  }
+
   private parseJson(raw: string): unknown {
     try {
       return JSON.parse(raw) as unknown

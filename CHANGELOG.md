@@ -10,6 +10,132 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-24 — Intégration Cloudinary des justificatifs B-01
+
+### Décidé
+
+- Cloudinary est utilisé comme exception opérationnelle pour les justificatifs B-01, car le compte et le service Render sont disponibles ; R2 reste la cible générale des autres fichiers.
+- Les assets sont téléversés côté API avec le delivery type `authenticated`, car les justificatifs ne doivent pas être accessibles depuis une URL CDN publique.
+- Les secrets Cloudinary restent uniquement dans Render, car Vercel et le frontend sont des environnements publics.
+
+### Ajouté
+
+- Service Cloudinary NestJS avec upload signé, validation des formats et de la taille, nettoyage des assets orphelins et génération d’URLs temporaires.
+- Support multipart sur `POST /api/v1/organization-requests` avec cinq fichiers maximum et 10 Mo par fichier.
+- Route staff `GET /api/v1/staff/organization-requests/:id/documents/:index`, protégée par RBAC, auditée et limitée à une URL de cinq minutes.
+- Upload réel depuis le formulaire B-01 et bouton de consultation depuis `/staff/organizations`.
+- Contrat partagé de réponse d’URL temporaire et variables documentées dans `apps/api/.env.example`.
+- PR #83 : https://github.com/YonniVerse/CoFound.mg/pull/83
+
+### Validation
+
+- **159/159 tests API réussis**.
+- Typechecks, lint, builds shared/API/frontend et `git diff --check` réussis.
+- Tests Cloudinary simulés ; aucun secret ni upload réel n’a été exécuté depuis le sandbox.
+
+### En cours
+
+- La PR #83 doit être revue et fusionnée vers `dev`.
+- Le service Render doit ensuite basculer de `feat/B-09-team-contact` vers `dev`, être redéployé et validé avec un vrai PDF de test.
+- La présence des variables Cloudinary a été déclarée par l’utilisateur dans Render, mais n’est pas vérifiée par l’agent.
+
+---
+
+## 2026-08-22 — Progression Vague 4 — B-02 à B-11
+
+### Ajouté
+
+- B-02 : permissions SUPER_ADMIN, file staff, approbation/rejet des demandes, création transactionnelle de l’organisation et du premier `ORG_ADMIN`.
+- B-02 : activation et retrait individuel des capacités avec audit ; `CERTIFY_AFFILIATION` est réservé aux `INSTITUTION`.
+- B-03 : profil public uniquement pour les organisations vérifiées.
+- B-04/B-05 : recherche partenaire de projets par maturité BMC, suivi privé et notes internes avec `ProjectWatch`.
+- B-06/B-07/B-08 : opportunités, candidatures talent/projet et décisions motivées côté partenaire.
+- B-09 : contact unique organisation/projet avec contrainte d’unicité et audit.
+- B-10 : recherche de talents opt-in pseudonymisés pour les organisations ayant `RECRUIT`.
+- B-11 : `PaymentProvider`, provider hors plateforme et création d’engagement `PROPOSED`, sans règlement en ligne.
+- Console UI-49 `/staff/organizations` et contrats partagés correspondants.
+
+### Modifié
+
+- Ajout des migrations `ProjectWatch`, `OpportunityApplication.rejectionReason` et `OrganizationProjectContact`.
+- Extension du guard RBAC avec trois permissions réservées à `STAFF/SUPER_ADMIN`.
+- Ajout de la méthode DELETE au client API frontend.
+
+### Validation
+
+- Suite API : **155/155 tests réussis**.
+- Typecheck API, frontend et shared réussi.
+- Lint API/frontend, build frontend, contrôle de bundle et `git diff --check` réussis.
+- Budget JavaScript initial : **65,52 KiB gzip**.
+
+### En cours
+
+- PR #75 de synthèse : https://github.com/YonniVerse/CoFound.mg/pull/75
+- Les interfaces partenaires B-03 à B-11 sont maintenant ajoutées : profil, projets, suivi/contact, talents, opportunités, candidatures et proposition financière.
+- Les migrations doivent être appliquées et les flux authentifiés testés dès que le serveur de recette fonctionne.
+- Cloudinary reste en attente ; aucun secret n’a été placé dans le frontend.
+
+---
+
+## 2026-08-22 — Interfaces partenaires de la Vague 4
+
+### Ajouté
+
+- Pages frontend `/organizations/:organizationId/profile`, `/projects`, `/talents` et `/opportunities`.
+- Recherche de projets par texte et maturité BMC, suivi privé, note interne et contact unique.
+- Recherche de talents opt-in pseudonymisés.
+- Création/publication d’opportunités, consultation des candidatures, décisions et proposition d’engagement financier hors plateforme.
+- Routes frontend et traductions françaises/malgaches associées.
+
+### Validation
+
+- Typecheck API, frontend et shared réussi.
+- Lint API/frontend réussi.
+- Build frontend réussi.
+- Suite API : **155/155 tests réussis**.
+- Budget JavaScript initial : **69,57 KiB gzip**.
+
+### Limites
+
+- La recette authentifiée attend le serveur/API et la base de données disponibles.
+- Cloudinary n’est pas encore raccordé au serveur ; aucune clé secrète n’a été exposée au frontend.
+
+---
+
+## 2026-08-22 — Implémentation de B-01 — Demande d’accès organisationnel
+
+### Ajouté
+
+- Branche `feat/B-01-organization-request` et PR #73 vers `dev`.
+- Modèle Prisma `OrganizationRequest`, enum de statut et migration `20260822170000_add_organization_requests`.
+- Contrats Zod partagés pour l’entrée, les métadonnées de pièces et la réponse B-01.
+- Endpoint public `POST /api/v1/organization-requests` avec validation, normalisation, détection des doublons actifs et audit.
+- Page publique `/organization-request` en trois étapes avec confirmation et numéro de demande.
+- Liens vers la demande depuis la connexion et le CTA de l’accueil.
+- Traductions françaises et malgaches du parcours B-01.
+- Tests ciblés de création, validation, doublon et métadonnées d’audit.
+
+### Décidé
+
+- Les secteurs d’intérêt sont saisis comme libellés publics dans B-01, car le demandeur ne doit pas connaître les identifiants internes des référentiels.
+- Les justificatifs sont limités à cinq fichiers de 10 Mo côté interface ; cette session persiste uniquement leurs métadonnées, car aucun adaptateur R2 n’est encore présent dans le dépôt.
+
+### Validation
+
+- Suite API : **139/139 tests réussis**.
+- Typecheck API, frontend et shared, lint API/frontend, build frontend et `git diff --check` réussis.
+- Budget JavaScript initial respecté : **60,28 KiB gzip**.
+- `prisma validate` réussi avec une URL PostgreSQL locale temporaire.
+
+### En cours
+
+- Revue et fusion de la PR #73.
+- Application de la migration sur Neon et validation authentifiée de l’endpoint.
+- Raccordement ultérieur du stockage binaire R2 et de la consultation staff des pièces.
+- Préparation de B-02 : file staff, décision d’approbation/refus et capacités organisationnelles.
+
+---
+
 ## 2026-08-22 — CI staging et initialisation M-14
 
 ### Ajouté
@@ -815,3 +941,30 @@ La prochaine chaîne prioritaire est désormais S-01, puis S-02 et S-03. S-04 pe
 
 - Recette Neon avec un vrai compte staff et validation du transport email réel.
 - Préparation de S-05 : console staff d’audit, référentiels et santé produit.
+
+
+## 2026-08-22 — Déploiement backend Render réussi
+
+### Déployé
+
+- Service API `cofound-mg` déployé sur Render depuis `feat/B-09-team-contact`.
+- URL publique : https://cofound-mg.onrender.com.
+- Frontend autorisé par CORS : `https://co-found-mg.vercel.app`.
+- Les huit migrations Prisma ont été appliquées sur Neon.
+
+### Vérifié
+
+- `GET /api/v1/health` répond `HTTP 200` avec `{"status":"ok","database":"ok"}`.
+- Le build utilise pnpm 11.9.0 installé explicitement, sans dépendre de Corepack.
+- Le démarrage applique les migrations Prisma avant `node dist/main.js`.
+
+### Correctifs de déploiement
+
+- Injection NestJS corrigée pour `PrismaService` et `OffPlatformPaymentProvider`.
+- Dépendances `class-validator` et `class-transformer` ajoutées à l’API.
+
+### À faire ensuite
+
+- Renseigner l’URL API Render dans Vercel si ce n’est pas déjà fait.
+- Créer le Background Worker Render pour `node dist/worker.js`.
+- Raccorder Cloudinary côté serveur uniquement lorsque le flux documentaire sera repris.

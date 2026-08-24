@@ -38,6 +38,12 @@ enum OrganizationRole {
   ORG_VIEWER
 }
 
+enum OrganizationRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum OrganizationCapabilityName {
   CERTIFY_AFFILIATION
   PUBLISH_OPPORTUNITY
@@ -286,6 +292,32 @@ model TalentIdentity {
   region    Region?  @relation(fields: [regionId], references: [id])
 }
 
+model OrganizationRequest {
+  id                   String                   @id @default(cuid())
+  organizationType     OrganizationType
+  organizationName     String
+  countryCode          String                   @default("MG")
+  region               String
+  website              String?
+  description          String
+  sectorsOfInterest   Json
+  contactName          String
+  contactRole          String
+  contactEmail         String
+  contactPhone         String?
+  supportingDocuments  Json
+  status               OrganizationRequestStatus @default(PENDING)
+  decisionReason       String?
+  decidedAt            DateTime?
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
+  approvedOrganizationId String?                  @unique
+  approvedOrganization  Organization?            @relation("OrganizationRequestApprovedOrganization", fields: [approvedOrganizationId], references: [id])
+
+  @@index([status, createdAt])
+  @@index([contactEmail, organizationName, status])
+}
+
 model Organization {
   id                   String                   @id @default(cuid())
   name                 String
@@ -302,6 +334,9 @@ model Organization {
   importBatches        ImportBatch[]
   opportunities        Opportunity[]
   financialEngagements FinancialEngagement[]
+  approvedRequest      OrganizationRequest?      @relation("OrganizationRequestApprovedOrganization")
+  projectWatches       ProjectWatch[]
+  projectContacts      OrganizationProjectContact[]
 
   @@index([type, verificationStatus])
 }
@@ -547,9 +582,38 @@ model Project {
   posts                Post[]
   conversation         Conversation?
   financialEngagements FinancialEngagement[]
+  projectWatches       ProjectWatch[]
+  organizationContacts OrganizationProjectContact[]
 
   @@index([status, createdAt])
   @@index([sectorId])
+}
+
+model ProjectWatch {
+  id             String       @id @default(cuid())
+  organizationId String
+  projectId      String
+  note           String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  project        Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, projectId])
+  @@index([organizationId, updatedAt])
+}
+
+model OrganizationProjectContact {
+  id             String       @id @default(cuid())
+  organizationId String
+  projectId      String
+  message        String
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  project        Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, projectId])
+  @@index([projectId, createdAt])
 }
 
 model BusinessModelCanvas {
@@ -748,9 +812,11 @@ model OpportunityApplication {
   opportunityId String
   applicantType OpportunityApplicantType
   applicantId   String
-  message       String
-  status        ApplicationStatus
-  createdAt     DateTime                 @default(now())
+    message         String
+  status          ApplicationStatus
+  rejectionReason String?
+  createdAt       DateTime                 @default(now())
+
   opportunity   Opportunity              @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
 
   @@unique([opportunityId, applicantType, applicantId])
