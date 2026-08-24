@@ -1,7 +1,7 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import type { ReferenceCreateInput, ReferenceKind, ReferencePatchInput } from '@cofound/shared'
-import type { PrismaService } from '../prisma/prisma.service.js'
+import { PrismaService } from '../prisma/prisma.service.js'
 
 type ReferenceRow = { id: string; slug: string; labelKey: string; category?: string | null; countryCode?: string | null; isActive: boolean; sortOrder: number }
 type GenericDelegate = { findMany: (args: { orderBy: Array<Record<string, string | undefined>> }) => Promise<ReferenceRow[]>; create: (args: { data: Record<string, unknown> }) => Promise<ReferenceRow>; update: (args: { where: { id: string }; data: Record<string, unknown> }) => Promise<ReferenceRow> }

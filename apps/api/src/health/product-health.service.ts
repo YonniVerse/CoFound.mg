@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { MIN_AGGREGATION_THRESHOLD } from '@cofound/shared'
-import type { PrismaService } from '../prisma/prisma.service.js'
+import { PrismaService } from '../prisma/prisma.service.js'
 
 @Injectable()
 export class ProductHealthService {
