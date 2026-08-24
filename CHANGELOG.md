@@ -10,6 +10,24 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-24 — Corriger le timeout du seed multi-comptes
+
+### Corrigé
+
+- Le hachage Argon2 est exécuté avant la transaction interactive Prisma, afin que plusieurs comptes ne fassent plus expirer le délai de 5 secondes.
+- La transaction conserve uniquement les upserts utilisateurs, qui restent atomiques.
+
+### Validation
+
+- Le build Render et les migrations du log fourni étaient réussis ; l’échec était limité au timeout `P2028` de l’auto-seed.
+- Après correction locale : typecheck, build API, lint et **178/178 tests API réussis**.
+
+### En cours
+
+- Terminer le rebase documentaire, pousser le correctif sur `main`, puis confirmer sur Render l’ouverture du port et le healthcheck HTTP 200.
+
+---
+
 ## 2026-08-24 — Fusion de dev vers main avec résolution de conflits
 
 ### Fusionné
