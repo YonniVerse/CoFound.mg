@@ -3,12 +3,14 @@ import { createContext, useContext, useCallback, useEffect, useMemo, useRef, use
 import { apiClient, ApiClientError } from '@/lib/api-client'
 
 type AuthState =
+  | { status: 'loading' }
   | { status: 'idle' }
   | { status: 'authenticated'; userId: string }
 
 type AuthContextValue = {
   state: AuthState
   isAuthenticated: boolean
+  isLoading: boolean
   login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
   refresh: () => Promise<boolean>
@@ -18,7 +20,7 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<AuthState>({ status: 'idle' })
+  const [state, setState] = useState<AuthState>({ status: 'loading' })
   const refreshInFlight = useRef<Promise<boolean> | null>(null)
 
   const login = useCallback(async (email: string, password: string) => {
@@ -60,8 +62,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch (error) {
         if (error instanceof ApiClientError && error.status === 401) {
           apiClient.setAccessToken(null)
-          setState({ status: 'idle' })
         }
+        setState({ status: 'idle' })
         return false
       }
     })()
@@ -84,10 +86,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [refresh])
 
   const isAuthenticated = state.status === 'authenticated'
+  const isLoading = state.status === 'loading'
 
   const value = useMemo<AuthContextValue>(
-    () => ({ state, isAuthenticated, login, logout, refresh, setAccessToken }),
-    [state, isAuthenticated, login, logout, refresh, setAccessToken],
+    () => ({ state, isAuthenticated, isLoading, login, logout, refresh, setAccessToken }),
+    [state, isAuthenticated, isLoading, login, logout, refresh, setAccessToken],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

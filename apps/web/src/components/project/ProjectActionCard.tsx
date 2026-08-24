@@ -1,33 +1,35 @@
-import { useState } from "react";
-import { Share2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ApplyModal } from "@/components/applications/ApplyModal";
-import type { ProjectDetail } from "@/data/mockProject";
+import { useState } from 'react'
+import { Share2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { ApplyModal } from '@/components/applications/ApplyModal'
+import type { ProjectDetail } from '@/data/projectTypes'
 
 interface ProjectActionCardProps {
-  project: ProjectDetail;
-  onApply: (text: string) => Promise<boolean>;
-  isApplying: boolean;
+  project: ProjectDetail
+  onApply: (input: { positionId?: string; message: string }) => Promise<boolean>
+  isApplying: boolean
 }
 
 export function ProjectActionCard({ project, onApply, isApplying }: ProjectActionCardProps) {
-  const [isApplyOpen, setIsApplyOpen] = useState(false);
+  const [isApplyOpen, setIsApplyOpen] = useState(false)
 
-  const handleSubmit = async ({ message }: { projectId: string; positionId?: string; message: string }) => {
-    const applied = await onApply(message);
-    if (!applied) throw new Error("La candidature n’a pas pu être envoyée.");
-  };
+  const handleSubmit = async ({ positionId, message }: { projectId: string; positionId?: string; message: string }) => {
+    const applied = await onApply({ positionId, message })
+    if (!applied) throw new Error('La candidature n’a pas pu être envoyée.')
+  }
+
+  const openPositions = project.positions.filter((position) => position.isOpen)
 
   return (
     <>
-      <div className="bg-card border border-border rounded-xl p-5 sm:p-6 shadow-2xs flex flex-col gap-4 animate-in fade-in slide-in-from-right-8 duration-500 delay-100">
+      <div className="flex animate-in flex-col gap-4 rounded-xl border border-border bg-card p-5 shadow-2xs duration-500 slide-in-from-right-8 sm:p-6">
         <Button
           size="sm"
           className="h-9 w-full rounded-lg px-3.5 text-xs font-medium shadow-none transition-colors sm:text-sm"
           onClick={() => setIsApplyOpen(true)}
           disabled={isApplying}
         >
-          {isApplying ? "Envoi en cours…" : "Postuler à ce projet"}
+          {isApplying ? 'Envoi en cours…' : 'Postuler à ce projet'}
         </Button>
 
         <div className="flex flex-wrap gap-2">
@@ -37,7 +39,7 @@ export function ProjectActionCard({ project, onApply, isApplying }: ProjectActio
           </Button>
         </div>
 
-        <div className="border-t border-border/50 pt-4 space-y-3">
+        <div className="space-y-3 border-t border-border/50 pt-4">
           <div>
             <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Stade actuel</p>
             <p className="flex items-center gap-2 text-xs font-medium text-foreground sm:text-sm">
@@ -45,10 +47,12 @@ export function ProjectActionCard({ project, onApply, isApplying }: ProjectActio
               {project.status}
             </p>
           </div>
-          <div>
-            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Disponibilité souhaitée</p>
-            <p className="text-xs font-medium text-foreground sm:text-sm">{project.availability}</p>
-          </div>
+          {openPositions.length > 0 && (
+            <div>
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Postes ouverts</p>
+              <p className="text-xs font-medium text-foreground sm:text-sm">{openPositions.length}</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -57,11 +61,11 @@ export function ProjectActionCard({ project, onApply, isApplying }: ProjectActio
         onClose={() => setIsApplyOpen(false)}
         projectTitle={project.title}
         projectId={project.id}
-        positions={project.seeking.map((item, index) => ({ id: `${project.id}-position-${index}`, title: item.role }))}
+        positions={openPositions.map((position) => ({ id: position.id, title: position.title }))}
         onSubmit={handleSubmit}
       />
     </>
-  );
+  )
 }
 
-export default ProjectActionCard;
+export default ProjectActionCard

@@ -8,6 +8,7 @@ import { AccessTokenGuard } from '../src/rbac/access-token.guard.js'
 import { PermissionGuard } from '../src/rbac/permission.guard.js'
 import { PERMISSIONS_KEY } from '../src/rbac/rbac.decorators.js'
 import { Permission } from '../src/rbac/permissions.js'
+import { AccountStatusController } from '../src/account-status/account-status.controller.js'
 import { SignJWT } from 'jose'
 import { getJwtSecret } from '../src/auth/jwt-secret.js'
 
@@ -82,6 +83,10 @@ test('S-05 — MODERATOR ne gère pas les référentiels ni la santé produit', 
   const request: Request = { headers: {}, user: { userId: 'moderator', platformRole: 'STAFF', status: 'ACTIVE', staffRole: 'MODERATOR' } }
   assert.throws(() => permissionGuard.canActivate(contextFor(request, [Permission.REFERENCE_DATA_MANAGE])), ForbiddenException)
   assert.throws(() => permissionGuard.canActivate(contextFor(request, [Permission.PRODUCT_HEALTH_READ])), ForbiddenException)
+})
+
+test('S-07 — le statut personnel déclare une permission de lecture explicite', () => {
+  assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, AccountStatusController), [Permission.TALENT_READ])
 })
 
 test('F-19 — une route protégée sans Bearer est refusée', async () => {

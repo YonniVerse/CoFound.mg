@@ -41,7 +41,7 @@ const NAVIGATION = [
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, isLoading, logout } = useAuth();
   const { t } = useI18n();
   const [completionReminder, setCompletionReminder] = useState<ProfileCompletionReminder | null>(null);
   const [currentProfile, setCurrentProfile] = useState<CurrentProfile | null>(null);
@@ -105,6 +105,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     </div>
   );
 
+  if (isLoading) return <div role="status" className="flex min-h-[40vh] items-center justify-center text-muted-foreground">{t('common.loading')}</div>;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   return (

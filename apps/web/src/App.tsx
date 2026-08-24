@@ -12,6 +12,7 @@ import PartnerOpportunitiesPage from "@/pages/PartnerOpportunitiesPage";
 import ActivationPage from "@/pages/ActivationPage";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { AuthProvider } from "@/hooks/useAuth";
+import { PlatformRoleGate } from "@/components/auth/PlatformRoleGate";
 
 const OnboardingPage = lazy(() => import("@/pages/OnboardingPage"));
 const FeedPage = lazy(() => import("@/pages/FeedPage"));
@@ -74,7 +75,7 @@ function App() {
     <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
     <Route path="/activation/:token" element={<ActivationPage />} />
     <Route path="/organization-request" element={<OrganizationRequestPage />} />
-    <Route path="/staff/organizations" element={<StaffOrganizationsPage />} />
+    <Route path="/staff/organizations" element={<PlatformRoleGate allowedRoles={["STAFF"]}><StaffOrganizationsPage /></PlatformRoleGate>} />
     <Route path="/organizations/:organizationId/profile" element={<OrganizationProfilePage />} />
     <Route path="/organizations/:organizationId/projects" element={<PartnerProjectsPage />} />
     <Route path="/organizations/:organizationId/talents" element={<PartnerTalentsPage />} />
@@ -94,23 +95,25 @@ function App() {
     <Route path="/projects/:id/public" element={<ProjectPublicPage />} />
     <Route path="/my-applications" element={<MyApplicationsPage />} />
     <Route path="/impact" element={<ImpactPage />} />
-    <Route path="/institution" element={<InstitutionOverviewPage />} />
-    <Route path="/institution/members" element={<InstitutionMembersPage />} />
-    <Route path="/institution/affiliations" element={<InstitutionAffiliationsPage />} />
-    <Route path="/institution/directory" element={<InstitutionDirectoryPage />} />
-    <Route path="/institution/imports" element={<ImportBatchesPage />} />
-    <Route path="/institution/imports/:id" element={<ImportBatchesPage />} />
-    <Route path="/institution/imports/new" element={<ImportMappingPage />} />
-    <Route path="/institution/imports/preview" element={<ImportPreviewPage />} />
-    <Route path="/institution/imports/:id/preview" element={<ImportPreviewPage />} />
+    <Route path="/institution" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><InstitutionOverviewPage /></PlatformRoleGate>} />
+    <Route path="/institution/members" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><InstitutionMembersPage /></PlatformRoleGate>} />
+    <Route path="/institution/affiliations" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><InstitutionAffiliationsPage /></PlatformRoleGate>} />
+    <Route path="/institution/directory" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><InstitutionDirectoryPage /></PlatformRoleGate>} />
+    <Route path="/institution/imports" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><ImportBatchesPage /></PlatformRoleGate>} />
+    <Route path="/institution/imports/:id" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><ImportBatchesPage /></PlatformRoleGate>} />
+    <Route path="/institution/imports/new" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><ImportMappingPage /></PlatformRoleGate>} />
+    <Route path="/institution/imports/preview" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><ImportPreviewPage /></PlatformRoleGate>} />
+    <Route path="/institution/imports/:id/preview" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><ImportPreviewPage /></PlatformRoleGate>} />
     <Route path="/projects" element={<ProjectsFeedPage />} />
+    <Route path="/projects/feed" element={<ProjectsFeedPage />} />
     <Route path="/profiles" element={<TalentsFeedPage />} />
+    <Route path="/talents/feed" element={<TalentsFeedPage />} />
     <Route path="/messages" element={<MessagesPage />} />
     <Route path="/notifications" element={<NotificationsPage />} />
-    <Route path="/moderation" element={<ModerationQueuePage />} />
-    <Route path="/staff/audit" element={<AuditLogPage />} />
-    <Route path="/staff/reference-data" element={<ReferenceDataPage />} />
-    <Route path="/staff/health" element={<ProductHealthPage />} />
+    <Route path="/moderation" element={<PlatformRoleGate allowedRoles={["STAFF"]}><ModerationQueuePage /></PlatformRoleGate>} />
+    <Route path="/staff/audit" element={<PlatformRoleGate allowedRoles={["STAFF"]}><AuditLogPage /></PlatformRoleGate>} />
+    <Route path="/staff/reference-data" element={<PlatformRoleGate allowedRoles={["STAFF"]}><ReferenceDataPage /></PlatformRoleGate>} />
+    <Route path="/staff/health" element={<PlatformRoleGate allowedRoles={["STAFF"]}><ProductHealthPage /></PlatformRoleGate>} />
     <Route path="/profile/me" element={<OnboardingPage />} />
     <Route path="/settings" element={<SettingsPage />} />
     <Route path="/account-status" element={<AccountStatusPage />} />
