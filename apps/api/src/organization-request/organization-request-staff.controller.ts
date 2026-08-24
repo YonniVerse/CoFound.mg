@@ -20,6 +20,12 @@ export class OrganizationRequestStaffController {
     return this.service.getById(id)
   }
 
+  @Get(':id/documents/:index')
+  @AuditAction('ORGANIZATION_REQUEST_DOCUMENT_ACCESSED', 'OrganizationRequest')
+  getDocumentUrl(@Param('id') id: string, @Param('index') index: string, @Req() request: AuthenticatedRequest) {
+    return this.service.getDocumentUrl(request.user!.userId, id, index)
+  }
+
   @Post(':id/approve')
   @RequirePermissions(Permission.ORGANIZATION_REQUEST_MANAGE)
   @AuditAction('ORGANIZATION_REQUEST_APPROVED', 'OrganizationRequest')

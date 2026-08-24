@@ -1,7 +1,8 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ConflictException, Injectable, NotFoundException, Optional } from '@nestjs/common'
 import { organizationCapabilityUpdateSchema, organizationRequestDecisionSchema, organizationRequestQueueQuerySchema } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { AuditService } from '../audit/audit.service.js'
+import { CloudinaryService, type CloudinaryDocument } from './cloudinary.service.js'
 
 const MVP_CAPABILITIES = new Set(['CERTIFY_AFFILIATION', 'PUBLISH_OPPORTUNITY', 'RECRUIT'])
 
@@ -10,6 +11,7 @@ export class OrganizationRequestStaffService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
+    @Optional() private readonly cloudinary?: CloudinaryService,
   ) {}
 
   async list(input: unknown) {
@@ -47,6 +49,26 @@ export class OrganizationRequestStaffService {
     })
     if (!request) throw new NotFoundException({ code: 'ORGANIZATION_REQUEST_NOT_FOUND', messageKey: 'errors.notFound' })
     return this.serialize(request)
+  }
+
+  async getDocumentUrl(actorId: string, requestId: string, index: string) {
+    const documentIndex = Number(index)
+    if (!Number.isInteger(documentIndex) || documentIndex < 0) {
+      throw new BadRequestException({ code: 'INVALID_DOCUMENT_INDEX', messageKey: 'organizationRequest.errors.documentNotFound' })
+    }
+    const request = await this.prisma.organizationRequest.findUnique({
+      where: { id: requestId },
+      select: { supportingDocuments: true },
+    })
+    if (!request) throw new NotFoundException({ code: 'ORGANIZATION_REQUEST_NOT_FOUND', messageKey: 'errors.notFound' })
+    const value = Array.isArray(request.supportingDocuments) ? request.supportingDocuments[documentIndex] : undefined
+    const document = this.asCloudinaryDocument(value)
+    if (!document || !this.cloudinary) {
+      throw new NotFoundException({ code: 'ORGANIZATION_REQUEST_DOCUMENT_NOT_FOUND', messageKey: 'organizationRequest.errors.documentNotFound' })
+    }
+    const access = this.cloudinary.createTemporaryDownloadUrl(document)
+    await this.audit.record({ actorId, action: 'ORGANIZATION_REQUEST_DOCUMENT_ACCESSED', targetType: 'OrganizationRequest', targetId: requestId, metadata: { documentIndex } })
+    return { fileName: document.fileName, url: access.url, expiresAt: access.expiresAt }
   }
 
   async approve(actorId: string, requestId: string) {
@@ -146,5 +168,24 @@ export class OrganizationRequestStaffService {
   private asDocuments(value: unknown): Array<{ fileName: string; contentType: string; sizeBytes: number }> {
     if (!Array.isArray(value)) return []
     return value.filter((entry): entry is { fileName: string; contentType: string; sizeBytes: number } => typeof entry === 'object' && entry !== null && typeof (entry as Record<string, unknown>).fileName === 'string' && typeof (entry as Record<string, unknown>).contentType === 'string' && typeof (entry as Record<string, unknown>).sizeBytes === 'number')
+  }
+
+  private asCloudinaryDocument(value: unknown): CloudinaryDocument | null {
+    if (!value || typeof value !== 'object') return null
+    const document = value as Record<string, unknown>
+    if (typeof document.fileName !== 'string' || typeof document.contentType !== 'string' || typeof document.sizeBytes !== 'number') return null
+    if (typeof document.cloudinaryPublicId !== 'string' || typeof document.cloudinaryFormat !== 'string' || typeof document.cloudinaryResourceType !== 'string' || document.cloudinaryResourceType !== 'image' && document.cloudinaryResourceType !== 'raw') return null
+    if (typeof document.cloudinaryAssetId !== 'string' || typeof document.cloudinaryVersion !== 'number') return null
+    return {
+      fileName: document.fileName,
+      contentType: document.contentType,
+      sizeBytes: document.sizeBytes,
+      cloudinaryPublicId: document.cloudinaryPublicId,
+      cloudinaryResourceType: document.cloudinaryResourceType,
+      cloudinaryDeliveryType: 'authenticated',
+      cloudinaryFormat: document.cloudinaryFormat,
+      cloudinaryAssetId: document.cloudinaryAssetId,
+      cloudinaryVersion: document.cloudinaryVersion,
+    }
   }
 }

@@ -30,7 +30,7 @@ type RequestForm = Omit<OrganizationRequestInput, 'organizationType' | 'sectorsO
   organizationType: OrganizationRequestInput['organizationType'] | ''
   sectorsOfInterest: string
 }
-type SelectedDocument = { fileName: string; contentType: string; sizeBytes: number }
+type SelectedDocument = { file: File; fileName: string; contentType: string; sizeBytes: number }
 
 const initialForm: RequestForm = {
   organizationType: '',
@@ -97,7 +97,7 @@ export default function OrganizationRequestPage() {
       setDocumentError(t('organizationRequest.errors.documents'))
       return
     }
-    setDocuments(files.map((file) => ({ fileName: file.name, contentType: file.type, sizeBytes: file.size })))
+    setDocuments(files.map((file) => ({ file, fileName: file.name, contentType: file.type, sizeBytes: file.size })))
   }
 
   const removeDocument = (fileName: string) => setDocuments((current) => current.filter((document) => document.fileName !== fileName))
@@ -111,21 +111,20 @@ export default function OrganizationRequestPage() {
     setError(null)
     setIsSubmitting(true)
     try {
-      const payload: OrganizationRequestInput = {
-        organizationType: form.organizationType as OrganizationRequestInput['organizationType'],
-        organizationName: form.organizationName,
-        countryCode: form.countryCode,
-        region: form.region,
-        website: form.website,
-        description: form.description,
-        sectorsOfInterest: form.sectorsOfInterest.split(',').map((sector) => sector.trim()).filter(Boolean),
-        contactName: form.contactName,
-        contactRole: form.contactRole,
-        contactEmail: form.contactEmail,
-        contactPhone: form.contactPhone,
-        supportingDocuments: documents,
-      }
-      const response = await apiClient.post('/organization-requests', payload, organizationRequestResponseSchema)
+      const payload = new FormData()
+      payload.set('organizationType', form.organizationType)
+      payload.set('organizationName', form.organizationName)
+      payload.set('countryCode', form.countryCode)
+      payload.set('region', form.region)
+      payload.set('website', form.website ?? '')
+      payload.set('description', form.description)
+      payload.set('sectorsOfInterest', JSON.stringify(form.sectorsOfInterest.split(',').map((sector) => sector.trim()).filter(Boolean)))
+      payload.set('contactName', form.contactName)
+      payload.set('contactRole', form.contactRole)
+      payload.set('contactEmail', form.contactEmail)
+      payload.set('contactPhone', form.contactPhone ?? '')
+      documents.forEach((document) => payload.append('documents', document.file, document.fileName))
+      const response = await apiClient.request('/organization-requests', { method: 'POST', body: payload }, organizationRequestResponseSchema)
       setSuccess({ requestId: response.requestId })
     } catch (caughtError) {
       if (caughtError instanceof ApiClientError && caughtError.status === 409) {

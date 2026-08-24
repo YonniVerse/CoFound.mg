@@ -83,3 +83,31 @@ test('B-02 accorde une capacité MVP et audite l’octroi', async () => {
   assert.equal(result.id, 'cap-1')
   assert.equal(audit.events.length, 1)
 })
+
+
+test('B-12 génère une URL temporaire pour un justificatif Cloudinary et audite l’accès', async () => {
+  const audit = auditMock()
+  const prisma = {
+    organizationRequest: {
+      findUnique: async () => ({
+        supportingDocuments: [{
+          fileName: 'registre.pdf',
+          contentType: 'application/pdf',
+          sizeBytes: 42_000,
+          cloudinaryPublicId: 'cofound/request-1/document',
+          cloudinaryResourceType: 'raw',
+          cloudinaryDeliveryType: 'authenticated',
+          cloudinaryFormat: 'pdf',
+          cloudinaryAssetId: 'asset-1',
+          cloudinaryVersion: 1,
+        }],
+      }),
+    },
+  } as unknown as PrismaService
+  const cloudinary = {
+    createTemporaryDownloadUrl: () => ({ url: 'https://api.cloudinary.com/signed-download', expiresAt: '2026-08-22T10:05:00.000Z' }),
+  }
+  const result = await new OrganizationRequestStaffService(prisma, audit, cloudinary as never).getDocumentUrl('staff-1', 'request-1', '0')
+  assert.deepEqual(result, { fileName: 'registre.pdf', url: 'https://api.cloudinary.com/signed-download', expiresAt: '2026-08-22T10:05:00.000Z' })
+  assert.equal(audit.events.length, 1)
+})
