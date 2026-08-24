@@ -6,13 +6,14 @@ import type { ExecutionContext } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { AccessTokenGuard } from '../src/rbac/access-token.guard.js'
 import { PermissionGuard } from '../src/rbac/permission.guard.js'
-import { PERMISSIONS_KEY } from '../src/rbac/rbac.decorators.js'
+import { ANONYMOUS_KEY, PERMISSIONS_KEY } from '../src/rbac/rbac.decorators.js'
 import { Permission, PLATFORM_ROLE_PERMISSIONS } from '../src/rbac/permissions.js'
 import { ProfileController, ProfileIdentityController } from '../src/profile/profile.controller.js'
 import { CompletionReminderController } from '../src/profile/completion-reminder.controller.js'
 import { OnboardingController } from '../src/onboarding/onboarding.controller.js'
 import { DreamMatchController } from '../src/dream-match/dream-match.controller.js'
 import { DreamMatchScoringController } from '../src/dream-match/dream-match-scoring.controller.js'
+import { PublicOpportunityController } from '../src/organization-request/opportunity.controller.js'
 import { SignJWT } from 'jose'
 import { getJwtSecret } from '../src/auth/jwt-secret.js'
 
@@ -79,6 +80,13 @@ test('F-20 — les parcours personnels TALENT ne sont pas accordés aux ORG_MEMB
   for (const controller of [ProfileController, ProfileIdentityController, CompletionReminderController, OnboardingController, DreamMatchController, DreamMatchScoringController]) {
     assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, controller), [Permission.TALENT_SELF])
   }
+})
+
+test('F-21 — la lecture publique est anonyme mais la candidature reste protégée', () => {
+  const listPublished = PublicOpportunityController.prototype.listPublished
+  const apply = PublicOpportunityController.prototype.apply
+  assert.equal(Reflect.getMetadata(ANONYMOUS_KEY, listPublished), true)
+  assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, apply), [Permission.PROJECT_APPLY])
 })
 
 test('B-02 — seul SUPER_ADMIN peut consulter et gérer les organisations', () => {
