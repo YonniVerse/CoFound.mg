@@ -36,6 +36,7 @@ export class PermissionGuard implements CanActivate {
     }
 
     const granted = PLATFORM_ROLE_PERMISSIONS[request.user.platformRole] ?? []
+    const staffCanAct = request.user.platformRole === 'STAFF' && ['MODERATOR', 'OPS_ADMIN', 'SUPER_ADMIN'].includes(request.user.staffRole ?? '')
     const superAdminOnly = request.user.platformRole === 'STAFF' && request.user.staffRole === 'SUPER_ADMIN'
     const canReadProductHealth = request.user.platformRole === 'STAFF' && ['OPS_ADMIN', 'SUPER_ADMIN'].includes(request.user.staffRole ?? '')
     const hasPermissions = requiredPermissions.every((permission) => {
