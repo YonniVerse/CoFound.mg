@@ -11,38 +11,113 @@
 
 ## 1. Préconditions et données de test
 
-L’API expose ses routes sous le préfixe `/api/v1`, défini dans `apps/api/src/main.ts:16`. Les guards `AccessTokenGuard` et `PermissionGuard` sont globaux dans `apps/api/src/app.module.ts:35-39`. Les routes publiques doivent explicitement utiliser `@AllowAnonymous()` ; une route protégée doit fournir un token Bearer valide et une permission compatible.
+Cette section définit le socle nécessaire pour exécuter la recette par rôle de manière reproductible. Les tests doivent être lancés sur un environnement de recette isolé, avec une base de données dédiée, les migrations Prisma appliquées et des comptes dont les identifiants ne sont jamais réutilisés en production. Les routes API sont préfixées par `/api/v1`, conformément à `apps/api/src/main.ts:16`, et l’authentification repose sur un Bearer token traité par les guards globaux déclarés dans `apps/api/src/app.module.ts:35-39`.
 
-Préparer au minimum un compte actif pour chaque persona ci-dessous, deux organisations de types différents, deux projets avec propriétaires et membres, des candidatures, des opportunités, des signalements, un lot d’import en prévisualisation et des données de référence. Les scénarios négatifs doivent utiliser des identifiants appartenant à une autre organisation ou à un autre utilisateur.
+### 1.1 Environnement de recette
 
-| Persona | Champs à préparer | Usage principal |
+| Élément | Précondition attendue | Vérification |
 |---|---|---|
-| Visiteur non authentifié | Aucun token | Landing, contenus publics, formulaires publics, refus des routes protégées |
-| TALENT actif | `platformRole=TALENT`, `status=ACTIVE` | Profil, projets, candidatures, matching, connexions, messagerie |
-| ORG_MEMBER actif — ORG_ADMIN | `platformRole=ORG_MEMBER`, membre `ORG_ADMIN` | Administration complète d’une organisation selon capacités |
-| ORG_MEMBER actif — ORG_MANAGER | `platformRole=ORG_MEMBER`, membre `ORG_MANAGER` | Gestion opérationnelle sans actions réservées au dernier administrateur |
-| ORG_MEMBER actif — ORG_VIEWER | `platformRole=ORG_MEMBER`, membre `ORG_VIEWER` | Consultation organisationnelle uniquement |
-| STAFF — MODERATOR | `platformRole=STAFF`, `staffRole=MODERATOR` | File de modération et actions de modération |
-| STAFF — OPS_ADMIN | `platformRole=STAFF`, `staffRole=OPS_ADMIN` | Modération, santé produit et opérations autorisées |
-| STAFF — SUPER_ADMIN | `platformRole=STAFF`, `staffRole=SUPER_ADMIN` | Organisation requests, capacités, audit, référence et opérations globales |
-| Compte non actif | `INVITED`, `FROZEN`, `LEAVING`, `ALUMNI` ou `DISABLED` | Vérification des restrictions de statut |
+| Branche | `fix/bugs-main-audit` pour les corrections de cette équipe ; aucune fusion vers `main` pendant la recette | `git branch --show-current` |
+| Frontend | URL de recette connue, build correspondant au commit testé | Ouvrir `/login`, `/feed`, `/projects`, `/dream-match` et `/settings` |
+| API | Base URL connue avec préfixe `/api/v1` | `GET /api/v1/health` retourne un état documenté |
+| Base de données | Base isolée, migrations Prisma appliquées, aucune donnée personnelle réelle | Vérifier le schéma et le nombre de fixtures |
+| Authentification | Secret JWT de recette, tokens générés pour chaque persona, cookie/refresh configuré si activé | Login, refresh, logout et expiration contrôlés |
+| Référentiels | Fields, skills, sectors, regions actifs disponibles ; au moins un item inactif pour les cas négatifs | Requête de référence ou seed contrôlé |
+| Stockage | Stockage de fichiers de recette disponible pour documents d’organisation et exports | Upload valide, extension invalide et fichier trop volumineux |
+| Observabilité | Logs API, erreurs HTTP et audits accessibles à l’équipe de recette, sans secrets | Corréler chaque test à un timestamp et un persona |
+| Localisation | Langues `fr` et `mg` activées | Rejouer les écrans critiques dans les deux langues |
+
+### 1.2 Comptes de test et états d’accès
+
+Créer des comptes distincts par persona. Le champ `platformRole` provient de `PlatformRole` dans `apps/api/prisma/schema.prisma:57-61`. Les sous-rôles organisationnels proviennent de `OrganizationRole` aux lignes 35-39 et les sous-rôles staff de `StaffRole` aux lignes 63-67. Chaque compte doit avoir un email de recette unique, un mot de passe de 12 à 128 caractères et un statut documenté.
+
+| Persona | Configuration minimale | Données liées à créer | Vérifications préalables |
+|---|---|---|---|
+| Visiteur | Aucun token | Aucune | Vérifier que les routes publiques ne dépendent pas d’une session précédente |
+| TALENT actif | `platformRole=TALENT`, `status=ACTIVE` | Profil Talent, identité, compétences, secteurs, consentements | Le profil existe ; sa visibilité peut être activée et désactivée |
+| ORG_ADMIN actif | `platformRole=ORG_MEMBER`, `status=ACTIVE`, membership `ORG_ADMIN` | Organisation A vérifiée, capacités contrôlées, au moins deux membres | Compte membre actif de l’organisation A uniquement |
+| ORG_MANAGER actif | `platformRole=ORG_MEMBER`, `status=ACTIVE`, membership `ORG_MANAGER` | Organisation A, projet/opportunité de recette | Capacité présente puis retirée pour les tests d’autorisation métier |
+| ORG_VIEWER actif | `platformRole=ORG_MEMBER`, `status=ACTIVE`, membership `ORG_VIEWER` | Organisation A avec membres, projets et opportunités | Peut lire le périmètre autorisé mais ne doit pas écrire |
+| STAFF — MODERATOR | `platformRole=STAFF`, `staffRole=MODERATOR`, `status=ACTIVE` | Signalements ouverts, contenus de test | Persona hors périmètre de correction de cette équipe, conservé pour les tests de non-régression |
+| STAFF — OPS_ADMIN | `platformRole=STAFF`, `staffRole=OPS_ADMIN`, `status=ACTIVE` | Données de santé produit | Même règle de non-régression que ci-dessus |
+| STAFF — SUPER_ADMIN | `platformRole=STAFF`, `staffRole=SUPER_ADMIN`, `status=ACTIVE` | Demande organisationnelle, référentiels, logs | Même règle de non-régression que ci-dessus |
+| Compte non actif | Un compte par statut `INVITED`, `FROZEN`, `LEAVING`, `ALUMNI`, `DISABLED` | Données minimales selon le statut | Les tests de cette équipe vérifient seulement qu’un compte non actif ne contourne pas les parcours TALENT/organisation |
+
+### 1.3 Fixtures fonctionnelles minimales
+
+Préparer au moins deux organisations distinctes : **Organisation A** pour le parcours positif et **Organisation B** pour les tests d’isolation. Organisation A doit contenir un ORG_ADMIN, un ORG_MANAGER et un ORG_VIEWER ; Organisation B doit contenir un autre administrateur et des ressources similaires mais non accessibles à A.
+
+| Fixture | Minimum requis | Usage |
+|---|---|---|
+| Profils | Deux TALENT actifs visibles, un TALENT actif non visible et un profil incomplet | Feed, recherche, matching, visibilité et confidentialité |
+| Projets | Un projet DRAFT possédé par le TALENT, un projet RECRUITING avec poste, un projet d’Organisation B | CRUD, candidature, IDOR et transitions |
+| Équipe projet | Owner, member actif, candidature PENDING et candidature déjà décidée | Membres, applications, acceptation, rejet et retrait |
+| Matching | Profil Dream Match avec secteurs/skills valides, exclusion et consentement | Lecture, upsert, validation et exclusion |
+| Organisation | A et B, capacités `PUBLISH_OPPORTUNITY` et `RECRUIT` contrôlées | Isolation, capacité, opportunités et discovery partenaire |
+| Membres organisation | Un membre par sous-rôle, un second admin temporaire | CRUD membre et protection du dernier admin |
+| Opportunités | Brouillon, publiée, candidature TALENT et candidature PROJECT | Création, publication, décision et doublons |
+| Imports | Lot PREVIEW avec ligne valide, doublon et erreur | Preview, mapping, application, annulation et compteurs |
+| Relations | Demande de connexion PENDING, connexion ACCEPTED, blocage et conversation | Connexions, messages, blocage et confidentialité |
+| Données limites | Email inconnu, ID inexistant, texte vide/trop long, dates invalides, fichier >10 Mo | 400, 403, 404, 409, 413 et erreurs UI |
+
+### 1.4 Règles d’exécution et d’isolement
+
+Avant chaque scénario d’écriture, réinitialiser les fixtures concernées ou utiliser un identifiant unique. Conserver le token, le persona, la langue, l’URL, le payload, le code HTTP, la réponse et les changements en base. Exécuter chaque test positif avec le compte autorisé puis le même test avec un compte d’une autre organisation ou d’un autre rôle. Ne jamais utiliser les emails, tokens, documents ou mots de passe de la recette sur un environnement réel.
+
+Une précondition est considérée comme valide lorsque les comptes se connectent, les tokens sont correctement associés au persona attendu, les fixtures sont visibles dans le bon périmètre et les tests négatifs peuvent être rejoués sans dépendance à l’ordre d’exécution.
 
 ## 2. Tableau de synthèse des rôles et permissions
 
-Les permissions de plateforme sont déclarées dans `apps/api/src/rbac/permissions.ts:24-36`. Les rôles d’organisation sont définis par Prisma dans `apps/api/prisma/schema.prisma:35-39`, tandis que les sous-rôles staff sont définis aux lignes 63-67.
+La matrice ci-dessous distingue les permissions globales de plateforme, les rôles d’organisation et les capacités métier. Les permissions globales sont déclarées dans `apps/api/src/rbac/permissions.ts:1-20` et attribuées aux rôles plateforme aux lignes 24-36. Le `PermissionGuard` applique ensuite des règles spéciales aux permissions staff dans `apps/api/src/rbac/permission.guard.ts:38-47`. Un rôle d’organisation ne remplace pas `platformRole` : il est vérifié par les services métier à partir de l’appartenance à l’organisation.
 
-| Rôle / persona | Permissions de plateforme ou règles | Accès attendu | Interdictions prioritaires |
-|---|---|---|---|
-| Visiteur | `AllowAnonymous` uniquement sur les routes publiques | Landing, feed projets public, profils/talents publics, opportunités publiées, annuaire public, profil organisation public, dépôt de demande, signalement si le produit l’autorise | Toute route `/me`, création/gestion de projet, messagerie, administration et modération |
-| TALENT | `talent:read`, `project:read`, `project:create`, `project:manage`, `project:apply`, `connection:request`, `message:send` | Profil et identité propres, découverte, Dream Match, projets possédés, candidatures, connexions, messages, préférences et exports personnels | Organisation/staff, données internes d’une autre organisation, audit, référence, santé produit |
-| ORG_MEMBER | `talent:read`, `project:read`, `org:read`, puis contrôle de membre côté service | Lecture organisationnelle ; actions supplémentaires selon membre, capacité et organisation | Création de projets/candidatures propres au rôle plateforme, staff, audit et référence |
-| ORG_ADMIN | Règles ORG_MEMBER + gestion organisationnelle ; membre manager | Membres, imports, affiliations et capacités autorisées ; administration du périmètre organisation | Données d’une autre organisation ; suppression/rétrogradation du dernier admin |
-| ORG_MANAGER | Règles ORG_MEMBER + gestion opérationnelle | Gestion des membres non protégés, opportunités et capacités explicitement accordées | Dernier admin, capacités non accordées, staff et données hors organisation |
-| ORG_VIEWER | Lecture organisationnelle (`ORG_READ`) | Consultation des membres/données accessibles | Invitation, modification, suppression, publication, décision, import apply et gestion de capacités |
-| STAFF / MODERATOR | `talent:read`, `project:read`, `org:read`, `moderation:read`; `MODERATION_ACT` accepté par le guard pour tout sous-rôle staff | File de modération, décisions, résolution et identité signalée | Organization requests, audit, référence et santé produit selon le guard |
-| STAFF / OPS_ADMIN | Permissions staff + `PRODUCT_HEALTH_READ` | Modération et santé produit | Organization requests, audit et référence réservés par le code au SUPER_ADMIN |
-| STAFF / SUPER_ADMIN | Permissions staff + organization request, capability, audit, référence et santé produit | Administration complète des surfaces staff | Ne doit pas contourner les contrôles d’appartenance organisationnelle sur les données métier |
-| Compte non actif | Token éventuellement valide mais statut non actif | Accès refusé ou parcours de réactivation explicitement prévu | Écriture de données, matching, projets, organisations et messagerie tant que le statut n’est pas autorisé |
+### 2.1 Permissions globales de plateforme
+
+| Rôle plateforme | Permissions accordées par le guard | Interprétation de recette |
+|---|---|---|
+| `TALENT` | `talent:read`, `project:read`, `project:create`, `project:manage`, `project:apply`, `connection:request`, `message:send` | Peut gérer son profil, créer/gérer ses projets, candidater, établir des connexions et envoyer des messages ; ne doit pas gérer une organisation ni une surface staff |
+| `ORG_MEMBER` | `talent:read`, `project:read`, `org:read` | Peut consulter les ressources autorisées et accéder aux services organisationnels ; les mutations sont limitées par le membership, le sous-rôle et les capacités |
+| `STAFF` | `talent:read`, `project:read`, `org:read`, `moderation:read`, `audit:read` dans la table de base | Les permissions staff supplémentaires sont filtrées par `staffRole` dans le guard ; ce rôle est couvert ici uniquement en non-régression |
+
+### 2.2 Sous-rôles organisationnels
+
+| Persona complet | Base plateforme | Règles métier attendues | Capacités à contrôler | Interdictions prioritaires |
+|---|---|---|---|---|
+| `ORG_MEMBER` + `ORG_ADMIN` | `ORG_MEMBER` actif et membership A `ORG_ADMIN` | Lecture du périmètre A ; gestion des membres ; administration selon capacités accordées ; protection du dernier admin | `CERTIFY_AFFILIATION`, `PUBLISH_OPPORTUNITY`, `RECRUIT`, `MENTOR`, `FUND`, `SURVEY`, `ANALYTICS` | Organisation B, données hors membership, suppression/rétrogradation du dernier admin |
+| `ORG_MEMBER` + `ORG_MANAGER` | `ORG_MEMBER` actif et membership A `ORG_MANAGER` | Lecture et gestion opérationnelle ; invitation/modification/suppression selon service ; opportunités uniquement avec capacité | Même liste de capacités, avec vérification du rôle manager | Dernier admin, capacité absente, élévation vers `ORG_ADMIN`, organisation B |
+| `ORG_MEMBER` + `ORG_VIEWER` | `ORG_MEMBER` actif et membership A `ORG_VIEWER` | Lecture des membres et ressources de A selon le service | Aucune mutation de capacité ; les capacités de l’organisation ne donnent pas automatiquement un droit au viewer | Invitation, modification/suppression membre, import apply, publication, décision et gestion de capacités |
+
+### 2.3 Persona TALENT actif
+
+| Domaine | Accès attendu | Contrôle négatif obligatoire |
+|---|---|---|
+| Profil / identité | Lire et modifier uniquement son propre profil et son identité | ID d’un autre TALENT, champ interdit, référentiel inactif |
+| Projets | Créer ses projets, lire les projets autorisés, gérer uniquement ses projets/propriétés | Publier ou modifier le projet d’un autre owner, lire un projet privé sans membership |
+| Applications | Candidater comme TALENT, consulter et retirer ses candidatures | Candidater au nom d’un autre utilisateur/projet non membre, doublon |
+| Dream Match | Lire et enregistrer ses préférences avec consentement, gérer ses exclusions | Sans consentement, skills/sectors invalides, profil d’un autre TALENT |
+| Connexions / messages | Envoyer et décider les relations prévues, envoyer des messages autorisés | Utilisateur bloqué, conversation étrangère, message vide ou trop long |
+| Confidentialité | Consulter exports et consentements propres | Télécharger l’export d’un autre utilisateur, exposer identité civile dans discovery |
+| Organisation / staff | Aucun droit d’administration d’organisation ou de staff | Appeler directement les URLs organisation, import, audit, référence et santé |
+
+### 2.4 Sous-rôles staff conservés pour non-régression
+
+| Persona | Accès attendu | Limite à vérifier |
+|---|---|---|
+| `STAFF` + `MODERATOR` | File de modération, décisions et résolution selon le guard | Pas d’organization requests, référence ou santé produit réservées |
+| `STAFF` + `OPS_ADMIN` | Modération et `product-health:read` | Pas d’audit, organization requests ou référence selon le guard actuel |
+| `STAFF` + `SUPER_ADMIN` | Organization requests, capacités, audit, référence et santé produit | Les contrôles d’appartenance organisationnelle restent obligatoires |
+
+### 2.5 États non actifs et visiteur
+
+| État | Accès attendu | Vérification minimale |
+|---|---|---|
+| Visiteur sans token | Routes explicitement anonymes uniquement : landing, contenus publics, opportunités publiées, profils publics et demande organisationnelle | Toute route `/me`, écriture projet, matching, messagerie, import ou staff doit refuser |
+| `INVITED` | Activation avant parcours métier | Aucun projet, matching ou message avant activation |
+| `FROZEN` / `DISABLED` | Blocage des opérations métier et redirection/état de compte prévu | Réutiliser un token existant et vérifier l’absence de mutation |
+| `LEAVING` / `ALUMNI` | Règles explicites à confirmer par produit | Tester lecture, écriture, exports et accès organisationnel séparément |
+
+### 2.6 Règles de lecture de la matrice
+
+Une réponse HTTP 200 de la page frontend ne prouve pas l’autorisation : l’API doit toujours être testée directement avec le token du persona. Une permission globale telle que `org:read` ne suffit pas à autoriser une mutation ; le service doit vérifier l’organisation, le statut actif, le sous-rôle et la capacité. Inversement, un sous-rôle organisationnel ne doit jamais donner à un `ORG_MEMBER` les permissions globales réservées à `TALENT` ou à `STAFF`.
 
 ## 3. Tests transverses de sécurité et de non-régression
 
