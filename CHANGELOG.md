@@ -10,6 +10,38 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-24 — Supprimer le compte fictif et fiabiliser le feed production
+
+### Décidé
+
+- Les mocks restent disponibles uniquement en développement local pour faciliter le prototypage, mais ne doivent plus être affichés comme données réelles en production.
+- La session n’est pas restaurée automatiquement au chargement initial, afin qu’une visite publique ne présente pas implicitement un compte déjà connecté.
+
+### Ajouté
+
+- Issue #90 pour raccorder les écrans encore alimentés par des mocks à l’API réelle.
+- PR #91 fusionnée dans `main`.
+
+### Modifié
+
+- `DashboardLayout` charge désormais `/me/profile`, affiche l’identité réelle et propose la déconnexion ; le profil fictif `Mialy Randria / ISCAM` et le badge de messages `3` ont été retirés.
+- Le feed rend les projets retournés par `/projects/feed`.
+- Les fallback `mockFeed` des projets, talents et suggestions sont limités au développement local.
+- Les routes affichant `DashboardLayout` redirigent vers `/login` lorsque l’état d’authentification local est inactif.
+
+### Validation
+
+- Typecheck, lint, build frontend, build shared et `git diff --check` réussis.
+- CI et contrôles Vercel de la PR #91 réussis.
+- Déploiement Production Vercel du merge #91 `READY`, domaine public HTTP 200.
+
+### En cours
+
+- Raccorder les écrans Impact, détail/candidature projet, suggestions et aperçu d’import suivis par #90.
+- Tester réellement le parcours B-01/Cloudinary avec des comptes de recette.
+
+---
+
 ## 2026-08-24 — Stabilisation des déploiements Render et Vercel
 
 ### Ajouté

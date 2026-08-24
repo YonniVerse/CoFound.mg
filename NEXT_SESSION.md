@@ -1,45 +1,49 @@
 # Context Handoff — Reprise de session CoFound.mg
 
 **Dernière mise à jour** : 2026-08-24
-**Phase** : `main` livré ; Render et Vercel corrigés et opérationnels
+**Phase** : `main` livré ; correction session/feed déployée
 **Branche locale** : `main`
-**État Git** : le code suit `origin/main` sur le merge de la PR #89 ; les documents de handoff de cette session seront commités ensuite.
+**État Git** : `main` suit `origin/main` sur le merge de la PR #91 ; workspace à revérifier après la mise à jour de ce fichier.
 
 ## 1. État courant
 
-`main` est désormais la branche de livraison du dépôt. La PR #86 a intégré `dev`, la Vague 4 B-01 à B-11, Cloudinary B-12 et S-09. La PR corrective #89 a ensuite corrigé les deux erreurs découvertes dans les logs de production.
+`main` est la branche de livraison. La PR #86 a intégré dev, la Vague 4, Cloudinary B-12 et S-05 à S-09. La PR #89 a corrigé les déploiements Render/Vercel. La PR #91 a corrigé le faux compte affiché dans le layout et le feed qui ignorait les résultats API.
 
-Le backend Render répond actuellement à `https://cofound-mg.onrender.com/api/v1/health` avec HTTP 200 et `{"status":"ok","database":"ok"}`. Le déploiement a compilé l’API, généré Prisma et confirmé qu’il n’y avait aucune migration en attente. Le commit/branche exacts du service Render ne sont pas exposés par l’endpoint health ; vérifier dans le dashboard que le service suit bien `main`.
+Render répond sur `https://cofound-mg.onrender.com/api/v1/health` avec HTTP 200 et `{"status":"ok","database":"ok"}`. Vercel Production suit `main`, Root Directory `apps/web`, et le dernier déploiement du merge #91 est `READY` (`dpl_5fzeyFYFqhqP8KkQejG1juV9FHAw`).
 
-## 2. Travail livré
+## 2. Travail livré cette session
 
-- Merge de la PR #86 dans `main` : Vague 4, Cloudinary et S-05 à S-09.
-- PR #89 fusionnée dans `main` : `d51b485`, correction de l’import runtime `PrismaService` et du build frontend Vercel.
-- `apps/web/package.json` compile maintenant `@cofound/shared` avant TypeScript/Vite.
-- `PersonalDataExportService` importe PrismaService comme valeur runtime, afin que NestJS puisse résoudre l’injection en production.
-- PR historiques #73, #74, #75, #76, #82 et #83 clôturées après intégration ou obsolescence.
-- Issues #84, #87 et #88 déclarées puis clôturées avec commentaires de résolution. L’issue #85 reste ouverte pour la traçabilité de la PR #82 obsolète.
+- Audit des sources frontend : landing statique via `landing.json`, Impact via `mockImpact`, détail/candidature projet via `fetchMock`, suggestions via `mockFeed`, aperçu d’import avec `SAMPLE_PREVIEW` dans certains cas.
+- Création de l’issue #90 pour raccorder les écrans encore mockés à l’API réelle.
+- PR #91 fusionnée dans `main`.
+- `DashboardLayout` ne montre plus `Mialy Randria / ISCAM` en dur ; il charge `/me/profile`, affiche l’identité réelle si elle existe et propose la déconnexion.
+- Les pages utilisant `DashboardLayout` redirigent vers `/login` lorsqu’aucune session authentifiée n’existe.
+- Le compteur fictif de messages `3` a été retiré.
+- Le feed affiche les projets renvoyés par `/projects/feed` ; les fallbacks mockés du feed projets, talents et suggestions sont limités au développement local.
 
 ## 3. Validation
 
-Validation locale passée sur main/fix : génération Prisma, typecheck, lint, tests API, build API, typecheck/lint/build frontend et `git diff --check`. Le contrôle CI GitHub et les trois contrôles Vercel de la PR #89 sont verts.
+Validation locale réussie après la PR #91 : build `@cofound/shared`, typecheck frontend, lint frontend, build frontend et `git diff --check`.
 
-Le déploiement Production Vercel de main `dpl_CrXZhSkVcSBxvSjizYNZqK4YAreR` est `READY`, avec les alias `co-found-mg.vercel.app`, `co-found-mg-yonni-coders-projects.vercel.app` et l’alias Git main. Le Root Directory Vercel est `apps/web`, et `Include files outside the root directory` est activé.
+Les contrôles GitHub de la PR #91 sont verts : CI workspace, Vercel et Vercel Preview Comments. Le domaine `https://co-found-mg.vercel.app/` répond HTTP 200. Le backend Render reste opérationnel.
 
-Les tests E2E réels ne sont pas encore exécutés : trois scénarios sont listés, mais les variables `E2E_*` et les comptes de recette ne sont pas disponibles dans le sandbox.
+## 4. Points ouverts
 
-## 4. Configuration de production
+L’issue #90 reste ouverte. Les écrans suivants affichent encore des données statiques ou des fallback de démonstration : Impact, détail et candidature projet, suggestions, et aperçu d’import sans identifiant. La landing statique est du contenu éditorial et ne doit pas nécessairement être remplacée par Neon.
 
-La variable frontend reste `VITE_API_URL=https://cofound-mg.onrender.com/api/v1` en Production Vercel. Les secrets Cloudinary restent uniquement dans Render : `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, `CLOUDINARY_UPLOAD_PRESET` et `CLOUDINARY_FOLDER`.
+Le test fonctionnel réel B-01/Cloudinary reste à faire avec un compte demandeur, un compte staff et un petit PDF. Les secrets Cloudinary restent uniquement dans Render.
 
-Le service Render doit conserver les commandes natives qui fonctionnent : installation pnpm 11.9.0, build shared/Prisma/API, puis `prisma:migrate:deploy` et `start`. Le worker n’est pas encore déployé.
+La persistance volontaire de session n’est pas activée au chargement : le frontend ne restaure plus automatiquement un refresh cookie, afin qu’une visite publique ne présente pas un compte déjà connecté. Une authentification doit être initiée explicitement depuis `/login`.
 
-## 5. Points ouverts
+## 5. Fichiers importants
 
-Le test réel B-01/Cloudinary reste à faire avec un compte demandeur et un compte staff de recette : upload d’un petit PDF, vérification de l’asset `authenticated`, ouverture via URL temporaire et contrôle du refus pour un rôle non autorisé.
-
-Les valeurs secrètes Render n’ont pas été lues ni exposées par l’agent. Aucune clé Cloudinary ne doit être ajoutée dans Vercel ou dans le dépôt.
+- `apps/web/src/components/layout/DashboardLayout.tsx` : identité réelle, guard local et déconnexion.
+- `apps/web/src/hooks/useFeedData.ts` : projets API et fallback développement.
+- `apps/web/src/hooks/useTalentFeedData.ts` : talents API et fallback développement.
+- `apps/web/src/pages/FeedPage.tsx` : rendu des cartes projets API.
+- `apps/web/src/hooks/useAuth.tsx` : état de session en mémoire.
+- `apps/web/src/data/impactApi.ts`, `apps/web/src/data/projectApi.ts`, `apps/web/src/pages/ImportPreviewPage.tsx` : zones encore mockées suivies par #90.
 
 ## 6. Prochaine action
 
-Créer ou fournir des comptes de recette demandeur/staff, puis lancer le scénario B-01 avec un petit PDF et vérifier dans Cloudinary, Render et `/staff/organizations` que l’upload privé et l’URL temporaire fonctionnent de bout en bout.
+Traiter l’issue #90 en commençant par remplacer `getProjectById` et `submitProjectApplication` dans `apps/web/src/data/projectApi.ts` par les endpoints API réels, puis ajouter les tests et états empty/error correspondants avant de poursuivre Impact.
