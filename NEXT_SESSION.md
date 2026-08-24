@@ -9,7 +9,7 @@
 
 `main` est la branche de livraison. Les PR #86, #89, #91 et #92 ont intégré la migration, les corrections de déploiement, le correctif session/feed et le seed admin. La PR #93 corrige un crash Render révélé après l’exécution du seed.
 
-Les comptes administrateurs ont été créés dans Neon via le seed ponctuel exécuté au démarrage Render : `yonnidebian@gmail.com` avec `SUPER_ADMIN` et `yoniubuntu@gmail.com` avec `OPS_ADMIN`, d’après le log Render fourni par l’utilisateur. Les mots de passe ne sont pas documentés et ne doivent pas être exposés.
+Les comptes administrateurs ont été créés dans Neon via le seed ponctuel exécuté au démarrage Render : `yonnidebian@gmail.com` avec `SUPER_ADMIN` et `yonniubuntu@gmail.com` avec `OPS_ADMIN`, d’après le log Render fourni par l’utilisateur. Les mots de passe ne sont pas documentés et ne doivent pas être exposés.
 
 Render répondait HTTP 200 sur `/api/v1/health` après le déploiement observé. Vérifier dans le dashboard que la commande Start normale est restaurée et que le dernier déploiement de `main` est Live après la PR #93.
 
