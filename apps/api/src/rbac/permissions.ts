@@ -1,5 +1,6 @@
 export const Permission = {
   TALENT_READ: 'talent:read',
+  TALENT_SELF: 'talent:self',
   TALENT_REVEAL: 'talent:reveal',
   PROJECT_READ: 'project:read',
   PROJECT_CREATE: 'project:create',
@@ -24,6 +25,7 @@ export type Permission = (typeof Permission)[keyof typeof Permission]
 export const PLATFORM_ROLE_PERMISSIONS: Record<string, readonly Permission[]> = {
   TALENT: [
     Permission.TALENT_READ,
+    Permission.TALENT_SELF,
     Permission.PROJECT_READ,
     Permission.PROJECT_CREATE,
     Permission.PROJECT_MANAGE,
