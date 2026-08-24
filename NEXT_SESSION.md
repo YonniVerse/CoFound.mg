@@ -1,37 +1,43 @@
 # Context Handoff — Reprise de session CoFound.mg
 
 **Dernière mise à jour** : 2026-08-24
-**Phase** : Vague 4 — intégration Cloudinary B-12 des justificatifs B-01 prête pour revue et déploiement
-**Branche** : `feat/B-12-cloudinary-documents`
-**État du workspace** : modifications Cloudinary committées et branche poussée sur `origin`; PR #83 ouverte vers `dev`.
+**Phase** : livraison sur `main` effectuée ; vérification Vercel bloquée par le Root Directory
+**Branche locale** : `main`
+**État Git** : main local suit `origin/main` sur le merge `36ad4cd` ; les modifications de code de migration sont committées.
 
-## 1. Point de reprise
+## 1. État courant
 
-Le backend Render est opérationnel sur `https://cofound-mg.onrender.com` et Neon répond correctement. Cloudinary était auparavant en attente ; cette session a ajouté le flux complet pour les justificatifs B-01, mais le code n’est pas encore fusionné dans `dev` ni déployé sur Render.
+La PR #86 a été fusionnée dans `main`. Elle regroupe le contenu de `dev`, la Vague 4 B-01 à B-11, Cloudinary B-12 et les tests E2E S-09, avec résolution des conflits RBAC/NestJS/client API. `main` est maintenant la branche de livraison du dépôt.
+
+Le backend Render reste vivant sur `https://cofound-mg.onrender.com` avec Neon fonctionnel, mais le service Render doit encore être basculé manuellement de `feat/B-09-team-contact` vers `main`.
 
 ## 2. Travail livré
 
-- `CloudinaryService` configure le SDK depuis les variables serveur, téléverse les fichiers par requête signée avec `type: authenticated`, limite les formats/taille, nettoie les assets en cas d’échec et génère des URLs de téléchargement expirantes.
-- `POST /api/v1/organization-requests` accepte désormais JSON historique et multipart (`documents`, cinq fichiers maximum, 10 Mo par fichier). Les octets restent dans Cloudinary ; la base conserve les métadonnées et références Cloudinary.
-- Le staff dispose de `GET /api/v1/staff/organization-requests/:id/documents/:index`, protégé par la permission staff existante, audité et limité à une URL temporaire de cinq minutes.
-- Le formulaire public B-01 envoie maintenant les vrais fichiers. La console `/staff/organizations` propose leur ouverture temporaire.
-- Variables documentées : `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, `CLOUDINARY_UPLOAD_PRESET`, `CLOUDINARY_FOLDER`.
-- La décision d’architecture est documentée dans `docs/stack-technique-et-justifications.md` : Cloudinary est une exception limitée à B-01 ; R2 reste la cible générale des autres fichiers.
+- Merge commit main : `36ad4cd` via [PR #86](https://github.com/YonniVerse/CoFound.mg/pull/86).
+- `AccountStatus`, audit, santé produit, référentiels, exports de données et S-09 sont présents dans main.
+- Vague 4 et Cloudinary sont présents dans main ; les secrets Cloudinary restent côté Render.
+- Les règles RBAC B-02 et S-05 sont conservées ensemble.
+- Les anciennes PR #73, #74, #75, #76, #82 et #83 ont été clôturées avec commentaires : leur contenu utile est déjà dans main via #86, et #82 était redondante/obsolète.
+- Issues ouvertes : [#84](https://github.com/YonniVerse/CoFound.mg/issues/84) pour Vercel et [#85](https://github.com/YonniVerse/CoFound.mg/issues/85) pour le nettoyage de la PR #82.
 
 ## 3. Validation
 
-Les contrôles passent : package shared build, typecheck/lint/build API, typecheck/lint/build frontend, `git diff --check` et **159/159 tests API**. La suite couvre l’upload public simulé et la génération d’URL staff simulée. Aucun upload réel n’a été exécuté depuis le sandbox, car le secret Cloudinary ne doit pas y être copié.
+La branche de migration a passé `pnpm --filter @cofound/shared build`, génération Prisma, typecheck/lint/test/build API, typecheck/lint/build frontend, `pnpm e2e:list` avec trois scénarios et `git diff --check`. Les tests E2E réels restent non exécutés faute de variables `E2E_*` et de comptes de recette.
 
-## 4. Git et déploiement
+Le contrôle CI GitHub de la PR #86 est passé. Le contrôle Vercel a échoué avant le build, indépendamment du code, avec `NOW_SANDBOX_WORKER_ROOTDIR_NOT_EXIST`.
 
-Commits de cette session : `4af1169` préparation dépendances/configuration, `e4f1507` upload B-01 Cloudinary, `fc7202f` consultation staff temporaire. PR : https://github.com/YonniVerse/CoFound.mg/pull/83.
+## 4. Vercel
 
-L’utilisateur a indiqué avoir ajouté les variables Cloudinary dans Render. Leur présence et leurs valeurs ne sont pas vérifiées par l’agent. Render pointe encore sur `feat/B-09-team-contact`; la branche B-12 n’est donc pas encore en production.
+Projet : `co-found-mg`, domaine public `https://co-found-mg.vercel.app`, project ID `prj_Ye9PboxEgKsafHpmOVKAPCXNYRBc`. Le projet est lié à `YonniVerse/CoFound.mg` et la dernière livraison main `dpl_3iETEu4Vh5f3pAgsFvUA5zSLzJCE` est en erreur car le Root Directory est encore `frontend`, dossier inexistant. Le Root Directory correct est `apps/web`.
 
-## 5. Décisions et limites actives
+La variable frontend attendue reste `VITE_API_URL=https://cofound-mg.onrender.com/api/v1` en Production. Les variables Cloudinary ne doivent pas être ajoutées à Vercel.
 
-Les secrets Cloudinary restent exclusivement dans Render, jamais dans Vercel, le frontend ou Git. Le preset recommandé est signé, avec dossier `cofound/organization-requests`; les assets sont `authenticated`, non publics. Le stockage général R2 et les autres flux de fichiers ne sont pas modifiés. La compatibilité avec les anciennes demandes contenant uniquement des métadonnées est conservée, mais ces anciennes pièces ne disposent pas d’une URL Cloudinary.
+## 5. Points ouverts et décisions
+
+L’issue #84 est le blocage immédiat de la livraison frontend : corriger le Root Directory Vercel sur `apps/web`, puis redéployer main. Aucun outil Vercel disponible dans la session ne permet de modifier ce réglage de projet existant ; l’action doit être faite dans le dashboard.
+
+Le Root Directory est un réglage Vercel, pas un fichier du dépôt. Le monorepo conserve `apps/web` comme application Vite et `apps/api` comme backend. Les branches historiques restent conservées à distance pour traçabilité ; elles ne sont plus des branches de livraison.
 
 ## 6. Prochaine action
 
-Après revue, fusionner la PR #83 vers `dev`, basculer le service Render sur `dev`, conserver les commandes natives fonctionnelles (`pnpm install --frozen-lockfile`, build shared/API, migrations puis start), redéployer et tester une demande B-01 réelle avec un petit PDF ; vérifier ensuite l’asset `authenticated` dans Cloudinary et le bouton staff.
+Dans le dashboard Vercel du projet `co-found-mg`, régler **Root Directory** sur `apps/web`, vérifier `main` comme branche Production et `VITE_API_URL` en Production, puis relancer le déploiement main ; vérifier ensuite que le domaine public passe en état Ready.

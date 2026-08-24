@@ -10,6 +10,32 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-24 — Bascule de la livraison complète sur main
+
+### Décidé
+
+- `main` devient la branche de livraison, car le projet Vercel est relié à cette branche et l’ancienne séparation `dev`/feature créait plusieurs chemins de déploiement.
+- Les PR empilées #73, #74, #75, #76, #82 et #83 sont clôturées après intégration ou identification de leur obsolescence, car leurs changements utiles sont présents dans main via #86.
+
+### Ajouté
+
+- PR #86 fusionnée dans main : dev, Vague 4 B-01 à B-11, Cloudinary B-12, S-05 à S-08 et harnais E2E S-09.
+- Résolution de conflits RBAC, module NestJS, client API et traductions S-06 pendant la migration.
+- Issue #84 pour le Root Directory Vercel invalide (`frontend` au lieu de `apps/web`).
+- Issue #85 pour la PR #82 de recherche PostgreSQL obsolète et redondante.
+
+### Validation
+
+- CI GitHub « Qualité du workspace » réussie sur la PR #86.
+- Validation locale complète réussie : builds shared/API/frontend, typechecks, lint, tests API et inventaire des trois scénarios E2E.
+
+### Bloqué
+
+- Le déploiement Vercel Production de main échoue avant le build avec `NOW_SANDBOX_WORKER_ROOTDIR_NOT_EXIST` tant que le réglage Root Directory n’est pas corrigé dans le dashboard.
+- Le service Render doit encore être basculé manuellement de `feat/B-09-team-contact` vers `main`.
+
+---
+
 ## 2026-08-24 — Intégration Cloudinary des justificatifs B-01
 
 ### Décidé
