@@ -1,0 +1,385 @@
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+
+export type Language = 'fr' | 'mg'
+
+const messages = {
+  fr: {
+    'language.label': 'Langue',
+    'language.fr': 'Français',
+    'language.mg': 'Malagasy',
+    'signup.backHome': "Retour à l'accueil",
+    'signup.title': 'Créer un compte',
+    'signup.alreadyFounder': 'Déjà fondateur sur la plateforme ?',
+    'signup.signIn': 'Se connecter',
+    'signup.firstName': 'Prénom',
+    'signup.lastName': 'Nom',
+    'signup.email': 'Email universitaire',
+    'signup.emailHint': "Utilisez votre email d'école pour la vérification rapide.",
+    'signup.school': 'École ou Université',
+    'signup.schoolPlaceholder': 'Sélectionnez votre établissement',
+    'signup.field': "Filière / Domaine d'études",
+    'signup.fieldPlaceholder': 'ex: Informatique, Gestion, Design...',
+    'signup.password': 'Mot de passe',
+    'signup.confirmPassword': 'Confirmer le mot de passe',
+    'signup.termsStart': "J'accepte les",
+    'signup.terms': "Conditions d'utilisation",
+    'signup.and': 'et la',
+    'signup.privacy': 'Politique de confidentialité',
+    'signup.submit': 'Créer mon compte fondateur',
+    'signup.loading': 'Création en cours...',
+    'signup.passwordMismatch': 'Les mots de passe ne correspondent pas.',
+    'signup.acceptTerms': 'Vous devez accepter les CGU.',
+    'signup.heroTitle': "L'aventure commence avec la bonne équipe.",
+    'signup.heroBody': "Rejoignez l'élite entrepreneuriale étudiante de Madagascar. Trouvez les compétences qui vous manquent.",
+    'signup.exampleFirstName': 'Hery',
+    'signup.exampleLastName': 'Rakoto',
+    'signup.exampleEmail': 'hery.rakoto@ecole.mg',
+    'signup.schoolOther': 'Autre',
+    'signup.schoolPolytechnique': 'École Polytechnique de Madagascar',
+    'signup.schoolIscam': 'ISCAM',
+    'signup.schoolInscae': 'INSCAE',
+    'signup.schoolIag': 'IAG',
+    'signup.schoolMedicine': 'Faculté de Médecine',
+    'signup.schoolMisa': 'MISA',
+    'signup.schoolIst': 'IST',
+
+    /* ── Auth (E-11 & Redesign) ── */
+    'auth.login.title': 'Content de vous revoir',
+    'auth.login.subtitle': 'Accédez à votre espace cofondateur pour suivre vos projets et connexions.',
+    'auth.login.email': 'Adresse email',
+    'auth.login.emailPlaceholder': 'votre.email@domaine.mg',
+    'auth.login.password': 'Mot de passe',
+    'auth.login.passwordPlaceholder': '••••••••••••',
+    'auth.login.showPassword': 'Afficher le mot de passe',
+    'auth.login.hidePassword': 'Masquer le mot de passe',
+    'auth.login.submit': 'Se connecter',
+    'auth.login.loading': 'Connexion en cours…',
+    'auth.login.forgotPassword': 'Mot de passe oublié ?',
+    'auth.login.noAccount': 'Accès sur invitation',
+    'auth.login.noAccountHint': 'Les accès sont distribués par invitation des établissements et programmes partenaires.',
+    'auth.login.error.invalidCredentials': 'Identifiants incorrects. Vérifiez votre email et mot de passe.',
+    'auth.login.error.accountFrozen': 'Votre compte est temporairement gelé. Contactez votre référent d’établissement.',
+    'auth.login.error.accountDisabled': 'Ce compte a été désactivé. Veuillez contacter le support.',
+    'auth.login.error.generic': 'Un problème de connexion est survenu. Veuillez rééayer.',
+
+    'auth.forgotPassword.title': 'Récupération de compte',
+    'auth.forgotPassword.subtitle': 'Saisissez votre email universitaire. Nous vous enverrons les instructions pour réinitialiser votre mot de passe.',
+    'auth.forgotPassword.email': 'Adresse email universitaire',
+    'auth.forgotPassword.emailPlaceholder': 'nom@etablissement.mg',
+    'auth.forgotPassword.submit': 'Envoyer le lien de réinitialisation',
+    'auth.forgotPassword.loading': 'Envoi en cours…',
+    'auth.forgotPassword.successTitle': 'Vérifiez vos emails',
+    'auth.forgotPassword.success': 'Si cette adresse correspond à un compte actif, un lien de réinitialisation vous a été envoyé. Pensez à vérifier vos indésirables.',
+    'auth.forgotPassword.backToLogin': 'Retour à la connexion',
+
+    'auth.resetPassword.title': 'Définir un nouveau mot de passe',
+    'auth.resetPassword.subtitle': 'Choisissez un mot de passe robuste pour sécuriser votre espace cofondateur.',
+    'auth.resetPassword.password': 'Nouveau mot de passe',
+    'auth.resetPassword.passwordPlaceholder': '12 caractères minimum',
+    'auth.resetPassword.confirm': 'Confirmation du mot de passe',
+    'auth.resetPassword.confirmPlaceholder': 'Retapez votre nouveau mot de passe',
+    'auth.resetPassword.submit': 'Enregistrer le nouveau mot de passe',
+    'auth.resetPassword.loading': 'Enregistrement…',
+    'auth.resetPassword.successTitle': 'Mot de passe mis à jour !',
+    'auth.resetPassword.success': 'Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter.',
+    'auth.resetPassword.error.mismatch': 'Les deux mots de passe ne sont pas identiques.',
+    'auth.resetPassword.error.tooShort': 'Le mot de passe doit comporter au moins 12 caractères.',
+    'auth.resetPassword.error.invalidToken': 'Ce lien de réinitialisation est expiré ou invalide. Veuillez effectuer une nouvelle demande.',
+    'auth.resetPassword.backToLogin': 'Se connecter maintenant',
+
+    'auth.strength.weak': 'Très faible',
+    'auth.strength.fair': 'Moyen',
+    'auth.strength.good': 'Bon',
+    'auth.strength.strong': 'Robust',
+    'auth.strength.ruleLength': 'Au moins 12 caractères',
+    'auth.strength.ruleMix': 'Majuscule, chiffre ou symbole',
+    'auth.strength.ruleMatch': 'Mots de passe identiques',
+
+    'auth.logout': 'Déconnexion',
+    'auth.backHome': "Accueil CoFound.mg",
+
+    /* ── Commun ── */
+    'common.or': 'ou',
+    'common.loading': 'Chargement…',
+    'common.error': 'Une erreur est survenue.',
+
+    /* ── Recherche (M-01 / UI-15) ── */
+    /* ── Activation (E-10) ── */
+    'auth.activation.title': 'Activer votre compte',
+    'auth.activation.subtitle': 'Définissez votre mot de passe pour finaliser l’activation de votre compte sur invitation.',
+    'auth.activation.password': 'Nouveau mot de passe',
+    'auth.activation.passwordPlaceholder': 'Au moins 12 caractères (majuscules, chiffres/symboles)',
+    'auth.activation.confirmPassword': 'Confirmer le mot de passe',
+    'auth.activation.confirmPasswordPlaceholder': 'Répétez votre mot de passe',
+    'auth.activation.acceptTerms': "J'accepte les conditions d'utilisation et la politique de confidentialité.",
+    'auth.activation.submit': 'Activer mon compte',
+    'auth.activation.loading': 'Activation en cours...',
+    'auth.activation.error.invalidToken': 'Ce lien d’activation est invalide ou a expiré. Veuillez contacter votre établissement.',
+    'auth.activation.error.passwordLength': 'Le mot de passe doit contenir au moins 12 caractères.',
+    'auth.activation.error.passwordMismatch': 'Les deux mots de passe ne correspondent pas.',
+    'auth.activation.error.acceptTerms': 'Vous devez accepter les conditions d’utilisation pour continuer.',
+    'auth.activation.error.generic': 'Une erreur est survenue lors de l’activation. Veuillez réessayer.',
+    'auth.activation.successTitle': 'Compte activé avec succès !',
+    'auth.activation.successSubtitle': 'Vous allez être redirigé vers l’étape d’onboarding...',
+    'settings.eyebrow': 'ESPACE PERSONNEL',
+    'settings.title': 'Paramètres',
+    'settings.subtitle': 'Gère tes préférences et tes consentements en toute transparence.',
+    'settings.privacy.title': 'Confidentialité et consentements',
+    'settings.privacy.description': 'Tu peux retirer un consentement à tout moment. Le retrait conserve une trace de la décision.',
+    'settings.loading': 'Chargement…',
+    'settings.error': 'Impossible de charger ou d’enregistrer tes préférences.',
+    'settings.version': 'Version',
+    'settings.notGranted': 'Non accordé',
+    'settings.consent.profile': 'Visibilité du profil',
+    'settings.consent.matching': 'Suggestions de collaboration',
+    'settings.consent.contact': 'Contact par les partenaires',
+    'settings.consent.analytics': 'Analyses agrégées',
+    'settings.consent.withdrawConfirm': 'Retirer ce consentement ? Cette action peut désactiver la fonctionnalité associée.',
+    'settings.privacy.withdrawExplanation': 'Le retrait s’applique aux usages futurs. L’historique légal du consentement est conservé.',
+    'settings.backProfile': 'Retour à mon profil',
+    'profile.completionReminder.message': 'Ton profil est complété à {completion} %. Termine-le pour améliorer ta visibilité.',
+    'profile.completionReminder.action': 'Continuer',
+    'profile.fields.pseudonym': 'Pseudonyme',
+    'profile.fields.headline': 'Présentation courte',
+    'profile.fields.bio': 'Biographie',
+    'profile.fields.field': 'Domaine d’études',
+    'profile.fields.cohortYear': 'Année de promotion',
+    'profile.fields.availability': 'Disponibilité',
+    'profile.fields.goals': 'Objectifs',
+    'profile.fields.sectors': 'Secteurs',
+    'search.title': 'Recherche',
+    'search.subtitle': 'Trouvez des projets, des compétences ou des opportunités',
+    'search.placeholder': 'Rechercher un projet, une compétence, une opportunité…',
+    'search.tab.all': 'Tous les résultats',
+    'search.tab.projects': 'Projets',
+    'search.tab.talents': 'Talents',
+    'search.tab.opportunities': 'Opportunités',
+    'search.suggestions.title': 'Recherches populaires',
+    'search.suggestions.skills': 'Compétences recherchées',
+    'search.suggestions.sectors': 'Secteurs dynamiques',
+    'search.empty.noResults': 'Aucun résultat trouvé pour « {query} »',
+    'search.empty.tryAgain': 'Essayez avec d’autres mots-clés ou modifiez votre filtre.',
+    'search.empty.reset': 'Effacer la recherche',
+    'search.loading': 'Recherche en cours…',
+    'search.error': 'Impossible d’effectuer la recherche. Vérifiez votre connexion.',
+  },
+  mg: {
+    'language.label': 'Fiteny',
+    'language.fr': 'Français',
+    'language.mg': 'Malagasy',
+    'signup.backHome': 'Hiverina any amin’ny fandraisana',
+    'signup.title': 'Mamorona kaonty',
+    'signup.alreadyFounder': 'Efa mpanorina eto amin’ny sehatra ?',
+    'signup.signIn': 'Hiditra',
+    'signup.firstName': 'Anarana',
+    'signup.lastName': 'Fanampin’anarana',
+    'signup.email': 'Mailaka an’ny oniversite',
+    'signup.emailHint': 'Ampiasao ny mailaka an-tsekolinao ho an’ny fanamarinana haingana.',
+    'signup.school': 'Sekoly na Oniversite',
+    'signup.schoolPlaceholder': 'Fidio ny sekolinao',
+    'signup.field': 'Sampam-pianarana / Sehatra',
+    'signup.fieldPlaceholder': 'oh: Informatika, Fitantanana, Famolavolana...',
+    'signup.password': 'Teny miafina',
+    'signup.confirmPassword': 'Hamafiso ny teny miafina',
+    'signup.termsStart': 'Manaiky ny',
+    'signup.terms': 'Fepetra fampiasana',
+    'signup.and': 'sy ny',
+    'signup.privacy': 'Politikan’ny tsiambaratelo',
+    'signup.submit': 'Mamorona kaontin’ny mpanorina',
+    'signup.loading': 'Eo am-pamoronana...',
+    'signup.passwordMismatch': 'Tsy mitovy ny teny miafina.',
+    'signup.acceptTerms': 'Tsy maintsy manaiky ny fepetra ianao.',
+    'signup.heroTitle': 'Manomboka amin’ny ekipa mety ny dia.',
+    'signup.heroBody': 'Midira ao amin’ny vondron’ireo mpianatra mpanorina eto Madagasikara. Tadiavo ireo fahaiza-manao ilainao.',
+    'signup.exampleFirstName': 'Hery',
+    'signup.exampleLastName': 'Rakoto',
+    'signup.exampleEmail': 'hery.rakoto@sekoly.mg',
+    'signup.schoolOther': 'Hafa',
+    'signup.schoolPolytechnique': 'École Polytechnique de Madagascar',
+    'signup.schoolIscam': 'ISCAM',
+    'signup.schoolInscae': 'INSCAE',
+    'signup.schoolIag': 'IAG',
+    'signup.schoolMedicine': 'Faculté de Médecine',
+    'signup.schoolMisa': 'MISA',
+    'signup.schoolIst': 'IST',
+
+    /* ── Auth (E-11 & Redesign) ── */
+    'auth.login.title': 'Fidirana',
+    'auth.login.subtitle': 'Midira ao amin’ny sehatrao mba hanaraka ny tetikasao sy ny fifandraisanao.',
+    'auth.login.email': 'Adiresy mailaka',
+    'auth.login.emailPlaceholder': 'anarana@domaine.mg',
+    'auth.login.password': 'Teny miafina',
+    'auth.login.passwordPlaceholder': '••••••••••••',
+    'auth.login.showPassword': 'Haneho ny teny miafina',
+    'auth.login.hidePassword': 'Hanafoana ny teny miafina',
+    'auth.login.submit': 'Hiditra',
+    'auth.login.loading': 'Fidirana…',
+    'auth.login.forgotPassword': 'Teny miafina hadino ?',
+    'auth.login.noAccount': 'Fidirana amin’ny alalan’ny fanasana',
+    'auth.login.noAccountHint': 'Ny fidirana dia amin’ny alalan’ny fanasana avy amin’ireo sekoly sy fandaharan’asa mpiara-miasa.',
+    'auth.login.error.invalidCredentials': 'Mailaka na teny miafina tsy mety.',
+    'auth.login.error.accountFrozen': 'Voasakana vonjimaika ny kaontinao.',
+    'auth.login.error.accountDisabled': 'Voasakana ny kaontinao.',
+    'auth.login.error.generic': 'Nisy olana nitranga. Andramo indray.',
+
+    'auth.forgotPassword.title': 'Famerenana ny kaonty',
+    'auth.forgotPassword.subtitle': 'Ampidiro ny adiresy mailaka mba hahazoana rohy famerenana.',
+    'auth.forgotPassword.email': 'Adiresy mailaka',
+    'auth.forgotPassword.emailPlaceholder': 'anarana@sekoly.mg',
+    'auth.forgotPassword.submit': 'Handefa ny rohy',
+    'auth.forgotPassword.loading': 'Fandefasana…',
+    'auth.forgotPassword.successTitle': 'Jereo ny mailakao',
+    'auth.forgotPassword.success': 'Raha misy io adiresy io, mailaka famerenana no nalefa.',
+    'auth.forgotPassword.backToLogin': 'Hiverina amin’ny fidirana',
+
+    'auth.resetPassword.title': 'Teny miafina vaovao',
+    'auth.resetPassword.subtitle': 'Misafidiana teny miafina vaovao azo antoka.',
+    'auth.resetPassword.password': 'Teny miafina vaovao',
+    'auth.resetPassword.passwordPlaceholder': '12 soratra farafahakeliny',
+    'auth.resetPassword.confirm': 'Hamafiso ny teny miafina',
+    'auth.resetPassword.confirmPlaceholder': 'Avereno soratana ny teny miafina',
+    'auth.resetPassword.submit': 'Hanova ny teny miafina',
+    'auth.resetPassword.loading': 'Fanovana…',
+    'auth.resetPassword.successTitle': 'Voaova ny teny miafina !',
+    'auth.resetPassword.success': 'Voaova ny teny miafina. Afaka miditra ianao izao.',
+    'auth.resetPassword.error.mismatch': 'Tsy mitovy ny teny miafina.',
+    'auth.resetPassword.error.tooShort': 'Tsy maintsy misy soratra 12 farafahakeliny ny teny miafina.',
+    'auth.resetPassword.error.invalidToken': 'Io rohy io dia lany daty na tsy manan-kery.',
+    'auth.resetPassword.backToLogin': 'Hiditra izao',
+
+    'auth.strength.weak': 'Kely',
+    'auth.strength.fair': 'Koraokandro',
+    'auth.strength.good': 'Tsara',
+    'auth.strength.strong': 'Matanjaka',
+    'auth.strength.ruleLength': 'Soratra 12 farafahakeliny',
+    'auth.strength.ruleMix': 'Sorabaventy, isa na famantarana',
+    'auth.strength.ruleMatch': 'Teny miafina mitovy',
+
+    'auth.logout': 'Hivoaka',
+    'auth.backHome': 'Fandraisana CoFound.mg',
+
+    /* ── Commun ── */
+    'common.or': 'na',
+    'common.loading': 'Eo am-pidirana…',
+    'common.error': 'Nisy olana nitranga.',
+
+    /* ── Recherche (M-01 / UI-15) ── */
+    /* ── Activation (E-10) ── */
+    'auth.activation.title': 'Hampandeha ny kaontinao',
+    'auth.activation.subtitle': 'Safidio ny teny miafinao mba hamaranana ny fampandehanana ny kaontinao.',
+    'auth.activation.password': 'Teny miafina vaovao',
+    'auth.activation.passwordPlaceholder': 'Kely indrindra 12 stafa (sorabaventy, isa/marika)',
+    'auth.activation.confirmPassword': 'Hamafiso ny teny miafina',
+    'auth.activation.confirmPasswordPlaceholder': 'Ataovy indray ny teny miafinao',
+    'auth.activation.acceptTerms': 'Manaiky ny fepetra fampiasana sy ny politikan’ny tsiambaratelo aho.',
+    'auth.activation.submit': 'Hampandeha ny kaontiko',
+    'auth.activation.loading': 'Eo am-pampandehanana...',
+    'auth.activation.error.invalidToken': 'Tsy manan-kery na efa lany daty ity rohy ity. Mifandraisa amin’ny sekolinao.',
+    'auth.activation.error.passwordLength': 'Tsy maintsy misy stafa 12 kely indrindra ny teny miafina.',
+    'auth.activation.error.passwordMismatch': 'Tsy mitovy ny teny miafina roa.',
+    'auth.activation.error.acceptTerms': 'Tsy maintsy manaiky ny fepetra ianao mba hitohizana.',
+    'auth.activation.error.generic': 'Nisy fahadisoana nitranga. Mba andramo indray.',
+    'auth.activation.successTitle': 'Lasa mampandeha soa aman-tsara ny kaontinao !',
+    'auth.activation.successSubtitle': 'Hazo mivantana mankany amin’ny dingana famoronana ianao...',
+
+    'settings.eyebrow': 'TOERANA MANOKANA',
+    'settings.title': 'Fikirana',
+    'settings.subtitle': 'Tantano mangarahara ny safidinao sy ny fanekenao.',
+    'settings.privacy.title': 'Tsiambaratelo sy fanekena',
+    'settings.privacy.description': 'Afaka manaisotra fanekena ianao amin’ny fotoana rehetra. Voatahiry ny dian’ny fanapahan-kevitra.',
+    'settings.loading': 'Eo am-pikirakirana…',
+    'settings.error': 'Tsy azo alaina na tehirizina ny safidinao.',
+    'settings.version': 'Dika',
+    'settings.notGranted': 'Tsy nekena',
+    'settings.consent.profile': 'Fahitana ny profil',
+    'settings.consent.matching': 'Soso-kevitra fiaraha-miasa',
+    'settings.consent.contact': 'Fifandraisana avy amin’ny mpiara-miombon’antoka',
+    'settings.consent.analytics': 'Fanadihadiana mitambatra',
+    'settings.consent.withdrawConfirm': 'Esorina ve ity fanekena ity? Mety hampijanona ny asa mifandray aminy izany.',
+    'settings.privacy.withdrawExplanation': 'Mihatra amin’ny fampiasana ho avy ny fisintonana. Voatahiry ny tantaran’ny fanekena.',
+    'settings.backProfile': 'Hiverina amin’ny profil',
+    'profile.completionReminder.message': 'Feno {completion} % ny profil-nao. Fenoy izany mba hanatsarana ny fahitanao.',
+    'profile.completionReminder.action': 'Tohizo',
+    'profile.fields.pseudonym': 'Anarana solon’anarana',
+    'profile.fields.headline': 'Fampahafantarana fohy',
+    'profile.fields.bio': 'Mombamomba',
+    'profile.fields.field': 'Sehatra fianarana',
+    'profile.fields.cohortYear': 'Taonan’ny andiany',
+    'profile.fields.availability': 'Fotoana azo ampiasaina',
+    'profile.fields.goals': 'Tanjona',
+    'profile.fields.sectors': 'Sehatra',
+    'search.title': 'Fikarohana',
+    'search.subtitle': 'Tadiavo ireo tetikasa, fahaiza-manao na fahafahana',
+    'search.placeholder': 'Tadiavo ny tetikasa, fahaiza-manao...',
+    'search.tab.all': 'Valiny rehetra',
+    'search.tab.projects': 'Tetikasa',
+    'search.tab.talents': 'Mpanorina',
+    'search.tab.opportunities': 'Fahafahana',
+    'search.suggestions.title': 'Fikarohana matetika',
+    'search.suggestions.skills': 'Fahaiza-manao ilaina',
+    'search.suggestions.sectors': 'Sehatra mavitrika',
+    'search.empty.noResults': 'Tsy nisy valiny ho an’ny « {query} »',
+    'search.empty.tryAgain': 'Andramo amin’ny teny hafa na ovay ny sivana.',
+    'search.empty.reset': 'Fafao ny fikarohana',
+    'search.loading': 'Eo am-pikarohana…',
+    'search.error': 'Tsy afaka nanao fikarohana. Jereo ny fifandraisana.',
+  },
+} as const
+
+type TranslationKey = keyof typeof messages.fr
+
+type I18nContextValue = {
+  language: Language
+  setLanguage: (language: Language) => void
+  t: (key: TranslationKey) => string
+}
+
+const I18nContext = createContext<I18nContextValue | null>(null)
+
+export function I18nProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguageState] = useState<Language>(() => {
+    const stored = window.localStorage.getItem('cofound-language')
+    return stored === 'mg' ? 'mg' : 'fr'
+  })
+
+  const setLanguage = (nextLanguage: Language) => {
+    setLanguageState(nextLanguage)
+    window.localStorage.setItem('cofound-language', nextLanguage)
+  }
+
+  useEffect(() => {
+    document.documentElement.lang = language
+  }, [language])
+
+  const value = useMemo<I18nContextValue>(
+    () => ({ language, setLanguage, t: (key) => messages[language][key] }),
+    [language],
+  )
+
+  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>
+}
+
+export function useI18n(): I18nContextValue {
+  const context = useContext(I18nContext)
+  if (!context) throw new Error('useI18n doit être utilisé dans I18nProvider.')
+  return context
+}
+
+export function LanguageSwitcher() {
+  const { language, setLanguage, t } = useI18n()
+  return (
+    <label className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+      <span className="sr-only">{t('language.label')}</span>
+      <select
+        aria-label={t('language.label')}
+        value={language}
+        onChange={(event) => setLanguage(event.target.value as Language)}
+        className="rounded-md border border-border bg-background px-2 py-1"
+      >
+        <option value="fr">{t('language.fr')}</option>
+        <option value="mg">{t('language.mg')}</option>
+      </select>
+    </label>
+  )
+}

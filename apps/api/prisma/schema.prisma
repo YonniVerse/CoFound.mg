@@ -1,0 +1,844 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccountStatus {
+  INVITED
+  ACTIVE
+  FROZEN
+  LEAVING
+  ALUMNI
+  DISABLED
+}
+
+enum AffiliationStatus {
+  ACTIVE
+  LEAVING
+  ALUMNI
+  SUSPENDED
+}
+
+enum OrganizationType {
+  INSTITUTION
+  INCUBATOR
+  COMPANY
+  NGO
+  PUBLIC
+  ASSOCIATION
+}
+
+enum OrganizationRole {
+  ORG_ADMIN
+  ORG_MANAGER
+  ORG_VIEWER
+}
+
+enum OrganizationCapabilityName {
+  CERTIFY_AFFILIATION
+  PUBLISH_OPPORTUNITY
+  RECRUIT
+  MENTOR
+  FUND
+  SURVEY
+  ANALYTICS
+}
+
+enum PlatformRole {
+  TALENT
+  ORG_MEMBER
+  STAFF
+}
+
+enum StaffRole {
+  SUPER_ADMIN
+  OPS_ADMIN
+  MODERATOR
+}
+
+enum ProjectStatus {
+  DRAFT
+  RECRUITING
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+enum ProjectRole {
+  OWNER
+  MEMBER
+  MENTOR
+  OBSERVER
+}
+
+enum TaskStatus {
+  TODO
+  DOING
+  BLOCKED
+  DONE
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+enum PostType {
+  SEEKING_COLLABORATOR
+  SEEKING_MENTORSHIP
+  SEEKING_FUNDING
+  UPDATE
+}
+
+enum ConnectionRequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+}
+
+enum ConnectionSource {
+  MATCH
+  PROJECT
+}
+
+enum ConversationType {
+  DIRECT
+  PROJECT
+}
+
+enum ImportBatchStatus {
+  PREVIEW
+  APPLIED
+  CANCELLED
+  FAILED
+}
+
+enum ImportRowResult {
+  CREATED
+  UPDATED
+  SKIPPED_DUPLICATE
+  ERROR
+  BOUNCED
+}
+
+enum OpportunityType {
+  CALL_FOR_APPLICATIONS
+  CONTEST
+  INCUBATION_PROGRAM
+  FUNDING_OFFER
+  EVENT
+  INTERNSHIP
+}
+
+enum OpportunityApplicantType {
+  TALENT
+  PROJECT
+}
+
+enum OpportunityStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+  ARCHIVED
+}
+
+enum ReportReason {
+  HARASSMENT
+  HATE_SPEECH
+  SPAM
+  FRAUD
+  TOXIC_CONTENT
+}
+
+enum ReportStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+  DISMISSED
+}
+
+enum ModerationActionType {
+  WARNING
+  FREEZE
+  DISABLE
+  CONTENT_REMOVED
+}
+
+enum FinancialEngagementType {
+  INVESTMENT
+  DONATION
+  GRANT
+  PRIZE
+}
+
+enum FinancialEngagementStatus {
+  PROPOSED
+  ACCEPTED
+  SETTLING
+  CONFIRMED
+  REJECTED
+  CANCELLED
+}
+
+enum PaymentProvider {
+  OFF_PLATFORM
+  MOBILE_MONEY
+}
+
+model User {
+  id                         String                    @id @default(cuid())
+  email                      String                    @unique
+  passwordHash               String?
+  status                     AccountStatus             @default(INVITED)
+  platformRole               PlatformRole              @default(TALENT)
+  staffRole                  StaffRole?
+  locale                     String                    @default("fr")
+  activatedAt                DateTime?
+  lastLoginAt                DateTime?
+  createdAt                  DateTime                  @default(now())
+  updatedAt                  DateTime                  @updatedAt
+  talentProfile              TalentProfile?
+  talentIdentity             TalentIdentity?
+  affiliations               Affiliation[]
+  organizationMembers        OrganizationMember[]
+  invitationTokens           InvitationToken[]
+    refreshTokens             RefreshToken[]
+  passwordResetTokens       PasswordResetToken[]
+  consents                  Consent[]
+  importBatchesUploaded      ImportBatch[]             @relation("ImportUploader")
+  projectsCreated            Project[]                 @relation("ProjectCreator")
+  projectMembers             ProjectMember[]
+  applications               Application[]
+  tasksAssigned              Task[]                    @relation("TaskAssignee")
+  connectionRequestsSent     ConnectionRequest[]       @relation("ConnectionRequestSender")
+  connectionRequestsReceived ConnectionRequest[]       @relation("ConnectionRequestRecipient")
+  connectionsAsA             Connection[]              @relation("ConnectionUserA")
+  connectionsAsB             Connection[]              @relation("ConnectionUserB")
+  blocksMade                 Block[]                   @relation("Blocker")
+  blocksReceived             Block[]                   @relation("Blocked")
+  conversationParticipants   ConversationParticipant[]
+  messages                   Message[]
+  reportsMade                Report[]                  @relation("Reporter")
+  moderationActions          ModerationAction[]        @relation("ModerationActor")
+  notifications              Notification[]
+  notificationPreference     NotificationPreference?
+  auditLogs                  AuditLog[]                @relation("AuditActor")
+  capabilitiesGranted        OrganizationCapability[]  @relation("CapabilityGrantor")
+  createdAttributions        Affiliation[]             @relation("AffiliationChangedBy")
+  applicationsDecided        Application[]             @relation("ApplicationDecider")
+  reportsAssigned            Report[]                  @relation("ReportAssignee")
+  moderationTargets          ModerationAction[]        @relation("ModerationTarget")
+  importRows                 ImportRow[]
+  bmcUpdates                 BusinessModelCanvas[]     @relation("BmcUpdater")
+}
+
+model TalentProfile {
+  id                  String             @id @default(cuid())
+  userId              String             @unique
+  pseudonym           String
+  avatarSeed          String
+  headline            String?
+  bio                 String?
+  fieldId             String?
+  cohortYear          Int?
+  level               String?
+  availabilityHours   Int?
+  goals               Json?
+  sectors             Json?
+  completion                Int                @default(0)
+  visibleInTalentFeed       Boolean            @default(false)
+  onboardingStep            Int                @default(1)
+  onboardingCompletedSteps  Json?
+  onboardingUpdatedAt       DateTime           @default(now())
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  user                User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  field               Field?             @relation(fields: [fieldId], references: [id])
+  skills              TalentSkill[]
+    dreamMatchProfile   DreamMatchProfile?
+  dreamMatchExclusionsMade     DreamMatchExclusion[] @relation("DreamMatchExclusionSeeker")
+  dreamMatchExclusionsReceived DreamMatchExclusion[] @relation("DreamMatchExclusionCandidate")
+  posts                 Post[]
+
+  @@index([visibleInTalentFeed])
+  @@index([fieldId])
+}
+
+model TalentIdentity {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  firstName String
+  lastName  String
+  photoKey  String?
+  phone     String?
+  regionId  String?
+  gender    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  region    Region?  @relation(fields: [regionId], references: [id])
+}
+
+model Organization {
+  id                   String                   @id @default(cuid())
+  name                 String
+  type                 OrganizationType
+  countryCode          String                   @default("MG")
+  logoKey              String?
+  description          String?
+  verificationStatus   String                   @default("PENDING")
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
+  capabilities         OrganizationCapability[]
+  members              OrganizationMember[]
+  affiliations         Affiliation[]
+  importBatches        ImportBatch[]
+  opportunities        Opportunity[]
+  financialEngagements FinancialEngagement[]
+
+  @@index([type, verificationStatus])
+}
+
+model OrganizationCapability {
+  id             String                     @id @default(cuid())
+  organizationId String
+  capability     OrganizationCapabilityName
+  grantedById    String
+  grantedAt      DateTime                   @default(now())
+  organization   Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  grantedBy      User                       @relation("CapabilityGrantor", fields: [grantedById], references: [id])
+
+  @@unique([organizationId, capability])
+}
+
+model OrganizationMember {
+  id             String           @id @default(cuid())
+  organizationId String
+  userId         String
+  role           OrganizationRole
+  createdAt      DateTime         @default(now())
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+}
+
+model Affiliation {
+  id             String            @id @default(cuid())
+  userId         String
+  organizationId String
+  isCertifying   Boolean           @default(false)
+  status         AffiliationStatus @default(ACTIVE)
+  fieldId        String?
+  cohortYear     Int?
+  startedAt      DateTime          @default(now())
+  endedAt        DateTime?
+  changedById    String?
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  field          Field?            @relation(fields: [fieldId], references: [id])
+  changedBy      User?             @relation("AffiliationChangedBy", fields: [changedById], references: [id])
+
+  @@unique([userId, organizationId])
+  @@index([organizationId, status])
+}
+
+model ImportBatch {
+  id               String            @id @default(cuid())
+  organizationId   String
+  uploadedById     String
+  fileKey          String
+  status           ImportBatchStatus @default(PREVIEW)
+  columnMapping    Json?
+  totalRows        Int               @default(0)
+  createdRows      Int               @default(0)
+  updatedRows      Int               @default(0)
+  errorRows        Int               @default(0)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  organization     Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  uploadedBy       User              @relation("ImportUploader", fields: [uploadedById], references: [id])
+  rows             ImportRow[]
+  invitationTokens InvitationToken[]
+
+  @@index([organizationId, status])
+}
+
+model ImportRow {
+  id              String           @id @default(cuid())
+  batchId         String
+  lineNumber      Int
+  raw             Json
+  normalizedEmail String?
+  result          ImportRowResult?
+  errorCode       String?
+  userId          String?
+  batch           ImportBatch      @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  user            User?            @relation(fields: [userId], references: [id])
+
+  @@unique([batchId, lineNumber])
+  @@index([normalizedEmail])
+}
+
+model InvitationToken {
+  id            String       @id @default(cuid())
+  userId        String
+  importBatchId String?
+  tokenHash     String       @unique
+  expiresAt     DateTime
+  usedAt        DateTime?
+  createdAt     DateTime     @default(now())
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  importBatch   ImportBatch? @relation(fields: [importBatchId], references: [id])
+
+  @@index([userId, expiresAt])
+}
+
+model RefreshToken {
+  id         String    @id @default(cuid())
+  userId     String
+  tokenHash  String    @unique
+  familyId   String
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  replacedBy String?
+  createdAt  DateTime  @default(now())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([familyId])
+}
+
+model PasswordResetToken {
+  id         String   @id @default(cuid())
+  userId     String
+  tokenHash  String   @unique
+  expiresAt  DateTime
+  usedAt     DateTime?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+}
+
+model Consent {
+  id            String    @id @default(cuid())
+  userId        String
+  purpose       String
+  policyVersion String
+  grantedAt     DateTime  @default(now())
+  revokedAt     DateTime?
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose])
+}
+
+model Field {
+  id           String          @id @default(cuid())
+  slug         String          @unique
+  labelKey     String
+  isActive     Boolean         @default(true)
+  sortOrder    Int             @default(0)
+  profiles     TalentProfile[]
+  affiliations Affiliation[]
+}
+
+model Skill {
+  id               String              @id @default(cuid())
+  slug             String              @unique
+  labelKey         String
+  category         String?
+  isActive         Boolean             @default(true)
+  sortOrder        Int                 @default(0)
+  talentSkills     TalentSkill[]
+  dreamMatchSkills DreamMatchSkill[]
+  positionSkills   OpenPositionSkill[]
+}
+
+model Sector {
+  id        String    @id @default(cuid())
+  slug      String    @unique
+  labelKey  String
+  isActive  Boolean   @default(true)
+  sortOrder Int       @default(0)
+  projects  Project[]
+}
+
+model Region {
+  id          String           @id @default(cuid())
+  slug        String           @unique
+  labelKey    String
+  countryCode String           @default("MG")
+  isActive    Boolean          @default(true)
+  identities  TalentIdentity[]
+  projects    Project[]
+}
+
+model TalentSkill {
+  id       String        @id @default(cuid())
+  talentId String
+  skillId  String
+  level    Int?
+  talent   TalentProfile @relation(fields: [talentId], references: [id], onDelete: Cascade)
+  skill    Skill         @relation(fields: [skillId], references: [id])
+
+  @@unique([talentId, skillId])
+}
+
+model DreamMatchProfile {
+  id                String            @id @default(cuid())
+  talentId          String            @unique
+  minAvailability   Int?
+  preferredTeamSize Int?
+  institutionPref   String?
+  sectors           Json?
+  talent            TalentProfile     @relation(fields: [talentId], references: [id], onDelete: Cascade)
+  skills            DreamMatchSkill[]
+}
+
+model DreamMatchExclusion {
+  id          String        @id @default(cuid())
+  seekerId    String
+  candidateId String
+  createdAt   DateTime      @default(now())
+  seeker      TalentProfile @relation("DreamMatchExclusionSeeker", fields: [seekerId], references: [id], onDelete: Cascade)
+  candidate   TalentProfile @relation("DreamMatchExclusionCandidate", fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([seekerId, candidateId])
+  @@index([seekerId])
+}
+
+model DreamMatchSkill {
+  id         String            @id @default(cuid())
+  dreamId    String
+  skillId    String
+  importance Int               @default(1)
+  dream      DreamMatchProfile @relation(fields: [dreamId], references: [id], onDelete: Cascade)
+  skill      Skill             @relation(fields: [skillId], references: [id])
+
+  @@unique([dreamId, skillId])
+}
+
+model Project {
+  id                   String                @id @default(cuid())
+  title                String
+  pitch                String
+  sectorId             String?
+  regionId             String?
+  status               ProjectStatus         @default(DRAFT)
+  createdById          String
+  publishedAt          DateTime?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  createdBy            User                  @relation("ProjectCreator", fields: [createdById], references: [id])
+  sector               Sector?               @relation(fields: [sectorId], references: [id])
+  region               Region?               @relation(fields: [regionId], references: [id])
+  canvas               BusinessModelCanvas?
+  members              ProjectMember[]
+  positions            OpenPosition[]
+  applications         Application[]
+  tasks                Task[]
+  posts                Post[]
+  conversation         Conversation?
+  financialEngagements FinancialEngagement[]
+
+  @@index([status, createdAt])
+  @@index([sectorId])
+}
+
+model BusinessModelCanvas {
+  id          String   @id @default(cuid())
+  projectId   String   @unique
+  blocks      Json
+  completion  Int      @default(0)
+  updatedAt   DateTime @updatedAt
+  updatedById String?
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  updatedBy   User?    @relation("BmcUpdater", fields: [updatedById], references: [id])
+
+  @@index([completion])
+}
+
+model ProjectMember {
+  id             String      @id @default(cuid())
+  projectId      String
+  userId         String
+  role           ProjectRole @default(MEMBER)
+  functionalRole String?
+  joinedAt       DateTime    @default(now())
+  leftAt         DateTime?
+  project        Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+}
+
+model OpenPosition {
+  id            String              @id @default(cuid())
+  projectId     String
+  title         String
+  description   String?
+  expectedHours Int?
+  isOpen        Boolean             @default(true)
+  project       Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  skills        OpenPositionSkill[]
+  applications  Application[]
+}
+
+model OpenPositionSkill {
+  id         String       @id @default(cuid())
+  positionId String
+  skillId    String
+  position   OpenPosition @relation(fields: [positionId], references: [id], onDelete: Cascade)
+  skill      Skill        @relation(fields: [skillId], references: [id])
+
+  @@unique([positionId, skillId])
+}
+
+model Application {
+  id              String            @id @default(cuid())
+  projectId       String
+  positionId      String?
+  applicantId     String
+  message         String
+  status          ApplicationStatus @default(PENDING)
+  rejectionReason String?
+  decidedAt       DateTime?
+  decidedById     String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  project         Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  position        OpenPosition?     @relation(fields: [positionId], references: [id])
+  applicant       User              @relation(fields: [applicantId], references: [id])
+  decidedBy       User?             @relation("ApplicationDecider", fields: [decidedById], references: [id])
+
+  @@unique([projectId, applicantId, status])
+  @@index([projectId, status])
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  projectId   String
+  title       String
+  description String?
+  assigneeId  String?
+  dueDate     DateTime?
+  status      TaskStatus @default(TODO)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignee    User?      @relation("TaskAssignee", fields: [assigneeId], references: [id])
+}
+
+model Post {
+  id        String        @id @default(cuid())
+  projectId String
+  authorId  String
+  type      PostType
+  content   String
+  sectorId  String?
+  expiresAt DateTime?
+  createdAt DateTime      @default(now())
+  project   Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  author    TalentProfile @relation(fields: [authorId], references: [id])
+
+  @@index([createdAt])
+}
+
+model ConnectionRequest {
+  id         String                  @id @default(cuid())
+  fromUserId String
+  toUserId   String
+  message    String
+  status     ConnectionRequestStatus @default(PENDING)
+  createdAt  DateTime                @default(now())
+  updatedAt  DateTime                @updatedAt
+  sender     User                    @relation("ConnectionRequestSender", fields: [fromUserId], references: [id], onDelete: Cascade)
+  recipient  User                    @relation("ConnectionRequestRecipient", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@unique([fromUserId, toUserId, status])
+  @@index([toUserId, status])
+}
+
+model Connection {
+  id             String           @id @default(cuid())
+  userAId        String
+  userBId        String
+  revealedAt     DateTime?
+  source         ConnectionSource
+  conversationId String?          @unique
+  createdAt      DateTime         @default(now())
+  userA          User             @relation("ConnectionUserA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB          User             @relation("ConnectionUserB", fields: [userBId], references: [id], onDelete: Cascade)
+  conversation   Conversation?    @relation(fields: [conversationId], references: [id])
+
+  @@unique([userAId, userBId])
+}
+
+model Block {
+  id        String   @id @default(cuid())
+  blockerId String
+  blockedId String
+  createdAt DateTime @default(now())
+  blocker   User     @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked   User     @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@unique([blockerId, blockedId])
+}
+
+model Conversation {
+  id           String                    @id @default(cuid())
+  type         ConversationType
+  projectId    String?                   @unique
+  createdAt    DateTime                  @default(now())
+  project      Project?                  @relation(fields: [projectId], references: [id])
+  connection   Connection?
+  participants ConversationParticipant[]
+  messages     Message[]
+}
+
+model ConversationParticipant {
+  id             String       @id @default(cuid())
+  conversationId String
+  userId         String
+  lastReadAt     DateTime?
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  authorId       String
+  body           String
+  attachmentKey  String?
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  author         User         @relation(fields: [authorId], references: [id])
+
+  @@index([conversationId, createdAt])
+}
+
+model Opportunity {
+  id             String                   @id @default(cuid())
+  organizationId String
+  type           OpportunityType
+  title          String
+  description    String
+  eligibility    String?
+  deadline       DateTime?
+  seats          Int?
+  status         OpportunityStatus        @default(DRAFT)
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+  organization   Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  applications   OpportunityApplication[]
+}
+
+model OpportunityApplication {
+  id            String                   @id @default(cuid())
+  opportunityId String
+  applicantType OpportunityApplicantType
+  applicantId   String
+  message       String
+  status        ApplicationStatus
+  createdAt     DateTime                 @default(now())
+  opportunity   Opportunity              @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+
+  @@unique([opportunityId, applicantType, applicantId])
+}
+
+model FinancialEngagement {
+  id             String                    @id @default(cuid())
+  projectId      String
+  organizationId String
+  type           FinancialEngagementType
+  amount         Decimal                   @db.Decimal(18, 2)
+  currency       String
+  status         FinancialEngagementStatus @default(PROPOSED)
+  provider       PaymentProvider           @default(OFF_PLATFORM)
+  externalRef    String?
+  createdAt      DateTime                  @default(now())
+  updatedAt      DateTime                  @updatedAt
+  project        Project                   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  organization   Organization              @relation(fields: [organizationId], references: [id])
+
+  @@index([projectId, status])
+}
+
+model Report {
+  id           String             @id @default(cuid())
+  reporterId   String
+  targetType   String
+  targetId     String
+  reason       ReportReason
+  description  String?
+  status       ReportStatus       @default(OPEN)
+  priority     Int                @default(0)
+  assignedToId String?
+  resolvedAt   DateTime?
+  createdAt    DateTime           @default(now())
+  reporter     User               @relation("Reporter", fields: [reporterId], references: [id])
+  assignedTo   User?              @relation("ReportAssignee", fields: [assignedToId], references: [id])
+  actions      ModerationAction[]
+
+  @@index([status, priority, createdAt])
+}
+
+model ModerationAction {
+  id           String               @id @default(cuid())
+  reportId     String
+  actorId      String
+  targetUserId String
+  action       ModerationActionType
+  reason       String
+  durationDays Int?
+  createdAt    DateTime             @default(now())
+  report       Report               @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  actor        User                 @relation("ModerationActor", fields: [actorId], references: [id])
+  targetUser   User                 @relation("ModerationTarget", fields: [targetUserId], references: [id])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  type      String
+  payload   Json
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt])
+}
+
+model NotificationPreference {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  settings  Json
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actorRole  String?
+  action     String
+  targetType String
+  targetId   String
+  metadata   Json?
+  ip         String?
+  createdAt  DateTime @default(now())
+  actor      User?    @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([targetType, targetId, createdAt])
+  @@index([actorId, createdAt])
+}
