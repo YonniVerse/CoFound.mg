@@ -89,9 +89,9 @@ Configurer le health check sur `/api/v1/health`, fournir `DATABASE_URL` avec la 
 
 ## Initialisation de plusieurs comptes et rôles
 
-Le seed des comptes est volontairement séparé du démarrage de l’API afin de ne pas modifier les mots de passe à chaque redéploiement. Il est idempotent : les utilisateurs portant les mêmes adresses sont mis à jour et les autres sont créés.
+Le seed des comptes est idempotent : les utilisateurs portant les mêmes adresses sont mis à jour et les autres sont créés. Il peut être exécuté manuellement ou automatiquement au démarrage de l’API. L’auto-seed est destiné à l’instance Render de développement et reste désactivé par défaut.
 
-Dans Render, ajouter temporairement la variable secrète `SEED_ACCOUNTS_JSON` au service Web API. Sa valeur est un tableau JSON contenant les comptes à créer ou mettre à jour. Chaque compte doit avoir une adresse e-mail et un mot de passe de 12 à 128 caractères. Le champ `platformRole` accepte `TALENT`, `ORG_MEMBER` ou `STAFF`. Un compte `STAFF` doit aussi avoir `staffRole`, qui accepte `SUPER_ADMIN`, `OPS_ADMIN` ou `MODERATOR`.
+Dans Render, ajouter la variable secrète `SEED_ACCOUNTS_JSON` au service Web API et la conserver uniquement sur l’instance de développement. Sa valeur est un tableau JSON contenant les comptes à créer ou mettre à jour. Chaque compte doit avoir une adresse e-mail et un mot de passe de 12 à 128 caractères. Le champ `platformRole` accepte `TALENT`, `ORG_MEMBER` ou `STAFF`. Un compte `STAFF` doit aussi avoir `staffRole`, qui accepte `SUPER_ADMIN`, `OPS_ADMIN` ou `MODERATOR`.
 
 ```json
 [
@@ -131,9 +131,29 @@ Dans Render, ajouter temporairement la variable secrète `SEED_ACCOUNTS_JSON` au
 ]
 ```
 
-Le champ `platformRole` est obligatoire dans la nouvelle configuration, sauf pour compatibilité avec `ADMIN_ACCOUNTS_JSON`, qui continue à créer des comptes `STAFF/SUPER_ADMIN`. Un `staffRole` sur un compte `TALENT` ou `ORG_MEMBER` est refusé afin d’éviter une combinaison incohérente.
+Le champ `platformRole` est recommandé dans la nouvelle configuration, sauf pour compatibilité avec `ADMIN_ACCOUNTS_JSON`, qui continue à créer des comptes `STAFF/SUPER_ADMIN`. Un `staffRole` sur un compte `TALENT` ou `ORG_MEMBER` est refusé afin d’éviter une combinaison incohérente.
 
-Exécuter ensuite une fois la commande suivante depuis le Shell Render, ou via une commande ponctuelle équivalente dans l’environnement API :
+### Exécution automatique à chaque redéploiement Render
+
+Pour l’instance Render de développement, conserver les deux variables suivantes dans les variables secrètes du service Web API :
+
+| Variable | Valeur | Rôle |
+|---|---|---|
+| `SEED_ACCOUNTS_ON_START` | `true` | Active explicitement l’auto-seed |
+| `SEED_ACCOUNTS_MODE` | `development` | Autorise l’auto-seed même si Render fournit `NODE_ENV=production` |
+| `SEED_ACCOUNTS_JSON` | tableau JSON des comptes | Contient les e-mails, mots de passe et rôles |
+
+Avec ces variables présentes, la commande Start normale suffit :
+
+```bash
+pnpm --filter @cofound/api prisma:migrate:deploy && pnpm --filter @cofound/api start
+```
+
+Au démarrage, l’API applique les migrations, puis met à jour les comptes présents dans `SEED_ACCOUNTS_JSON` avant d’ouvrir le port HTTP. Le processus est donc rejoué à chaque redéploiement, sans action manuelle supplémentaire. Une erreur de configuration fait échouer le démarrage plutôt que de créer des comptes partiellement configurés.
+
+Le flag `SEED_ACCOUNTS_ON_START` et le mode `SEED_ACCOUNTS_MODE=development` sont obligatoires ensemble sur Render. Sans eux, même si `SEED_ACCOUNTS_JSON` existe, aucun auto-seed n’est exécuté. Cette protection évite qu’un simple secret oublié active le provisionnement dans une instance de production.
+
+Exécution manuelle ponctuelle, si nécessaire :
 
 ```bash
 pnpm --filter @cofound/api seed:accounts
@@ -145,8 +165,6 @@ La commande historique reste disponible :
 pnpm --filter @cofound/api seed:admin
 ```
 
-Le script hache les mots de passe avec Argon2id et crée les comptes avec `status=ACTIVE`. Les comptes `STAFF` reçoivent le `staffRole` indiqué ; les comptes `TALENT` et `ORG_MEMBER` n’ont pas de rôle staff. Après la réussite du seed, supprimer `SEED_ACCOUNTS_JSON` de Render ou la désactiver, car les mots de passe en clair ne doivent pas rester dans les variables d’environnement à long terme. Le hash reste uniquement dans la base ; il n’est jamais écrit dans les logs.
+Le script hache les mots de passe avec Argon2id et crée les comptes avec `status=ACTIVE`. Les comptes `STAFF` reçoivent le `staffRole` indiqué ; les comptes `TALENT` et `ORG_MEMBER` n’ont pas de rôle staff. Les secrets peuvent rester dans les variables Render de l’instance de développement, mais ne doivent jamais être ajoutés à Vercel, au frontend ou à Git. Le hash reste uniquement dans la base ; il n’est jamais écrit dans les logs.
 
-Ne jamais ajouter `SEED_ACCOUNTS_JSON` ou `ADMIN_ACCOUNTS_JSON` dans Vercel, le frontend ou Git. Pour une deuxième exécution volontaire, recréer temporairement la variable avec les mots de passe souhaités.
-
-Le script est disponible dans `apps/api/prisma/seed-admin.ts`, le parsing dans `apps/api/prisma/seed-accounts-config.ts`, et les commandes dans `apps/api/package.json` sous `seed:accounts` et `seed:admin`.
+Le script est disponible dans `apps/api/prisma/seed-admin.ts`, le parsing dans `apps/api/src/account-seed/seed-accounts-config.ts`, l’auto-seed dans `apps/api/src/account-seed/auto-seed.ts`, et les commandes dans `apps/api/package.json` sous `seed:accounts` et `seed:admin`.

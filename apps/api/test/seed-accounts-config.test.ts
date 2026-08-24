@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { PlatformRole, StaffRole } from '@prisma/client'
-import { parseSeedAccounts, readSeedAccounts } from '../prisma/seed-accounts-config.js'
+import { isAutoSeedEnabled } from '../src/account-seed/auto-seed.js'
+import { parseSeedAccounts, readSeedAccounts } from '../src/account-seed/seed-accounts-config.js'
 
 const password = 'mot-de-passe-test-12'
 
@@ -34,6 +35,16 @@ test('privilégie SEED_ACCOUNTS_JSON tout en acceptant ADMIN_ACCOUNTS_JSON en co
 
   const legacyAccounts = readSeedAccounts({ ADMIN_ACCOUNTS_JSON: json([{ email: 'legacy@example.mg', password }]) })
   assert.equal(legacyAccounts[0]?.email, 'legacy@example.mg')
+})
+
+test('n’active l’auto-seed que par configuration explicite', () => {
+  assert.equal(isAutoSeedEnabled({}), false)
+  assert.equal(isAutoSeedEnabled({ SEED_ACCOUNTS_JSON: '[]' }), false)
+  assert.equal(isAutoSeedEnabled({ SEED_ACCOUNTS_ON_START: 'true' }), false)
+  assert.equal(isAutoSeedEnabled({ SEED_ACCOUNTS_ON_START: 'true', SEED_ACCOUNTS_JSON: '[]' }), true)
+  assert.equal(isAutoSeedEnabled({ SEED_ACCOUNTS_ON_START: 'TRUE', SEED_ACCOUNTS_JSON: '[]' }), true)
+  assert.equal(isAutoSeedEnabled({ NODE_ENV: 'production', SEED_ACCOUNTS_ON_START: 'true', SEED_ACCOUNTS_JSON: '[]' }), false)
+  assert.equal(isAutoSeedEnabled({ NODE_ENV: 'production', SEED_ACCOUNTS_MODE: 'development', SEED_ACCOUNTS_ON_START: 'true', SEED_ACCOUNTS_JSON: '[]' }), true)
 })
 
 test('refuse un rôle staff sur un compte non-STAFF', () => {

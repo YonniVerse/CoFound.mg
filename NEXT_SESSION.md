@@ -1,40 +1,53 @@
-# Reprise de session
+# Context Handoff — Reprise de session CoFound.mg
 
-**Dernière mise à jour** : 2026-08-23
-**Phase** : Ajustement de la carte promotionnelle Dream Match
-**Vague / ticket** : Dream Match / UX design system
-**Branche actuelle** : `dev`
+**Dernière mise à jour** : 2026-08-24
+**Phase** : fusion de `dev` vers `main` finalisée localement
+**Branche locale** : `main`
+**État Git** : fusion préparée et validée ; publication de `main` à confirmer après le commit de synchronisation distant.
 
-## 1. État actuel
+## 1. État courant
 
-La carte promotionnelle située à droite du formulaire Dream Match a été légèrement réduite. Sa largeur maximale desktop passe à `max-w-xs`, son padding et ses éléments internes sont plus compacts, tout en conservant la lisibilité du contenu et le sticky desktop. Sur mobile, elle conserve son comportement responsive sous le formulaire.
+`main` est la branche de livraison. Les changements UX et i18n de `dev` ont été fusionnés avec les changements opérationnels récents de `main`, notamment l’auto-seed Render de développement. Les conflits ont été résolus en conservant les améliorations frontend de `dev`, les routes et protections de compte de `main`, ainsi que les clés i18n des deux branches.
 
-`dev` et `origin/dev` sont synchronisés et propres. Le typecheck, le lint, `git diff --check` et le build de production web ont réussi.
+La carte publicitaire Dream Match est présente et compacte, avec layout flex responsive. Le dialogue de candidature, la landing page, LoginPage, FeedPage, Projects et Dream Match conservent les harmonisations du design system réalisées sur `dev`.
 
-## 2. Tâches terminées
+L’auto-seed s’exécute avant l’ouverture du port HTTP lorsqu’il est explicitement activé pour l’instance de développement. Les mots de passe restent dans les variables secrètes Render et sont hachés avec Argon2id.
 
-- Réduction de la largeur maximale de la publicité.
-- Réduction légère du padding, des cercles décoratifs CSS, de l’icône, des espacements et du titre.
-- Conservation du fond sombre, des tokens primaire/secondaire et du CTA vers `/feed`.
-- Publication du code dans `ef85c6f`.
+## 2. Travail fusionné
 
-## 3. Fichiers importants modifiés
+- Refonte UX des pages publiques et applicatives : LoginPage, ForgotPasswordPage, FeedPage, Projects, ProjectCreatePage, NotificationsPage, ProjectDetailPage et Dream Match.
+- Ajout du composant réutilisable `StatusAlertDialog` pour les erreurs HTTP supérieures ou égales à 500.
+- Internationalisation FR/MG de la landing page, du titre Hero et des contenus promotionnels Dream Match.
+- Ajout d’une carte promotionnelle Dream Match en flex responsive, puis réduction de ses dimensions.
+- Ajout de `runAutoSeed` au démarrage NestJS pour Render de développement, extraction de la routine d’upsert et du parseur de configuration, ainsi que mise à jour de la configuration Render.
+- Conservation du script `assets:optimize` de main et du build partagé de dev dans `apps/web/package.json`.
 
-- `apps/web/src/pages/DreamMatchPage.tsx` : dimensions et espacements de la carte publicitaire.
-- `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
+## 3. Résolution des conflits
 
-## 4. Validations et problèmes connus
+Les conflits ont concerné `CHANGELOG.md`, `NEXT_SESSION.md`, `apps/web/package.json`, `apps/web/src/App.tsx`, `apps/web/src/components/landing/SectionCTA.tsx`, `apps/web/src/i18n.tsx`, `apps/web/src/pages/FeedPage.tsx` et `apps/web/src/pages/LoginPage.tsx`.
 
-Les commandes suivantes ont réussi : `pnpm --filter @cofound/web typecheck`, `pnpm --filter @cofound/web lint`, `git diff --check` et `pnpm --filter @cofound/web build`.
+Les fichiers UI et i18n ont conservé les versions de `dev`, plus récentes pour les corrections UX. `App.tsx` a conservé la structure de `main`, notamment `AccountStatusBoundary` et ses routes opérationnelles. `apps/web/package.json` combine le build partagé de dev avec le script d’optimisation d’assets de main. Les fichiers de handoff ont été consolidés avec les contextes frontend et backend.
 
-Aucun blocage connu. Une vérification visuelle reste recommandée sur desktop et mobile pour confirmer que la carte n’est ni trop étroite ni trop haute selon la langue active.
+## 4. Validation
 
-## 5. Prochaine action
+Réussis après résolution : `pnpm --filter @cofound/web typecheck`, `pnpm --filter @cofound/web lint`, `pnpm --filter @cofound/web build`, `git diff --cached --check` et vérification de l’absence de marqueurs de conflit. Les tests et validations API liées à l’auto-seed provenaient de main : typecheck, build et tests API avec 178 tests réussis.
 
-Ouvrir `/dream-match` en français et en malgache sur desktop et mobile, vérifier la taille de la carte publicitaire et son alignement avec le formulaire, puis ajuster uniquement les classes de `DreamMatchPage.tsx` si nécessaire.
+Le seed réel n’a pas été exécuté depuis le sandbox. Aucun mot de passe réel n’est présent dans Git. La configuration Render doit être renseignée par le propriétaire dans les variables secrètes du service.
 
-## 6. Décisions et contexte de reprise
+## 5. Points ouverts
 
-La carte reste une publicité interne construite en CSS et avec les composants existants. La réduction privilégie une largeur desktop `max-w-xs` et des espacements compacts afin de laisser davantage de place au formulaire, sans modifier la logique ou le contenu.
+Après publication, vérifier le déploiement Render de développement, `/api/v1/health`, les connexions et le comportement visuel des pages fusionnées. Conserver `SEED_ACCOUNTS_ON_START=true`, `SEED_ACCOUNTS_MODE=development` et `SEED_ACCOUNTS_JSON` uniquement dans les variables secrètes de l’instance Render de développement.
 
-Aucun changement d’architecture, de modèle de données, de RBAC ou de périmètre n’a été introduit.
+## 6. Fichiers importants
+
+- `apps/web/src/App.tsx` : routes et protection de statut de compte.
+- `apps/web/src/i18n.tsx` : dictionnaire FR/MG combiné.
+- `apps/web/src/pages/DreamMatchPage.tsx` : formulaire et carte promotionnelle responsive.
+- `apps/web/src/components/applications/ApplyModal.tsx` : dialogue harmonisé.
+- `apps/web/src/pages/LoginPage.tsx`, `FeedPage.tsx` et `SectionCTA.tsx` : versions UX conservées depuis dev.
+- `apps/api/src/main.ts`, `apps/api/src/account-seed/auto-seed.ts` et `apps/api/src/account-seed/seed-accounts.ts` : auto-seed Render.
+- `CHANGELOG.md` : historique consolidé de la fusion.
+
+## 7. Prochaine action
+
+Pousser `main` après le commit de fusion, puis vérifier le déploiement et l’instance Render de développement. Ne jamais ajouter les secrets d’auto-seed à Vercel, au frontend ou à Git.
