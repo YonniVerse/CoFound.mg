@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
+import { useI18n } from '@/i18n'
 
 const FIELD_LABELS: Record<ImportField, string> = {
   email: 'Email',
@@ -42,6 +43,7 @@ const initialMapping = Object.fromEntries(
 ) as Record<string, ImportField | null>
 
 export default function ImportMappingPage() {
+  const { t } = useI18n()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const importId = searchParams.get('importId')
@@ -105,12 +107,12 @@ export default function ImportMappingPage() {
 
           <div className="flex items-start gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4 text-sm text-foreground">
             <Info className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-            <p>Le genre peut être importé, mais il ne sera jamais affiché individuellement dans la console. Aucun compte ne sera créé à cette étape.</p>
+            <p>{t('import.privacyNotice')}</p>
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>Correspondance des colonnes</CardTitle>
+              <CardTitle>{t('import.mappingTitle')}</CardTitle>
               <p className="text-sm text-muted-foreground">Trois exemples issus du fichier sont affichés sous chaque colonne pour vous aider à confirmer la proposition.</p>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -130,7 +132,7 @@ export default function ImportMappingPage() {
                           <SelectValue placeholder="Choisir un champ" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="__ignore__">Ignorer cette colonne</SelectItem>
+                          <SelectItem value="__ignore__">{t('import.ignoreColumn')}</SelectItem>
                           {(Object.keys(FIELD_LABELS) as ImportField[]).map((field) => (
                             <SelectItem key={field} value={field}>{FIELD_LABELS[field]}</SelectItem>
                           ))}

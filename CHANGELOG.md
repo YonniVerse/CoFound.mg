@@ -10,306 +10,714 @@ Retiré · En cours · Bloqué**.
 
 ---
 
-## 2026-08-24 — Fusionner le seed multi-comptes et multi-rôles
+## 2026-08-23 — Carte promotionnelle Dream Match plus compacte
 
 ### Modifié
 
-- La PR #94 est fusionnée dans `main` après réussite de la CI, du déploiement Vercel et de Preview Comments.
-- La fonctionnalité de seed multi-comptes est désormais disponible sur la branche de livraison.
+- Réduction de la largeur maximale desktop de la carte publicitaire à `max-w-xs`.
+- Réduction légère du padding, des formes décoratives, de l’icône, des espacements et de la taille du titre.
+- Conservation de la lisibilité, du sticky desktop et de l’empilement responsive mobile.
 
-### En cours
+### Validé
 
-- Exécuter le seed réel dans Render avec la matrice de comptes choisie par le propriétaire, puis supprimer la variable secrète temporaire.
+- Typecheck web, lint web, `git diff --check` et build de production web réussis.
+- Modification publiée sur `dev` dans le commit `ef85c6f`.
 
 ---
 
-## 2026-08-24 — Étendre le seed aux comptes et rôles de plateforme
+## 2026-08-23 — Carte promotionnelle Dream Match
+
+### Ajouté
+
+- Ajout d’une carte promotionnelle à droite du formulaire Dream Match sur desktop.
+- Ajout d’un affichage flex responsive avec empilement automatique sur mobile.
+- Ajout d’un contenu localisé FR/MG : titre, description, trois bénéfices et CTA vers `/feed`.
+- Construction de la carte en CSS avec les tokens CoFound et les composants partagés, sans asset génératif ni esthétique IA.
+
+### Validé
+
+- Typecheck web, lint web, `git diff --check` et build de production web réussis.
+- Modifications publiées sur `dev` dans les commits `452f34d` et `9bb2648`.
+
+---
+
+## 2026-08-23 — Raffinement visuel de Dream Match
+
+### Modifié
+
+- Amélioration de la hiérarchie de `/dream-match` avec un en-tête séparé et une carte de préférences structurée.
+- Rééquilibrage des espacements et des surfaces pour un rendu moderne et élégant cohérent avec LoginPage, FeedPage et Projects.
+- Raffinement des cartes de suggestions avec avatar, séparateur des facteurs, barres de progression plus discrètes et action secondaire mieux intégrée.
+- Conservation d’un rendu sobre sans dégradé, décoration excessive ni esthétique de design IA.
+
+### Validé
+
+- Typecheck web, lint web, `git diff --check` et build de production web réussis.
+- Modification publiée sur `dev` dans le commit `0a2a3a7`.
+
+---
+
+## 2026-08-23 — Dream Match harmonisé avec le design system
+
+### Modifié
+
+- Alignement de `/dream-match` sur `DashboardLayout`, FeedPage, LoginPage et le dialogue de candidature.
+- Remplacement des champs HTML bruts par le composant `Input` et harmonisation des bordures, fonds, rayons, ombres et états de focus.
+- Harmonisation des boutons d’enregistrement et « Pas intéressé » avec le composant `Button` et le style de LoginPage.
+- Remplacement de `Sparkles` par `SlidersHorizontal`, réduction des rayons et ombres excessifs et adoption d’un rendu sobre sans esthétique IA.
+
+### Validé
+
+- Typecheck web, lint web, `git diff --check` et build de production web réussis.
+- Modification publiée sur `dev` dans le commit `f6a879e`.
+
+---
+
+## 2026-08-23 — Dialogue de candidature aligné sur LoginPage
+
+### Modifié
+
+- Remplacement du select natif par le composant Select partagé.
+- Harmonisation du select et du textarea avec les contrôles de LoginPage : hauteur, fond `bg-card`, bordure, rayon, typographie, ombrage et focus primaire.
+- Harmonisation des boutons Annuler et Envoyer avec le bouton primaire de LoginPage.
+- Conservation de la candidature spontanée via la valeur neutre `none`, sans transmission de `positionId`.
+
+### Validé
+
+- Typecheck web, lint web, `git diff --check` et build de production web réussis.
+- Modification publiée sur `dev` dans le commit `9300dcc`.
+
+---
+
+## 2026-08-23 — Composition du titre Hero alignée sur la référence
+
+### Modifié
+
+- Réorganisation du titre Hero en quatre lignes : « Ne cherche pas une », « idée. », « Trouve ton » et « Co-fondateur. ».
+- Conservation du dégradé `from-primary to-secondary` sur le mot « Co-fondateur » malgré les retours à la ligne.
+- Ajout de la clé i18n `landing.hero.titleLine3` pour « Trouve ton » et son équivalent malgache.
+- Correction publiée sur `dev` dans les commits `23b65ab` et `0cb1937`.
+- Ajout de clés i18n FR/MG dédiées afin de conserver la même composition visuelle dans les deux langues.
+- Résolution du conflit de rebase dans `i18n.tsx` sans écraser les changements distants.
+
+### Validé
+
+- Typecheck web, lint web, `git diff --check` et build de production web réussis.
+- Modification publiée sur `dev` dans les commits `177f301` et `904055d`.
+
+---
+
+## 2026-08-23 — Internationalisation FR/MG de la landing page
 
 ### Décidé
 
-- Utiliser `SEED_ACCOUNTS_JSON` pour les nouvelles configurations multi-rôles, tout en conservant `ADMIN_ACCOUNTS_JSON` afin de ne pas casser le seed Render déjà exécuté.
-- Refuser les combinaisons `staffRole` avec `TALENT` ou `ORG_MEMBER`, car les rôles staff ne s’appliquent qu’à `platformRole=STAFF`.
-
-### Ajouté
-
-- Parser partagé `apps/api/prisma/seed-accounts-config.ts` pour normaliser les e-mails, valider les rôles, détecter les doublons et appliquer les valeurs par défaut.
-- Commande `pnpm --filter @cofound/api seed:accounts`, avec maintien de `seed:admin` comme alias compatible.
-- Tests unitaires couvrant les trois rôles de plateforme, les rôles staff, les valeurs par défaut et les erreurs de configuration.
+- Conserver les données mock dans `landing.json` et traduire les contenus affichés par des identifiants stables, afin de séparer les données de présentation du texte utilisateur.
 
 ### Modifié
 
-- `seed-admin.ts` crée ou met à jour désormais des comptes `TALENT`, `ORG_MEMBER` et `STAFF`, avec `SUPER_ADMIN`, `OPS_ADMIN` ou `MODERATOR` pour ces derniers.
-- La documentation Render fournit un exemple multi-comptes sans secret réel.
+- Localisation du hero : accroche, titre, paragraphe, rôles et statistiques.
+- Localisation des sections étapes, fonctionnalités, profils, inclusion et témoignages.
+- Ajout du sous-texte FR/MG des témoignages et traduction des citations et domaines dynamiques.
+- Localisation de l’état de chargement de `LandingPage`.
+- Correction des chemins de clés dynamiques pour les cartes `feat-*` et `inclusion-*`.
+- Mise à jour de `NEXT_SESSION.md` avec l’état vivant et la prochaine vérification visuelle.
 
-### Validation
+### Validé
 
-- Typecheck API, lint API, suite API **177/177 tests réussis** et `git diff --check`.
-
-### En cours
-
-- Branche `feat/seed-multi-comptes-roles` à pousser et proposer en PR vers `main`, puis exécution réelle avec une variable Render temporaire choisie par le propriétaire.
+- Typecheck web, lint web, `git diff --check` et build de production web réussis.
+- Modifications publiées sur `dev` dans les commits `f1fbe33`, `a34af10`, `eebbe58`, `dcb0f00`, `d81a5d4`, `7ba5488`, `a768dff`, `4c01288`, `dc3ddad`, `952e08b`, `57d521f`, `0331010` et `f4039fd`.
 
 ---
 
-## 2026-08-24 — Corriger le démarrage Render après le seed admin
-
-### Ajouté
-
-- PR #93 fusionnée dans `main` après correction des imports runtime de `PrismaService` dans Account Status, Product Health et Reference Data.
+## 2026-08-23 — Réorganisation de la Navbar publique
 
 ### Modifié
 
-- Le crash NestJS `UnknownDependenciesException` sur `AccountStatusService` est corrigé ; les services utilisent désormais le token runtime `PrismaService`.
-- La procédure Render revient au Start Command normal après l’exécution ponctuelle du seed admin.
+- Remplacement du bouton « Rejoindre l’écosystème » par le sélecteur de langue dans les actions publiques.
+- Positionnement du bouton « Se connecter » à droite du sélecteur de langue.
+- Transformation du bouton « Se connecter » en bouton primaire avec fond `primary`.
+- Intégration directe de `ArrowRight` dans le bouton de connexion, avec lien vers `/login`.
+- Suppression du bouton flèche séparé et du lien d’action vers `/feed` dans la Navbar publique.
+- Harmonisation de la même hiérarchie dans le menu mobile.
+- Modification publiée sur `dev` dans le commit `947f0bf`.
 
-### Validation
+### Validé
 
-- Le log Render confirme que les migrations étaient à jour et que le seed a créé deux comptes : `yonnidebian@gmail.com` en `SUPER_ADMIN` et `yoniubuntu@gmail.com` en `OPS_ADMIN`.
-- Validation locale : build shared, Prisma generate, typecheck API, lint API, build API, 173 tests API réussis et aucun import type de `PrismaService` restant dans `apps/api/src`.
-- L’API répond HTTP 200 sur `/api/v1/health` après le déploiement observé.
-
-### En cours
-
-- Restaurer le Start Command normal dans Render et vérifier que le dernier déploiement de `main` est Live.
-- Supprimer `ADMIN_ACCOUNTS_JSON` de Render et tester la connexion des comptes administrateurs.
+- Typecheck web, lint web et `git diff --check` réussis.
 
 ---
 
-## 2026-08-24 — Préparer le seed des comptes administrateurs
-
-### Décidé
-
-- Le seed admin est une commande ponctuelle séparée du démarrage Render, afin de ne pas réinitialiser les mots de passe à chaque redéploiement.
-- Les mots de passe sont fournis temporairement via une variable Render et hachés avec Argon2id, car aucun secret ne doit être commité ou exposé au frontend.
+## 2026-08-23 — Alerte modale réutilisable pour les états bloquants
 
 ### Ajouté
 
-- `apps/api/prisma/seed-admin.ts` avec validation des e-mails, mots de passe, rôles et détection des doublons.
-- Script `pnpm --filter @cofound/api seed:admin`.
-- Procédure et exemple `ADMIN_ACCOUNTS_JSON` dans `deploy/README.md`.
-- PR #92 fusionnée dans `main`.
+- Création de `StatusAlertDialog`, composant réutilisable basé sur la primitive `Dialog` existante.
+- Ajout d’une grande icône Lucide, d’un titre, d’une description et d’un badge de code statut configurable.
+- Blocage des interactions avec la page derrière l’alerte : aucun bouton de fermeture, Escape et clic extérieur neutralisés.
+- Ajout des boutons configurables `Retour` et `Réessayer`, ainsi que d’un message explicatif du code statut.
+- Limitation du dialogue aux codes HTTP numériques strictement supérieurs à `500` ; les statuts `204` et autres statuts normaux ne sont plus modalisés.
+- Description rendue optionnelle afin de supprimer le texte de service indisponible du dialogue `503`.
+- Correction du rendu avec un overlay React fixe `z-[100]`, un voile semi-opaque, un flou léger et un verrouillage de `document.body` en `overflow: hidden`.
+- Intégration dans l’état vide de `/projects` avec `SearchX` et le code statut `204`.
+- Intégration dans `/notifications` : erreur de chargement avec ton destructif et code `503`, absence de notifications avec code `204`.
+- Ajout du bouton `Réessayer` qui relance l’appel API et du bouton `Retour` qui utilise l’historique du navigateur.
+- Retour aux états vides classiques et non bloquants pour les statuts `204` dans `/notifications` et `/projects`.
+- Suppression des messages inline concurrents uniquement pour l’erreur `503` afin d’afficher une boîte modale bloquante.
+- Suppression du texte « Le service de notifications est temporairement indisponible. Réessayez plus tard. » du dialogue `503`.
+- Composant publié sur `dev` dans les commits `97b7080`, `8f2f370`, `afa6ab2` et `8b03dcc`, intégrations publiées dans `6d8aa0c`, `9eb7135` et `4bb9fe0`.
 
-### Validation
+### Validé
 
-- Prisma validate et generate réussis avec une URL locale fictive, sans connexion à Neon.
-- Typecheck API, lint API et `git diff --check` réussis.
-- CI GitHub et contrôles Vercel de la PR #92 réussis.
-
-### En cours
-
-- Exécuter le seed dans Render après choix des e-mails et mots de passe par le propriétaire.
+- Typecheck web, lint web et `git diff --check` réussis.
 
 ---
 
-## 2026-08-24 — Supprimer le compte fictif et fiabiliser le feed production
-
-### Décidé
-
-- Les mocks restent disponibles uniquement en développement local pour faciliter le prototypage, mais ne doivent plus être affichés comme données réelles en production.
-- La session n’est pas restaurée automatiquement au chargement initial, afin qu’une visite publique ne présente pas implicitement un compte déjà connecté.
-
-### Ajouté
-
-- Issue #90 pour raccorder les écrans encore alimentés par des mocks à l’API réelle.
-- PR #91 fusionnée dans `main`.
+## 2026-08-23 — Harmonisation de la page Notifications
 
 ### Modifié
 
-- `DashboardLayout` charge désormais `/me/profile`, affiche l’identité réelle et propose la déconnexion ; le profil fictif `Mialy Randria / ISCAM` et le badge de messages `3` ont été retirés.
-- Le feed rend les projets retournés par `/projects/feed`.
-- Les fallback `mockFeed` des projets, talents et suggestions sont limités au développement local.
-- Les routes affichant `DashboardLayout` redirigent vers `/login` lorsque l’état d’authentification local est inactif.
+- Refonte de `NotificationsPage` pour aligner `/notifications` avec FeedPage, SearchPage et ProjectsFeedPage.
+- Ajout d’un en-tête sobre avec compteur des notifications non lues et icône dédiée.
+- Ajout de filtres compacts `Toutes` et `Non lues` avec le même traitement que les contrôles du feed.
+- Harmonisation des cartes : `rounded-xl`, bordures du design system, distinction visuelle lue/non lue, icône selon le type et indicateur de notification non lue.
+- Ajout d’un état vide léger et d’un rail latéral sticky avec résumé de l’activité.
+- Conservation du marquage API comme lu, de la mise à jour locale optimiste et de la gestion d’erreur.
+- Modification publiée sur `dev` dans le commit `85caef1`.
 
-### Validation
+### Validé
 
-- Typecheck, lint, build frontend, build shared et `git diff --check` réussis.
-- CI et contrôles Vercel de la PR #91 réussis.
-- Déploiement Production Vercel du merge #91 `READY`, domaine public HTTP 200.
-
-### En cours
-
-- Raccorder les écrans Impact, détail/candidature projet, suggestions et aperçu d’import suivis par #90.
-- Tester réellement le parcours B-01/Cloudinary avec des comptes de recette.
+- Typecheck web, lint web et `git diff --check` réussis.
 
 ---
 
-## 2026-08-24 — Stabilisation des déploiements Render et Vercel
-
-### Ajouté
-
-- Issue #87 déclarée puis clôturée après correction de l’import runtime de `PrismaService` dans `PersonalDataExportService`.
-- Issue #88 déclarée puis clôturée après ajout de la compilation de `@cofound/shared` avant le build Vite depuis `apps/web`.
-- PR #89 fusionnée dans `main` avec les deux corrections de déploiement.
+## 2026-08-23 — Allègement de l’état vide de Projects
 
 ### Modifié
 
-- Le frontend Vercel conserve `apps/web` comme Root Directory et compile désormais son package partagé avant le build.
-- Le backend Render démarre correctement après résolution de l’injection NestJS et répond HTTP 200 sur `/api/v1/health` avec la base Neon opérationnelle.
+- Remplacement de l’icône Briefcase par `SearchX` pour mieux représenter l’absence de résultats.
+- Suppression du fond `bg-card`, de la bordure et de l’ombre autour du message vide.
+- Conservation du texte d’état vide, de la recherche, des filtres et des actions de la page.
+- Modification publiée sur `dev` dans le commit `a61daa3`.
 
-### Validation
+### Validé
 
-- CI GitHub de la PR #89 : réussie.
-- Vercel Production sur main : `READY`, déploiement `dpl_CrXZhSkVcSBxvSjizYNZqK4YAreR`, domaine `co-found-mg.vercel.app`.
-- Validation locale : génération Prisma, typechecks, lint, tests API, builds API/frontend et `git diff --check` réussis.
-
-### En cours
-
-- Réaliser un test fonctionnel authentifié B-01/Cloudinary avec des comptes de recette et un petit PDF.
-- Vérifier dans le dashboard Render que le service utilise bien `main` ; son endpoint health est déjà opérationnel.
+- Typecheck web, lint web et `git diff --check` réussis.
 
 ---
 
-## 2026-08-24 — Bascule de la livraison complète sur main
+## 2026-08-23 — Simplification de la récupération de compte
 
-### Décidé
+### Modifié
 
-- `main` devient la branche de livraison, car le projet Vercel est relié à cette branche et l’ancienne séparation `dev`/feature créait plusieurs chemins de déploiement.
-- Les PR empilées #73, #74, #75, #76, #82 et #83 sont clôturées après intégration ou identification de leur obsolescence, car leurs changements utiles sont présents dans main via #86.
+- Suppression de la section droite thématique de `ForgotPasswordPage`.
+- Recentrage de la carte de récupération sur une page `h-screen` sans scroll.
+- Ajout d’un fond en grille discret utilisant les tokens `border` et `background`.
+- Conservation des inputs, boutons, logo, sélecteur de langue, retour vers LoginPage et état de succès.
+- Modification publiée sur `dev` dans le commit `1c17ff3`.
 
-### Ajouté
+### Validé
 
-- PR #86 fusionnée dans main : dev, Vague 4 B-01 à B-11, Cloudinary B-12, S-05 à S-08 et harnais E2E S-09.
-- Résolution de conflits RBAC, module NestJS, client API et traductions S-06 pendant la migration.
-- Issue #84 pour le Root Directory Vercel invalide (`frontend` au lieu de `apps/web`).
-- Issue #85 pour la PR #82 de recherche PostgreSQL obsolète et redondante.
+- Typecheck web, lint web et `git diff --check` réussis.
 
-### Validation
+---
 
-- CI GitHub « Qualité du workspace » réussie sur la PR #86.
-- Validation locale complète réussie : builds shared/API/frontend, typechecks, lint, tests API et inventaire des trois scénarios E2E.
+## 2026-08-23 — Harmonisation de la création de projet
+
+### Modifié
+
+- Refonte de `ProjectCreatePage` pour aligner `/projects/new` avec `FeedPage`, `SearchPage`, `LoginPage` et `/projects`.
+- Intégration dans `DashboardLayout` avec le même fond, les mêmes espacements et une navigation de retour vers la liste des projets.
+- Harmonisation des `Input`, `Textarea`, `Label` et `Button` : hauteurs, rayons, bordures, ombres, typographie et états de focus.
+- Ajout de compteurs de caractères, d’un message d’erreur visuel et d’un rail d’aide sticky sobre.
+- Conservation de la validation `projectCreateSchema`, de la création API, du statut brouillon et de la redirection vers le projet créé.
+- Aucun visuel génératif, aucune image et aucun décor de type IA ajouté.
+- Ajout d’un bouton « Nouveau projet » dans l’en-tête de `/projects`, avec lien vers `/projects/new`.
+- Remplacement du bouton outline de `/projects/new` par un retour textuel avec flèche et déplacement au survol, inspiré de LoginPage.
+- Modifications publiées sur `dev` dans les commits `397087f` et `1b52dfc`.
+
+### Validé
+
+- Typecheck web, lint web et `git diff --check` réussis.
+
+---
+
+## 2026-08-23 — Harmonisation de la page Projects
+
+### Modifié
+
+- Refonte de `ProjectsFeedPage` pour aligner `/projects` avec `FeedPage`, `SearchPage` et le design system existant.
+- Harmonisation de la hiérarchie visuelle, des espacements, de la barre de recherche (`h-11`, `rounded-xl`, `bg-card`, `shadow-2xs`) et des boutons de filtres.
+- Ajout du rail droit sticky avec `ParityWidget` et `SuggestedProfilesWidget`, comme dans FeedPage.
+- Remplacement de `TalentCardSkeleton` par `ProjectCardSkeleton` pour un chargement cohérent avec les cartes projet.
+- Conservation de la recherche, du filtre de statut, de la pagination infinie, des actions des cards et des données existantes.
+- Aucun visuel génératif, image ou effet décoratif de type IA ajouté.
+- Modification publiée sur `dev` dans le commit `0571b06`.
+
+### Validé
+
+- Typecheck web, lint web et `git diff --check` réussis.
+
+---
+
+## 2026-08-22 — Séparation ondulée de LoginPage
+
+### Modifié
+
+- Remplacement de la forme arrondie par une wave SVG verticale à exactement deux périodes entre le formulaire et le panneau droit.
+- Wave remplie avec le token `background` et contour basée sur `var(--border)`.
+- Retrait de la découpe angulaire et du triangle précédemment utilisés sur cette séparation.
+- Conservation de deux waves SVG décoratives dans le fond du panneau droit.
+- Conservation du padding intérieur élargi du panneau droit pour mieux dégager les cards.
+- Annulation de l’augmentation temporaire de 2 px : les cinq cards utilisent de nouveau `h-full`.
+- Harmonisation de `ForgotPasswordPage` avec LoginPage : layout `h-screen`, formulaire, champs, gradient, séparation wave et grille thématique partagée.
+- Modification publiée sur `dev` dans les commits `8a0af26` et `063c9d9`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Gradient de marque et vagues dans LoginPage
+
+### Modifié
+
+- Remplacement du fond bleu léger par le gradient `primary → impact → secondary`, inspiré des couleurs du logo CoFound.mg.
+- Ajout de trois vagues SVG statiques et discrètes en arrière-plan.
+- Conservation d’une grille géométrique légère au-dessus du gradient.
+- Adaptation des cards claires avec `bg-card/95`, `backdrop-blur-sm` et ombres renforcées pour améliorer le contraste.
+- Cards bleue et rouge conservées avec fonds opaques et textes contrastés.
+- Modification publiée sur `dev` dans le commit `a1b292f`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Fond LoginPage accordé au logo
+
+### Modifié
+
+- Remplacement du fond noir par une teinte bleu-indigo très légère `bg-primary/5`.
+- Choix basé sur la couleur dominante du logo et du hero de LandingPage.
+- Grille géométrique rétablie avec `var(--border)` et l’opacité du landing pour garder une structure discrète.
+- Modification publiée sur `dev` dans le commit `45375fb`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Test du fond noir de LoginPage
+
+### Modifié
+
+- Remplacement du fond bleu-indigo clair par le token sombre `bg-foreground`.
+- Grille géométrique adaptée avec un tracé blanc très discret à `0.08` d’opacité.
+- Conservation de la palette du logo et des cards thématiques opaques pour maintenir le contraste.
+- Modification publiée sur `dev` dans le commit `3a59a2d`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Fond LoginPage cohérent avec le logo
+
+### Modifié
+
+- Remplacement du fond bleu uni par un dégradé doux `primary-light → background → impact-light`.
+- Palette alignée sur le dégradé bleu-indigo-violet utilisé par le logo CoFound.mg.
+- Conservation de la grille géométrique du landing et des cards thématiques opaques.
+- Modification publiée sur `dev` dans le commit `edf5acf`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Fond coloré cohérent pour LoginPage
+
+### Modifié
+
+- Ajout d’un fond bleu très clair `bg-primary-light` dans la section droite de LoginPage.
+- Conservation de la grille géométrique et des tokens du design system.
+- Fond volontairement discret pour ne pas concurrencer les cards thématiques.
+- Modification publiée sur `dev` dans le commit `7e5101b`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Fond LoginPage aligné sur LandingPage
+
+### Modifié
+
+- Remplacement du gradient violet-orange spécifique de LoginPage par `bg-background`, comme sur LandingPage.
+- Réutilisation de la grille géométrique basée sur `var(--border)`, de la taille `4rem`, du masque radial et de l’opacité du hero landing.
+- Adaptation de l’icône Network à la surface claire avec `bg-card`, bordure et accent primaire.
+- Suppression des anneaux décoratifs propres à l’ancien panneau.
+- Modification publiée sur `dev` dans le commit `61ea9f2`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — SearchPage alignée sur FeedPage
+
+### Modifié
+
+- Conteneur, largeur et rythme d’espacement alignés sur le shell de FeedPage.
+- Champ de recherche harmonisé avec les inputs du design system : hauteur, rayon, fond, bordure et focus.
+- Onglets de recherche alignés sur les boutons compacts du feed.
+- Suggestions remplacées par des contrôles rectangulaires sobres avec surface card, bordure et ombre légère.
+- États vide et opportunités harmonisés avec les cards du feed.
+- Aucun changement apporté à la logique de recherche, au debounce, aux paramètres URL ou à l’API.
+- Modification publiée sur `dev` dans le commit `e2f0d90`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — ForgotPasswordPage verrouillée au viewport
+
+### Modifié
+
+- Remplacement de `min-h-screen` par `h-screen` sur `ForgotPasswordPage`.
+- Conservation de `overflow-hidden` afin d’empêcher le scroll global, comme sur `LoginPage`.
+- Header, formulaire, état de succès, card et footer conservés sans changement de logique.
+- Modification publiée sur `dev` dans le commit `77c5557`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Inputs du login harmonisés
+
+### Modifié
+
+- Uniformisation des champs email et mot de passe avec `h-11`, `rounded-xl`, bordure et fond identiques.
+- Alignement des icônes Mail et Lock et adaptation des paddings internes.
+- Focus primaire, placeholders, typographie et ombres rendus cohérents avec le reste de LoginPage.
+- Bouton d’affichage du mot de passe harmonisé avec une zone interactive `h-8 w-8 rounded-lg`.
+- Modification publiée sur `dev` dans le commit `b5c0595`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Cards Communauté et Impact contrastées
+
+### Modifié
+
+- Card « Avancer ensemble » passée sur un fond bleu opaque `bg-primary` avec texte `primary-foreground` et bordure primaire cohérente.
+- Card « 50/50 en mouvement » passée sur un fond rouge sémantique `bg-destructive` avec texte `destructive-foreground` et bordure destructive cohérente.
+- Suppression de la phrase `Chaque parcours compte`.
+- Adaptation de la barre de progression de la card Impact au fond rouge.
+- Modification publiée sur `dev` dans le commit `957a308`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Grille simplifiée du panneau de connexion
+
+### Modifié
+
+- Suppression de la card Projet principal.
+- Suppression complète des tirets, chemins SVG, cercles et connecteurs entre les cards.
+- Passage des cinq cards restantes en grille de deux colonnes.
+- Card Exploration placée en première position sur les deux colonnes avec `col-span-2`.
+- Conservation des fonds, bordures, rayons, ombres et contraintes de contenu du design system.
+- Modification publiée sur `dev` dans le commit `32f770d`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Hauteur stabilisée des cards du login
+
+### Modifié
+
+- Augmentation et stabilisation de la hauteur des six cards avec `clamp(11rem,22vh,14rem)`.
+- Conservation de `overflow-hidden` et ajout de contraintes `line-clamp`/`break-words` pour garder tous les textes dans leurs cards.
+- Ajustement des espacements internes afin que les titres, meta-informations, badges, indicateurs et avatars restent visibles.
+- Liaisons pointillées SVG conservées avec un contraste renforcé et des points mieux répartis.
+- Modification publiée sur `dev` dans le commit `7ee0a6d`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Cards du login stabilisées et mieux composées
+
+### Modifié
+
+- Correction structurelle du débordement du premier card avec `overflow-hidden`, titre limité à trois lignes, meta limitée à une ligne et badge isolé dans le pied.
+- Ajout de fonds différenciés et de bordures cohérentes selon les accents `primary`, `impact` et `secondary`.
+- Suppression des bordures supérieures imposées sur les cards.
+- Rééquilibrage des positions en cascade sans superposition volontaire.
+- Renforcement des cinq liaisons SVG en pointillés avec un tracé blanc de contraste pour les rendre visibles sur le dégradé.
+- Modification publiée sur `dev` dans le commit `d054d57`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Composition éditoriale en cascade du login
+
+### Modifié
+
+- Correction du débordement du titre dans la card Projet principal en séparant son en-tête, sa zone de texte et son badge.
+- Retour à une composition asymétrique inspirée du hero landing : six cards positionnées en cascade avec des rotations légères.
+- Ajout de quatre liaisons SVG en pointillés, colorées avec les tokens `primary`, `secondary` et `impact`, placées derrière les cards.
+- Conservation de surfaces `bg-card`, bordures légères, rayons `rounded-2xl`, ombres et typographies du design system.
+- Modification publiée sur `dev` dans le commit `767be35`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Cards du login alignées sur le landing
+
+### Modifié
+
+- Correction du débordement du titre dans la card Projet principal avec une zone de texte flexible et des retours à la ligne maîtrisés.
+- Alignement des six cards sur le style du hero landing : `rounded-2xl`, `bg-card`, bordure fine, `shadow-2xs`, padding homogène et hover discret.
+- Conservation d’une grille régulière de deux colonnes sans superposition, rotation ni animation.
+- Utilisation de bordures supérieures `primary` et `secondary` pour les cards Communauté et Impact collectif, au lieu de fonds pleins.
+- Modification publiée sur `dev` dans le commit `d4cfe7c`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Grille statique du panneau de connexion
+
+### Modifié
+
+- Suppression complète du flottement, des rotations et des superpositions entre cards.
+- Passage des six cards à une grille régulière de deux colonnes avec largeur uniforme.
+- Réduction de la grande card principale et alignement des cards sur une hauteur commune.
+- Verrouillage de `LoginPage` sur `h-screen` avec `overflow-hidden` pour empêcher le scroll global.
+- Suppression des keyframes et utilitaires CSS de flottement devenus inutiles.
+- Modifications publiées séparément sur `dev` dans les commits `67573f9` et `c49f5d4`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Cards flottantes du panneau de connexion
+
+### Modifié
+
+- Suppression des textes `COFONDATEURS · PROJETS · IMPACT` et `Un espace pour avancer.` du panneau droit.
+- Réduction de la grande card principale pour libérer de l’espace visuel.
+- Ajout et repositionnement de cinq cards thématiques : Explorer, Complémentarité, Communauté, Impact collectif et Cadre de confiance.
+- Ajout de deux rythmes de flottement CSS décalés, avec conservation des rotations décoratives et respect de `prefers-reduced-motion`.
+- Commits publiés séparément sur `dev` : `1bd44eb`, `51ab703`, `58da98d` et `b26846a`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Panneau de connexion thématique CoFound
+
+### Modifié
+
+- Recomposition du panneau droit de `LoginPage` selon la référence fournie : fond dégradé, grande card centrale et cards flottantes.
+- Remplacement du contenu générique par des informations liées à CoFound.mg : projets, talents, complémentarité, impact collectif et pseudonymat.
+- Alignement du panneau sur les tokens de couleur et les polices du design system ; aucun asset image ou visuel généré par IA n’a été ajouté.
+- Ajout des traductions françaises et malgaches des cards, avec suppression des doublons i18n détectés pendant la validation.
+- Modifications de code publiées séparément sur `dev` dans les commits `963b825`, `1c35f1d`, `72739eb` et `f33ae9a`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Refonte visuelle de l’écran de connexion
+
+### Modifié
+
+- Harmonisation de `LoginPage` avec `FeedPage` : champs, bouton principal, espacements, rayons, hauteurs et typographie responsive.
+- Remplacement de l’image `auth-hero.webp` par une composition CSS/UI moderne avec fond sombre, grille, repères circulaires et cartes de statistiques.
+- Ajout des libellés français et malgaches du panneau droit dans `i18n.tsx`.
+- Commits publiés séparément sur `dev` : `88b249e` et `29a187f`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Harmonisation visuelle de la page détail projet
+
+### Modifié
+
+- Alignement du layout de `/projects/:id` sur `FeedPage` : largeur, padding, espacements, bouton Retour et panneau sticky.
+- Harmonisation des boutons de `ProjectActionCard` : taille `sm`, hauteur `h-9`, rayon `rounded-lg`, padding, typographie responsive et ombre.
+- Harmonisation de `ProjectTeamCard` : surface, rayon, ombre, titre, avatar et densité des membres.
+- Harmonisation de `ProjectContent` : hiérarchie des titres, tailles de paragraphes, tags, espacements et cartes de rôles.
+- Modifications publiées séparément sur `dev` dans les commits `5ecefc4`, `9109150`, `bb407c6` et `cec3962`.
+
+### Validé
+
+- Typecheck web, lint web, compilation de `@cofound/shared` et build web réussis.
+
+## 2026-08-22 — Correction définitive du panneau sticky du feed
+
+### Modifié
+
+- Retrait de `overflow-x-hidden` sur le parent du panneau dans `FeedPage.tsx`, car cette règle créait un contexte de défilement implicite et empêchait `position: sticky` de suivre le scroll de la page.
+- Conservation de `items-start`, `self-start` et `min-w-0` pour empêcher l’étirement flex et les débordements horizontaux.
+- Correctif publié sur `dev` dans le commit `85041a2`.
+
+### Validé
+
+- Typecheck web et lint web réussis.
+
+## 2026-08-22 — Correction du panneau sticky du feed
+
+### Modifié
+
+- `apps/web/src/pages/FeedPage.tsx` : ajout de `items-start` au conteneur flex des colonnes et de `self-start` au panneau latéral afin d’empêcher son étirement et de permettre à `sticky top-[90px]` de fonctionner correctement.
+
+### En cours
+
+- Validation visuelle à faire dans un navigateur en viewport desktop sur `/feed`.
 
 ### Bloqué
 
-- Le déploiement Vercel Production de main échoue avant le build avec `NOW_SANDBOX_WORKER_ROOTDIR_NOT_EXIST` tant que le réglage Root Directory n’est pas corrigé dans le dashboard.
-- Le service Render doit encore être basculé manuellement de `feat/B-09-team-contact` vers `main`.
+- L’installation complète des dépendances échoue sur la compilation native d’`argon2` faute de compilateur C dans l’environnement ; le typecheck, le lint et le build web ont été validés avec l’installation `--ignore-scripts`.
 
----
+## 2026-08-22 — Audit global du projet
 
-## 2026-08-24 — Intégration Cloudinary des justificatifs B-01
+- Ajout de `audit-global-2026-08-22.md` couvrant les six vagues et les 92 tickets du backlog.
+- État GitHub actualisé : PR ouvertes #73, #74, #75 et #76 ; PR #77 à #81 fusionnées.
+- Validation globale de `dev` réussie pour shared build, génération Prisma, typecheck, lint, tests, builds et budget bundle.
+- Tâches restantes classées par priorité : décision sur le stockage B-01, fusion ordonnée de la Vague 4, recette Neon/staging, seed pseudonymisé, E2E S-09, validations RBAC et revue juridique S-14.
+- `NEXT_SESSION.md` actualisé pour permettre une reprise directe.
 
-### Décidé
+## 2026-08-22 — Vague 4 — validations et blocages traités
 
-- Cloudinary est utilisé comme exception opérationnelle pour les justificatifs B-01, car le compte et le service Render sont disponibles ; R2 reste la cible générale des autres fichiers.
-- Les assets sont téléversés côté API avec le delivery type `authenticated`, car les justificatifs ne doivent pas être accessibles depuis une URL CDN publique.
-- Les secrets Cloudinary restent uniquement dans Render, car Vercel et le frontend sont des environnements publics.
+- Validation correcte des branches B-01, B-02 et de la synthèse B-02 à B-11 après `shared build` et `prisma generate` : 139/139, 145/145 et 157/157 tests API réussis.
+- Typecheck, build web et lint web réussis sur les trois branches.
+- Vérification que le workflow CI applique déjà l’ordre reproductible Prisma puis shared avant les contrôles.
+- Maintien justifié des PR #73, #74 et #75 ouvertes : stockage binaire des justificatifs, migrations Neon et recette partenaire nécessitent encore une décision ou un accès externe.
+- Handoff et audit Vague 4 actualisés sans modifier le backlog officiel.
+
+## 2026-08-22 — Audit — Vague 4
+
+- Ajout de `audit-vague-4-2026-08-22.md` avec l’état B-01 à B-11, les PR #73 à #75, les dépendances et les risques résiduels.
+- Validations locales confirmées : B-01 139/139 tests API, B-02 145/145, branche de synthèse 157/157 ; typecheck, build web et lint réussis après `shared build` et `prisma generate`.
+- Blocages documentés : stockage binaire des justificatifs, migrations Neon, écrans et notifications partenaires, contact unique, pseudonymat RECRUIT et absence de paiement réel.
+- Handoff mis à jour sans modifier le backlog officiel.
+
+## 2026-08-22 — Audit correctif — Vagues 1 à 3
+
+- Ajout de `docs/traceabilite-vagues-1-2-3.md` pour distinguer les PR dédiées, les tickets regroupés et les PR fermées sans fusion, sans modifier le backlog officiel.
+- Mise à jour de `audit-vagues-1-2-3-2026-08-22.md` avec les preuves E-09, le contrôle RBAC existant et les risques restant à confirmer sur staging.
+- Handoff mis à jour avec les validations vertes et les réserves E2E/recette.
+
+## 2026-08-22 — Préparation déploiement staging — Vague 5
+
+- Ajout de `docs/staging-deployment-checklist.md` couvrant les secrets attendus, la configuration serveur, le lancement contrôlé, les contrôles post-déploiement, S-09 E2E et le retour arrière.
+- Le workflow `deploy-staging.yml` a été audité et reste prêt à être déclenché sur `dev` ou manuellement.
+- `gh secret list --env staging` ne trouve actuellement aucun secret ; aucun déploiement réel n’a été lancé.
+- Handoff mis à jour avec les prérequis bloquants et l’interdiction d’ajouter des secrets au dépôt.
+
+## 2026-08-22 — Vague 5 — Clôture technique
+
+- Fusion des PR #79 (S-12), #80 (S-13) et #81 (S-14) dans `dev`, après résolution des conflits de rebase et validations locales réussies.
+- `dev` validée par `git diff --check`, build shared, build web et lint web.
+- Handoff mis à jour avec les réserves S-09 recette et revue juridique S-14.
+
+## 2026-08-22 — S-12 — Audit i18n commencé
 
 ### Ajouté
 
-- Service Cloudinary NestJS avec upload signé, validation des formats et de la taille, nettoyage des assets orphelins et génération d’URLs temporaires.
-- Support multipart sur `POST /api/v1/organization-requests` avec cinq fichiers maximum et 10 Mo par fichier.
-- Route staff `GET /api/v1/staff/organization-requests/:id/documents/:index`, protégée par RBAC, auditée et limitée à une URL de cinq minutes.
-- Upload réel depuis le formulaire B-01 et bouton de consultation depuis `/staff/organizations`.
-- Contrat partagé de réponse d’URL temporaire et variables documentées dans `apps/api/.env.example`.
-- PR #83 : https://github.com/YonniVerse/CoFound.mg/pull/83
-
-### Validation
-
-- **159/159 tests API réussis**.
-- Typechecks, lint, builds shared/API/frontend et `git diff --check` réussis.
-- Tests Cloudinary simulés ; aucun secret ni upload réel n’a été exécuté depuis le sandbox.
-
-### En cours
-
-- La PR #83 doit être revue et fusionnée vers `dev`.
-- Le service Render doit ensuite basculer de `feat/B-09-team-contact` vers `dev`, être redéployé et validé avec un vrai PDF de test.
-- La présence des variables Cloudinary a été déclarée par l’utilisateur dans Render, mais n’est pas vérifiée par l’agent.
-
----
-
-## 2026-08-22 — Progression Vague 4 — B-02 à B-11
-
-### Ajouté
-
-- B-02 : permissions SUPER_ADMIN, file staff, approbation/rejet des demandes, création transactionnelle de l’organisation et du premier `ORG_ADMIN`.
-- B-02 : activation et retrait individuel des capacités avec audit ; `CERTIFY_AFFILIATION` est réservé aux `INSTITUTION`.
-- B-03 : profil public uniquement pour les organisations vérifiées.
-- B-04/B-05 : recherche partenaire de projets par maturité BMC, suivi privé et notes internes avec `ProjectWatch`.
-- B-06/B-07/B-08 : opportunités, candidatures talent/projet et décisions motivées côté partenaire.
-- B-09 : contact unique organisation/projet avec contrainte d’unicité et audit.
-- B-10 : recherche de talents opt-in pseudonymisés pour les organisations ayant `RECRUIT`.
-- B-11 : `PaymentProvider`, provider hors plateforme et création d’engagement `PROPOSED`, sans règlement en ligne.
-- Console UI-49 `/staff/organizations` et contrats partagés correspondants.
+- Clés communes FR/MG pour les actions de feed, les états d’erreur, les filtres de projets et les libellés d’import.
 
 ### Modifié
 
-- Ajout des migrations `ProjectWatch`, `OpportunityApplication.rejectionReason` et `OrganizationProjectContact`.
-- Extension du guard RBAC avec trois permissions réservées à `STAFF/SUPER_ADMIN`.
-- Ajout de la méthode DELETE au client API frontend.
-
-### Validation
-
-- Suite API : **155/155 tests réussis**.
-- Typecheck API, frontend et shared réussi.
-- Lint API/frontend, build frontend, contrôle de bundle et `git diff --check` réussis.
-- Budget JavaScript initial : **65,52 KiB gzip**.
+- `FeedErrorWidget` utilise désormais `useI18n`, y compris pour ses messages par défaut et le code d’erreur affiché.
 
 ### En cours
 
-- PR #75 de synthèse : https://github.com/YonniVerse/CoFound.mg/pull/75
-- Les interfaces partenaires B-03 à B-11 sont maintenant ajoutées : profil, projets, suivi/contact, talents, opportunités, candidatures et proposition financière.
-- Les migrations doivent être appliquées et les flux authentifiés testés dès que le serveur de recette fonctionne.
-- Cloudinary reste en attente ; aucun secret n’a été placé dans le frontend.
+- Migration en cours des chaînes visibles restantes dans les cartes de feed, l’import, les pages métier et les composants marketing.
+- `FeedErrorWidget`, `ProfileCard`, `ProjectCard`, `ProjectsFeedPage`, `ImportMappingPage` et `ImportPreviewPage` utilisent désormais les clés FR/MG dédiées.
+- Les statuts et compteurs de prévisualisation, l’erreur de chargement et les actions de navigation sont traduits.
+- `SectionHero` utilise les clés i18n pour ses appels à l’action d’exploration et d’impact.
+- `TalentCard` utilise les clés i18n pour la promo, la complétion, la biographie, la disponibilité et ses actions.
+- `SectionCTA` et `ApplyModal` utilisent les clés FR/MG pour leurs textes visibles, validations et actions.
+- `Navbar` utilise les clés FR/MG pour les liens, les actions de connexion et les contrôles du menu mobile.
+- La note de sécurité d’`ActivationPage` utilise désormais une clé FR/MG dédiée.
+- `DreamMatchPage` utilise les clés FR/MG pour le consentement, la confirmation et l’action de sauvegarde.
+- `ForgotPasswordPage` et `ResetPasswordPage` utilisent des clés FR/MG dédiées pour leurs notes de sécurité.
+- `MyApplicationsPage` utilise les clés FR/MG pour son en-tête, ses filtres, ses statuts et les informations de candidature.
+- `ProductHealthPage` utilise les clés FR/MG pour l’accès RBAC, l’en-tête, la description, les projets par état et le seuil de confidentialité.
+- `ProjectPostsPage` utilise les clés FR/MG pour les types, les erreurs, le formulaire, les états et les actions du feed projet.
+- Les avertissements de dépendances `t` des hooks de santé produit et de publications ont été corrigés.
+- La notice de confidentialité de `ImportMappingPage` utilise désormais une clé FR/MG dédiée.
+- L’audit anti-chaînes visibles ne relève plus que des faux positifs techniques et les détails internes des métriques de santé à confirmer en revue.
+- Validation build/lint réussie après suppression de la constante de statuts devenue inutilisée et ajout de `t` aux dépendances du hook.
+- Migration des chaînes visibles restantes et ajout d’un contrôle empêchant leur réintroduction encore en cours.
 
 ---
 
-## 2026-08-22 — Interfaces partenaires de la Vague 4
+## 2026-08-22 — S-11 — Passe accessibilité et responsive mobile
 
 ### Ajouté
 
-- Pages frontend `/organizations/:organizationId/profile`, `/projects`, `/talents` et `/opportunities`.
-- Recherche de projets par texte et maturité BMC, suivi privé, note interne et contact unique.
-- Recherche de talents opt-in pseudonymisés.
-- Création/publication d’opportunités, consultation des candidatures, décisions et proposition d’engagement financier hors plateforme.
-- Routes frontend et traductions françaises/malgaches associées.
+- Navigation mobile avec `aria-expanded`, `aria-controls`, cible nommée et rôle de dialogue.
+- Fermeture du menu mobile avec la touche Échap.
+- Anneau global `:focus-visible` pour conserver un focus clavier visible.
+- Respect de `prefers-reduced-motion` pour les animations, transitions et défilements.
 
 ### Validation
 
-- Typecheck API, frontend et shared réussi.
-- Lint API/frontend réussi.
-- Build frontend réussi.
-- Suite API : **155/155 tests réussis**.
-- Budget JavaScript initial : **69,57 KiB gzip**.
-
-### Limites
-
-- La recette authentifiée attend le serveur/API et la base de données disponibles.
-- Cloudinary n’est pas encore raccordé au serveur ; aucune clé secrète n’a été exposée au frontend.
+- `git diff --check` réussi.
+- Build shared et build frontend réussis.
+- Lint frontend réussi.
+- Le chunk analytique demeure différé et reste à 358,03 kB brut / 104,22 kB gzip.
 
 ---
 
-## 2026-08-22 — Implémentation de B-01 — Demande d’accès organisationnel
+## 2026-08-22 — S-10 — Passe de performance frontend
 
 ### Ajouté
 
-- Branche `feat/B-01-organization-request` et PR #73 vers `dev`.
-- Modèle Prisma `OrganizationRequest`, enum de statut et migration `20260822170000_add_organization_requests`.
-- Contrats Zod partagés pour l’entrée, les métadonnées de pièces et la réponse B-01.
-- Endpoint public `POST /api/v1/organization-requests` avec validation, normalisation, détection des doublons actifs et audit.
-- Page publique `/organization-request` en trois étapes avec confirmation et numéro de demande.
-- Liens vers la demande depuis la connexion et le CTA de l’accueil.
-- Traductions françaises et malgaches du parcours B-01.
-- Tests ciblés de création, validation, doublon et métadonnées d’audit.
+- Lazy loading du shell public (`LandingPage`, `ActivationPage`) et du graphique Recharts de la page Impact.
+- Budget Vite fixé à 400 kB brut par chunk, avec cible gzip documentée d’environ 110 kB pour le chunk analytique.
+- Script reproductible `pnpm --filter @cofound/web assets:optimize` pour générer les variantes WebP.
+- Variantes WebP de la CTA et de l’image d’authentification.
 
-### Décidé
+### Modifié
 
-- Les secteurs d’intérêt sont saisis comme libellés publics dans B-01, car le demandeur ne doit pas connaître les identifiants internes des référentiels.
-- Les justificatifs sont limités à cinq fichiers de 10 Mo côté interface ; cette session persiste uniquement leurs métadonnées, car aucun adaptateur R2 n’est encore présent dans le dépôt.
+- Références d’images mises à jour avec `width`, `height`, `loading="lazy"` et `decoding="async"`.
+- Regroupement global de Recharts retiré afin que le module analytique soit chargé uniquement avec sa route.
+- Clés i18n manquantes de l’export de données ajoutées en français et en malgache, ce qui rétablit la compilation frontend de `dev`.
 
 ### Validation
 
-- Suite API : **139/139 tests réussis**.
-- Typecheck API, frontend et shared, lint API/frontend, build frontend et `git diff --check` réussis.
-- Budget JavaScript initial respecté : **60,28 KiB gzip**.
-- `prisma validate` réussi avec une URL PostgreSQL locale temporaire.
+- Build shared réussi.
+- Build frontend réussi sans avertissement de chunk supérieur à 400 kB.
+- Lint frontend réussi.
+
+---
+
+## 2026-08-22 — PR S-07 publiée et socle S-08 initialisé
+
+### Ajouté
+
+- Commit `87b72e3 feat(account): finaliser les statuts de compte` et branche `feat/S-07-account-status` publiés.
+- Pull Request [#71](https://github.com/YonniVerse/CoFound.mg/pull/71) ouverte vers `dev`.
+- Branche `feat/S-08-seed-demo` créée depuis `dev`.
+- Premier script `apps/api/prisma/seed-demo.ts` avec transaction Prisma, idempotence et préfixe `demo-`.
+- Commande API `seed:demo` ajoutée.
+- Jeu de démonstration couvrant institution, partenaire, staff, talent activé, promotion 2026, affiliation, projet et opportunité publiée.
+
+### Validation
+
+- S-07 : typechecks, lint, build, `git diff --check` et tests HTTP 4/4 réussis.
+- S-08 : génération Prisma, typecheck API et lint du seed réussis.
 
 ### En cours
 
-- Revue et fusion de la PR #73.
-- Application de la migration sur Neon et validation authentifiée de l’endpoint.
-- Raccordement ultérieur du stockage binaire R2 et de la consultation staff des pièces.
-- Préparation de B-02 : file staff, décision d’approbation/refus et capacités organisationnelles.
-
----
+- Exécution et rejeu de `seed:demo` sur une base de recette non productive.
+- S-08 n’a pas encore de commit ni de PR.
 
 ## 2026-08-22 — CI staging et initialisation M-14
 
@@ -1116,30 +1524,3 @@ La prochaine chaîne prioritaire est désormais S-01, puis S-02 et S-03. S-04 pe
 
 - Recette Neon avec un vrai compte staff et validation du transport email réel.
 - Préparation de S-05 : console staff d’audit, référentiels et santé produit.
-
-
-## 2026-08-22 — Déploiement backend Render réussi
-
-### Déployé
-
-- Service API `cofound-mg` déployé sur Render depuis `feat/B-09-team-contact`.
-- URL publique : https://cofound-mg.onrender.com.
-- Frontend autorisé par CORS : `https://co-found-mg.vercel.app`.
-- Les huit migrations Prisma ont été appliquées sur Neon.
-
-### Vérifié
-
-- `GET /api/v1/health` répond `HTTP 200` avec `{"status":"ok","database":"ok"}`.
-- Le build utilise pnpm 11.9.0 installé explicitement, sans dépendre de Corepack.
-- Le démarrage applique les migrations Prisma avant `node dist/main.js`.
-
-### Correctifs de déploiement
-
-- Injection NestJS corrigée pour `PrismaService` et `OffPlatformPaymentProvider`.
-- Dépendances `class-validator` et `class-transformer` ajoutées à l’API.
-
-### À faire ensuite
-
-- Renseigner l’URL API Render dans Vercel si ce n’est pas déjà fait.
-- Créer le Background Worker Render pour `node dist/worker.js`.
-- Raccorder Cloudinary côté serveur uniquement lorsque le flux documentaire sera repris.

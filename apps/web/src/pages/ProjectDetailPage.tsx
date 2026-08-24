@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ProjectHeader } from "@/components/project/ProjectHeader";
 import { ProjectContent } from "@/components/project/ProjectContent";
@@ -14,15 +15,17 @@ export default function ProjectDetailPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-5xl mx-auto px-6 sm:px-10 py-8">
+      <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-10 py-8">
         {/* Back Button */}
-        <button 
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground mb-8 transition-colors"
+          className="mb-6 h-9 gap-1.5 rounded-lg px-3.5 text-xs font-medium text-muted-foreground hover:bg-accent hover:text-foreground sm:text-sm"
         >
           <ArrowLeft className="h-4 w-4" />
           Retour
-        </button>
+        </Button>
 
         {isLoading && (
           <div className="flex justify-center items-center py-20 text-muted-foreground font-medium">
@@ -37,16 +40,16 @@ export default function ProjectDetailPage() {
         )}
 
         {!isLoading && !error && project && (
-          <div className="flex flex-col lg:flex-row gap-10">
+          <div className="flex items-start flex-col gap-6 lg:flex-row">
             
             {/* MAIN COLUMN */}
-            <div className="flex-1 space-y-10 animate-in fade-in duration-500">
+            <div className="flex-1 min-w-0 max-w-3xl flex flex-col gap-6 animate-in fade-in duration-500">
               <ProjectHeader project={project} />
               <ProjectContent project={project} />
             </div>
 
             {/* RIGHT SIDEBAR */}
-            <div className="w-full lg:w-[320px] shrink-0 space-y-6 lg:sticky lg:top-[100px] lg:h-fit">
+            <div className="w-full lg:w-[320px] shrink-0 space-y-6 lg:sticky lg:top-[90px] lg:h-fit lg:self-start">
               <ProjectActionCard 
                 project={project} 
                 onApply={applyToProject}

@@ -1,59 +1,40 @@
-# Context Handoff — Reprise de session CoFound.mg
+# Reprise de session
 
-**Dernière mise à jour** : 2026-08-24
-**Phase** : seed multi-comptes et multi-rôles fusionné dans main
-**Branche locale** : `main`
-**État Git** : `main` suit `origin/main` sur le merge de la PR #94 ; le workspace est propre après le commit de ce handoff.
+**Dernière mise à jour** : 2026-08-23
+**Phase** : Ajustement de la carte promotionnelle Dream Match
+**Vague / ticket** : Dream Match / UX design system
+**Branche actuelle** : `dev`
 
-## 1. État courant
+## 1. État actuel
 
-`main` est la branche de livraison. La PR #94 a étendu le seed admin existant aux rôles de plateforme `TALENT`, `ORG_MEMBER` et `STAFF`, avec `SUPER_ADMIN`, `OPS_ADMIN` ou `MODERATOR` pour les comptes staff.
+La carte promotionnelle située à droite du formulaire Dream Match a été légèrement réduite. Sa largeur maximale desktop passe à `max-w-xs`, son padding et ses éléments internes sont plus compacts, tout en conservant la lisibilité du contenu et le sticky desktop. Sur mobile, elle conserve son comportement responsive sous le formulaire.
 
-Le seed est idempotent, séparé du démarrage normal de l’API, et force les comptes seedés à `ACTIVE`. Les mots de passe sont hachés avec Argon2id et ne sont jamais écrits dans les logs, le dépôt ou le frontend.
+`dev` et `origin/dev` sont synchronisés et propres. Le typecheck, le lint, `git diff --check` et le build de production web ont réussi.
 
-## 2. Travail livré cette session
+## 2. Tâches terminées
 
-- Ajout de `platformRole` dans la configuration des comptes.
-- Compatibilité conservée avec `ADMIN_ACCOUNTS_JSON` : une entrée sans `platformRole` crée un compte `STAFF/SUPER_ADMIN`.
-- Ajout de `SEED_ACCOUNTS_JSON` comme variable recommandée pour les configurations multi-rôles.
-- Validation stricte des rôles et refus de `staffRole` sur `TALENT` ou `ORG_MEMBER`.
-- Ajout de `pnpm --filter @cofound/api seed:accounts`, avec maintien de `seed:admin`.
-- Tests unitaires du parsing et documentation Render multi-comptes.
-- PR #94 fusionnée dans `main` après trois contrôles verts : CI, Vercel et Preview Comments.
+- Réduction de la largeur maximale de la publicité.
+- Réduction légère du padding, des cercles décoratifs CSS, de l’icône, des espacements et du titre.
+- Conservation du fond sombre, des tokens primaire/secondaire et du CTA vers `/feed`.
+- Publication du code dans `ef85c6f`.
 
-## 3. Validation
+## 3. Fichiers importants modifiés
 
-Réussis sur la branche fusionnée : `pnpm --filter @cofound/api typecheck`, `pnpm --filter @cofound/api test` avec **177/177 tests**, `pnpm --filter @cofound/api lint` et `git diff --check`.
+- `apps/web/src/pages/DreamMatchPage.tsx` : dimensions et espacements de la carte publicitaire.
+- `NEXT_SESSION.md` et `CHANGELOG.md` : handoff de session.
 
-Aucun nouveau seed réel n’a été exécuté depuis le sandbox. La création de nouveaux comptes nécessite que le propriétaire définisse temporairement `SEED_ACCOUNTS_JSON` comme variable secrète dans Render.
+## 4. Validations et problèmes connus
 
-## 4. Points ouverts
+Les commandes suivantes ont réussi : `pnpm --filter @cofound/web typecheck`, `pnpm --filter @cofound/web lint`, `git diff --check` et `pnpm --filter @cofound/web build`.
 
-Pour créer les comptes souhaités, définir dans Render une variable temporaire `SEED_ACCOUNTS_JSON` contenant la matrice d’adresses, `platformRole`, `staffRole` et mots de passe choisis, puis exécuter :
+Aucun blocage connu. Une vérification visuelle reste recommandée sur desktop et mobile pour confirmer que la carte n’est ni trop étroite ni trop haute selon la langue active.
 
-```bash
-pnpm --filter @cofound/api seed:accounts
-```
+## 5. Prochaine action
 
-Après réussite, supprimer immédiatement `SEED_ACCOUNTS_JSON` et conserver la commande Start normale :
+Ouvrir `/dream-match` en français et en malgache sur desktop et mobile, vérifier la taille de la carte publicitaire et son alignement avec le formulaire, puis ajuster uniquement les classes de `DreamMatchPage.tsx` si nécessaire.
 
-```bash
-pnpm --filter @cofound/api prisma:migrate:deploy && pnpm --filter @cofound/api start
-```
+## 6. Décisions et contexte de reprise
 
-Ne jamais envoyer les mots de passe dans le chat. Tester ensuite les comptes sur `https://co-found-mg.vercel.app/login` avec leurs identifiants conservés côté utilisateur.
+La carte reste une publicité interne construite en CSS et avec les composants existants. La réduction privilégie une largeur desktop `max-w-xs` et des espacements compacts afin de laisser davantage de place au formulaire, sans modifier la logique ou le contenu.
 
-L’issue #90 reste ouverte pour les écrans frontend encore mockés. Le test réel B-01/Cloudinary reste à faire avec des comptes de recette.
-
-## 5. Fichiers importants
-
-- `apps/api/prisma/seed-admin.ts` : exécution du seed multi-comptes.
-- `apps/api/prisma/seed-accounts-config.ts` : parsing, normalisation et validation.
-- `apps/api/test/seed-accounts-config.test.ts` : tests de configuration.
-- `apps/api/package.json` : commandes `seed:accounts` et `seed:admin`.
-- `deploy/README.md` : procédure Render et exemple multi-rôles sans secret réel.
-- `.claude/commands/handoff.md` : workflow obligatoire de reprise/clôture.
-
-## 6. Prochaine action
-
-Définir dans Render la variable secrète temporaire `SEED_ACCOUNTS_JSON` avec la matrice de comptes choisie, exécuter `pnpm --filter @cofound/api seed:accounts`, supprimer la variable, puis vérifier les connexions et `/api/v1/health`.
+Aucun changement d’architecture, de modèle de données, de RBAC ou de périmètre n’a été introduit.

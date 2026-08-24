@@ -1,4 +1,5 @@
 import { UserPlus, Search, Handshake, type LucideIcon } from "lucide-react";
+import { useI18n } from '@/i18n';
 
 interface Step {
   id: string;
@@ -19,6 +20,8 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 export function SectionHowItWorks({ steps }: SectionHowItWorksProps) {
+  const { t } = useI18n()
+  const translate = (key: string) => t(key as Parameters<typeof t>[0])
   return (
     <section id="how-it-works" className="py-24 bg-background border-t border-border/40 relative">
       <div className="max-w-7xl mx-auto px-6">
@@ -26,10 +29,10 @@ export function SectionHowItWorks({ steps }: SectionHowItWorksProps) {
         {/* Header Minimaliste */}
         <div className="text-center max-w-xl mx-auto mb-20">
           <span className="text-[10px] uppercase font-bold tracking-widest text-primary bg-primary-light px-3 py-1 rounded-full">
-            Le Pipeline CoFound
+            {t('landing.how.eyebrow')}
           </span>
           <h2 className="font-sans font-black text-3xl sm:text-4xl text-foreground mt-4 tracking-tight">
-            Du profil solo à la startup prête pour l'incubation
+            {t('landing.how.title')}
           </h2>
         </div>
 
@@ -66,10 +69,10 @@ export function SectionHowItWorks({ steps }: SectionHowItWorksProps) {
 
                 {/* Titre & Description */}
                 <h3 className="font-sans font-bold text-lg text-foreground mb-2 tracking-tight">
-                  {step.title}
+                  {translate(`landing.steps.step-${idx + 1}.title`)}
                 </h3>
                 <p className="text-muted-foreground text-sm leading-relaxed font-normal">
-                  {step.description}
+                  {translate(`landing.steps.step-${idx + 1}.description`)}
                 </p>
               </div>
             );

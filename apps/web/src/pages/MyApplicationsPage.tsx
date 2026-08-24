@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import type { ApplicationStatus } from "@cofound/shared";
+import { useI18n } from "@/i18n";
 
 type ApplicationFilter = "ALL" | ApplicationStatus;
 
@@ -43,9 +44,16 @@ const statusBadges: Record<
 };
 
 export default function MyApplicationsPage() {
+  const { t } = useI18n()
   const { applications, isLoading, withdrawApplication } = useMyApplications();
   const [filter, setFilter] = useState<ApplicationFilter>("ALL");
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
+  const statusLabels: Record<ApplicationStatus, string> = {
+    PENDING: t('applications.pending'),
+    ACCEPTED: t('applications.accepted'),
+    REJECTED: t('applications.rejected'),
+    WITHDRAWN: t('applications.withdrawn'),
+  }
 
   const filteredApplications = applications.filter((app) => {
     if (filter === "ALL") return true;
@@ -69,10 +77,10 @@ export default function MyApplicationsPage() {
           <div>
             <h1 className="font-heading font-bold text-xl sm:text-2xl text-foreground flex items-center gap-2">
               <Briefcase className="h-5 w-5 text-primary" />
-              <span>Mes candidatures</span>
+              <span>{t('applications.title')}</span>
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground font-medium mt-1">
-              Suivez l'état de vos candidatures auprès des porteurs de projet CoFound.mg.
+              {t('applications.subtitle')}
             </p>
           </div>
 
@@ -90,8 +98,8 @@ export default function MyApplicationsPage() {
               const isActive = filter === statusKey;
               const label =
                 statusKey === "ALL"
-                  ? "Toutes"
-                  : statusBadges[statusKey]?.label ?? statusKey;
+                  ? t('applications.all')
+                  : statusLabels[statusKey] ?? statusKey;
 
               return (
                 <button
@@ -148,7 +156,7 @@ export default function MyApplicationsPage() {
                       {app.position && (
                         <div className="flex items-center gap-1.5 text-xs text-primary font-medium pt-0.5">
                           <Sparkles className="h-3 w-3" />
-                          <span>Poste visé : {app.position.title}</span>
+                          <span>{t('applications.targetPosition')}: {app.position.title}</span>
                         </div>
                       )}
                     </div>
@@ -166,7 +174,7 @@ export default function MyApplicationsPage() {
                   <div className="bg-muted/40 p-3.5 rounded-xl border border-border/50 space-y-1">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                       <MessageSquare className="h-3 w-3 text-primary" />
-                      Votre message de candidature
+                      {t('applications.messageLabel')}
                     </span>
                     <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed italic">
                       "{app.message}"
@@ -176,7 +184,7 @@ export default function MyApplicationsPage() {
                   {/* Rejection Reason (if rejected) */}
                   {app.status === "REJECTED" && app.rejectionReason && (
                     <div className="bg-destructive/10 border border-destructive/20 text-destructive text-xs p-3 rounded-xl">
-                      <strong>Motif du refus :</strong> {app.rejectionReason}
+                      <strong>{t('applications.rejectionReason')}:</strong> {app.rejectionReason}
                     </div>
                   )}
 
@@ -184,7 +192,7 @@ export default function MyApplicationsPage() {
                   <div className="flex items-center justify-between gap-4 pt-2 border-t border-border/60">
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
                       <Calendar className="h-3.5 w-3.5 opacity-70" />
-                      <span>Candidaté le {dateStr}</span>
+                      <span>{t('applications.appliedOn')} {dateStr}</span>
                     </div>
 
                     {app.status === "PENDING" && (

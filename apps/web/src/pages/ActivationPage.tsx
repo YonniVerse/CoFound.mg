@@ -324,7 +324,7 @@ export default function ActivationPage() {
           {/* Security Note */}
           <div className="pt-3 border-t border-border flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <ShieldCheck className="h-4 w-4 text-primary shrink-0" />
-            <span>Activation sécurisée par token individuel</span>
+            <span>{t('auth.activation.securityNote')}</span>
           </div>
         </div>
       </main>

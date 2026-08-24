@@ -8,6 +8,7 @@ import { SectionForWho } from "@/components/landing/SectionForWho";
 import { SectionInclusion } from "@/components/landing/SectionInclusion";
 import { SectionTestimonials } from "@/components/landing/SectionTestimonials";
 import { SectionCTA } from "@/components/landing/SectionCTA";
+import { useI18n } from '@/i18n';
 
 interface LandingData {
   stats: { id: string; value: string; label: string }[];
@@ -56,6 +57,7 @@ interface LandingData {
 }
 
 export default function LandingPage() {
+  const { t } = useI18n()
   const [data, setData] = useState<LandingData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -71,7 +73,7 @@ export default function LandingPage() {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-slate-500 font-medium">Chargement...</p>
+          <p className="text-sm text-slate-500 font-medium">{t('common.loading')}</p>
         </div>
       </div>
     );

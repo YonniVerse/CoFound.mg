@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, MessageSquare } from "lucide-react";
 import { ReportButton } from "@/components/shared/ReportButton";
 import { BlockButton } from "@/components/shared/BlockButton";
+import { useI18n } from "@/i18n";
 
 export interface ProfileData {
   id: string;
@@ -17,6 +18,7 @@ export interface ProfileData {
 }
 
 export function ProfileCard({ profile }: { profile: ProfileData }) {
+  const { t } = useI18n()
   return (
     <div className="bg-card border border-border rounded-xl p-5 shadow-2xs hover:border-border/80 transition-all duration-150 flex flex-col gap-3.5 group">
       {/* Header: Avatar, Name, School, Field */}
@@ -36,7 +38,7 @@ export function ProfileCard({ profile }: { profile: ProfileData }) {
               {profile.isFemale && (
                 <span
                   className="h-2 w-2 rounded-full bg-female shrink-0"
-                  title="Profil Féminin"
+                  title={t('common.femaleProfile')}
                 />
               )}
             </div>
@@ -66,7 +68,7 @@ export function ProfileCard({ profile }: { profile: ProfileData }) {
         ))}
         {profile.seeking && (
           <span className="text-[11px] font-medium bg-primary/10 text-primary px-2 py-0.5 rounded-md">
-            Cherche : {profile.seeking}
+            {t('common.seeking')}: {profile.seeking}
           </span>
         )}
       </div>
@@ -79,7 +81,7 @@ export function ProfileCard({ profile }: { profile: ProfileData }) {
           className="h-8 px-3 text-xs font-medium rounded-lg border-border hover:bg-accent cursor-pointer gap-1.5"
         >
           <Eye className="h-3.5 w-3.5" />
-          <span>Profil</span>
+          <span>{t('common.profile')}</span>
         </Button>
         <ReportButton targetType="PROFILE" targetId={profile.id} />
         <BlockButton userId={profile.id} />
@@ -88,7 +90,7 @@ export function ProfileCard({ profile }: { profile: ProfileData }) {
           className="h-8 px-3 text-xs font-medium rounded-lg cursor-pointer gap-1.5"
         >
           <MessageSquare className="h-3.5 w-3.5" />
-          <span>Contacter</span>
+          <span>{t('common.contact')}</span>
         </Button>
       </div>
     </div>

@@ -1,9 +1,11 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { lazy, Suspense } from "react";
 import { ImpactKPIs } from "@/components/impact/ImpactKPIs";
-import { ImpactChart } from "@/components/impact/ImpactChart";
 import { SecurityNotice } from "@/components/impact/SecurityNotice";
 import { SchoolLeaderboard } from "@/components/impact/SchoolLeaderboard";
 import { useImpactData } from "@/hooks/useImpactData";
+
+const ImpactChart = lazy(() => import("@/components/impact/ImpactChart").then(({ ImpactChart: chart }) => ({ default: chart })));
 
 export default function ImpactPage() {
   const { chartData, leaderboard, kpis, isLoading, error } = useImpactData();
@@ -38,7 +40,9 @@ export default function ImpactPage() {
 
             {/* Chart & Sidebar Layout */}
             <div className="flex flex-col lg:flex-row gap-8">
-              <ImpactChart data={chartData} />
+              <Suspense fallback={<div className="flex min-h-80 items-center justify-center rounded-2xl border border-border text-muted-foreground">Chargement du graphique…</div>}>
+                <ImpactChart data={chartData} />
+              </Suspense>
 
               {/* Right Column: Leaderboard & Info */}
               <div className="w-full lg:w-[380px] shrink-0 space-y-6">

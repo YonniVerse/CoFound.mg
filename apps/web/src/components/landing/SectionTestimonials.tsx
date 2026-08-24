@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useI18n } from '@/i18n';
 
 interface Testimonial {
   id: string;
@@ -16,6 +17,8 @@ interface SectionTestimonialsProps {
 }
 
 export function SectionTestimonials({ testimonials }: SectionTestimonialsProps) {
+  const { t } = useI18n();
+  const translate = (key: string) => t(key as Parameters<typeof t>[0])
   const [active, setActive] = useState(0);
 
   const handleNext = React.useCallback(() => {
@@ -53,11 +56,12 @@ export function SectionTestimonials({ testimonials }: SectionTestimonialsProps) 
         
         {/* Header */}
         <div className="text-center max-w-lg mx-auto mb-16">
-          <h2 className="font-sans font-black text-3xl sm:text-4xl text-foreground tracking-tight">
-            Validé par les étudiants fondateurs
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">{t('landing.testimonials.eyebrow')}</p>
+          <h2 className="font-sans font-black text-3xl sm:text-4xl text-foreground tracking-tight mt-3">
+            {t('landing.testimonials.title')}
           </h2>
           <p className="text-base text-muted-foreground mt-3 font-normal">
-            Ils ont rencontré leur moitié business ou technique sur la plateforme.
+            {t('landing.testimonials.body')}
           </p>
         </div>
 
@@ -120,10 +124,10 @@ export function SectionTestimonials({ testimonials }: SectionTestimonialsProps) 
                       {current.name}
                     </h3>
                     <p className="text-sm text-muted-foreground font-medium mt-1">
-                      {current.school} <span className="mx-1">·</span> {current.field}
+                      {current.school} <span className="mx-1">·</span> {translate(`landing.testimonials.${current.id}.field`)}
                     </p>
                     <motion.p className="mt-8 text-lg text-foreground/90 leading-relaxed italic">
-                      "{current.quote}"
+                      "{translate(`landing.testimonials.${current.id}.quote`)}"
                     </motion.p>
                   </div>
                 </motion.div>
@@ -132,14 +136,14 @@ export function SectionTestimonials({ testimonials }: SectionTestimonialsProps) 
               <div className="flex gap-4 pt-10">
                 <button
                   onClick={handlePrev}
-                  aria-label="Témoignage précédent"
+                  aria-label={t('landing.testimonials.previous')}
                   className="group flex h-11 w-11 items-center justify-center rounded-full bg-muted border border-border transition-colors hover:bg-border/60 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 >
                   <ArrowLeft className="h-5 w-5 text-foreground transition-transform duration-300 group-hover:-translate-x-1" />
                 </button>
                 <button
                   onClick={handleNext}
-                  aria-label="Témoignage suivant"
+                  aria-label={t('landing.testimonials.next')}
                   className="group flex h-11 w-11 items-center justify-center rounded-full bg-muted border border-border transition-colors hover:bg-border/60 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 >
                   <ArrowRight className="h-5 w-5 text-foreground transition-transform duration-300 group-hover:translate-x-1" />

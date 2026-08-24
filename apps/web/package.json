@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "pnpm --filter @cofound/shared build && tsc -b && vite build",
+    "assets:optimize": "python3 ../../scripts/optimize-raster-assets.py",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit"
