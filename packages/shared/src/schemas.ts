@@ -676,6 +676,21 @@ export type ProjectPostUpdateInput = z.infer<typeof projectPostUpdateSchema>
 export type ProjectPost = z.infer<typeof projectPostSchema>
 export type ProjectPostsResponse = z.infer<typeof projectPostsResponseSchema>
 
+// ─── Détail projet privé (P-01/P-05) ───────────────────────────────────────────
+export const projectPrivateDetailSchema = z.object({
+  id: idSchema,
+  title: z.string(),
+  pitch: z.string(),
+  status: z.nativeEnum(ProjectStatus),
+  sectorId: idSchema.nullable(),
+  regionId: idSchema.nullable(),
+  createdById: idSchema,
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  members: z.array(z.object({ userId: idSchema, role: projectRoleSchema })),
+})
+export type ProjectPrivateDetail = z.infer<typeof projectPrivateDetailSchema>
+
 // ─── Détail projet public/privé (P-13) ─────────────────────────────────────────
 export const publicProjectDetailSchema = z.object({
   id: idSchema,
