@@ -10,6 +10,29 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-24 — Maintenir la session après expiration du token
+
+### Corrigé
+
+- Le cookie de refresh utilise désormais `SameSite=None; Secure` en production, ce qui permet les requêtes cross-site entre Vercel et Render.
+- Le client HTTP renouvelle automatiquement l’access token après un `401` puis rejoue la requête initiale.
+- Les appels concurrents partagent une seule rotation de refresh token.
+- Une session encore valide est restaurée au chargement de l’application.
+
+### Ajouté
+
+- Tests du format du cookie de refresh en production, en développement et au logout.
+
+### Validation
+
+- Build shared/API/web, typechecks, lint et **181/181 tests API réussis**.
+
+### En cours
+
+- Pousser la branche `fix/auth-session-refresh`, ouvrir une PR vers `main`, puis vérifier le comportement après 15 minutes sur Vercel/Render.
+
+---
+
 ## 2026-08-24 — Corriger le timeout du seed multi-comptes
 
 ### Corrigé
