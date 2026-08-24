@@ -67,9 +67,9 @@ for (const [description, platformRole, permission] of negativeCases) {
 }
 
 test('F-20 — les parcours personnels TALENT ne sont pas accordés aux ORG_MEMBER', () => {
-  assert.equal(PLATFORM_ROLE_PERMISSIONS.TALENT.includes(Permission.TALENT_SELF), true)
-  assert.equal(PLATFORM_ROLE_PERMISSIONS.ORG_MEMBER.includes(Permission.TALENT_SELF), false)
-  assert.equal(PLATFORM_ROLE_PERMISSIONS.STAFF.includes(Permission.TALENT_SELF), false)
+  assert.equal(PLATFORM_ROLE_PERMISSIONS.TALENT?.includes(Permission.TALENT_SELF), true)
+  assert.equal(PLATFORM_ROLE_PERMISSIONS.ORG_MEMBER?.includes(Permission.TALENT_SELF), false)
+  assert.equal(PLATFORM_ROLE_PERMISSIONS.STAFF?.includes(Permission.TALENT_SELF), false)
 
   const talent: Request = { headers: {}, user: { userId: 'talent', platformRole: 'TALENT', status: 'ACTIVE' } }
   const orgAdmin: Request = { headers: {}, user: { userId: 'admin', platformRole: 'ORG_MEMBER', status: 'ACTIVE' } }
