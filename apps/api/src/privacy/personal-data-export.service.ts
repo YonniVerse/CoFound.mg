@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { PersonalDataExportStatus } from '@prisma/client'
 import type { PersonalDataExportRequest } from '@cofound/shared'
-import type { PrismaService } from '../prisma/prisma.service.js'
+import { PrismaService } from '../prisma/prisma.service.js'
 import { AuditService } from '../audit/audit.service.js'
 import { PersonalDataExportQueueService } from './personal-data-export-queue.service.js'
 
