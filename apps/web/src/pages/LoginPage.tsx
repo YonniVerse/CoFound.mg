@@ -273,7 +273,7 @@ export default function LoginPage() {
                     className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.14)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,#000_55%,transparent_100%)] opacity-60"
                 />
 
-                <div className="relative z-10 flex h-full min-h-0 w-full max-w-2xl flex-col px-8 py-10 text-foreground lg:px-14 lg:py-12">
+                <div className="relative z-10 flex h-full min-h-0 w-full max-w-4xl flex-col px-8 py-10 text-foreground lg:px-14 lg:py-12">
                     <div className="flex items-center justify-end text-foreground">
                         <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card shadow-2xs">
                             <Network
