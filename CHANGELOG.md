@@ -10,6 +10,34 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-24 — Étendre le seed aux comptes et rôles de plateforme
+
+### Décidé
+
+- Utiliser `SEED_ACCOUNTS_JSON` pour les nouvelles configurations multi-rôles, tout en conservant `ADMIN_ACCOUNTS_JSON` afin de ne pas casser le seed Render déjà exécuté.
+- Refuser les combinaisons `staffRole` avec `TALENT` ou `ORG_MEMBER`, car les rôles staff ne s’appliquent qu’à `platformRole=STAFF`.
+
+### Ajouté
+
+- Parser partagé `apps/api/prisma/seed-accounts-config.ts` pour normaliser les e-mails, valider les rôles, détecter les doublons et appliquer les valeurs par défaut.
+- Commande `pnpm --filter @cofound/api seed:accounts`, avec maintien de `seed:admin` comme alias compatible.
+- Tests unitaires couvrant les trois rôles de plateforme, les rôles staff, les valeurs par défaut et les erreurs de configuration.
+
+### Modifié
+
+- `seed-admin.ts` crée ou met à jour désormais des comptes `TALENT`, `ORG_MEMBER` et `STAFF`, avec `SUPER_ADMIN`, `OPS_ADMIN` ou `MODERATOR` pour ces derniers.
+- La documentation Render fournit un exemple multi-comptes sans secret réel.
+
+### Validation
+
+- Typecheck API, lint API, suite API **177/177 tests réussis** et `git diff --check`.
+
+### En cours
+
+- Branche `feat/seed-multi-comptes-roles` à pousser et proposer en PR vers `main`, puis exécution réelle avec une variable Render temporaire choisie par le propriétaire.
+
+---
+
 ## 2026-08-24 — Corriger le démarrage Render après le seed admin
 
 ### Ajouté
