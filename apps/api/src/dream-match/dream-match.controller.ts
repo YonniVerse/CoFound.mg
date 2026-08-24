@@ -5,7 +5,7 @@ import { RequirePermissions } from '../rbac/rbac.decorators.js'
 import { DreamMatchService } from './dream-match.service.js'
 
 @Controller('me/dream-match')
-@RequirePermissions(Permission.TALENT_READ)
+@RequirePermissions(Permission.TALENT_SELF)
 export class DreamMatchController {
   constructor(@Inject(DreamMatchService) private readonly dreamMatchService: DreamMatchService) {}
 
