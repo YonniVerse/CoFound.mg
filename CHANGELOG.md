@@ -10,6 +10,32 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-24 — Stabilisation des déploiements Render et Vercel
+
+### Ajouté
+
+- Issue #87 déclarée puis clôturée après correction de l’import runtime de `PrismaService` dans `PersonalDataExportService`.
+- Issue #88 déclarée puis clôturée après ajout de la compilation de `@cofound/shared` avant le build Vite depuis `apps/web`.
+- PR #89 fusionnée dans `main` avec les deux corrections de déploiement.
+
+### Modifié
+
+- Le frontend Vercel conserve `apps/web` comme Root Directory et compile désormais son package partagé avant le build.
+- Le backend Render démarre correctement après résolution de l’injection NestJS et répond HTTP 200 sur `/api/v1/health` avec la base Neon opérationnelle.
+
+### Validation
+
+- CI GitHub de la PR #89 : réussie.
+- Vercel Production sur main : `READY`, déploiement `dpl_CrXZhSkVcSBxvSjizYNZqK4YAreR`, domaine `co-found-mg.vercel.app`.
+- Validation locale : génération Prisma, typechecks, lint, tests API, builds API/frontend et `git diff --check` réussis.
+
+### En cours
+
+- Réaliser un test fonctionnel authentifié B-01/Cloudinary avec des comptes de recette et un petit PDF.
+- Vérifier dans le dashboard Render que le service utilise bien `main` ; son endpoint health est déjà opérationnel.
+
+---
+
 ## 2026-08-24 — Bascule de la livraison complète sur main
 
 ### Décidé
