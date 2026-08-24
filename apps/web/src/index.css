@@ -1,0 +1,146 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/inter";
+@import "@fontsource/sora/400.css";
+@import "@fontsource/sora/600.css";
+@import "@fontsource/sora/700.css";
+@import "@fontsource/sora/800.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* CoFound.mg Design System - Premium High-Contrast Theme (OKLCH) */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.14 0.02 260); /* Slate premium profond */
+  
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.14 0.02 260);
+  
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.14 0.02 260);
+  
+  /* L'Ancre Tech : Bleu/Indigo Électrique stable (Hue 265) */
+  --primary: oklch(0.51 0.25 265); 
+  --primary-foreground: oklch(1 0 0);
+  --primary-dark: oklch(0.42 0.22 265); 
+  --primary-light: oklch(0.97 0.02 265); 
+  
+  /* L'Étincelle Business : Orange Sienne (Hue 45) */
+  --secondary: oklch(0.70 0.20 45); 
+  --secondary-foreground: oklch(1 0 0);
+  --secondary-light: oklch(0.98 0.02 45); 
+  
+  /* Lisibilité et surfaces neutres (Slate) */
+  --muted: oklch(0.98 0.01 255); 
+  --muted-foreground: oklch(0.55 0.03 255); 
+  
+  --accent: oklch(0.96 0.01 255); 
+  --accent-foreground: oklch(0.14 0.02 260);
+  
+  --destructive: oklch(0.63 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
+  
+  /* Bordures et Structures Systèmes */
+  --border: oklch(0.93 0.01 255); 
+  --border-dark: oklch(0.35 0.03 255);
+  --input: oklch(0.93 0.01 255);
+  --ring: oklch(0.51 0.25 265); 
+  
+  --surface: oklch(0.98 0.01 255); 
+  
+  /* Impact Féminin (Hue 300 - Violet net et distinct) */
+  --impact: oklch(0.53 0.26 300);
+  --impact-light: oklch(0.97 0.02 300);
+
+  /* Typographie */
+  --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
+  --font-heading: 'Sora', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --radius: 0.75rem;
+
+  /* Ombres Physiques */
+  --shadow-2xs: 0px 1px 2px 0px rgba(9, 13, 22, 0.02);
+  --shadow-xs: 0px 1px 2px 0px rgba(9, 13, 22, 0.03);
+  --shadow-sm: 0px 2px 4px 0px rgba(9, 13, 22, 0.04);
+  --shadow: 0px 4px 8px -2px rgba(9, 13, 22, 0.06), 0px 2px 4px -1px rgba(9, 13, 22, 0.03);
+  --shadow-md: 0px 12px 16px -4px rgba(9, 13, 22, 0.08), 0px 4px 6px -2px rgba(9, 13, 22, 0.03);
+  --shadow-lg: 0px 20px 24px -4px rgba(9, 13, 22, 0.1), 0px 8px 8px -4px rgba(9, 13, 22, 0.04);
+  --shadow-xl: 0px 32px 48px -12px rgba(9, 13, 22, 0.14);
+  --shadow-2xl: 0px 44px 64px -18px rgba(9, 13, 22, 0.18);
+
+  --tracking-normal: -0.015em;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-light: var(--primary-light);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-light: var(--secondary-light);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-border-dark: var(--border-dark);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-surface: var(--surface);
+  --color-impact: var(--impact);
+  --color-impact-light: var(--impact-light);
+
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) * 1.5);
+  --radius-3xl: calc(var(--radius) * 2);
+
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+
+  --tracking-tighter: -0.04em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: var(--tracking-normal);
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+}
+
+@layer base {
+  * {
+    @apply border-border/80 outline-ring/40;
+  }
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary-light selection:text-primary-dark;
+    letter-spacing: var(--tracking-normal);
+  }
+  html {
+    @apply font-sans scroll-smooth;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
+  }
+}

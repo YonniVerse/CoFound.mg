@@ -1,0 +1,29 @@
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
+const prefix = 'recette-'
+
+async function seedRecette() {
+  await prisma.$transaction(async (tx) => {
+    const staff = await tx.user.upsert({ where: { email: `${prefix}staff@cofound.mg` }, update: { status: 'ACTIVE', platformRole: 'STAFF', staffRole: 'SUPER_ADMIN', activatedAt: new Date('2026-01-01T00:00:00.000Z') }, create: { email: `${prefix}staff@cofound.mg`, status: 'ACTIVE', platformRole: 'STAFF', staffRole: 'SUPER_ADMIN', activatedAt: new Date('2026-01-01T00:00:00.000Z') } })
+    const talent = await tx.user.upsert({ where: { email: `${prefix}talent@cofound.mg` }, update: { status: 'ACTIVE', platformRole: 'TALENT', activatedAt: new Date('2026-01-02T00:00:00.000Z') }, create: { email: `${prefix}talent@cofound.mg`, status: 'ACTIVE', platformRole: 'TALENT', activatedAt: new Date('2026-01-02T00:00:00.000Z') } })
+    const invited = await tx.user.upsert({ where: { email: `${prefix}invited@cofound.mg` }, update: { status: 'INVITED', platformRole: 'TALENT', activatedAt: null }, create: { email: `${prefix}invited@cofound.mg`, status: 'INVITED', platformRole: 'TALENT' } })
+    const field = await tx.field.upsert({ where: { slug: `${prefix}informatique` }, update: { labelKey: 'recette.field.informatique', isActive: true }, create: { slug: `${prefix}informatique`, labelKey: 'recette.field.informatique', sortOrder: 900 } })
+    const sector = await tx.sector.upsert({ where: { slug: `${prefix}education` }, update: { labelKey: 'recette.sector.education', isActive: true }, create: { slug: `${prefix}education`, labelKey: 'recette.sector.education', sortOrder: 900 } })
+    const skill = await tx.skill.upsert({ where: { slug: `${prefix}coordination` }, update: { labelKey: 'recette.skill.coordination', isActive: true }, create: { slug: `${prefix}coordination`, labelKey: 'recette.skill.coordination', sortOrder: 900 } })
+    const region = await tx.region.upsert({ where: { slug: `${prefix}analamanga` }, update: { labelKey: 'recette.region.analamanga', isActive: true }, create: { slug: `${prefix}analamanga`, labelKey: 'recette.region.analamanga', countryCode: 'MG' } })
+    const profile = await tx.talentProfile.upsert({ where: { userId: talent.id }, update: { pseudonym: `${prefix}pseudonyme`, fieldId: field.id, completion: 80, visibleInTalentFeed: true }, create: { userId: talent.id, pseudonym: `${prefix}pseudonyme`, avatarSeed: `${prefix}avatar`, fieldId: field.id, completion: 80, visibleInTalentFeed: true, onboardingStep: 6 } })
+    await tx.talentIdentity.upsert({ where: { userId: talent.id }, update: { firstName: 'Recette', lastName: 'Test', regionId: region.id }, create: { userId: talent.id, firstName: 'Recette', lastName: 'Test', regionId: region.id } })
+    await tx.talentSkill.upsert({ where: { talentId_skillId: { talentId: profile.id, skillId: skill.id } }, update: { level: 2 }, create: { talentId: profile.id, skillId: skill.id, level: 2 } })
+    const organization = await tx.organization.upsert({ where: { id: `${prefix}organisation` }, update: { name: 'Organisation de recette', verificationStatus: 'VERIFIED' }, create: { id: `${prefix}organisation`, name: 'Organisation de recette', type: 'INSTITUTION', verificationStatus: 'VERIFIED' } })
+    await tx.affiliation.upsert({ where: { userId_organizationId: { userId: talent.id, organizationId: organization.id } }, update: { status: 'ACTIVE', isCertifying: true }, create: { userId: talent.id, organizationId: organization.id, status: 'ACTIVE', isCertifying: true, fieldId: field.id } })
+    const project = await tx.project.upsert({ where: { id: `${prefix}projet` }, update: { title: 'Projet de recette', status: 'RECRUITING', sectorId: sector.id, regionId: region.id }, create: { id: `${prefix}projet`, title: 'Projet de recette', pitch: 'Projet de validation du parcours candidat.', status: 'RECRUITING', createdById: staff.id, sectorId: sector.id, regionId: region.id, publishedAt: new Date('2026-01-03T00:00:00.000Z') } })
+    await tx.application.upsert({ where: { id: `${prefix}candidature` }, update: { status: 'PENDING', projectId: project.id, applicantId: talent.id }, create: { id: `${prefix}candidature`, projectId: project.id, applicantId: talent.id, message: 'Candidature de recette.' } })
+    await tx.report.upsert({ where: { id: `${prefix}signalement` }, update: { status: 'OPEN', reporterId: talent.id, targetType: 'project', targetId: project.id }, create: { id: `${prefix}signalement`, reporterId: talent.id, targetType: 'project', targetId: project.id, reason: 'SPAM', description: 'Signalement de recette.', status: 'OPEN' } })
+    const batch = await tx.importBatch.upsert({ where: { id: `${prefix}import` }, update: { status: 'APPLIED', totalRows: 1, createdRows: 1, errorRows: 0 }, create: { id: `${prefix}import`, organizationId: organization.id, uploadedById: staff.id, fileKey: `${prefix}import.csv`, status: 'APPLIED', totalRows: 1, createdRows: 1 } })
+    await tx.importRow.upsert({ where: { batchId_lineNumber: { batchId: batch.id, lineNumber: 1 } }, update: { normalizedEmail: invited.email, result: 'CREATED', userId: invited.id }, create: { batchId: batch.id, lineNumber: 1, raw: { email: invited.email }, normalizedEmail: invited.email, result: 'CREATED', userId: invited.id } })
+    await tx.invitationToken.upsert({ where: { tokenHash: `${prefix}token-hash` }, update: { userId: invited.id, importBatchId: batch.id, expiresAt: new Date('2030-01-01T00:00:00.000Z'), usedAt: null }, create: { userId: invited.id, importBatchId: batch.id, tokenHash: `${prefix}token-hash`, expiresAt: new Date('2030-01-01T00:00:00.000Z') } })
+  })
+  console.log('Seed de recette idempotent terminé : données préfixées recette-.')
+}
+seedRecette().catch((error: unknown) => { console.error(error); process.exitCode = 1 }).finally(() => prisma.$disconnect())

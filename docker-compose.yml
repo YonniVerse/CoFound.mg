@@ -1,0 +1,91 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: cofound
+      POSTGRES_USER: cofound
+      POSTGRES_PASSWORD: cofound_local
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cofound -d cofound"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    image: node:22-alpine
+    working_dir: /workspace
+    volumes:
+      - .:/workspace:ro
+      - workspace_node_modules:/workspace/node_modules
+      - api_node_modules:/workspace/apps/api/node_modules
+      - api_dist:/workspace/apps/api/dist
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://cofound:cofound_local@postgres:5432/cofound
+    command:
+      - sh
+      - -c
+      - corepack enable && pnpm install --frozen-lockfile && pnpm --filter @cofound/shared build && pnpm --filter @cofound/api prisma:migrate:deploy && pnpm --filter @cofound/api prisma:generate && pnpm --filter @cofound/api build && pnpm --filter @cofound/api start
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/v1/health >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  worker:
+    image: node:22-alpine
+    working_dir: /workspace
+    volumes:
+      - .:/workspace:ro
+      - workspace_node_modules:/workspace/node_modules
+      - api_node_modules:/workspace/apps/api/node_modules
+      - api_dist:/workspace/apps/api/dist
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://cofound:cofound_local@postgres:5432/cofound
+    command:
+      - sh
+      - -c
+      - corepack enable && pnpm install --frozen-lockfile && pnpm --filter @cofound/shared build && pnpm --filter @cofound/api build && pnpm --filter @cofound/api start:worker
+    depends_on:
+      api:
+        condition: service_healthy
+
+  web:
+    image: node:22-alpine
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - workspace_node_modules:/workspace/node_modules
+      - web_node_modules:/workspace/apps/web/node_modules
+      - shared_node_modules:/workspace/packages/shared/node_modules
+    environment:
+      NODE_ENV: development
+      VITE_API_URL: http://localhost:3000/api/v1
+    command:
+      - sh
+      - -c
+      - corepack enable && pnpm install --frozen-lockfile && pnpm --filter @cofound/shared build && pnpm --filter @cofound/web dev --host 0.0.0.0
+    ports:
+      - "5173:5173"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  workspace_node_modules:
+  web_node_modules:
+  shared_node_modules:
+  api_node_modules:
+  api_dist:
