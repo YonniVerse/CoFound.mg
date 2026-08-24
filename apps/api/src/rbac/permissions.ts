@@ -14,6 +14,9 @@ export const Permission = {
   ORGANIZATION_REQUEST_READ: 'organization-request:read',
   ORGANIZATION_REQUEST_MANAGE: 'organization-request:manage',
   ORGANIZATION_CAPABILITY_MANAGE: 'organization-capability:manage',
+  AUDIT_READ: 'audit:read',
+  REFERENCE_DATA_MANAGE: 'reference-data:manage',
+  PRODUCT_HEALTH_READ: 'product-health:read',
 } as const
 
 export type Permission = (typeof Permission)[keyof typeof Permission]
@@ -29,5 +32,5 @@ export const PLATFORM_ROLE_PERMISSIONS: Record<string, readonly Permission[]> = 
     Permission.MESSAGE_SEND,
   ],
   ORG_MEMBER: [Permission.TALENT_READ, Permission.PROJECT_READ, Permission.ORG_READ],
-  STAFF: [Permission.TALENT_READ, Permission.PROJECT_READ, Permission.ORG_READ, Permission.MODERATION_READ],
+  STAFF: [Permission.TALENT_READ, Permission.PROJECT_READ, Permission.ORG_READ, Permission.MODERATION_READ, Permission.AUDIT_READ],
 }

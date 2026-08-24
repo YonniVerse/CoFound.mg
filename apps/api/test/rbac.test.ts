@@ -68,6 +68,22 @@ test('B-02 — seul SUPER_ADMIN peut consulter et gérer les organisations', () 
   assert.throws(() => permissionGuard.canActivate(contextFor(opsAdmin, [Permission.ORGANIZATION_REQUEST_READ])), ForbiddenException)
 })
 
+test('S-05 — SUPER_ADMIN gère les référentiels', () => {
+  const request: Request = { headers: {}, user: { userId: 'staff', platformRole: 'STAFF', status: 'ACTIVE', staffRole: 'SUPER_ADMIN' } }
+  assert.equal(permissionGuard.canActivate(contextFor(request, [Permission.REFERENCE_DATA_MANAGE])), true)
+})
+
+test('S-05 — OPS_ADMIN lit la santé produit', () => {
+  const request: Request = { headers: {}, user: { userId: 'ops', platformRole: 'STAFF', status: 'ACTIVE', staffRole: 'OPS_ADMIN' } }
+  assert.equal(permissionGuard.canActivate(contextFor(request, [Permission.PRODUCT_HEALTH_READ])), true)
+})
+
+test('S-05 — MODERATOR ne gère pas les référentiels ni la santé produit', () => {
+  const request: Request = { headers: {}, user: { userId: 'moderator', platformRole: 'STAFF', status: 'ACTIVE', staffRole: 'MODERATOR' } }
+  assert.throws(() => permissionGuard.canActivate(contextFor(request, [Permission.REFERENCE_DATA_MANAGE])), ForbiddenException)
+  assert.throws(() => permissionGuard.canActivate(contextFor(request, [Permission.PRODUCT_HEALTH_READ])), ForbiddenException)
+})
+
 test('F-19 — une route protégée sans Bearer est refusée', async () => {
   const accessGuard = new AccessTokenGuard(new Reflector())
   await assert.rejects(

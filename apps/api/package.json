@@ -16,7 +16,9 @@
     "prisma:generate": "prisma generate --schema prisma/schema.prisma",
     "prisma:migrate:deploy": "prisma migrate deploy --schema prisma/schema.prisma",
     "prisma:migrate:diff": "prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script",
-    "seed:reference": "tsx prisma/seed-reference.ts"
+    "seed:reference": "tsx prisma/seed-reference.ts",
+    "seed:recette": "tsx prisma/seed-recette.ts",
+    "seed:demo": "tsx prisma/seed-demo.ts"
   },
   "dependencies": {
     "@cofound/shared": "workspace:*",

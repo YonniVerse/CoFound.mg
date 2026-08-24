@@ -1,5 +1,7 @@
-import { lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { lazy, Suspense, useEffect, type ReactNode } from "react";
+import { BrowserRouter, Routes, Route, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { accountStatusResponseSchema } from '@cofound/shared'
+import { apiClient } from '@/lib/api-client'
 import LandingPage from "@/pages/LandingPage";
 import OrganizationRequestPage from "@/pages/OrganizationRequestPage";
 import StaffOrganizationsPage from "@/pages/StaffOrganizationsPage";
@@ -19,6 +21,7 @@ const ProjectDetailPage = lazy(() => import("@/pages/ProjectDetailPage"));
 const ProjectCreatePage = lazy(() => import("@/pages/ProjectCreatePage"));
 const ImpactPage = lazy(() => import("@/pages/ImpactPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
+const AccountStatusPage = lazy(() => import("@/pages/AccountStatusPage"));
 const ImportMappingPage = lazy(() => import("@/pages/ImportMappingPage"));
 const ImportPreviewPage = lazy(() => import("@/pages/ImportPreviewPage"));
 const ImportBatchesPage = lazy(() => import("@/pages/ImportBatchesPage"));
@@ -35,6 +38,9 @@ const ProjectChannelPage = lazy(() => import("@/pages/ProjectChannelPage"));
 const MessagesPage = lazy(() => import("@/pages/MessagesPage"));
 const NotificationsPage = lazy(() => import("@/pages/NotificationsPage"));
 const ModerationQueuePage = lazy(() => import("@/pages/ModerationQueuePage"));
+const AuditLogPage = lazy(() => import("@/pages/AuditLogPage"));
+const ReferenceDataPage = lazy(() => import("@/pages/ReferenceDataPage"));
+const ProductHealthPage = lazy(() => import("@/pages/ProductHealthPage"));
 const ProjectExportPage = lazy(() => import("@/pages/ProjectExportPage"));
 const ProjectPublicPage = lazy(() => import("@/pages/ProjectPublicPage"));
 const SearchPage = lazy(() => import("@/pages/SearchPage"));
@@ -46,8 +52,22 @@ const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
 const LayoutWrapper = () => <MainLayout><Outlet /></MainLayout>;
 const Loading = () => <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">Chargement…</div>;
 
+function AccountStatusBoundary({ children }: { children: ReactNode }) {
+  const location = useLocation()
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (location.pathname === '/account-status') return
+    let mounted = true
+    void apiClient.get('/me/status', accountStatusResponseSchema).then((status) => {
+      if (mounted && status.status === 'FROZEN') navigate('/account-status', { replace: true })
+    }).catch(() => undefined)
+    return () => { mounted = false }
+  }, [location.pathname, navigate])
+  return <>{children}</>
+}
+
 function App() {
-  return <AuthProvider><BrowserRouter><Suspense fallback={<Loading />}><Routes>
+  return <AuthProvider><BrowserRouter><AccountStatusBoundary><Suspense fallback={<Loading />}><Routes>
     <Route element={<LayoutWrapper />}><Route path="/" element={<LandingPage />} /></Route>
     <Route path="/login" element={<LoginPage />} />
     <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -88,9 +108,13 @@ function App() {
     <Route path="/messages" element={<MessagesPage />} />
     <Route path="/notifications" element={<NotificationsPage />} />
     <Route path="/moderation" element={<ModerationQueuePage />} />
+    <Route path="/staff/audit" element={<AuditLogPage />} />
+    <Route path="/staff/reference-data" element={<ReferenceDataPage />} />
+    <Route path="/staff/health" element={<ProductHealthPage />} />
     <Route path="/profile/me" element={<OnboardingPage />} />
     <Route path="/settings" element={<SettingsPage />} />
-  </Routes></Suspense></BrowserRouter></AuthProvider>;
+    <Route path="/account-status" element={<AccountStatusPage />} />
+  </Routes></Suspense></AccountStatusBoundary></BrowserRouter></AuthProvider>;
 }
 
 export default App;

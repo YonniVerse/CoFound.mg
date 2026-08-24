@@ -13,6 +13,11 @@
     "check:bundle": "node scripts/check-bundle-size.mjs",
     "lint": "pnpm --recursive lint",
     "test": "pnpm --recursive test",
-    "typecheck": "pnpm --recursive typecheck"
+    "typecheck": "pnpm --recursive typecheck",
+    "e2e": "playwright test",
+    "e2e:list": "playwright test --list"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0"
   }
 }
