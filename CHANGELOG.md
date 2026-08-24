@@ -10,6 +10,19 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-24 — Fusionner le seed multi-comptes et multi-rôles
+
+### Modifié
+
+- La PR #94 est fusionnée dans `main` après réussite de la CI, du déploiement Vercel et de Preview Comments.
+- La fonctionnalité de seed multi-comptes est désormais disponible sur la branche de livraison.
+
+### En cours
+
+- Exécuter le seed réel dans Render avec la matrice de comptes choisie par le propriétaire, puis supprimer la variable secrète temporaire.
+
+---
+
 ## 2026-08-24 — Étendre le seed aux comptes et rôles de plateforme
 
 ### Décidé
