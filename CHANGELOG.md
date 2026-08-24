@@ -10,6 +10,40 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-24 — Recette Playwright du rôle Talent et raccordement du détail projet
+
+### Décidé
+
+- Conserver les corrections sur `fix/talent-recipe-findings` et ne pas modifier `main`, car la recette a révélé plusieurs écarts entre les déploiements et le code source.
+- Déclarer explicitement `TALENT_READ` sur `/me/status`, car le refus par défaut rendait le statut personnel inaccessible au frontend et bloquait l’onboarding.
+
+### Ajouté
+
+- Rapport de recette Playwright `docs/recette-talent-2026-08-24.md`.
+- Régression RBAC vérifiant la permission déclarée par `AccountStatusController`.
+
+### Modifié
+
+- Le détail projet frontend charge désormais les données privées et les postes ouverts via l’API réelle au lieu de `MOCK_PROJECT_DETAIL`.
+- La candidature du détail projet envoie désormais `POST /applications` avec le projet, le poste optionnel et le message.
+- Les composants du détail projet affichent le pitch, le statut, les postes et les membres reçus par l’API.
+
+### Validation
+
+- Build shared, typecheck/lint/build web, `git diff --check` et tests API ciblés : **19/19 réussis**.
+- La suite API globale reste partiellement bloquée par des erreurs Prisma préexistantes dans l’environnement local : 132 tests passent, 17 échouent.
+
+### En cours
+
+- Les scénarios TAL-003, TAL-005 et TAL-007 à TAL-013 restent à conclure après réalignement du frontend Vercel et de l’API Render.
+
+### Bloqué
+
+- Production : `/me/status` répond 403 et `/projects/feed` ainsi que `/talents/feed` répondent 404.
+- Preview `fix/bugs-main-audit` : appels Render bloqués par CORS, car seule l’origine `https://co-found-mg.vercel.app` est autorisée.
+
+---
+
 ## 2026-08-24 — Maintenir la session après expiration du token
 
 ### Corrigé

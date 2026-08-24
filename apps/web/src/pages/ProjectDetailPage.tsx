@@ -55,7 +55,7 @@ export default function ProjectDetailPage() {
                 onApply={applyToProject}
                 isApplying={isApplying}
               />
-              <ProjectTeamCard team={project.team} />
+              <ProjectTeamCard team={project.members} />
             </div>
 
           </div>
