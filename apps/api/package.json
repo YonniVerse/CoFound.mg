@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "predev": "pnpm run prisma:generate",
+    "predev": "pnpm --filter @cofound/shared run build && pnpm run prisma:generate",
     "dev": "tsx watch src/main.ts",
     "lint": "eslint src prisma test --ext .ts",
     "start": "node dist/main.js",
