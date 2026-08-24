@@ -10,6 +10,37 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-24 — Intégration Cloudinary des justificatifs B-01
+
+### Décidé
+
+- Cloudinary est utilisé comme exception opérationnelle pour les justificatifs B-01, car le compte et le service Render sont disponibles ; R2 reste la cible générale des autres fichiers.
+- Les assets sont téléversés côté API avec le delivery type `authenticated`, car les justificatifs ne doivent pas être accessibles depuis une URL CDN publique.
+- Les secrets Cloudinary restent uniquement dans Render, car Vercel et le frontend sont des environnements publics.
+
+### Ajouté
+
+- Service Cloudinary NestJS avec upload signé, validation des formats et de la taille, nettoyage des assets orphelins et génération d’URLs temporaires.
+- Support multipart sur `POST /api/v1/organization-requests` avec cinq fichiers maximum et 10 Mo par fichier.
+- Route staff `GET /api/v1/staff/organization-requests/:id/documents/:index`, protégée par RBAC, auditée et limitée à une URL de cinq minutes.
+- Upload réel depuis le formulaire B-01 et bouton de consultation depuis `/staff/organizations`.
+- Contrat partagé de réponse d’URL temporaire et variables documentées dans `apps/api/.env.example`.
+- PR #83 : https://github.com/YonniVerse/CoFound.mg/pull/83
+
+### Validation
+
+- **159/159 tests API réussis**.
+- Typechecks, lint, builds shared/API/frontend et `git diff --check` réussis.
+- Tests Cloudinary simulés ; aucun secret ni upload réel n’a été exécuté depuis le sandbox.
+
+### En cours
+
+- La PR #83 doit être revue et fusionnée vers `dev`.
+- Le service Render doit ensuite basculer de `feat/B-09-team-contact` vers `dev`, être redéployé et validé avec un vrai PDF de test.
+- La présence des variables Cloudinary a été déclarée par l’utilisateur dans Render, mais n’est pas vérifiée par l’agent.
+
+---
+
 ## 2026-08-22 — Progression Vague 4 — B-02 à B-11
 
 ### Ajouté
