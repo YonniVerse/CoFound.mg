@@ -10,6 +10,30 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-24 — Corriger le démarrage Render après le seed admin
+
+### Ajouté
+
+- PR #93 fusionnée dans `main` après correction des imports runtime de `PrismaService` dans Account Status, Product Health et Reference Data.
+
+### Modifié
+
+- Le crash NestJS `UnknownDependenciesException` sur `AccountStatusService` est corrigé ; les services utilisent désormais le token runtime `PrismaService`.
+- La procédure Render revient au Start Command normal après l’exécution ponctuelle du seed admin.
+
+### Validation
+
+- Le log Render confirme que les migrations étaient à jour et que le seed a créé deux comptes : `yonnidebian@gmail.com` en `SUPER_ADMIN` et `yoniubuntu@gmail.com` en `OPS_ADMIN`.
+- Validation locale : build shared, Prisma generate, typecheck API, lint API, build API, 173 tests API réussis et aucun import type de `PrismaService` restant dans `apps/api/src`.
+- L’API répond HTTP 200 sur `/api/v1/health` après le déploiement observé.
+
+### En cours
+
+- Restaurer le Start Command normal dans Render et vérifier que le dernier déploiement de `main` est Live.
+- Supprimer `ADMIN_ACCOUNTS_JSON` de Render et tester la connexion des comptes administrateurs.
+
+---
+
 ## 2026-08-24 — Préparer le seed des comptes administrateurs
 
 ### Décidé
