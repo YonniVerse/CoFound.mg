@@ -90,3 +90,37 @@ test('B-01 annote la route de création avec un audit organisationnel', () => {
     { action: 'ORGANIZATION_REQUEST_CREATE', targetType: 'OrganizationRequest' },
   )
 })
+
+
+test('B-12 téléverse les fichiers avant de persister leurs références Cloudinary', async () => {
+  let createArgs: { data: Record<string, unknown> } | undefined
+  const prisma = {
+    organizationRequest: {
+      findFirst: async () => null,
+      create: async (args: { data: Record<string, unknown> }) => {
+        createArgs = args
+        return createdRequest
+      },
+    },
+  } as unknown as PrismaService
+  const cloudinary = {
+    uploadDocuments: async () => [{
+      fileName: 'registre.pdf',
+      contentType: 'application/pdf',
+      sizeBytes: 42_000,
+      cloudinaryPublicId: 'cofound/request-1/registre',
+      cloudinaryResourceType: 'raw' as const,
+      cloudinaryDeliveryType: 'authenticated' as const,
+      cloudinaryFormat: 'pdf',
+      cloudinaryAssetId: 'asset-1',
+      cloudinaryVersion: 1,
+    }],
+  }
+  await new OrganizationRequestService(prisma, cloudinary as never).create(input, [{
+    originalname: 'registre.pdf',
+    mimetype: 'application/pdf',
+    size: 42_000,
+    buffer: Buffer.from('pdf'),
+  }])
+  assert.deepEqual(createArgs?.data.supportingDocuments, await cloudinary.uploadDocuments())
+})

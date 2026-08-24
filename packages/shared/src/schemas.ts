@@ -147,6 +147,11 @@ export const organizationRequestResponseSchema = z.object({
   status: organizationRequestStatusSchema,
   receivedAt: z.coerce.date(),
 })
+export const organizationRequestDocumentUrlSchema = z.object({
+  fileName: z.string().min(1),
+  url: z.string().url(),
+  expiresAt: z.coerce.date(),
+})
 export type OrganizationRequestInput = z.infer<typeof organizationRequestInputSchema>
 export type OrganizationRequestResponse = z.infer<typeof organizationRequestResponseSchema>
 
