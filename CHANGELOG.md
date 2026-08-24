@@ -10,6 +10,32 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-24 — Préparer le seed des comptes administrateurs
+
+### Décidé
+
+- Le seed admin est une commande ponctuelle séparée du démarrage Render, afin de ne pas réinitialiser les mots de passe à chaque redéploiement.
+- Les mots de passe sont fournis temporairement via une variable Render et hachés avec Argon2id, car aucun secret ne doit être commité ou exposé au frontend.
+
+### Ajouté
+
+- `apps/api/prisma/seed-admin.ts` avec validation des e-mails, mots de passe, rôles et détection des doublons.
+- Script `pnpm --filter @cofound/api seed:admin`.
+- Procédure et exemple `ADMIN_ACCOUNTS_JSON` dans `deploy/README.md`.
+- PR #92 fusionnée dans `main`.
+
+### Validation
+
+- Prisma validate et generate réussis avec une URL locale fictive, sans connexion à Neon.
+- Typecheck API, lint API et `git diff --check` réussis.
+- CI GitHub et contrôles Vercel de la PR #92 réussis.
+
+### En cours
+
+- Exécuter le seed dans Render après choix des e-mails et mots de passe par le propriétaire.
+
+---
+
 ## 2026-08-24 — Supprimer le compte fictif et fiabiliser le feed production
 
 ### Décidé

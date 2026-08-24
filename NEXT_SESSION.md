@@ -1,49 +1,46 @@
 # Context Handoff — Reprise de session CoFound.mg
 
 **Dernière mise à jour** : 2026-08-24
-**Phase** : `main` livré ; correction session/feed déployée
+**Phase** : `main` livré ; seed admin prêt, exécution Render en attente
 **Branche locale** : `main`
-**État Git** : `main` suit `origin/main` sur le merge de la PR #91 ; workspace à revérifier après la mise à jour de ce fichier.
+**État Git** : `main` suit `origin/main` sur le merge de la PR #92 ; workspace à revérifier après la mise à jour de ce fichier.
 
 ## 1. État courant
 
-`main` est la branche de livraison. La PR #86 a intégré dev, la Vague 4, Cloudinary B-12 et S-05 à S-09. La PR #89 a corrigé les déploiements Render/Vercel. La PR #91 a corrigé le faux compte affiché dans le layout et le feed qui ignorait les résultats API.
+`main` est la branche de livraison. Les PR #86, #89 et #91 ont intégré la migration main, les corrections de déploiement et le correctif session/feed. La PR #92 a ajouté le seed des comptes administrateurs.
 
-Render répond sur `https://cofound-mg.onrender.com/api/v1/health` avec HTTP 200 et `{"status":"ok","database":"ok"}`. Vercel Production suit `main`, Root Directory `apps/web`, et le dernier déploiement du merge #91 est `READY` (`dpl_5fzeyFYFqhqP8KkQejG1juV9FHAw`).
+Render répond sur `https://cofound-mg.onrender.com/api/v1/health` avec HTTP 200 et `{"status":"ok","database":"ok"}`. Vercel Production suit `main`, Root Directory `apps/web`, et le dernier déploiement vérifié avant le merge #92 était `READY`. Le merge #92 déclenchera un nouveau build frontend sans modification de code frontend.
 
 ## 2. Travail livré cette session
 
-- Audit des sources frontend : landing statique via `landing.json`, Impact via `mockImpact`, détail/candidature projet via `fetchMock`, suggestions via `mockFeed`, aperçu d’import avec `SAMPLE_PREVIEW` dans certains cas.
-- Création de l’issue #90 pour raccorder les écrans encore mockés à l’API réelle.
-- PR #91 fusionnée dans `main`.
-- `DashboardLayout` ne montre plus `Mialy Randria / ISCAM` en dur ; il charge `/me/profile`, affiche l’identité réelle si elle existe et propose la déconnexion.
-- Les pages utilisant `DashboardLayout` redirigent vers `/login` lorsqu’aucune session authentifiée n’existe.
-- Le compteur fictif de messages `3` a été retiré.
-- Le feed affiche les projets renvoyés par `/projects/feed` ; les fallbacks mockés du feed projets, talents et suggestions sont limités au développement local.
+- Audit du modèle `User` : email unique, `passwordHash` optionnel, `status`, `platformRole`, `staffRole`, `activatedAt`.
+- Ajout de `apps/api/prisma/seed-admin.ts`.
+- Ajout de `pnpm --filter @cofound/api seed:admin`.
+- Seed idempotent : crée ou met à jour les comptes par e-mail, les active et leur attribue `platformRole=STAFF` avec `SUPER_ADMIN`, `OPS_ADMIN` ou `MODERATOR`.
+- Mots de passe hachés avec Argon2id ; aucun mot de passe n’est écrit dans les logs ou le dépôt.
+- Documentation de l’exécution ponctuelle dans `deploy/README.md`.
+- PR #92 fusionnée dans `main` avec CI, Vercel et Preview Comments réussis.
 
 ## 3. Validation
 
-Validation locale réussie après la PR #91 : build `@cofound/shared`, typecheck frontend, lint frontend, build frontend et `git diff --check`.
-
-Les contrôles GitHub de la PR #91 sont verts : CI workspace, Vercel et Vercel Preview Comments. Le domaine `https://co-found-mg.vercel.app/` répond HTTP 200. Le backend Render reste opérationnel.
+Réussis localement avec une `DATABASE_URL` fictive uniquement pour les commandes Prisma : `prisma validate`, `prisma generate`, typecheck API, lint API et `git diff --check`. Aucun seed n’a été exécuté depuis le sandbox, car aucune `DATABASE_URL` Neon n’y est disponible.
 
 ## 4. Points ouverts
 
-L’issue #90 reste ouverte. Les écrans suivants affichent encore des données statiques ou des fallback de démonstration : Impact, détail et candidature projet, suggestions, et aperçu d’import sans identifiant. La landing statique est du contenu éditorial et ne doit pas nécessairement être remplacée par Neon.
+L’exécution réelle du seed Render est en attente des adresses e-mail des comptes administrateurs et des mots de passe choisis par le propriétaire. Les mots de passe ne doivent pas être envoyés dans la conversation.
 
-Le test fonctionnel réel B-01/Cloudinary reste à faire avec un compte demandeur, un compte staff et un petit PDF. Les secrets Cloudinary restent uniquement dans Render.
+Dans Render, ajouter temporairement la variable secrète `ADMIN_ACCOUNTS_JSON` au service Web API, puis exécuter `pnpm --filter @cofound/api seed:admin` depuis le Shell Render. Supprimer ensuite cette variable. Le seed n’est volontairement pas appelé au démarrage de l’API, afin de ne pas réinitialiser les mots de passe à chaque déploiement.
 
-La persistance volontaire de session n’est pas activée au chargement : le frontend ne restaure plus automatiquement un refresh cookie, afin qu’une visite publique ne présente pas un compte déjà connecté. Une authentification doit être initiée explicitement depuis `/login`.
+L’issue #90 reste ouverte pour les écrans frontend encore mockés. Le test réel B-01/Cloudinary reste également à faire avec des comptes de recette.
 
 ## 5. Fichiers importants
 
-- `apps/web/src/components/layout/DashboardLayout.tsx` : identité réelle, guard local et déconnexion.
-- `apps/web/src/hooks/useFeedData.ts` : projets API et fallback développement.
-- `apps/web/src/hooks/useTalentFeedData.ts` : talents API et fallback développement.
-- `apps/web/src/pages/FeedPage.tsx` : rendu des cartes projets API.
-- `apps/web/src/hooks/useAuth.tsx` : état de session en mémoire.
-- `apps/web/src/data/impactApi.ts`, `apps/web/src/data/projectApi.ts`, `apps/web/src/pages/ImportPreviewPage.tsx` : zones encore mockées suivies par #90.
+- `apps/api/prisma/seed-admin.ts` : validation, hash Argon2id et upsert des admins.
+- `apps/api/package.json` : script `seed:admin` et lint de tous les scripts Prisma.
+- `deploy/README.md` : procédure Render et exemple de `ADMIN_ACCOUNTS_JSON`.
+- `apps/api/src/auth/auth.service.ts` : vérification du hash et connexion.
+- `.claude/commands/handoff.md` : workflow obligatoire de reprise/clôture.
 
 ## 6. Prochaine action
 
-Traiter l’issue #90 en commençant par remplacer `getProjectById` et `submitProjectApplication` dans `apps/web/src/data/projectApi.ts` par les endpoints API réels, puis ajouter les tests et états empty/error correspondants avant de poursuivre Impact.
+Renseigner temporairement `ADMIN_ACCOUNTS_JSON` dans Render avec les e-mails et mots de passe choisis, exécuter `pnpm --filter @cofound/api seed:admin`, supprimer la variable, puis tester `https://co-found-mg.vercel.app/login` avec un compte `SUPER_ADMIN`.
