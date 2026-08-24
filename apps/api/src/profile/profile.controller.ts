@@ -5,7 +5,7 @@ import { RequirePermissions } from '../rbac/rbac.decorators.js'
 import { ProfileService } from './profile.service.js'
 
 @Controller('me/profile')
-@RequirePermissions(Permission.TALENT_READ)
+@RequirePermissions(Permission.TALENT_SELF)
 export class ProfileController {
   constructor(@Inject(ProfileService) private readonly profileService: ProfileService) {}
 
@@ -21,7 +21,7 @@ export class ProfileController {
 }
 
 @Controller('me/identity')
-@RequirePermissions(Permission.TALENT_READ)
+@RequirePermissions(Permission.TALENT_SELF)
 export class ProfileIdentityController {
   constructor(@Inject(ProfileService) private readonly profileService: ProfileService) {}
   @Get()
