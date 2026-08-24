@@ -86,3 +86,32 @@ pnpm --filter @cofound/api prisma:migrate:deploy && pnpm --filter @cofound/api s
 ```
 
 Configurer le health check sur `/api/v1/health`, fournir `DATABASE_URL` avec la chaîne Neon complète, et définir `CORS_ORIGIN` sur l’origine Vercel exacte. Le fichier `deploy/api.Dockerfile` installe également pnpm explicitement afin d’éviter la même dépendance à Corepack dans le build Docker.
+
+## Initialisation des comptes administrateurs
+
+Le seed admin est volontairement séparé du démarrage de l’API afin de ne pas modifier les mots de passe à chaque redéploiement. Il est idempotent : les utilisateurs portant les mêmes adresses sont mis à jour et les autres sont créés.
+
+Dans Render, ajouter temporairement la variable secrète `ADMIN_ACCOUNTS_JSON` au service Web API. Sa valeur est un tableau JSON contenant les adresses et les mots de passe choisis par le propriétaire du projet :
+
+```json
+[
+  {
+    "email": "admin@votre-domaine.mg",
+    "password": "un-mot-de-passe-aleatoire-d-au-moins-12-caracteres",
+    "staffRole": "SUPER_ADMIN",
+    "locale": "fr"
+  }
+]
+```
+
+Les rôles acceptés sont `SUPER_ADMIN`, `OPS_ADMIN` et `MODERATOR`. Exécuter ensuite une fois la commande suivante depuis le Shell Render, ou via une commande ponctuelle équivalente dans l’environnement API :
+
+```bash
+pnpm --filter @cofound/api seed:admin
+```
+
+Le script hache les mots de passe avec Argon2id et crée les comptes avec `status=ACTIVE` et `platformRole=STAFF`. Après la réussite du seed, supprimer `ADMIN_ACCOUNTS_JSON` de Render ou la désactiver, car le mot de passe en clair ne doit pas rester dans les variables d’environnement à long terme. Le hash reste uniquement dans la base ; il n’est jamais écrit dans les logs.
+
+Ne jamais ajouter `ADMIN_ACCOUNTS_JSON` dans Vercel, le frontend ou Git. Pour une deuxième exécution volontaire, recréer temporairement la variable avec les mots de passe souhaités.
+
+Le script est disponible dans `apps/api/prisma/seed-admin.ts` et la commande dans `apps/api/package.json` sous `seed:admin`.
