@@ -18,6 +18,8 @@ export function useFeedData() {
   const [search, setSearch] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<ProjectStatus | "ALL">(ProjectStatus.RECRUITING);
 
+  const allowMockFallback = import.meta.env.DEV;
+
   const fetchProjects = useCallback(async (query: ProjectFeedQuery, isLoadMore = false) => {
     try {
       if (isLoadMore) {
@@ -45,18 +47,20 @@ export function useFeedData() {
       setNextCursor(response.nextCursor);
       setHasMore(response.hasMore);
     } catch {
-      // Fallback to mock data if API is unavailable during offline / mock dev mode
       if (!isLoadMore) {
-        const feedRes = await getFeedItems();
-        if (feedRes.success) {
-          setFeedItems(feedRes.data);
+        if (allowMockFallback) {
+          const feedRes = await getFeedItems();
+          if (feedRes.success) setFeedItems(feedRes.data);
+        } else {
+          setApiProjects([]);
+          setError('Le flux des projets est temporairement indisponible.');
         }
       }
     } finally {
       setIsLoading(false);
       setIsLoadingMore(false);
     }
-  }, []);
+  }, [allowMockFallback]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -70,14 +74,11 @@ export function useFeedData() {
   }, [fetchProjects, selectedStatus, search]);
 
   useEffect(() => {
+    if (!allowMockFallback) return;
     getSuggestedProfiles().then((res) => {
-      if (res.success) {
-        setSuggestedProfiles(res.data);
-      }
-    }).catch(() => {
-      // ignore mock error
-    });
-  }, []);
+      if (res.success) setSuggestedProfiles(res.data);
+    }).catch(() => undefined);
+  }, [allowMockFallback]);
 
   const loadMore = useCallback(() => {
     if (!nextCursor || isLoadingMore) return;
