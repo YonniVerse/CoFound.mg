@@ -268,7 +268,7 @@ Une réponse HTTP 200 de la page frontend ne prouve pas l’autorisation : l’A
 
 ## 14. Bugs suspectés / Audit code
 
-Les points suivants ont été relevés par lecture statique et doivent être confirmés par les scénarios indiqués. Aucun fichier de code applicatif n’a été modifié pendant cet audit.
+Les points suivants ont été relevés par lecture statique et doivent être confirmés par les scénarios indiqués. Les éléments marqués comme corrigés ont été reproduits par un test automatisé puis publiés sur `fix/bugs-main-audit`.
 
 | ID | Niveau à confirmer | Fichier / ligne | Observation | Test de confirmation |
 |---|---|---|---|---|
@@ -282,6 +282,7 @@ Les points suivants ont été relevés par lecture statique et doivent être con
 | BUG-AUDIT-008 | Moyen — cohérence de statut | `apps/api/src/rbac/access-token.guard.ts:34-40` | Le statut extrait du JWT est injecté dans la requête mais le guard de permission ne semble pas refuser explicitement les statuts non actifs. La restriction est peut-être déléguée aux services, à `/me/status` ou au frontend, ce qui risque de créer des écarts entre routes. | STA-001 à STA-004 : tester chaque statut sur chaque famille de route en lecture et écriture. |
 | BUG-AUDIT-009 | Faible à moyen — UX/sécurité | `apps/web/src/App.tsx:55-66` | `AccountStatusBoundary` appelle `/me/status` sur chaque changement de route et ignore silencieusement les erreurs réseau. En cas de panne, l’utilisateur peut voir des pages protégées sans indication claire de l’état de vérification. | SEC-005, SEC-009 et test avec API indisponible pendant une navigation. |
 | BUG-AUDIT-010 | Moyen — exposition de données | `apps/api/src/organization-request/opportunity.service.ts:38-42` | La liste des candidatures d’opportunité renvoie `applicantId` et le message ; il faut confirmer que la réponse respecte la pseudonymisation et les droits du partenaire, surtout avant décision. | ADM-007, MGR-002 et VIEW-002 avec candidature TALENT et PROJECT. |
+| BUG-AUDIT-011 | Élevé — escalade de privilèges — corrigé | `apps/api/src/institution/institution-members.service.ts:30-37` | Un `ORG_MANAGER` pouvait promouvoir un membre vers `ORG_ADMIN`, car le service vérifiait le rôle du membre mais pas la capacité de l’acteur à attribuer le rôle administrateur. Correction : toute promotion vers `ORG_ADMIN` est désormais refusée pour `ORG_MANAGER`. | MGR-006 et `apps/api/test/organization-members.test.ts`. |
 
 ## 15. Critères de sortie
 
