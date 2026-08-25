@@ -105,7 +105,7 @@ test('E-08 expose les routes, permissions et audits attendus', () => {
   assert.equal(Reflect.getMetadata(ROUTE_PATH_METADATA, prototype.cancel), ':id/cancel')
   assert.equal(Reflect.getMetadata(ROUTE_PATH_METADATA, prototype.resendInvitations), ':id/resend-invitations')
   assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, prototype.list), ['org:read'])
-  assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, prototype.cancel), ['org:manage'])
+  assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, prototype.cancel), ['org:read'])
   assert.deepEqual(Reflect.getMetadata(AUDIT_ACTION_KEY, prototype.cancel), { action: 'IMPORT_CANCEL', targetType: 'ImportBatch' })
   assert.deepEqual(Reflect.getMetadata(AUDIT_ACTION_KEY, prototype.resendInvitations), { action: 'IMPORT_RESEND_INVITATIONS', targetType: 'ImportBatch' })
 })

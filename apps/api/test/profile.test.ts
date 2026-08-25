@@ -101,6 +101,6 @@ test('E-12 rejette les référentiels inactifs avant toute écriture', async () 
   assert.equal(sectorDeps.state.creates, 0)
 })
 
-test('E-12 expose les endpoints privés avec la permission talent:read', () => {
-  assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, ProfileController), [Permission.TALENT_READ])
+test('E-12 expose les endpoints privés avec la permission talent:self', () => {
+  assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, ProfileController), [Permission.TALENT_SELF])
 })

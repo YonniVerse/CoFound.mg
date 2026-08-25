@@ -5,7 +5,7 @@ import { RequirePermissions } from '../rbac/rbac.decorators.js'
 import { OnboardingService } from './onboarding.service.js'
 
 @Controller('me/onboarding')
-@RequirePermissions(Permission.TALENT_READ)
+@RequirePermissions(Permission.TALENT_SELF)
 export class OnboardingController {
   constructor(@Inject(OnboardingService) private readonly onboardingService: OnboardingService) {}
   @Get()

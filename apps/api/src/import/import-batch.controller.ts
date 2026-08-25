@@ -22,7 +22,7 @@ export class ImportBatchController {
   }
 
   @Post(':id/cancel')
-  @RequirePermissions(Permission.ORG_MANAGE)
+  @RequirePermissions(Permission.ORG_READ)
   @AuditAction('IMPORT_CANCEL', 'ImportBatch')
   async cancel(@Param('id') id: string, @Body() body: unknown, @Req() request: AuthenticatedRequest) {
     const confirmation = typeof body === 'object' && body !== null && 'confirmation' in body && typeof body.confirmation === 'string' ? body.confirmation : ''
@@ -30,14 +30,14 @@ export class ImportBatchController {
   }
 
   @Post(':id/activation-links')
-  @RequirePermissions(Permission.ORG_MANAGE)
+  @RequirePermissions(Permission.ORG_READ)
   @AuditAction('IMPORT_ACTIVATION_LINKS', 'ImportBatch')
   async activationLinks(@Param('id') id: string, @Req() request: AuthenticatedRequest) {
     return this.importBatchService.activationLinks(id, request.user!.userId)
   }
 
   @Post(':id/resend-invitations')
-  @RequirePermissions(Permission.ORG_MANAGE)
+  @RequirePermissions(Permission.ORG_READ)
   @AuditAction('IMPORT_RESEND_INVITATIONS', 'ImportBatch')
   async resendInvitations(@Param('id') id: string, @Req() request: AuthenticatedRequest) {
     return this.importBatchService.resendInvitations(id, request.user!.userId)

@@ -17,21 +17,21 @@ export class InstitutionMembersController {
   }
 
   @Post()
-  @RequirePermissions(Permission.ORG_MANAGE)
+  @RequirePermissions(Permission.ORG_READ)
   @AuditAction('ORGANIZATION_MEMBER_INVITE', 'OrganizationMember')
   invite(@Param('organizationId') organizationId: string, @Body() body: unknown, @Req() request: AuthenticatedRequest) {
     return this.membersService.invite(organizationId, request.user!.userId, institutionMemberInviteSchema.parse(body))
   }
 
   @Patch(':id')
-  @RequirePermissions(Permission.ORG_MANAGE)
+  @RequirePermissions(Permission.ORG_READ)
   @AuditAction('ORGANIZATION_MEMBER_ROLE_UPDATE', 'OrganizationMember')
   update(@Param('organizationId') organizationId: string, @Param('id') id: string, @Body() body: unknown, @Req() request: AuthenticatedRequest) {
     return this.membersService.update(organizationId, id, request.user!.userId, institutionMemberUpdateSchema.parse(body))
   }
 
   @Delete(':id')
-  @RequirePermissions(Permission.ORG_MANAGE)
+  @RequirePermissions(Permission.ORG_READ)
   @AuditAction('ORGANIZATION_MEMBER_REMOVE', 'OrganizationMember')
   remove(@Param('organizationId') organizationId: string, @Param('id') id: string, @Req() request: AuthenticatedRequest) {
     return this.membersService.remove(organizationId, id, request.user!.userId)

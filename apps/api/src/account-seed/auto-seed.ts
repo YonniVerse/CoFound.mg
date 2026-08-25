@@ -1,6 +1,5 @@
 import type { PrismaService } from '../prisma/prisma.service.js'
 import { readSeedAccounts } from './seed-accounts-config.js'
-import { upsertSeedAccounts } from './seed-accounts.js'
 
 const ENABLED_VALUE = 'true'
 
@@ -15,6 +14,7 @@ export async function runAutoSeed(prisma: PrismaService, env: NodeJS.ProcessEnv 
   if (!isAutoSeedEnabled(env)) return
 
   const accounts = readSeedAccounts(env)
+  const { upsertSeedAccounts } = await import('./seed-accounts.js')
   await upsertSeedAccounts(prisma, accounts)
 
   const count = accounts.length

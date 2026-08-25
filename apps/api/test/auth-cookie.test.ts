@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { serializeExpiredRefreshCookie, serializeRefreshCookie } from '../src/auth/auth.controller.js'
+import { serializeExpiredRefreshCookie, serializeRefreshCookie } from '../src/auth/auth-cookie.js'
 
 test('le cookie de refresh est cross-site et sécurisé en production', () => {
   const expiresAt = new Date('2026-09-01T12:00:00.000Z')

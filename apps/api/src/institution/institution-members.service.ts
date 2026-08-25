@@ -28,7 +28,10 @@ export class InstitutionMembersService {
   }
 
   async update(organizationId: string, memberId: string, actorId: string, input: InstitutionMemberUpdate) {
-    await this.assertManager(organizationId, actorId, true)
+    const actor = await this.assertManager(organizationId, actorId, true)
+    if (actor.role === OrganizationRole.ORG_MANAGER && input.role === OrganizationRole.ORG_ADMIN) {
+      throw new ForbiddenException('Seul un administrateur peut attribuer le rôle ORG_ADMIN.')
+    }
     const member = await this.findMember(organizationId, memberId)
     if (member.role === OrganizationRole.ORG_ADMIN && input.role !== OrganizationRole.ORG_ADMIN) await this.assertNotLastAdmin(organizationId)
     return this.prisma.organizationMember.update({ where: { id: memberId }, data: { role: input.role as OrganizationRole }, include: { user: { select: { id: true, email: true, status: true } } } }).then((updated) => ({ id: updated.id, userId: updated.user.id, email: updated.user.email, status: updated.user.status, role: updated.role, createdAt: updated.createdAt }))

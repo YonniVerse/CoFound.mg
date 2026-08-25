@@ -12,7 +12,7 @@ export class OpportunityService {
   }
 
   async listForOrganization(actorId: string, organizationId: string) {
-    await this.assertCapability(actorId, organizationId, 'PUBLISH_OPPORTUNITY')
+    await this.assertOrganizationReader(actorId, organizationId)
     return this.prisma.opportunity.findMany({ where: { organizationId }, orderBy: { createdAt: 'desc' }, select: this.opportunitySelect() })
   }
 
@@ -62,6 +62,11 @@ export class OpportunityService {
     const updated = await this.prisma.opportunityApplication.update({ where: { id: applicationId }, data: { status: parsed.data.status, rejectionReason: parsed.data.status === 'REJECTED' ? parsed.data.rejectionReason : null }, select: { id: true, opportunityId: true, applicantType: true, applicantId: true, message: true, status: true, rejectionReason: true, createdAt: true } })
     await this.audit.record({ actorId, action: 'OPPORTUNITY_APPLICATION_DECIDED', targetType: 'OpportunityApplication', targetId: applicationId, metadata: { organizationId, status: parsed.data.status } })
     return updated
+  }
+
+  private async assertOrganizationReader(actorId: string, organizationId: string) {
+    const membership = await this.prisma.organizationMember.findUnique({ where: { organizationId_userId: { organizationId, userId: actorId } }, select: { user: { select: { status: true } }, role: true } })
+    if (!membership || membership.user.status !== 'ACTIVE' || !['ORG_ADMIN', 'ORG_MANAGER', 'ORG_VIEWER'].includes(membership.role)) throw new ForbiddenException({ code: 'ORGANIZATION_READ_REQUIRED', messageKey: 'errors.forbidden' })
   }
 
   private async assertCapability(actorId: string, organizationId: string, capability: string) {
