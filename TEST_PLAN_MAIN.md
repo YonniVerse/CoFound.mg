@@ -201,8 +201,8 @@ Une réponse HTTP 200 de la page frontend ne prouve pas l’autorisation : l’A
 | VIEW-002 | Lecture projet/opportunité | Consulter projets, talents, opportunités et candidatures accessibles | Lecture seulement ; données privées non exposées | Succès |
 | VIEW-003 | Écriture membres | Inviter, modifier et supprimer un membre | HTTP 403 ; aucun changement persistant | Succès |
 | VIEW-004 | Écriture opportunités | Créer, publier ou décider une candidature malgré `ORG_READ` | Refus par contrôle de capacité/rôle manager | Succès |
-| VIEW-005 | Imports et affiliations | Créer/apply un import et modifier une affiliation | Refus ; les écrans affichent un état interdit cohérent | À tester |
-| VIEW-006 | Capacité et staff | Accorder/reti rer une capacité, accéder audit/référence/santé | 403 partout | À tester |
+| VIEW-005 | Imports et affiliations | Créer/apply un import et modifier une affiliation | Refus ; les écrans affichent un état interdit cohérent | Succès |
+| VIEW-006 | Capacité et staff | Accorder/reti rer une capacité, accéder audit/référence/santé | 403 partout | Succès |
 | VIEW-007 | Changement de rôle | Faire promouvoir le viewer par un admin, reconnecter puis retester | Nouvelles permissions actives après émission de token selon contrat ; ancien token contrôlé | À tester |
 
 ## 9. Rôle STAFF — MODERATOR
