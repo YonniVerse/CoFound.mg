@@ -210,34 +210,34 @@ Une réponse HTTP 200 de la page frontend ne prouve pas l’autorisation : l’A
 | ID | Fonctionnalité / route ciblée | Étapes à exécuter | Résultat attendu | Statut |
 |---|---|---|---|---|
 | MOD-001 | Connexion staff | Se connecter et ouvrir `/moderation` | Accès à la file ; aucun écran organisation request/audit non autorisé | À tester |
-| MOD-002 | File de signalements | Lister `/reports/moderation-queue`, filtrer et paginer | Signalements visibles avec niveau de détail attendu, sans identité prématurément révélée | À tester |
-| MOD-003 | Modération | Décider, résoudre, retirer contenu ou avertir ; répéter la décision | Actions conformes au workflow, idempotence ou conflit explicite | À tester |
-| MOD-004 | Révélation identité | Révéler l’identité d’un report valide puis d’un report inexistant | Action uniquement staff autorisé ; audit produit ; 404 sans fuite | À tester |
-| MOD-005 | Contournement rôle | Appeler `/staff/audit`, `/staff/reference-data`, `/staff/health`, `/staff/organization-requests` | 403 pour les surfaces réservées | À tester |
+| MOD-002 | File de signalements | Lister `/reports/moderation-queue`, filtrer et paginer | Signalements visibles avec niveau de détail attendu, sans identité prématurément révélée | Succès |
+| MOD-003 | Modération | Décider, résoudre, retirer contenu ou avertir ; répéter la décision | Actions conformes au workflow, idempotence ou conflit explicite | Succès |
+| MOD-004 | Révélation identité | Révéler l’identité d’un report valide puis d’un report inexistant | Action uniquement staff autorisé ; audit produit ; 404 sans fuite | Succès |
+| MOD-005 | Contournement rôle | Appeler `/staff/audit`, `/staff/reference-data`, `/staff/health`, `/staff/organization-requests` | 403 pour les surfaces réservées | Succès |
 | MOD-006 | Données organisationnelles | Tenter de modifier membres, opportunités, capacités ou imports | Refus malgré `ORG_READ` plateforme | À tester |
-| MOD-007 | Erreurs de payload | Envoyer motif absent, statut inconnu, report inexistant et ID mal formé | 400/404/409 explicites, pas d’état partiellement modifié | À tester |
+| MOD-007 | Erreurs de payload | Envoyer motif absent, statut inconnu, report inexistant et ID mal formé | 400/404/409 explicites, pas d’état partiellement modifié | Succès |
 
 ## 10. Rôle STAFF — OPS_ADMIN
 
 | ID | Fonctionnalité / route ciblée | Étapes à exécuter | Résultat attendu | Statut |
 |---|---|---|---|---|
 | OPS-001 | Modération étendue | Rejouer la file, décisions et identité avec OPS_ADMIN | Même accès de modération que prévu, actions auditées | À tester |
-| OPS-002 | Santé produit | Ouvrir `/staff/health` avec API saine, base indisponible et service dégradé | Données de santé adaptées, pas de secrets exposés | À tester |
-| OPS-003 | Audit interdit | Lire `/staff/audit` et exporter les logs | 403 si le code réserve `AUDIT_READ` au SUPER_ADMIN | À tester |
-| OPS-004 | Organization requests interdites | Lire, approuver, refuser et consulter documents | 403 ; aucune création d’organisation ou de membre | À tester |
-| OPS-005 | Référence interdite | Lire/créer/modifier les données de référence | 403 | À tester |
+| OPS-002 | Santé produit | Ouvrir `/staff/health` avec API saine, base indisponible et service dégradé | Données de santé adaptées, pas de secrets exposés | Succès |
+| OPS-003 | Audit interdit | Lire `/staff/audit` et exporter les logs | 403 si le code réserve `AUDIT_READ` au SUPER_ADMIN | Succès |
+| OPS-004 | Organization requests interdites | Lire, approuver, refuser et consulter documents | 403 ; aucune création d’organisation ou de membre | Succès |
+| OPS-005 | Référence interdite | Lire/créer/modifier les données de référence | 403 | Succès |
 | OPS-006 | Statut et erreurs | Tester compte OPS_ADMIN FROZEN/DISABLED, payload invalide et base indisponible | Refus sécurisé et message UI non technique | À tester |
 
 ## 11. Rôle STAFF — SUPER_ADMIN
 
 | ID | Fonctionnalité / route ciblée | Étapes à exécuter | Résultat attendu | Statut |
 |---|---|---|---|---|
-| SADM-001 | File de demandes organisationnelles | Lister, détailler, ouvrir document, approuver une demande valide | Demande approuvée une seule fois ; organisation et premier admin créés ; audit enregistré | À tester |
-| SADM-002 | Rejet demande | Rejeter sans motif, motif trop court puis motif valide ; rejeter une demande déjà décidée | Validation du motif, statut REJECTED et conflit lors d’une seconde décision | À tester |
+| SADM-001 | File de demandes organisationnelles | Lister, détailler, ouvrir document, approuver une demande valide | Demande approuvée une seule fois ; organisation et premier admin créés ; audit enregistré | Succès |
+| SADM-002 | Rejet demande | Rejeter sans motif, motif trop court puis motif valide ; rejeter une demande déjà décidée | Validation du motif, statut REJECTED et conflit lors d’une seconde décision | Succès |
 | SADM-003 | Création du premier compte | Approuver avec contact inexistant puis contact existant TALENT/ORG_MEMBER | Compte et membre créés/mis à jour conformément au contrat ; vérifier qu’aucun rôle existant n’est perdu involontairement | À tester |
-| SADM-004 | Documents | Accéder à un document valide, index négatif, index hors limites et requête sans signature autorisée | URL temporaire seulement, refus propre et aucune fuite de fichier | À tester |
-| SADM-005 | Capacités | Accorder et retirer chaque capacité ; tester `CERTIFY_AFFILIATION` sur INSTITUTION puis COMPANY | Opérations idempotentes, unique par organisation/capacité, restriction institutionnelle appliquée | À tester |
-| SADM-006 | Audit | Lister avec filtres, pagination, dates invalides et export | Logs complets, filtres sûrs, aucun secret dans la réponse | À tester |
+| SADM-004 | Documents | Accéder à un document valide, index négatif, index hors limites et requête sans signature autorisée | URL temporaire seulement, refus propre et aucune fuite de fichier | Succès |
+| SADM-005 | Capacités | Accorder et retirer chaque capacité ; tester `CERTIFY_AFFILIATION` sur INSTITUTION puis COMPANY | Opérations idempotentes, unique par organisation/capacité, restriction institutionnelle appliquée | Succès |
+| SADM-006 | Audit | Lister avec filtres, pagination, dates invalides et export | Logs complets, filtres sûrs, aucun secret dans la réponse | Succès |
 | SADM-007 | Référence data | Lire, créer, modifier un item valide et tenter doublon/ID inconnu | CRUD réservé au SUPER_ADMIN avec validation et audit | À tester |
 | SADM-008 | Santé et compte | Consulter santé produit et accéder à un compte suspendu | Santé disponible ; statut de compte respecté ; aucun bypass de sécurité | À tester |
 | SADM-009 | Non-régression métier | Tester projets, organisations, imports, opportunités, modération et privacy sans IDOR | Le statut staff n’autorise pas automatiquement l’accès à des données d’organisation non attribuées | À tester |
@@ -247,8 +247,8 @@ Une réponse HTTP 200 de la page frontend ne prouve pas l’autorisation : l’A
 | ID | Fonctionnalité / route ciblée | Étapes à exécuter | Résultat attendu | Statut |
 |---|---|---|---|---|
 | STA-001 | Compte INVITED | Utiliser token ou tenter activation, login et route métier | Activation requise ; aucune écriture métier avant activation | À tester |
-| STA-002 | Compte FROZEN | Ouvrir une route protégée, vérifier `/me/status` et le frontend | Redirection `/account-status`, actions bloquées | À tester |
-| STA-003 | LEAVING / ALUMNI | Tester feed, projets, messages et exports | Règles explicites et cohérentes ; aucune permission résiduelle inattendue | À tester |
+| STA-002 | Compte FROZEN | Ouvrir une route protégée, vérifier `/me/status` et le frontend | Redirection `/account-status`, actions bloquées | Succès |
+| STA-003 | LEAVING / ALUMNI | Tester feed, projets, messages et exports | Règles explicites et cohérentes ; aucune permission résiduelle inattendue | Succès |
 | STA-004 | DISABLED | Réutiliser anciens tokens et demander reset/refresh | Refus sécurisé, pas de réactivation implicite | À tester |
 | STA-005 | Réactivation | Modifier le statut via le parcours autorisé puis reconnecter | Nouveau token et permissions conformes, ancien état non réutilisé | À tester |
 
