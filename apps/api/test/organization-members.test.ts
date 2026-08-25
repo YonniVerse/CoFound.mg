@@ -36,3 +36,23 @@ test('VIEW-003 — un ORG_VIEWER ne peut pas modifier un membre', async () => {
     (error: unknown) => error instanceof ForbiddenException,
   )
 })
+
+test('MGR-003 — le dernier ORG_ADMIN ne peut pas être rétrogradé ni supprimé', async () => {
+  const prisma = {
+    organizationMember: {
+      findUnique: async () => ({ id: 'manager-member', organizationId: 'org-a', userId: 'user-manager', role: OrganizationRole.ORG_MANAGER }),
+      findFirst: async () => ({ id: 'admin-member', organizationId: 'org-a', userId: 'user-admin', role: OrganizationRole.ORG_ADMIN }),
+      count: async () => 1,
+    },
+  } as unknown as PrismaService
+  const service = new InstitutionMembersService(prisma)
+
+  await assert.rejects(
+    service.update('org-a', 'admin-member', 'user-manager', { role: OrganizationRole.ORG_MANAGER }),
+    /dernier administrateur/,
+  )
+  await assert.rejects(
+    service.remove('org-a', 'admin-member', 'user-manager'),
+    /dernier administrateur/,
+  )
+})
