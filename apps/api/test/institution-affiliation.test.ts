@@ -25,8 +25,8 @@ test('E-18 applique le changement groupé dans une transaction', async () => {
 })
 
 test('E-18 protège les routes et audite les mutations', () => {
-  assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, InstitutionAffiliationController.prototype.list), ['org:manage'])
-  assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, InstitutionAffiliationController.prototype.bulk), ['org:manage'])
+  assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, InstitutionAffiliationController.prototype.list), ['org:read'])
+  assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, InstitutionAffiliationController.prototype.bulk), ['org:read'])
   assert.deepEqual(Reflect.getMetadata(AUDIT_ACTION_KEY, InstitutionAffiliationController.prototype.update), { action: 'AFFILIATION_STATUS_UPDATE', targetType: 'Affiliation' })
   assert.deepEqual(Reflect.getMetadata(AUDIT_ACTION_KEY, InstitutionAffiliationController.prototype.bulk), { action: 'AFFILIATION_BULK_STATUS', targetType: 'Affiliation' })
 })
