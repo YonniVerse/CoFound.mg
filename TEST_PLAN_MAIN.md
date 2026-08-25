@@ -151,20 +151,20 @@ Une réponse HTTP 200 de la page frontend ne prouve pas l’autorisation : l’A
 
 | ID | Fonctionnalité / route ciblée | Étapes à exécuter | Résultat attendu | Statut |
 |---|---|---|---|---|
-| TAL-001 | Connexion, statut et profil | Se connecter, consulter `/me`, `/me/profile`, `/me/identity`, `/profile/me` | Session active, profil propre uniquement, statut et onboarding cohérents | À tester |
+| TAL-001 | Connexion, statut et profil | Se connecter, consulter `/me`, `/me/profile`, `/me/identity`, `/profile/me` | Session active, profil propre uniquement, statut et onboarding cohérents | Succès |
 | TAL-002 | Onboarding | Compléter chaque étape avec champs valides, incomplets puis réessayer une étape déjà terminée | Progression idempotente, validations visibles, profil publiable seulement si complet | À tester |
-| TAL-003 | Profil et identité | Modifier bio, compétences, disponibilité, identité et avatar ; envoyer texte trop long | PATCH accepté pour le propriétaire, limites validées, aucune modification d’un autre profil | À tester |
+| TAL-003 | Profil et identité | Modifier bio, compétences, disponibilité, identité et avatar ; envoyer texte trop long | PATCH accepté pour le propriétaire, limites validées, aucune modification d’un autre profil | Succès |
 | TAL-004 | Découverte | Tester `/feed`, `/search`, `/talents/feed`, `/projects/feed` avec recherche vide, terme inconnu et pagination | Résultats cohérents, pseudonymisation respectée, états vide/erreur corrects | À tester |
-| TAL-005 | Dream Match | Lire `/me/dream-match`, enregistrer préférences, obtenir suggestions, exclure/réintégrer une suggestion | Préférences persistées, résultats déterministes, exclusion idempotente et limitée au compte | À tester |
+| TAL-005 | Dream Match | Lire `/me/dream-match`, enregistrer préférences, obtenir suggestions, exclure/réintégrer une suggestion | Préférences persistées, résultats déterministes, exclusion idempotente et limitée au compte | Succès |
 | TAL-006 | Création de projet | Créer un projet valide, puis titre/description absents, trop longs ou secteurs invalides | Projet DRAFT créé pour le compte ; validation 400 sans écriture partielle | À tester |
 | TAL-007 | Gestion de projet propriétaire | Lire, publier en recruiting, modifier BMC, positions, posts, tâches et membres | Propriétaire autorisé ; transitions de statut et contrôles d’appartenance respectés | À tester |
 | TAL-008 | Projet non propriétaire | Lire un projet public, tenter de le modifier, publier ou gérer ses membres | Lecture selon visibilité ; écriture refusée avec 403/404 sans fuite | À tester |
-| TAL-009 | Candidature | Postuler à un poste/projet, soumettre candidature spontanée, doublon, retrait et payload invalide | Une candidature par contrainte métier, statut correct, retrait possible uniquement par l’auteur | À tester |
-| TAL-010 | Décision de candidature | Avec un projet possédé, accepter/refuser une candidature ; avec un autre projet, tenter la même action | Propriétaire uniquement ; motif de rejet obligatoire si requis ; action idempotente | À tester |
+| TAL-009 | Candidature | Postuler à un poste/projet, soumettre candidature spontanée, doublon, retrait et payload invalide | Une candidature par contrainte métier, statut correct, retrait possible uniquement par l’auteur | Succès |
+| TAL-010 | Décision de candidature | Avec un projet possédé, accepter/refuser une candidature ; avec un autre projet, tenter la même action | Propriétaire uniquement ; motif de rejet obligatoire si requis ; action idempotente | Succès |
 | TAL-011 | Connexions et messagerie | Envoyer une demande, accepter/refuser, envoyer message vide ou trop long, bloquer/débloquer | Relations et conversations isolées ; doublons et utilisateurs bloqués correctement gérés | À tester |
 | TAL-012 | Notifications et préférences | Lire notifications, marquer lu, modifier consentements et préférences | Données propres au compte, actions répétées sûres, erreurs 503 affichées via dialogue | À tester |
-| TAL-013 | Export et confidentialité | Demander export, consulter statut, télécharger export expiré/inexistant | Export asynchrone lié au compte, téléchargement autorisé uniquement au propriétaire | À tester |
-| TAL-014 | Accès staff/organisation | Appeler routes staff et routes de gestion organisation avec token TALENT | 403 systématique ; aucune action visible ne doit réussir par manipulation d’URL | À tester |
+| TAL-013 | Export et confidentialité | Demander export, consulter statut, télécharger export expiré/inexistant | Export asynchrone lié au compte, téléchargement autorisé uniquement au propriétaire | Succès |
+| TAL-014 | Accès staff/organisation | Appeler routes staff et routes de gestion organisation avec token TALENT | 403 systématique ; aucune action visible ne doit réussir par manipulation d’URL | Succès |
 
 ## 6. Rôle ORG_MEMBER — ORG_ADMIN
 
@@ -190,7 +190,7 @@ Une réponse HTTP 200 de la page frontend ne prouve pas l’autorisation : l’A
 | MGR-003 | Dernier admin | Tenter de supprimer/rétrograder le dernier admin | HTTP 409, aucun changement en base | À tester |
 | MGR-004 | Sans capacité | Retirer `PUBLISH_OPPORTUNITY` puis créer/publier une opportunité | HTTP 403 métier `ORGANIZATION_CAPABILITY_REQUIRED` | À tester |
 | MGR-005 | Import et affiliation | Tester import apply et certification d’affiliation avec/sans capacité | Refus sans capacité ; opérations autorisées correctement journalisées | À tester |
-| MGR-006 | Escalade de privilèges | Modifier son propre rôle ou celui d’un autre vers ORG_ADMIN, puis agir sur une autre organisation | Impossible sans règle explicitement prévue ; aucune élévation indirecte | À tester |
+| MGR-006 | Escalade de privilèges | Modifier son propre rôle ou celui d’un autre vers ORG_ADMIN, puis agir sur une autre organisation | Impossible sans règle explicitement prévue ; aucune élévation indirecte | Succès |
 | MGR-007 | Staff et TALENT | Appeler audit, santé, référence, organization requests et création projet | 403 systématique | À tester |
 
 ## 8. Rôle ORG_MEMBER — ORG_VIEWER
@@ -199,7 +199,7 @@ Une réponse HTTP 200 de la page frontend ne prouve pas l’autorisation : l’A
 |---|---|---|---|---|
 | VIEW-001 | Lecture membres | Lister les membres de sa propre organisation et d’une organisation étrangère | Sa structure visible selon contrat ; étrangère refusée | À tester |
 | VIEW-002 | Lecture projet/opportunité | Consulter projets, talents, opportunités et candidatures accessibles | Lecture seulement ; données privées non exposées | À tester |
-| VIEW-003 | Écriture membres | Inviter, modifier et supprimer un membre | HTTP 403 ; aucun changement persistant | À tester |
+| VIEW-003 | Écriture membres | Inviter, modifier et supprimer un membre | HTTP 403 ; aucun changement persistant | Succès |
 | VIEW-004 | Écriture opportunités | Créer, publier ou décider une candidature malgré `ORG_READ` | Refus par contrôle de capacité/rôle manager | À tester |
 | VIEW-005 | Imports et affiliations | Créer/apply un import et modifier une affiliation | Refus ; les écrans affichent un état interdit cohérent | À tester |
 | VIEW-006 | Capacité et staff | Accorder/reti rer une capacité, accéder audit/référence/santé | 403 partout | À tester |
