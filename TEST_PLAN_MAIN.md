@@ -197,8 +197,8 @@ Une réponse HTTP 200 de la page frontend ne prouve pas l’autorisation : l’A
 
 | ID | Fonctionnalité / route ciblée | Étapes à exécuter | Résultat attendu | Statut |
 |---|---|---|---|---|
-| VIEW-001 | Lecture membres | Lister les membres de sa propre organisation et d’une organisation étrangère | Sa structure visible selon contrat ; étrangère refusée | À tester |
-| VIEW-002 | Lecture projet/opportunité | Consulter projets, talents, opportunités et candidatures accessibles | Lecture seulement ; données privées non exposées | À tester |
+| VIEW-001 | Lecture membres | Lister les membres de sa propre organisation et d’une organisation étrangère | Sa structure visible selon contrat ; étrangère refusée | Succès |
+| VIEW-002 | Lecture projet/opportunité | Consulter projets, talents, opportunités et candidatures accessibles | Lecture seulement ; données privées non exposées | Succès |
 | VIEW-003 | Écriture membres | Inviter, modifier et supprimer un membre | HTTP 403 ; aucun changement persistant | Succès |
 | VIEW-004 | Écriture opportunités | Créer, publier ou décider une candidature malgré `ORG_READ` | Refus par contrôle de capacité/rôle manager | À tester |
 | VIEW-005 | Imports et affiliations | Créer/apply un import et modifier une affiliation | Refus ; les écrans affichent un état interdit cohérent | À tester |
