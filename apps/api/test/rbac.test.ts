@@ -140,3 +140,15 @@ test('F-19 — un Bearer valide injecte le contexte utilisateur', async () => {
   assert.equal(await accessGuard.canActivate(contextFor(request)), true)
   assert.deepEqual(request.user, { userId: 'user-test', platformRole: 'TALENT', status: 'ACTIVE' })
 })
+
+test('MOD-005 et OPS-003 à OPS-005 — les surfaces staff sensibles restent réservées', () => {
+  const ops: Request = { headers: {}, user: { userId: 'ops', platformRole: 'STAFF', status: 'ACTIVE', staffRole: 'OPS_ADMIN' } }
+  const moderator: Request = { headers: {}, user: { userId: 'moderator', platformRole: 'STAFF', status: 'ACTIVE', staffRole: 'MODERATOR' } }
+
+  for (const permission of [Permission.ORGANIZATION_REQUEST_READ, Permission.ORGANIZATION_REQUEST_MANAGE, Permission.REFERENCE_DATA_MANAGE, Permission.AUDIT_READ]) {
+    assert.throws(() => permissionGuard.canActivate(contextFor(ops, [permission])), ForbiddenException)
+  }
+  for (const permission of [Permission.ORGANIZATION_REQUEST_READ, Permission.ORGANIZATION_REQUEST_MANAGE, Permission.REFERENCE_DATA_MANAGE, Permission.PRODUCT_HEALTH_READ, Permission.AUDIT_READ]) {
+    assert.throws(() => permissionGuard.canActivate(contextFor(moderator, [permission])), ForbiddenException)
+  }
+})
