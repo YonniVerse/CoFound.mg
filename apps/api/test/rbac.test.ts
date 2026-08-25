@@ -49,6 +49,11 @@ const negativeCases: Array<[string, string, Permission]> = [
   ['un membre organisation ne peut pas créer un projet', 'ORG_MEMBER', Permission.PROJECT_CREATE],
   ['un membre organisation ne peut pas gérer un projet', 'ORG_MEMBER', Permission.PROJECT_MANAGE],
   ['un membre organisation ne peut pas envoyer un message', 'ORG_MEMBER', Permission.MESSAGE_SEND],
+  ['un membre organisation ne peut pas gérer les capacités', 'ORG_MEMBER', Permission.ORGANIZATION_CAPABILITY_MANAGE],
+  ['un membre organisation ne peut pas lire les audits', 'ORG_MEMBER', Permission.AUDIT_READ],
+  ['un membre organisation ne peut pas lire la santé produit', 'ORG_MEMBER', Permission.PRODUCT_HEALTH_READ],
+  ['un membre organisation ne peut pas gérer les référentiels', 'ORG_MEMBER', Permission.REFERENCE_DATA_MANAGE],
+  ['un membre organisation ne peut pas gérer les demandes organisationnelles', 'ORG_MEMBER', Permission.ORGANIZATION_REQUEST_MANAGE],
   ['un staff sans permission étendue ne peut pas agir en modération', 'STAFF', Permission.MODERATION_ACT],
   ['un rôle inconnu ne reçoit aucune permission', 'UNKNOWN_ROLE', Permission.TALENT_READ],
 ]
