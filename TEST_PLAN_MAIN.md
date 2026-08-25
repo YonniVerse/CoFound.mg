@@ -186,9 +186,9 @@ Une réponse HTTP 200 de la page frontend ne prouve pas l’autorisation : l’A
 | ID | Fonctionnalité / route ciblée | Étapes à exécuter | Résultat attendu | Statut |
 |---|---|---|---|---|
 | MGR-001 | Lecture organisationnelle | Consulter overview, profil, membres, projets, talents et opportunités de sa structure | Lecture autorisée si membre actif et données limitées à l’organisation | À tester |
-| MGR-002 | Gestion opérationnelle | Inviter, modifier et supprimer un membre non administrateur ; créer/publier une opportunité avec capacité | Actions autorisées uniquement sur son organisation et si capacité présente | À tester |
+| MGR-002 | Gestion opérationnelle | Inviter, modifier et supprimer un membre non administrateur ; créer/publier une opportunité avec capacité | Actions autorisées uniquement sur son organisation et si capacité présente | Succès |
 | MGR-003 | Dernier admin | Tenter de supprimer/rétrograder le dernier admin | HTTP 409, aucun changement en base | À tester |
-| MGR-004 | Sans capacité | Retirer `PUBLISH_OPPORTUNITY` puis créer/publier une opportunité | HTTP 403 métier `ORGANIZATION_CAPABILITY_REQUIRED` | À tester |
+| MGR-004 | Sans capacité | Retirer `PUBLISH_OPPORTUNITY` puis créer/publier une opportunité | HTTP 403 métier `ORGANIZATION_CAPABILITY_REQUIRED` | Succès |
 | MGR-005 | Import et affiliation | Tester import apply et certification d’affiliation avec/sans capacité | Refus sans capacité ; opérations autorisées correctement journalisées | À tester |
 | MGR-006 | Escalade de privilèges | Modifier son propre rôle ou celui d’un autre vers ORG_ADMIN, puis agir sur une autre organisation | Impossible sans règle explicitement prévue ; aucune élévation indirecte | Succès |
 | MGR-007 | Staff et TALENT | Appeler audit, santé, référence, organization requests et création projet | 403 systématique | À tester |
@@ -200,7 +200,7 @@ Une réponse HTTP 200 de la page frontend ne prouve pas l’autorisation : l’A
 | VIEW-001 | Lecture membres | Lister les membres de sa propre organisation et d’une organisation étrangère | Sa structure visible selon contrat ; étrangère refusée | Succès |
 | VIEW-002 | Lecture projet/opportunité | Consulter projets, talents, opportunités et candidatures accessibles | Lecture seulement ; données privées non exposées | Succès |
 | VIEW-003 | Écriture membres | Inviter, modifier et supprimer un membre | HTTP 403 ; aucun changement persistant | Succès |
-| VIEW-004 | Écriture opportunités | Créer, publier ou décider une candidature malgré `ORG_READ` | Refus par contrôle de capacité/rôle manager | À tester |
+| VIEW-004 | Écriture opportunités | Créer, publier ou décider une candidature malgré `ORG_READ` | Refus par contrôle de capacité/rôle manager | Succès |
 | VIEW-005 | Imports et affiliations | Créer/apply un import et modifier une affiliation | Refus ; les écrans affichent un état interdit cohérent | À tester |
 | VIEW-006 | Capacité et staff | Accorder/reti rer une capacité, accéder audit/référence/santé | 403 partout | À tester |
 | VIEW-007 | Changement de rôle | Faire promouvoir le viewer par un admin, reconnecter puis retester | Nouvelles permissions actives après émission de token selon contrat ; ancien token contrôlé | À tester |
@@ -284,6 +284,7 @@ Les points suivants ont été relevés par lecture statique et doivent être con
 | BUG-AUDIT-010 | Moyen — exposition de données | `apps/api/src/organization-request/opportunity.service.ts:38-42` | La liste des candidatures d’opportunité renvoie `applicantId` et le message ; il faut confirmer que la réponse respecte la pseudonymisation et les droits du partenaire, surtout avant décision. | ADM-007, MGR-002 et VIEW-002 avec candidature TALENT et PROJECT. |
 | BUG-AUDIT-011 | Élevé — escalade de privilèges — corrigé | `apps/api/src/institution/institution-members.service.ts:30-37` | Un `ORG_MANAGER` pouvait promouvoir un membre vers `ORG_ADMIN`, car le service vérifiait le rôle du membre mais pas la capacité de l’acteur à attribuer le rôle administrateur. Correction : toute promotion vers `ORG_ADMIN` est désormais refusée pour `ORG_MANAGER`. | MGR-006 et `apps/api/test/organization-members.test.ts`. |
 | BUG-AUDIT-012 | Moyen — accès en lecture — corrigé | `apps/api/src/organization-request/opportunity.service.ts:14-17` | La lecture des opportunités d’une organisation exigeait à tort la capacité `PUBLISH_OPPORTUNITY`, ce qui bloquait les `ORG_VIEWER` pourtant autorisés en lecture. Correction : la lecture vérifie désormais uniquement l’appartenance active et le rôle lecteur ; les mutations conservent le contrôle de capacité. | VIEW-001, VIEW-002 et `apps/api/test/opportunity-access.test.ts`. |
+| BUG-AUDIT-013 | Élevé — RBAC opérationnel — corrigé | `apps/api/src/import/import-batch.controller.ts:24-43` et `apps/api/src/institution/institution-affiliation.controller.ts:12-17` | Les mutations imports/affiliations exigeaient `org:manage`, permission absente de tous les `ORG_MEMBER`, ce qui empêchait un ORG_MANAGER autorisé par le service d’atteindre ces routes. Correction : les guards utilisent `org:read` et les services conservent le contrôle ORG_ADMIN/ORG_MANAGER. | MGR-005, VIEW-005 et tests `import-batch`, `import-apply`, `institution-affiliation`. |
 
 ## 15. Critères de sortie
 
