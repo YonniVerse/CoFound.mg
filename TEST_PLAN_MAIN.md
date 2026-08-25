@@ -187,7 +187,7 @@ Une réponse HTTP 200 de la page frontend ne prouve pas l’autorisation : l’A
 |---|---|---|---|---|
 | MGR-001 | Lecture organisationnelle | Consulter overview, profil, membres, projets, talents et opportunités de sa structure | Lecture autorisée si membre actif et données limitées à l’organisation | À tester |
 | MGR-002 | Gestion opérationnelle | Inviter, modifier et supprimer un membre non administrateur ; créer/publier une opportunité avec capacité | Actions autorisées uniquement sur son organisation et si capacité présente | Succès |
-| MGR-003 | Dernier admin | Tenter de supprimer/rétrograder le dernier admin | HTTP 409, aucun changement en base | À tester |
+| MGR-003 | Dernier admin | Tenter de supprimer/rétrograder le dernier admin | HTTP 409, aucun changement en base | Succès |
 | MGR-004 | Sans capacité | Retirer `PUBLISH_OPPORTUNITY` puis créer/publier une opportunité | HTTP 403 métier `ORGANIZATION_CAPABILITY_REQUIRED` | Succès |
 | MGR-005 | Import et affiliation | Tester import apply et certification d’affiliation avec/sans capacité | Refus sans capacité ; opérations autorisées correctement journalisées | Succès |
 | MGR-006 | Escalade de privilèges | Modifier son propre rôle ou celui d’un autre vers ORG_ADMIN, puis agir sur une autre organisation | Impossible sans règle explicitement prévue ; aucune élévation indirecte | Succès |
