@@ -5,8 +5,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { ProjectCard } from '@/components/feed/ProjectCard'
 import { ProjectCardSkeleton } from '@/components/feed/ProjectCardSkeleton'
 import { FeedErrorWidget } from '@/components/feed/FeedErrorWidget'
-import { ParityWidget } from '@/components/feed/ParityWidget'
-import { SuggestedProfilesWidget } from '@/components/feed/SuggestedProfilesWidget'
+import { MessagesPanel } from '@/components/feed/MessagesPanel'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useFeedData } from '@/hooks/useFeedData'
@@ -16,7 +15,6 @@ export default function ProjectsFeedPage() {
   const { t } = useI18n()
   const {
     apiProjects,
-    suggestedProfiles,
     isLoading,
     isLoadingMore,
     hasMore,
@@ -140,9 +138,8 @@ export default function ProjectsFeedPage() {
             )}
           </main>
 
-          <aside className="sticky top-[90px] hidden h-fit shrink-0 self-start lg:flex lg:w-[320px] lg:flex-col lg:gap-6">
-            <ParityWidget percentage={38} />
-            <SuggestedProfilesWidget profiles={suggestedProfiles} />
+          <aside className="sticky top-[90px] hidden h-fit shrink-0 self-start lg:flex lg:w-[360px]">
+            <MessagesPanel />
           </aside>
         </div>
       </div>

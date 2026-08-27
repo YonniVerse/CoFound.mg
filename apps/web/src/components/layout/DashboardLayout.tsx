@@ -5,9 +5,8 @@ import { apiClient } from "@/lib/api-client";
 import { 
   Home, 
   Search, 
-  Users, 
-  MessageSquare, 
-  BarChart2, 
+  Users,
+  BarChart2,
   User, 
   Settings,
   Menu
@@ -32,7 +31,6 @@ const NAVIGATION = [
   { name: "Feed", href: "/feed", icon: Home },
   { name: "Recherche", href: "/search", icon: Search },
   { name: "Explorer Projets", href: "/projects", icon: Users },
-  { name: "Messages", href: "/messages", icon: MessageSquare },
   { name: "Impact & Parité", href: "/impact", icon: BarChart2 },
   { name: "Mon Profil", href: "/profile/me", icon: User },
   { name: "Paramètres", href: "/settings", icon: Settings },

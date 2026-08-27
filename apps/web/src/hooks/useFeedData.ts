@@ -1,12 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { apiClient } from "@/lib/api-client";
 import { projectFeedResponseSchema, type ProjectFeedCard, type ProjectFeedQuery, ProjectStatus } from "@cofound/shared";
-import { getFeedItems, getSuggestedProfiles, type FeedItemType } from "@/data/feedApi";
-import type { SuggestedProfileData } from "@/components/feed/SuggestedProfilesWidget";
+import { getFeedItems, type FeedItemType } from "@/data/feedApi";
 
 export function useFeedData() {
   const [feedItems, setFeedItems] = useState<FeedItemType[]>([]);
-  const [suggestedProfiles, setSuggestedProfiles] = useState<SuggestedProfileData[]>([]);
   const [apiProjects, setApiProjects] = useState<ProjectFeedCard[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
@@ -73,13 +71,6 @@ export function useFeedData() {
     return () => window.clearTimeout(timer);
   }, [fetchProjects, selectedStatus, search]);
 
-  useEffect(() => {
-    if (!allowMockFallback) return;
-    getSuggestedProfiles().then((res) => {
-      if (res.success) setSuggestedProfiles(res.data);
-    }).catch(() => undefined);
-  }, [allowMockFallback]);
-
   const loadMore = useCallback(() => {
     if (!nextCursor || isLoadingMore) return;
     fetchProjects(
@@ -96,7 +87,6 @@ export function useFeedData() {
   return {
     feedItems,
     apiProjects,
-    suggestedProfiles,
     isLoading,
     isLoadingMore,
     hasMore,
