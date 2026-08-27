@@ -1,5 +1,5 @@
 import { useState, useEffect, useTransition } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Search as SearchIcon, X, Building2, User, Rocket, AlertCircle } from 'lucide-react'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { Input } from '@/components/ui/input'
@@ -352,9 +352,10 @@ export default function SearchPage() {
                       </h2>
                       <div className="space-y-4">
                         {activeResults.opportunities.map((opp) => (
-                          <div
+                          <Link
                             key={opp.id}
-                            className="space-y-3 rounded-xl border border-border bg-card p-5 shadow-2xs transition-all duration-150 hover:border-border/80 sm:p-6"
+                            to={`/opportunities/${opp.id}`}
+                            className="block space-y-3 rounded-xl border border-border bg-card p-5 shadow-2xs transition-all duration-150 hover:border-primary/40 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 sm:p-6"
                           >
                             <div className="flex flex-wrap items-start justify-between gap-3">
                               <h3 className="min-w-0 flex-1 font-heading text-sm font-semibold leading-tight text-foreground sm:text-base">
@@ -369,7 +370,7 @@ export default function SearchPage() {
                             <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
                               {opp.description}
                             </p>
-                          </div>
+                          </Link>
                         ))}
                       </div>
                     </section>

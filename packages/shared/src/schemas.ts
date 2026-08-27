@@ -276,6 +276,7 @@ export const opportunityApplicationSchema = z.object({
   rejectionReason: z.string().nullable(),
   createdAt: z.coerce.date(),
 })
+export type Opportunity = z.infer<typeof opportunitySchema>
 export type OpportunityCreate = z.infer<typeof opportunityCreateSchema>
 export type OpportunityApplicationCreate = z.infer<typeof opportunityApplicationCreateSchema>
 export const organizationProjectContactSchema = z.object({

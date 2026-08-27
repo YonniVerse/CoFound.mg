@@ -54,7 +54,10 @@ export default function WalletPage() {
     }
   }, [ownerId, ownerPath])
 
-  useEffect(() => { void loadWallet() }, [loadWallet])
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void loadWallet() }, 0)
+    return () => window.clearTimeout(timer)
+  }, [loadWallet])
 
   const submitOperation = async () => {
     if (!operation || !wallet) return
