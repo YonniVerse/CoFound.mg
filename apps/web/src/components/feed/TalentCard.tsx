@@ -38,19 +38,19 @@ export function TalentCard({ talent }: TalentCardProps) {
 
   return (
     <article className="group flex min-w-0 flex-col gap-4 overflow-hidden rounded-xl border border-border bg-card p-5 shadow-2xs transition-all duration-150 hover:border-border/80 sm:p-6">
-      <header className="flex min-w-0 items-start gap-3">
+      <header className="flex min-w-0 items-start justify-between gap-4">
         <div className="min-w-0">
           <h3 className="truncate text-base font-bold leading-tight text-foreground transition-colors group-hover:text-primary sm:text-lg">
             {talent.pseudonym}
           </h3>
-          <div className="mt-1.5 flex min-w-0 items-center gap-1.5 text-xs font-medium text-muted-foreground">
-            <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
-            <span className="truncate">{t("common.identityProtected")}</span>
-          </div>
           <div className="mt-1 flex min-w-0 items-center gap-1.5 truncate text-xs font-medium text-muted-foreground sm:text-sm">
             <span>{categoryLabel}</span>
             {talent.cohortYear && <><span>·</span><span>{t("common.cohort")} {talent.cohortYear}</span></>}
           </div>
+        </div>
+        <div className="flex max-w-[52%] shrink-0 items-start gap-1.5 text-right text-xs font-medium leading-snug text-muted-foreground">
+          <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
+          <span>{t("common.identityProtected")}</span>
         </div>
       </header>
 
