@@ -6,6 +6,7 @@ import { consentRecordSchema, consentRegistrySchema, personalDataExportRequestSc
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const PURPOSES: Array<{ purpose: ConsentPurpose; titleKey: 'settings.consent.profile' | 'settings.consent.matching' | 'settings.consent.contact' | 'settings.consent.analytics' }> = [
   { purpose: 'PROFILE_VISIBILITY', titleKey: 'settings.consent.profile' },
@@ -88,7 +89,19 @@ export default function SettingsPage() {
               <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{t('settings.privacy.description')}</p>
             </CardHeader>
             <CardContent className="space-y-3 px-5 py-5 sm:px-6">
-              {loading && <p className="text-sm text-muted-foreground" role="status">{t('settings.loading')}</p>}
+              {loading && (
+                <div className="space-y-3" role="status" aria-label={t('settings.loading')}>
+                  {PURPOSES.map(({ purpose }) => (
+                    <div key={purpose} className="flex items-center justify-between gap-3 rounded-xl border border-border/70 bg-muted/20 px-3.5 py-3 sm:px-4">
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-2/3" />
+                        <Skeleton className="h-3 w-1/3" />
+                      </div>
+                      <Skeleton className="h-6 w-11 shrink-0 rounded-full" />
+                    </div>
+                  ))}
+                </div>
+              )}
               {error && <p className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{t('settings.error')}</p>}
               {!loading && PURPOSES.map(({ purpose, titleKey }) => {
                 const record = consents.find((consent) => consent.purpose === purpose && consent.active)
