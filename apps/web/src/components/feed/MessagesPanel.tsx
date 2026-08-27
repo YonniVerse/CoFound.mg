@@ -10,7 +10,7 @@ export function MessagesPanel() {
   const [body, setBody] = useState('')
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(true)
 
   const loadConversations = useCallback(async () => {
     const result = await listConversations()

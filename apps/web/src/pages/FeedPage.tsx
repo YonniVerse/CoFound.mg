@@ -157,8 +157,8 @@ export default function FeedPage() {
           )}
         </div>
 
-        {/* Inline messages panel: the former parity and suggested-profile widgets are intentionally removed. */}
-        <div className="hidden w-[360px] shrink-0 self-start lg:sticky lg:top-[90px] lg:flex">
+        {/* Messaging widget fixed to the bottom of the viewport. */}
+        <div className="fixed bottom-0 right-4 z-40 w-[min(360px,calc(100vw-2rem))]">
           <MessagesPanel />
         </div>
       </div>
