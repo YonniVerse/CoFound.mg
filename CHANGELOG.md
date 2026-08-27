@@ -10,6 +10,23 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-27 — Select de filière dans l’onboarding
+
+### Ajouté
+
+- L’étape « Ton parcours » utilise désormais un select alimenté par `GET /reference-data/fields`.
+- Seules les filières actives sont proposées, avec des libellés lisibles en français et en malgache.
+- La valeur soumise reste l’identifiant interne `fieldId` attendu par l’API.
+- Les routes staff de gestion des référentiels restent protégées ; seule la lecture publique des filières est exposée.
+
+### Validation
+
+- Build shared, typecheck API, lint API, typecheck frontend, lint frontend, build frontend et `git diff --check` réussis.
+- Commit fonctionnel `4d84547` créé directement sur `main`, puis intégré avec les commits distants dans le merge `8aa4efb`.
+- Le handoff a été mis à jour après le push.
+
+---
+
 ## 2026-08-27 — Compositeur social projet rapproché des standards réseau social
 
 ### Modifié

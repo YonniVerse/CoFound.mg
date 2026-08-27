@@ -1,52 +1,47 @@
 # Reprise de session — CoFound.mg
 
 **Dernière mise à jour** : 2026-08-27
-**Phase** : amélioration visuelle du compositeur social projet fusionnée et poussée dans `main`
-**Ticket / vague** : P-11 — publications projet et fil social
+**Phase** : select de filière d’onboarding implémenté et poussé dans `main`
+**Ticket / vague** : onboarding — référentiels et parcours utilisateur
 **Branche locale** : `main`
-**État Git** : `main` est synchronisée avec `origin/main` sur `fb781db` et le dépôt est propre.
+**État Git** : `main` est synchronisée avec `origin/main` sur `8aa4efb` et le dépôt est propre.
 
 ## 1. État courant
 
-L’onglet **Projet** de `/feed` affiche un fil social dédié aux publications de projets. Le compositeur a été rapproché du standard montré par l’utilisateur : avatar circulaire du projet, champ compact **« Commencer un post »**, puis trois actions visuelles **Vidéo**, **Photo** et **Rédiger un article**.
+L’étape 2 de l’onboarding affiche désormais une liste déroulante lisible pour la filière au lieu de demander un identifiant technique. Les options proviennent de la route publique `/api/v1/reference-data/fields`, qui retourne les filières actives du référentiel Neon. La valeur envoyée au backend reste l’identifiant interne `id` attendu par `fieldId`.
 
-Le style reste aligné sur CoFound : carte blanche, bordures discrètes, grands arrondis, couleurs issues du thème, typographie existante et espaces sobres. Cliquer sur le champ ou une action ouvre l’éditeur inline avec le projet sélectionné, le type de publication, le message et le bouton Publier.
-
-Les publications restent attribuées au projet et non à l’utilisateur dans le feed. Le sélecteur ne propose que les projets créés par le compte connecté.
+Les libellés affichés sont localisés en français et en malgache : Informatique, Droit, Économie, Gestion, Communication, Ingénierie, Design et Agriculture. Le formulaire conserve le champ année et transmet le même contrat d’onboarding qu’avant.
 
 ## 2. Travail réellement effectué cette session
 
-- Remplacement du grand panneau de publication par un compositeur social compact dans `apps/web/src/components/feed/ProjectSocialFeed.tsx`.
-- Ajout de l’avatar circulaire avec initiale du projet et de l’action d’ouverture **Commencer un post**.
-- Ajout des actions **Vidéo**, **Photo** et **Rédiger un article**, avec icônes Lucide et couleurs cohérentes avec le thème CoFound.
-- Ajout de l’ouverture inline de l’éditeur, de l’indication du mode choisi et de l’action de fermeture.
-- Conservation de la logique de publication existante, de la validation 1 à 2 000 caractères et de la sélection du projet possédé.
-- Ajout des traductions françaises et malgaches des nouveaux libellés dans `apps/web/src/i18n.tsx`.
-- Validation réussie : build shared, typecheck frontend, lint frontend, build frontend et `git diff --check`.
-- Aucun endpoint backend, contrat shared ou schéma Prisma n’a été modifié cette session.
+- Ajout de `PublicReferenceDataController` avec `GET /reference-data/fields`, accessible anonymement en lecture.
+- Ajout de `ReferenceDataService.listPublicFields()` pour retourner uniquement les filières actives, avec `id`, `slug`, `labelKey` et `sortOrder`.
+- Enregistrement du contrôleur public dans `ReferenceDataModule` sans ouvrir les routes staff existantes.
+- Remplacement de l’input `fieldId` dans `apps/web/src/pages/OnboardingPage.tsx` par un select chargé depuis l’API.
+- Ajout des traductions des filières et de l’erreur de chargement en français et en malgache dans `apps/web/src/i18n.tsx`.
+- Commit fonctionnel `4d84547` créé directement sur `main`.
+- Intégration de 15 commits distants arrivés pendant la session, puis push final avec le merge `8aa4efb`.
+- Mise à jour du handoff et du changelog après le push.
 
-## 3. Limites connues
+## 3. Validation
 
-Les boutons Vidéo et Photo constituent actuellement des points d’entrée visuels vers le même éditeur de publication textuelle. Le contrat backend existant ne gère pas encore l’upload ou le stockage de fichiers médias ; aucune fausse fonctionnalité d’upload n’a donc été ajoutée.
+Les validations passent après l’intégration des commits distants : build shared, typecheck API, lint API, typecheck frontend, lint frontend, build frontend et `git diff --check`.
 
-La modification frontend est commitée dans `f7d209f`, fusionnée dans `main` par `fb781db` et poussée sur GitHub. Son déploiement Vercel reste à confirmer.
+La liste réelle des filières actives a été vérifiée en lecture seule dans Neon. Le dépôt expose actuellement les valeurs attendues suivantes : Informatique (`cmt251j84000anzqa9suaaxxc`), Droit (`cmt251jcp000bnzqa6my2c9t9`), Économie (`cmt251jez000cnzqa6389o0rn`), Gestion (`cmt251jh9000dnzqa2rm31wty`), Communication (`cmt251jji000enzqa7j0ip3pk`), Ingénierie (`cmt251jls000fnzqa5xh2hs7i`), Design (`cmt251jo2000gnzqa9pgtvtbw`) et Agriculture (`cmt251jqb000hnzqa4iulnetl`). Ces identifiants ne sont plus exposés à l’utilisateur dans l’interface.
 
-Le mécanisme d’authentification et de refresh token n’a pas été modifié. Le diagnostic Render/Neon reste documenté : `DIRECT_URL` est utilisée pour Prisma Migrate et le verrou advisory `72707369` précédemment bloquant a été libéré ; le succès d’un nouveau déploiement Render reste à confirmer.
+Aucune migration Prisma ni modification de données métier n’a été effectuée pour cette fonctionnalité. Aucun test Playwright n’a été exécuté dans cette session.
 
 ## 4. Fichiers importants
 
-- `apps/web/src/components/feed/ProjectSocialFeed.tsx` : compositeur social et cartes de publications projet.
-- `apps/web/src/pages/FeedPage.tsx` : branchement du compositeur sur l’onglet Projet.
-- `apps/web/src/i18n.tsx` : traductions des actions du compositeur.
-- `apps/web/src/data/projectApi.ts` : appels aux projets possédés et au feed projet.
-- `apps/api/src/project/project.controller.ts` et `project.service.ts` : route `GET /projects/mine`.
-- `apps/api/src/projects/projects.controller.ts` et `projects.service.ts` : route `GET /projects/posts/feed`.
+- `apps/web/src/pages/OnboardingPage.tsx` : select et chargement des filières.
+- `apps/web/src/i18n.tsx` : labels FR/MG des filières.
+- `apps/api/src/reference-data/public-reference-data.controller.ts` : route publique.
+- `apps/api/src/reference-data/reference-data.service.ts` : lecture des filières actives.
+- `apps/api/src/reference-data/reference-data.module.ts` : déclaration du contrôleur.
 - `NEXT_SESSION.md` et `CHANGELOG.md` : contexte de reprise et historique.
 
-Décision produit : l’identité éditoriale du feed est le projet. Le rendu s’inspire des réseaux sociaux généralistes sans copier leur charte ; les couleurs et composants CoFound restent la source de vérité visuelle.
-
-Décision technique : ne pas créer de nouveau contrat d’upload tant qu’un besoin média réel n’est pas demandé. Les actions Vidéo et Photo restent des modes de composition prêts à être reliés ultérieurement à un stockage de fichiers.
+Décision technique : ne pas coder en dur les identifiants en frontend. Le select consomme le référentiel actif en base, tandis que l’API reçoit toujours l’identifiant opaque interne.
 
 ## 5. Prochaine action
 
-Relire le rendu en preview avec un compte possédant un projet et confirmer que Vercel a bien déployé `main` sur `fb781db`. Si les boutons Vidéo et Photo doivent accepter de vrais médias, définir séparément le contrat d’upload, le stockage et la modération avant implémentation.
+Ouvrir l’onboarding avec un compte de recette, vérifier que le select affiche les filières et que la sauvegarde de l’étape 2 fonctionne. Confirmer ensuite le déploiement de `main` sur l’environnement frontend et backend. Si nécessaire, appliquer le même principe aux compétences et aux secteurs, actuellement encore saisis sous forme d’identifiants texte.
