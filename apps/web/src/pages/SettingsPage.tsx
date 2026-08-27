@@ -59,7 +59,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-muted/20 px-4 py-8 sm:px-8 lg:px-10 lg:py-10">
+    <main className="min-h-screen bg-muted/20 px-4 pb-10 pt-12 sm:px-8 sm:pt-14 lg:px-10 lg:pb-12 lg:pt-16">
       <div className="mx-auto max-w-5xl space-y-8">
         <div className="flex items-center justify-between gap-3">
           <Button variant="ghost" size="sm" asChild className="-ml-2 text-muted-foreground">
