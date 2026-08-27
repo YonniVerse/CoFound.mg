@@ -10,6 +10,25 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-27 — Libération du verrou Prisma bloquant Render
+
+### Diagnostic
+
+- Le nouveau log Render confirme que `DIRECT_URL` est bien utilisée, mais l’advisory lock Prisma `72707369` restait détenu par une session `pgbouncer` idle, PID `15843`.
+- La base Neon contenait toujours 9 migrations terminées et aucun état de migration partiellement appliqué n’a été détecté.
+
+### Action
+
+- Après confirmation explicite, la session PostgreSQL `15843` a été terminée avec `pg_terminate_backend(15843)`.
+- Une vérification sur une nouvelle connexion a confirmé que le verrou `72707369` n’existe plus.
+- Aucun schéma, enregistrement métier ou migration n’a été supprimé ou modifié.
+
+### Prochaine étape
+
+- Relancer le service Render `cofound-api` depuis `main` et vérifier que `prisma migrate deploy` termine avant le démarrage de `node dist/main.js`.
+
+---
+
 ## 2026-08-27 — Correctif Render/Neon pour Prisma Migrate
 
 ### Corrigé

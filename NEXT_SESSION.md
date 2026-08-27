@@ -4,15 +4,17 @@
 **Phase** : correction de déploiement Prisma/Neon fusionnée dans `main`
 **Ticket / vague** : correctif déploiement Render — migrations Prisma via connexion Neon directe
 **Branche locale** : `main`
-**État Git** : `main` est synchronisée avec `origin/main` sur `3334831` et le dépôt est propre.
+**État Git** : `main` est synchronisée avec `origin/main` sur `333c3fa` et le dépôt est propre.
 
 ## 1. État courant
 
-Le déploiement Render du commit `fb041342f8b51790e5b44f44abc8410eae6cb4a1` construisait correctement l’API, mais échouait au démarrage sur `prisma migrate deploy` avec `P1002`. Prisma ne pouvait pas obtenir l’advisory lock PostgreSQL `72707369` dans le délai de 10 secondes.
+Le déploiement Render du commit `b22ad57c1ba4bb492ac910ada5a1e7003f56c378` construit correctement l’API et utilise bien `DIRECT_URL` : le log montre une connexion directe Neon sans suffixe `-pooler`. Le démarrage échoue toutefois encore sur `P1002`, car Prisma ne peut pas obtenir l’advisory lock PostgreSQL `72707369` dans le délai de 10 secondes.
 
 Le correctif a été implémenté dans la branche temporaire `fix/render-prisma-direct-url`, commité en `665f2f2`, fusionné dans `main` par `3334831`, puis poussé sur GitHub. La branche temporaire a été supprimée localement ; elle n’avait pas été poussée à distance.
 
-Le correctif fait utiliser `DIRECT_URL` par Prisma Migrate lorsqu’elle est définie, tout en conservant `DATABASE_URL` comme fallback local. `DATABASE_URL` reste destinée à la connexion poolée de l’application ; `DIRECT_URL` doit être la connexion Neon directe, sans suffixe `-pooler`.
+Le correctif fait utiliser `DIRECT_URL` par Prisma Migrate lorsqu’elle est définie, tout en conservant `DATABASE_URL` comme fallback local. `DATABASE_URL` reste destinée à la connexion poolée de l’application ; `DIRECT_URL` est désormais configurée dans Render avec la connexion Neon directe, sans suffixe `-pooler`.
+
+Le diagnostic Neon a identifié le PID `15843` (`application_name=pgbouncer`, état `idle`) comme détenteur du verrou. Après confirmation explicite, `pg_terminate_backend(15843)` a été exécuté ; une nouvelle vérification a retourné une liste vide pour le verrou `72707369`. Le verrou est donc libéré.
 
 ## 2. Travail réellement effectué
 
@@ -27,19 +29,19 @@ Le correctif fait utiliser `DIRECT_URL` par Prisma Migrate lorsqu’elle est dé
 
 ## 3. Action restante côté Render
 
-Le dépôt ne peut pas fournir le secret Neon. Dans le groupe d’environnement Render `cofound-api-runtime`, ajouter `DIRECT_URL` avec la chaîne de connexion **Direct connection** fournie par Neon, sans `-pooler`, avec `sslmode=require`. Ne pas remplacer `DATABASE_URL`, qui reste la connexion poolée utilisée par l’application.
+`DIRECT_URL` est maintenant reconnue par Render, comme le confirme le log du commit `b22ad57`. Ne pas remplacer `DATABASE_URL`, qui reste la connexion poolée utilisée par l’application.
 
-Une fois `DIRECT_URL` enregistrée, relancer le déploiement de `main` (`3334831`). La commande de démarrage exécutera alors Prisma Migrate sur la connexion directe avant de lancer `node dist/main.js`.
+Le verrou Neon ayant été libéré, relancer le déploiement de `main`. La commande de démarrage doit exécuter Prisma Migrate sur la connexion directe puis lancer `node dist/main.js`.
 
-Si le déploiement échoue encore après configuration de `DIRECT_URL`, récupérer le nouveau log complet. Le log fourni s’arrêtait au début d’une nouvelle tentative à `2026-08-27T08:39:36Z`, sans résultat de cette tentative.
+Si le déploiement échoue encore, récupérer le log complet suivant et vérifier qu’un nouveau PID ne reprend pas le verrou `72707369`. Ne pas désactiver l’advisory lock globalement sans nouvelle analyse de concurrence.
 
 ## 4. Validation et limites
 
 Les contrôles locaux réussis après la modification sont `prisma validate` avec une URL factice, typecheck API, lint API et `git diff --check`. Le script confirme la résolution de `DIRECT_URL` avant l’appel Prisma, mais aucun accès réel à la base de production n’a été lancé depuis le dépôt.
 
-La base Neon a été interrogée uniquement en lecture. L’historique `_prisma_migrations` montre 9 migrations terminées jusqu’à `20260822200000_add_organization_project_contacts`. Aucun `DROP`, `DELETE`, `TRUNCATE`, `UPDATE` métier ni reset de base n’a été effectué.
+La base Neon a été interrogée en lecture pour l’état des migrations et des verrous. L’historique `_prisma_migrations` montre 9 migrations terminées jusqu’à `20260822200000_add_organization_project_contacts`. La seule action d’écriture a été la terminaison autorisée de la session PostgreSQL `15843`; aucun `DROP`, `DELETE`, `TRUNCATE`, `UPDATE` métier ni reset de base n’a été effectué.
 
-Le déploiement Render n’est pas confirmé comme réussi après ce correctif, car la variable secrète `DIRECT_URL` doit être ajoutée dans Render et le service doit être relancé. Aucun test Playwright n’a été exécuté dans cette session.
+Le déploiement Render n’est pas encore confirmé comme réussi : `DIRECT_URL` est bien utilisée, mais le log fourni précède la libération du verrou et se termine sur un nouvel essai incomplet. Aucun test Playwright n’a été exécuté dans cette session.
 
 ## 5. Fichiers importants et décisions
 
@@ -55,4 +57,4 @@ Décision de sécurité : ne jamais inscrire la valeur réelle de `DIRECT_URL` d
 
 ## 6. Prochaine action
 
-Configurer `DIRECT_URL` dans Render avec l’URL Neon directe, relancer le service `cofound-api` depuis `main`, puis confirmer dans le log que `prisma migrate deploy` termine avant le lancement de l’API et que `/api/v1/health` répond correctement.
+Relancer le service `cofound-api` depuis `main` maintenant que le verrou Neon est libéré, puis confirmer dans le log que `prisma migrate deploy` termine avant le lancement de l’API et que `/api/v1/health` répond correctement.
