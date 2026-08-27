@@ -1,7 +1,7 @@
 import type { TalentFeedCard } from "@cofound/shared";
 import { Avatar } from "@/components/shared/Avatar";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Clock } from "lucide-react";
+import { BriefcaseBusiness, Clock, MessageSquare, ShieldCheck, Sparkles } from "lucide-react";
 import { ReportButton } from "@/components/shared/ReportButton";
 import { BlockButton } from "@/components/shared/BlockButton";
 import { useI18n } from "@/i18n";
@@ -10,39 +10,55 @@ interface TalentCardProps {
   talent: TalentFeedCard;
 }
 
+const labelOverrides: Record<string, string> = {
+  "demo.field.computing": "Informatique",
+  "demo.field.business": "Gestion et commerce",
+  "demo.field.design": "Design",
+};
+
+function formatReferenceLabel(labelKey: string, slug: string) {
+  const knownLabel = labelOverrides[labelKey];
+  if (knownLabel) return knownLabel;
+  if (!labelKey.includes(".")) return labelKey;
+
+  const rawLabel = labelKey.split(".").at(-1) || slug;
+  return rawLabel
+    .replace(/[-_]/g, " ")
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
 export function TalentCard({ talent }: TalentCardProps) {
-  const { t } = useI18n()
-  const fieldLabel = talent.field?.labelKey ?? null;
+  const { t } = useI18n();
+  const categoryLabel = talent.field
+    ? formatReferenceLabel(talent.field.labelKey, talent.field.slug)
+    : null;
   const availabilityLabel = talent.availabilityHours
     ? `${talent.availabilityHours}h/sem`
     : null;
 
   return (
-    <div className="bg-card border border-border rounded-xl p-5 sm:p-6 shadow-2xs hover:border-border/80 transition-all duration-150 flex flex-col gap-4 group min-w-0 overflow-hidden">
-      {/* Header: Pseudonymized Avatar + Pseudonym + Field & Cohort + Completion */}
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="flex items-center gap-3.5 min-w-0 flex-1">
+    <article className="group flex min-w-0 flex-col gap-5 overflow-hidden rounded-2xl border border-border/70 bg-card p-5 shadow-2xs transition-all duration-150 hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-sm sm:p-6">
+      <header className="flex items-start justify-between gap-4">
+        <div className="flex min-w-0 items-center gap-3.5">
           <Avatar
             name={talent.pseudonym}
             src={null}
             size="md"
-            className="h-12 w-12 sm:h-13 sm:w-13 border border-border/60 shadow-2xs shrink-0"
+            className="h-12 w-12 shrink-0 border border-border/60 shadow-2xs sm:h-14 sm:w-14"
           />
-          <div className="flex flex-col min-w-0">
-            <h3 className="font-bold text-base sm:text-lg text-foreground leading-tight group-hover:text-primary transition-colors truncate">
+          <div className="min-w-0">
+            <h3 className="truncate text-base font-bold leading-tight text-foreground transition-colors group-hover:text-primary sm:text-lg">
               {talent.pseudonym}
             </h3>
-            <div className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground font-medium mt-0.5 truncate">
-              {fieldLabel && <span>{fieldLabel}</span>}
-              {fieldLabel && talent.cohortYear && <span>·</span>}
-              {talent.cohortYear && <span>{t('common.cohort')} {talent.cohortYear}</span>}
-            </div>
+            <p className="mt-1 truncate text-xs font-medium text-muted-foreground sm:text-sm">
+              {talent.cohortYear ? `${t("common.cohort")} ${talent.cohortYear}` : t("common.identityProtected")}
+            </p>
           </div>
         </div>
 
-        {/* Minimalist Completion Badge */}
         <span
-          className={`text-xs font-mono font-medium px-2.5 py-1 rounded-md shrink-0 ${
+          className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${
             talent.completion >= 80
               ? "bg-emerald-500/10 text-emerald-600"
               : talent.completion >= 50
@@ -50,83 +66,85 @@ export function TalentCard({ talent }: TalentCardProps) {
                 : "bg-muted text-muted-foreground"
           }`}
         >
-          {talent.completion}% {t('common.completed')}
+          {talent.completion}% {t("common.completed")}
         </span>
+      </header>
+
+      <div className="flex items-center gap-2 rounded-xl border border-primary/10 bg-primary/[0.04] px-3.5 py-2.5 text-xs font-medium text-muted-foreground">
+        <ShieldCheck className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+        <span>{t("common.identityProtected")}</span>
       </div>
 
-      <p className="text-xs font-medium text-muted-foreground/80">
-        {t('common.identityProtected')}
-      </p>
+      {talent.headline && (
+        <p className="text-base font-semibold leading-snug text-foreground/90 sm:text-lg">
+          {talent.headline}
+        </p>
+      )}
 
-      {/* Headline & Bio */}
-      <div className="space-y-1.5 min-w-0">
-        {talent.headline && (
-          <p className="text-sm font-semibold text-foreground/90 leading-snug break-words">
-            {talent.headline}
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="min-w-0 rounded-xl border border-border/60 bg-muted/20 p-3.5">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <BriefcaseBusiness className="h-4 w-4 text-primary" aria-hidden="true" />
+            <span>{t("common.category")}</span>
+          </div>
+          <p className="mt-2 truncate text-sm font-semibold text-foreground">
+            {categoryLabel ?? "—"}
           </p>
-        )}
-        {talent.bio ? (
-          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 leading-relaxed break-words">
-            "{talent.bio}"
-          </p>
-        ) : (
-          <p className="text-xs text-muted-foreground/60 italic">
-            {t('common.bioMissing')}
-          </p>
-        )}
+        </div>
+
+        <div className="min-w-0 rounded-xl border border-border/60 bg-muted/20 p-3.5">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
+            <span>{t("common.skills")}</span>
+          </div>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {talent.skills.length > 0 ? (
+              talent.skills.slice(0, 4).map((skill) => (
+                <span key={skill.id} className="rounded-md bg-background px-2 py-1 text-xs font-medium text-foreground ring-1 ring-border/70">
+                  {formatReferenceLabel(skill.labelKey, skill.slug)}
+                </span>
+              ))
+            ) : (
+              <span className="text-sm text-muted-foreground">—</span>
+            )}
+            {talent.skills.length > 4 && (
+              <span className="rounded-md px-1 py-1 text-xs font-semibold text-muted-foreground">
+                +{talent.skills.length - 4}
+              </span>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Skills & Goals Tags */}
-      {(talent.skills.length > 0 || talent.goals.length > 0) && (
-        <div className="flex flex-wrap items-center gap-2 pt-0.5">
-          {talent.skills.slice(0, 5).map((skill) => (
-            <span
-              key={skill.id}
-              className="text-xs font-medium bg-muted/60 text-foreground px-2.5 py-1 rounded-md border border-border/40"
-            >
-              {skill.labelKey}
-            </span>
-          ))}
-          {talent.skills.length > 5 && (
-            <span className="text-xs text-muted-foreground font-mono font-medium">
-              +{talent.skills.length - 5}
-            </span>
-          )}
-
+      {talent.goals.length > 0 && (
+        <div className="flex flex-wrap gap-2">
           {talent.goals.slice(0, 2).map((goal) => (
-            <span
-              key={goal}
-              className="text-xs font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-md"
-            >
+            <span key={goal} className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
               {goal}
             </span>
           ))}
         </div>
       )}
 
-      {/* Footer Info & Actions */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-border/50 mt-1">
+      <footer className="flex flex-col gap-3 border-t border-border/60 pt-4 sm:flex-row sm:items-center sm:justify-between">
         {availabilityLabel ? (
-          <div className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground font-medium">
-            <Clock className="h-3.5 w-3.5 opacity-70" />
-            <span>{t('common.availability')}: {availabilityLabel}</span>
+          <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground sm:text-sm">
+            <Clock className="h-3.5 w-3.5 opacity-70" aria-hidden="true" />
+            <span>{t("common.availability")}: {availabilityLabel}</span>
           </div>
         ) : (
-          <div />
+          <span />
         )}
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
           <ReportButton targetType="PROFILE" targetId={talent.id} />
           <BlockButton userId={talent.id} />
-          <Button
-            size="sm"
-            className="h-9 px-3 text-xs sm:text-sm font-medium rounded-lg cursor-pointer gap-1.5"
-          >
+          <Button size="sm" className="h-9 rounded-lg px-3 text-xs font-medium sm:text-sm">
             <MessageSquare className="h-4 w-4" />
-            <span>{t('common.proposeExchange')}</span>
+            <span>{t("common.proposeExchange")}</span>
           </Button>
         </div>
-      </div>
-    </div>
+      </footer>
+    </article>
   );
 }

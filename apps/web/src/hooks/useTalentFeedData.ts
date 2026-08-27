@@ -19,6 +19,7 @@ const FALLBACK_TALENTS: TalentFeedCard[] = MOCK_PROFILES.map((p, idx) => ({
     id: `sk-${idx}-${sIdx}`,
     slug: sk.toLowerCase(),
     labelKey: sk,
+    category: null,
   })),
   completion: 85 - idx * 10,
 }));
