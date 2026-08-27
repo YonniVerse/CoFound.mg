@@ -10,6 +10,25 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-27 — Fusion et nettoyage de la branche du fil social projet
+
+### Modifié
+
+- La branche temporaire `feat/project-social-feed` a été commitée en `8782019`, fusionnée dans `main` par `7550a44`, puis poussée sur GitHub.
+- `main` a ensuite été synchronisée avec les commits distants `90f63a4` et `fb026d3`.
+
+### Retiré
+
+- La branche temporaire `feat/project-social-feed` a été supprimée localement et vérifiée absente à distance.
+
+### Validation
+
+- `main` est synchronisée avec `origin/main` sur `fb026d3`.
+- Le commit fonctionnel `8782019` est bien intégré dans l’historique de `main`.
+- Le dépôt local est propre après mise à jour du handoff.
+
+---
+
 ## 2026-08-27 — Refonte sociale de l’onglet Projet du feed
 
 ### Décidé
