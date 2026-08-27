@@ -52,7 +52,7 @@ function OnboardingSkeleton() {
       <main className="min-h-screen bg-muted/20 px-4 py-8 sm:px-10">
         <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-6" role="status" aria-label="Chargement de ton profil">
           <div className="flex items-center justify-between gap-3"><Skeleton className="h-9 w-32 rounded-lg" /><Skeleton className="h-9 w-36 rounded-lg" /></div>
-          <section className="rounded-xl border border-border bg-card p-4 shadow-2xs sm:p-5"><div className="flex items-center justify-between gap-3"><Skeleton className="h-2 flex-1 rounded-full" /><Skeleton className="h-5 w-12 rounded-md" /></div><div className="mt-3 grid grid-cols-6 gap-2"><Skeleton className="h-1.5 rounded-full" /><Skeleton className="h-1.5 rounded-full" /><Skeleton className="h-1.5 rounded-full" /><Skeleton className="h-1.5 rounded-full" /><Skeleton className="h-1.5 rounded-full" /><Skeleton className="h-1.5 rounded-full" /></div></section>
+          <section className="rounded-xl border border-border bg-card p-4 shadow-2xs sm:p-5"><div className="flex items-center justify-between gap-3"><div className="flex items-center gap-3"><Skeleton className="h-8 w-8 rounded-lg" /><Skeleton className="h-4 w-24" /></div><Skeleton className="h-5 w-12 rounded-md" /></div><div className="relative mt-5 px-1"><Skeleton className="h-1.5 rounded-full" /><div className="absolute inset-x-1 top-1/2 flex -translate-y-1/2 items-center justify-between"><Skeleton className="h-4 w-4 rounded-full" /><Skeleton className="h-4 w-4 rounded-full" /><Skeleton className="h-4 w-4 rounded-full" /><Skeleton className="h-4 w-4 rounded-full" /><Skeleton className="h-4 w-4 rounded-full" /><Skeleton className="h-4 w-4 rounded-full" /></div></div></section>
           <Card className="mx-auto w-full max-w-3xl rounded-xl border-border bg-card p-5 shadow-2xs sm:p-6"><div className="mb-6 flex items-start gap-3 border-b border-border pb-5"><Skeleton className="h-10 w-10 rounded-xl" /><div className="space-y-2"><Skeleton className="h-5 w-48" /><Skeleton className="h-4 w-72" /></div></div><CardContent className="space-y-5 p-0"><div className="grid gap-5 sm:grid-cols-2"><Skeleton className="h-16 rounded-xl" /><Skeleton className="h-16 rounded-xl" /></div><Skeleton className="h-11 rounded-xl" /><div className="flex justify-between border-t border-border pt-5"><Skeleton className="h-9 w-24 rounded-lg" /><Skeleton className="h-9 w-32 rounded-lg" /></div></CardContent></Card>
         </div>
       </main>
@@ -182,8 +182,24 @@ export default function OnboardingPage() {
           </div>
 
           <section className="rounded-xl border border-border bg-card p-4 shadow-2xs sm:p-5" aria-label="Progression du profil">
-            <div className="flex items-center gap-3"><Progress value={progressValue} className="h-2" /><span className="shrink-0 rounded-md bg-primary/10 px-2 py-1 text-sm font-bold text-primary">{progressValue}%</span></div>
-            <div className="mt-3 grid grid-cols-6 gap-2" role="list" aria-label="Étapes du profil">{STEPS.map((stepName, index) => { const stepNumber = index + 1; const isCurrent = stepNumber === step; const isCompleted = completedSteps.includes(stepNumber); return <div key={stepName} role="listitem" className="min-w-0"><div className={`h-1.5 rounded-full transition-colors ${isCompleted || isCurrent ? 'bg-primary' : 'bg-muted'}`} /><span className="sr-only">{stepName}{isCurrent ? ' — étape actuelle' : isCompleted ? ' — terminée' : ''}</span></div> })}</div>
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground">{step}</span>
+                <span className="truncate text-sm font-semibold text-foreground">{STEPS[step - 1]}</span>
+              </div>
+              <span className="shrink-0 rounded-md bg-primary/10 px-2 py-1 text-sm font-bold text-primary">{progressValue}%</span>
+            </div>
+            <div className="relative mt-5 px-1">
+              <Progress value={progressValue} className="h-1.5" />
+              <div className="absolute inset-x-1 top-1/2 flex -translate-y-1/2 items-center justify-between" role="list" aria-label="Étapes du profil">
+                {STEPS.map((stepName, index) => {
+                  const stepNumber = index + 1
+                  const isCurrent = stepNumber === step
+                  const isCompleted = completedSteps.includes(stepNumber)
+                  return <span key={stepName} role="listitem" className={`h-4 w-4 rounded-full border-2 bg-card transition-colors ${isCompleted ? 'border-primary bg-primary' : isCurrent ? 'border-primary ring-2 ring-card' : 'border-border'}`}><span className="sr-only">{stepName}{isCurrent ? ' — étape actuelle' : isCompleted ? ' — terminée' : ''}</span></span>
+                })}
+              </div>
+            </div>
           </section>
 
           <Card className="mx-auto w-full max-w-3xl rounded-xl border-border bg-card p-5 shadow-2xs sm:p-6">
