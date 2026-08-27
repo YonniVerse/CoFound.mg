@@ -112,8 +112,8 @@ export function MessagesPanel({ isCollapsed, onCollapsedChange }: MessagesPanelP
         </div>
       </div>}
       <footer className="border-t border-border/70 px-3 py-2">
-        <button type="button" className="flex w-full items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => onCollapsedChange(!isCollapsed)} aria-label={isCollapsed ? 'Développer la messagerie' : 'Réduire la messagerie'} aria-expanded={!isCollapsed} aria-controls="messages-panel-content">
-          {isCollapsed ? <><ChevronDown className="h-4 w-4" aria-hidden="true" />Développer</> : <><ChevronUp className="h-4 w-4" aria-hidden="true" />Réduire</>}
+        <button type="button" className="mx-auto flex h-7 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => onCollapsedChange(!isCollapsed)} aria-label={isCollapsed ? 'Développer la messagerie' : 'Réduire la messagerie'} title={isCollapsed ? 'Développer la messagerie' : 'Réduire la messagerie'} aria-expanded={!isCollapsed} aria-controls="messages-panel-content">
+          {isCollapsed ? <ChevronDown className="h-4 w-4" aria-hidden="true" /> : <ChevronUp className="h-4 w-4" aria-hidden="true" />}
         </button>
       </footer>
     </section>
