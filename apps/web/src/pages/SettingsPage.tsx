@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useI18n } from '@/i18n'
+import { ArrowUpRight, Download, ShieldCheck } from 'lucide-react'
+import { useI18n, LanguageSwitcher } from '@/i18n'
 import { apiClient } from '@/lib/api-client'
 import { consentRecordSchema, consentRegistrySchema, personalDataExportRequestSchema, personalDataExportResponseSchema, type ConsentPurpose, type ConsentRecord } from '@cofound/shared'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
-import { LanguageSwitcher } from '@/i18n'
 
-const PURPOSES: Array<{ purpose: ConsentPurpose; version: string; titleKey: 'settings.consent.profile' | 'settings.consent.matching' | 'settings.consent.contact' | 'settings.consent.analytics' }> = [
-  { purpose: 'PROFILE_VISIBILITY', version: 'v1', titleKey: 'settings.consent.profile' },
-  { purpose: 'TALENT_MATCHING', version: 'v1', titleKey: 'settings.consent.matching' },
-  { purpose: 'PARTNER_CONTACT', version: 'v1', titleKey: 'settings.consent.contact' },
-  { purpose: 'AGGREGATED_ANALYTICS', version: 'v1', titleKey: 'settings.consent.analytics' },
+const PURPOSES: Array<{ purpose: ConsentPurpose; titleKey: 'settings.consent.profile' | 'settings.consent.matching' | 'settings.consent.contact' | 'settings.consent.analytics' }> = [
+  { purpose: 'PROFILE_VISIBILITY', titleKey: 'settings.consent.profile' },
+  { purpose: 'TALENT_MATCHING', titleKey: 'settings.consent.matching' },
+  { purpose: 'PARTNER_CONTACT', titleKey: 'settings.consent.contact' },
+  { purpose: 'AGGREGATED_ANALYTICS', titleKey: 'settings.consent.analytics' },
 ]
 
 export default function SettingsPage() {
@@ -55,38 +55,78 @@ export default function SettingsPage() {
         const result = await apiClient.request(`/me/consents/${purpose}`, { method: 'DELETE', body: JSON.stringify({ confirm: true }) }) as ConsentRecord
         setConsents((current) => current.map((consent) => consent.id === result.id ? result : consent))
       }
-    } catch {
-      setError(true)
-    } finally {
-      setPending(null)
-    }
+    } catch { setError(true) } finally { setPending(null) }
   }
 
   return (
-    <div className="min-h-screen bg-muted/20 px-4 py-8 sm:px-8">
-      <div className="mx-auto max-w-3xl space-y-6">
-        <header className="flex items-start justify-between gap-4">
-          <div><p className="text-sm font-semibold text-primary">{t('settings.eyebrow')}</p><h1 className="mt-1 text-3xl font-black">{t('settings.title')}</h1><p className="mt-2 text-muted-foreground">{t('settings.subtitle')}</p></div>
+    <main className="min-h-screen bg-muted/20 px-4 py-8 sm:px-8 lg:px-10 lg:py-10">
+      <div className="mx-auto max-w-5xl space-y-8">
+        <header className="flex flex-col gap-5 border-b border-border/60 pb-7 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex items-start gap-4">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary">
+              <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">{t('settings.eyebrow')}</p>
+              <h1 className="mt-2 text-3xl font-black tracking-tight text-foreground sm:text-4xl">{t('settings.title')}</h1>
+              <p className="mt-2 max-w-2xl text-sm font-medium leading-relaxed text-muted-foreground">{t('settings.subtitle')}</p>
+            </div>
+          </div>
           <LanguageSwitcher />
         </header>
-        <Card>
-          <CardHeader><CardTitle>{t('settings.privacy.title')}</CardTitle><p className="text-sm text-muted-foreground">{t('settings.privacy.description')}</p></CardHeader>
-          <CardContent className="space-y-4">
-            {loading && <p className="text-sm text-muted-foreground" role="status">{t('settings.loading')}</p>}
-            {error && <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive" role="alert">{t('settings.error')}</p>}
-            {!loading && PURPOSES.map(({ purpose, titleKey }) => {
-              const record = consents.find((consent) => consent.purpose === purpose && consent.active)
-              return <div key={purpose} className="flex items-center justify-between gap-4 rounded-lg border p-4">
-                <div><p className="font-semibold">{t(titleKey)}</p><p className="text-sm text-muted-foreground">{record ? `${t('settings.version')} ${record.policyVersion} · ${new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(record.grantedAt)}` : t('settings.notGranted')}</p></div>
-                <Switch checked={active.has(purpose)} disabled={pending === purpose} onCheckedChange={(checked) => void toggle(purpose, checked)} aria-label={t(titleKey)} />
-              </div>
-            })}
-            <p className="border-t pt-4 text-sm text-muted-foreground">{t('settings.privacy.withdrawExplanation')}</p>
-            <div className="border-t pt-4"><p className="font-semibold">{t('settings.export.title')}</p><p className="mt-1 text-sm text-muted-foreground">{t('settings.export.description')}</p><Button className="mt-3" variant="outline" disabled={exportPending} onClick={() => void requestPersonalExport()}>{exportPending ? t('settings.export.pending') : t('settings.export.request')}</Button>{personalExport && <p className="mt-2 text-sm text-muted-foreground" role="status">{t('settings.export.status')}: {personalExport.status}</p>}</div>
-            <Button variant="outline" asChild><a href="/onboarding">{t('settings.backProfile')}</a></Button>
-          </CardContent>
-        </Card>
+
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+          <Card className="overflow-hidden rounded-2xl border-border/70 shadow-2xs">
+            <CardHeader className="border-b border-border/60 px-5 py-5 sm:px-6">
+              <CardTitle className="text-base font-bold tracking-tight">{t('settings.privacy.title')}</CardTitle>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{t('settings.privacy.description')}</p>
+            </CardHeader>
+            <CardContent className="space-y-4 px-5 py-5 sm:px-6">
+              {loading && <p className="text-sm text-muted-foreground" role="status">{t('settings.loading')}</p>}
+              {error && <p className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{t('settings.error')}</p>}
+              {!loading && PURPOSES.map(({ purpose, titleKey }) => {
+                const record = consents.find((consent) => consent.purpose === purpose && consent.active)
+                return (
+                  <div key={purpose} className="flex items-center justify-between gap-4 rounded-xl border border-border/70 bg-muted/20 p-4 transition-colors hover:border-primary/25">
+                    <div className="min-w-0">
+                      <p className="font-semibold text-foreground">{t(titleKey)}</p>
+                      <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{record ? `${t('settings.version')} ${record.policyVersion} · ${new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(record.grantedAt)}` : t('settings.notGranted')}</p>
+                    </div>
+                    <Switch checked={active.has(purpose)} disabled={pending === purpose} onCheckedChange={(checked) => void toggle(purpose, checked)} aria-label={t(titleKey)} />
+                  </div>
+                )
+              })}
+              <p className="border-t border-border/60 pt-4 text-sm leading-relaxed text-muted-foreground">{t('settings.privacy.withdrawExplanation')}</p>
+            </CardContent>
+          </Card>
+
+          <div className="space-y-6">
+            <Card className="rounded-2xl border-border/70 shadow-2xs">
+              <CardHeader className="px-5 py-5">
+                <CardTitle className="text-base font-bold tracking-tight">{t('settings.export.title')}</CardTitle>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{t('settings.export.description')}</p>
+              </CardHeader>
+              <CardContent className="px-5 pb-5">
+                <Button className="w-full justify-center" variant="outline" disabled={exportPending} onClick={() => void requestPersonalExport()}>
+                  <Download className="mr-2 h-4 w-4" aria-hidden="true" />
+                  {exportPending ? t('settings.export.pending') : t('settings.export.request')}
+                </Button>
+                {personalExport && <p className="mt-3 rounded-lg bg-muted/50 p-3 text-xs leading-relaxed text-muted-foreground" role="status">{t('settings.export.status')}: {personalExport.status}</p>}
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-2xl border-border/70 bg-primary/[0.03] shadow-2xs">
+              <CardContent className="p-5">
+                <p className="text-sm font-semibold text-foreground">{t('settings.backProfile')}</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">Complète ou mets à jour les informations de ton profil.</p>
+                <Button className="mt-4 w-full justify-center" asChild>
+                  <a href="/onboarding">Accéder au profil <ArrowUpRight className="ml-2 h-4 w-4" aria-hidden="true" /></a>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
-    </div>
+    </main>
   )
 }
