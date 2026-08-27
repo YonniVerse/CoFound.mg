@@ -94,8 +94,8 @@ export default function ProjectsFeedPage() {
           </div>
         </header>
 
-        <div className="flex w-full flex-col items-start gap-6 lg:flex-row">
-          <main className="w-full min-w-0 flex-none flex flex-col gap-6 lg:w-[800px] lg:max-w-[800px]">
+        <div className="flex w-full min-w-0 max-w-full flex-col lg:max-w-[calc(100vw-16rem)] items-start gap-6 overflow-x-hidden lg:flex-row">
+          <main className="w-full min-w-0 flex-1 flex flex-col gap-6 lg:max-w-[800px]">
             {isLoading && (
               <div className="space-y-4">
                 <ProjectCardSkeleton />

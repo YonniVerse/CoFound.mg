@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { ChevronDown, ChevronUp, MessageSquare, Send } from 'lucide-react'
+import { Expand, MessageSquare, Send } from 'lucide-react'
 import { getMessages, listConversations, sendMessage } from '@/data/messagingApi'
 import type { ConversationMessage, ConversationView } from '@cofound/shared'
 
@@ -113,7 +113,7 @@ export function MessagesPanel({ isCollapsed, onCollapsedChange }: MessagesPanelP
       </div>}
       <footer className="border-t border-border/70 px-3 py-2">
         <button type="button" className="mx-auto flex h-7 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => onCollapsedChange(!isCollapsed)} aria-label={isCollapsed ? 'Développer la messagerie' : 'Réduire la messagerie'} title={isCollapsed ? 'Développer la messagerie' : 'Réduire la messagerie'} aria-expanded={!isCollapsed} aria-controls="messages-panel-content">
-          {isCollapsed ? <ChevronDown className="h-4 w-4" aria-hidden="true" /> : <ChevronUp className="h-4 w-4" aria-hidden="true" />}
+          <Expand className="h-4 w-4" aria-hidden="true" />
         </button>
       </footer>
     </section>
