@@ -139,7 +139,7 @@ export default function ProjectsFeedPage() {
             )}
           </main>
 
-          <aside className={isMessagesCollapsed ? "fixed bottom-2 right-4 z-40 w-[min(360px,calc(100vw-2rem))]" : "hidden w-[360px] shrink-0 self-start lg:flex"}>
+          <aside className="flex w-full shrink-0 self-start lg:sticky lg:top-[90px] lg:w-[360px]">
             <MessagesPanel isCollapsed={isMessagesCollapsed} onCollapsedChange={setIsMessagesCollapsed} />
           </aside>
         </div>
