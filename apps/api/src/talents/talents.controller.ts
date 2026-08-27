@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common'
+import { Controller, Get, Query, Inject } from '@nestjs/common'
 import { TalentsService } from './talents.service.js'
 import { AllowAnonymous } from '../rbac/rbac.decorators.js'
 import { talentFeedQuerySchema, type TalentFeedResponse } from '@cofound/shared'
@@ -6,7 +6,7 @@ import { talentFeedQuerySchema, type TalentFeedResponse } from '@cofound/shared'
 @AllowAnonymous()
 @Controller('talents')
 export class TalentsController {
-  constructor(private readonly talentsService: TalentsService) {}
+  constructor(@Inject(TalentsService) private readonly talentsService: TalentsService) {}
 
   @Get('feed')
   async getFeed(@Query() query: Record<string, unknown>): Promise<TalentFeedResponse> {

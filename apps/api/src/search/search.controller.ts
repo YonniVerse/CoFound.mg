@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common'
+import { Controller, Get, Query, Inject } from '@nestjs/common'
 import { SearchService } from './search.service.js'
 import { RequirePermissions } from '../rbac/rbac.decorators.js'
 import { Permission } from '../rbac/permissions.js'
@@ -6,7 +6,7 @@ import { searchQuerySchema, type SearchResponse } from '@cofound/shared'
 
 @Controller('search')
 export class SearchController {
-  constructor(private readonly searchService: SearchService) {}
+  constructor(@Inject(SearchService) private readonly searchService: SearchService) {}
 
   @RequirePermissions(Permission.PROJECT_READ)
   @Get()

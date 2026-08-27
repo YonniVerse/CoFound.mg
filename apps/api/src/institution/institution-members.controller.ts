@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, Inject } from '@nestjs/common'
 import { institutionMemberInviteSchema, institutionMemberUpdateSchema } from '@cofound/shared'
 import { AuditAction } from '../audit/audit.decorator.js'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
@@ -8,7 +8,7 @@ import { InstitutionMembersService } from './institution-members.service.js'
 
 @Controller('organizations/:organizationId/members')
 export class InstitutionMembersController {
-  constructor(private readonly membersService: InstitutionMembersService) {}
+  constructor(@Inject(InstitutionMembersService) private readonly membersService: InstitutionMembersService) {}
 
   @Get()
   @RequirePermissions(Permission.ORG_READ)

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { dreamMatchSuggestionsQuerySchema } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
@@ -16,7 +16,7 @@ type ScoredSuggestionRow = {
 
 @Injectable()
 export class DreamMatchScoringService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async markNotInterested(userId: string, candidateTalentId: string) {
     return this.prisma.$transaction(async (tx) => {

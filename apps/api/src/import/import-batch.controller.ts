@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Req, Inject } from '@nestjs/common'
 import { AuditAction } from '../audit/audit.decorator.js'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
 import { Permission } from '../rbac/permissions.js'
@@ -7,7 +7,7 @@ import { ImportBatchService } from './import-batch.service.js'
 
 @Controller('institution/imports')
 export class ImportBatchController {
-  constructor(private readonly importBatchService: ImportBatchService) {}
+  constructor(@Inject(ImportBatchService) private readonly importBatchService: ImportBatchService) {}
 
   @Get()
   @RequirePermissions(Permission.ORG_READ)

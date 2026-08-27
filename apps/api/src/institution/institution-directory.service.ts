@@ -1,11 +1,11 @@
-import { ForbiddenException, Injectable } from '@nestjs/common'
+import { ForbiddenException, Injectable, Inject } from '@nestjs/common'
 import { OrganizationRole } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service.js'
 
 const VIEWERS = [OrganizationRole.ORG_ADMIN, OrganizationRole.ORG_MANAGER, OrganizationRole.ORG_VIEWER]
 @Injectable()
 export class InstitutionDirectoryService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
   async list(organizationId: string, actorId: string, query: { search?: string; cohortYear?: number; status?: string }) {
     await this.assertViewer(organizationId, actorId)
     const affiliations = await this.prisma.affiliation.findMany({ where: { organizationId, ...(query.cohortYear ? { cohortYear: query.cohortYear } : {}), ...(query.status ? { status: query.status as never } : {}), ...(query.search ? { user: { OR: [{ email: { contains: query.search, mode: 'insensitive' } }, { talentIdentity: { firstName: { contains: query.search, mode: 'insensitive' } } }, { talentIdentity: { lastName: { contains: query.search, mode: 'insensitive' } } }] } } : {}) }, include: { user: { select: { id: true, email: true, status: true, lastLoginAt: true, talentIdentity: { select: { firstName: true, lastName: true, photoKey: true } }, talentProfile: { select: { completion: true, field: { select: { labelKey: true } } } }, projectMembers: { where: { leftAt: null }, select: { project: { select: { id: true, title: true, status: true } } } } } } }, orderBy: { startedAt: 'desc' } })

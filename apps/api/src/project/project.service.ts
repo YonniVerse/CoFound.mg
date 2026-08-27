@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { ProjectStatus } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { BMC_BLOCK_KEYS, type BmcBlockKey, type OwnedProjectsResponse, type ProjectCreateInput } from '@cofound/shared'
@@ -7,7 +7,7 @@ type PublishResult = { published: boolean; missingBlocks: BmcBlockKey[]; status:
 
 @Injectable()
 export class ProjectService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async getMine(actorId: string): Promise<OwnedProjectsResponse> {
     const projects = await this.prisma.project.findMany({

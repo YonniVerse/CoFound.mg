@@ -1,10 +1,10 @@
-import { BadRequestException, ConflictException, ForbiddenException, Injectable } from '@nestjs/common'
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, Inject } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service.js'
 import type { ContactRequestCreateInput, ContactRequestDecisionInput } from '@cofound/shared'
 
 @Injectable()
 export class ConnectionRequestService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async create(fromUserId: string, input: ContactRequestCreateInput) {
     if (fromUserId === input.toUserId) throw new BadRequestException({ code: 'SELF_CONTACT_REQUEST', messageKey: 'errors.selfContactRequest' })

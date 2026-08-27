@@ -1,10 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { ApiErrorCode, MIN_PROFILE_COMPLETION, talentIdentityInputSchema, talentProfilePatchSchema, type TalentIdentityInput, type TalentProfilePatchInput } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 
 @Injectable()
 export class ProfileService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async getMine(userId: string) {
     const user = await this.prisma.user.findUnique({

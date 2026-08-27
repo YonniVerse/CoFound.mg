@@ -1,4 +1,4 @@
-import { Controller, Get, Header, Query, Req } from '@nestjs/common'
+import { Controller, Get, Header, Query, Req, Inject } from '@nestjs/common'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
 import { Permission } from '../rbac/permissions.js'
 import { RequirePermissions } from '../rbac/rbac.decorators.js'
@@ -7,7 +7,7 @@ import { AuditService } from './audit.service.js'
 @Controller('staff/audit')
 @RequirePermissions(Permission.AUDIT_READ)
 export class AuditController {
-  constructor(private readonly auditService: AuditService) {}
+  constructor(@Inject(AuditService) private readonly auditService: AuditService) {}
 
   @Get()
   list(@Query() query: unknown) {

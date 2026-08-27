@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto'
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { Injectable, UnauthorizedException, Inject } from '@nestjs/common'
 import * as argon2 from 'argon2'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { getJwtSecret } from './jwt-secret.js'
@@ -22,10 +22,7 @@ export type AuthSession = {
 export class AuthService {
   private readonly jwtSecret = getJwtSecret()
 
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly notificationsQueue: NotificationsQueueService,
-  ) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Inject(NotificationsQueueService) private readonly notificationsQueue: NotificationsQueueService) {}
 
   async login(input: LoginInput): Promise<AuthSession> {
     const user = await this.prisma.user.findUnique({ where: { email: input.email.toLowerCase() } })

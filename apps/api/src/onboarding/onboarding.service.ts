@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { ApiErrorCode, MIN_PROFILE_COMPLETION, onboardingStepRequestSchema, talentIdentityInputSchema, talentProfilePatchSchema, type OnboardingStepRequest } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 
@@ -8,12 +8,37 @@ type ProfileState = { id: string; completion: number; onboardingStep: number; on
 
 @Injectable()
 export class OnboardingService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async getMine(userId: string) {
-    const profile = await this.prisma.talentProfile.findUnique({ where: { userId }, select: { id: true, completion: true, onboardingStep: true, onboardingCompletedSteps: true } })
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        talentIdentity: { select: { firstName: true, lastName: true, gender: true } },
+        talentProfile: { include: { skills: { select: { skillId: true } } } }
+      }
+    })
+    const identity = user?.talentIdentity
+    const profile = user?.talentProfile
     const completedSteps = this.readCompleted(profile?.onboardingCompletedSteps)
-    return { progress: this.progress(profile?.onboardingStep ?? 1, completedSteps, profile?.completion ?? 0), profile: profile ? { id: profile.id, completion: profile.completion } : null }
+    const data: Record<string, unknown> = {}
+    if (identity) {
+      data.firstName = identity.firstName
+      data.lastName = identity.lastName
+      data.gender = identity.gender
+    }
+    if (profile) {
+      data.pseudonym = profile.pseudonym
+      data.bio = profile.bio
+      data.fieldId = profile.fieldId
+      data.cohortYear = profile.cohortYear
+      data.availabilityHours = profile.availabilityHours
+      data.skillIds = profile.skills.map(s => s.skillId)
+      data.goals = profile.goals
+      data.sectorIds = profile.sectors
+      data.visibleInTalentFeed = profile.visibleInTalentFeed
+    }
+    return { progress: this.progress(profile?.onboardingStep ?? 1, completedSteps, profile?.completion ?? 0), profile: profile ? { id: profile.id, completion: profile.completion } : null, data }
   }
 
   async saveStep(userId: string, rawInput: unknown) {
@@ -68,7 +93,7 @@ export class OnboardingService {
   private async validateStep(step: number, data: Record<string, unknown>) {
     const schema = step === 1 ? talentIdentityInputSchema : step === 2 ? talentProfilePatchSchema.pick({ fieldId: true, cohortYear: true }) : step === 4 ? talentProfilePatchSchema.pick({ goals: true, sectorIds: true }) : step === 5 ? talentProfilePatchSchema.pick({ availabilityHours: true }) : step === 6 ? talentProfilePatchSchema.pick({ pseudonym: true, bio: true, visibleInTalentFeed: true }) : null
     if (schema && !schema.safeParse(data).success) throw new BadRequestException({ code: ApiErrorCode.VALIDATION_FAILED, messageKey: 'onboarding.errors.invalidData' })
-    if (step === 3 && (!Array.isArray(data.skillIds) || data.skillIds.length < 3 || data.skillIds.length > 8 || new Set(data.skillIds).size !== data.skillIds.length || data.skillIds.some((id) => typeof id !== 'string'))) throw new BadRequestException({ code: ApiErrorCode.VALIDATION_FAILED, messageKey: 'onboarding.errors.invalidSkills' })
+    if (step === 3 && (!Array.isArray(data.skillIds) || data.skillIds.length < 1 || data.skillIds.length > 8 || new Set(data.skillIds).size !== data.skillIds.length || data.skillIds.some((id) => typeof id !== 'string'))) throw new BadRequestException({ code: ApiErrorCode.VALIDATION_FAILED, messageKey: 'onboarding.errors.invalidSkills' })
   }
   private asStrings(value: unknown): string[] { return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [] }
   private readCompleted(value: unknown): number[] { return Array.isArray(value) ? value.filter((step): step is number => Number.isInteger(step) && step >= 1 && step <= 6) : [] }

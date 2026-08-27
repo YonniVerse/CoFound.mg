@@ -1,4 +1,4 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { ConflictException, ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { createHash, randomBytes } from 'node:crypto'
 import type { Prisma } from '@prisma/client'
 import { ImportBatchStatus, ImportRowResult } from '@prisma/client'
@@ -37,10 +37,7 @@ export type ImportApplyResult = {
 
 @Injectable()
 export class ImportApplyService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly notificationsQueue: NotificationsQueueService,
-  ) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Inject(NotificationsQueueService) private readonly notificationsQueue: NotificationsQueueService) {}
 
   async apply(input: ImportApplyInput, actorId: string): Promise<ImportApplyResult> {
     const invitations: PendingInvitation[] = []

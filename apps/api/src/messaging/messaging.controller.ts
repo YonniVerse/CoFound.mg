@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Req } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Get, Param, Post, Req, Inject } from '@nestjs/common'
 import { conversationMessageCreateSchema } from '@cofound/shared'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
 import { Permission } from '../rbac/permissions.js'
@@ -7,7 +7,7 @@ import { MessagingService } from './messaging.service.js'
 
 @Controller('conversations')
 export class MessagingController {
-  constructor(private readonly service: MessagingService) {}
+  constructor(@Inject(MessagingService) private readonly service: MessagingService) {}
   @Post('from-connection/:connectionId')
   @RequirePermissions(Permission.MESSAGE_SEND)
   open(@Req() req: AuthenticatedRequest, @Param('connectionId') id: string) { return this.service.openDirect(req.user!.userId, id) }

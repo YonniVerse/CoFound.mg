@@ -1,10 +1,8 @@
-import {
-  Injectable,
+import { Injectable,
   NotFoundException,
   BadRequestException,
   ConflictException,
-  Optional,
-} from '@nestjs/common'
+  Optional, Inject } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { NotificationService } from '../notifications/notification.service.js'
 import {
@@ -20,7 +18,7 @@ import {
 
 @Injectable()
 export class ApplicationsService {
-  constructor(private readonly prisma: PrismaService, @Optional() private readonly notifications?: NotificationService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Optional() @Inject(NotificationService) private readonly notifications?: NotificationService) {}
 
   async create(
     applicantId: string,

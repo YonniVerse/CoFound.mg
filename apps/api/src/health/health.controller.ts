@@ -1,4 +1,4 @@
-import { Controller, Get, Res } from '@nestjs/common'
+import { Controller, Get, Inject, Res } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { AllowAnonymous } from '../rbac/rbac.decorators.js'
 
@@ -13,16 +13,18 @@ type StatusResponse = {
 @AllowAnonymous()
 @Controller('health')
 export class HealthController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   @Get()
   async getHealth(@Res({ passthrough: true }) response: StatusResponse): Promise<HealthResponse> {
     try {
       await this.prisma.$queryRaw`SELECT 1`
       return { status: 'ok', database: 'ok' }
-    } catch {
+    } catch (error) {
+      console.error('[HealthController Error]', error)
       response.status(503)
       return { status: 'degraded', database: 'unavailable' }
     }
   }
 }
+

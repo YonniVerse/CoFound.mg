@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { PostType, Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service.js'
 import type { ProjectPost, ProjectPostCreateInput, ProjectPostUpdateInput, ProjectPostsResponse } from '@cofound/shared'
@@ -11,7 +11,7 @@ type PostWithAuthor = Prisma.PostGetPayload<{ include: typeof postInclude }>
 
 @Injectable()
 export class ProjectPostsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   private async requireMember(projectId: string, userId: string) {
     const membership = await this.prisma.projectMember.findFirst({ where: { projectId, userId, leftAt: null } })

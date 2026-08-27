@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Req } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Query, Req, Inject } from '@nestjs/common'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
 import { RequirePermissions } from '../rbac/rbac.decorators.js'
 import { Permission } from '../rbac/permissions.js'
@@ -7,7 +7,7 @@ import { PartnerDiscoveryService } from './partner-discovery.service.js'
 @Controller('organizations/:organizationId')
 @RequirePermissions(Permission.ORG_READ)
 export class PartnerDiscoveryController {
-  constructor(private readonly service: PartnerDiscoveryService) {}
+  constructor(@Inject(PartnerDiscoveryService) private readonly service: PartnerDiscoveryService) {}
 
   @Get('projects/search')
   search(@Param('organizationId') organizationId: string, @Query() query: unknown, @Req() request: AuthenticatedRequest) {

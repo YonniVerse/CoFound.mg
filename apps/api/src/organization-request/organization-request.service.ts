@@ -1,14 +1,11 @@
-import { BadRequestException, ConflictException, Injectable, Optional, ServiceUnavailableException } from '@nestjs/common'
+import { BadRequestException, ConflictException, Injectable, Optional, ServiceUnavailableException, Inject } from '@nestjs/common'
 import { organizationRequestInputSchema, type OrganizationRequestInput } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { CloudinaryService, type UploadedFile } from './cloudinary.service.js'
 
 @Injectable()
 export class OrganizationRequestService {
-  constructor(
-    private readonly prisma: PrismaService,
-    @Optional() private readonly cloudinary?: CloudinaryService,
-  ) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Optional() @Inject(CloudinaryService) private readonly cloudinary?: CloudinaryService) {}
 
   async create(body: unknown, files: UploadedFile[] = []) {
     const parsed = organizationRequestInputSchema.safeParse(this.prepareInput(body, files))

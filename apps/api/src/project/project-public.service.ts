@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service.js'
 
 @Injectable()
 export class ProjectPublicService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async getPublic(projectId: string) {
     const project = await this.prisma.project.findUnique({ where: { id: projectId }, select: {

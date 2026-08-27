@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, Optional } from '@nestjs/common'
+import { ForbiddenException, Injectable, Optional, Inject } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import type { ConversationMessageCreateInput } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
@@ -6,7 +6,7 @@ import { NotificationService } from '../notifications/notification.service.js'
 
 @Injectable()
 export class MessagingService {
-  constructor(private readonly prisma: PrismaService, @Optional() private readonly notifications?: NotificationService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Optional() @Inject(NotificationService) private readonly notifications?: NotificationService) {}
 
   async openDirect(userId: string, connectionId: string) {
     try {

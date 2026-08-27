@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Inject } from '@nestjs/common'
 import type { Prisma } from '@prisma/client'
 import { auditLogQuerySchema, type AuditLogQuery, type AuditLogResponse } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
@@ -20,7 +20,7 @@ const SAFE_METADATA_KEYS = new Set([
 
 @Injectable()
 export class AuditService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async record(event: AuditEvent): Promise<void> {
     await this.prisma.auditLog.create({

@@ -1,11 +1,11 @@
-import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { opportunityApplicationCreateSchema, opportunityApplicationDecisionSchema, opportunityCreateSchema } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { AuditService } from '../audit/audit.service.js'
 
 @Injectable()
 export class OpportunityService {
-  constructor(private readonly prisma: PrismaService, private readonly audit: AuditService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Inject(AuditService) private readonly audit: AuditService) {}
 
   async listPublished() {
     return this.prisma.opportunity.findMany({ where: { status: 'PUBLISHED' }, orderBy: [{ deadline: 'asc' }, { createdAt: 'desc' }], select: this.opportunitySelect() })

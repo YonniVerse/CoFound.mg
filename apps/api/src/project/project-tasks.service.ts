@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { Prisma, TaskStatus } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service.js'
 import type { CreateProjectTaskInput, ProjectTask, ProjectTasksResponse, UpdateProjectTaskInput } from '@cofound/shared'
@@ -11,7 +11,7 @@ type TaskWithAssignee = Prisma.TaskGetPayload<{ include: typeof taskInclude }>
 
 @Injectable()
 export class ProjectTasksService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   private async requireMember(projectId: string, userId: string) {
     const membership = await this.prisma.projectMember.findFirst({ where: { projectId, userId, leftAt: null } })

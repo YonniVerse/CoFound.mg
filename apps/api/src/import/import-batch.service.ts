@@ -1,4 +1,4 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { ConflictException, ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { createHash, randomBytes } from 'node:crypto'
 import { AccountStatus, ImportBatchStatus, ImportRowResult, OrganizationRole } from '@prisma/client'
 import { INVITATION_EXPIRY_DAYS } from '@cofound/shared'
@@ -11,10 +11,7 @@ type BatchCounters = { totalRows: number; createdRows: number; updatedRows: numb
 
 @Injectable()
 export class ImportBatchService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly notificationsQueue: NotificationsQueueService,
-  ) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Inject(NotificationsQueueService) private readonly notificationsQueue: NotificationsQueueService) {}
 
   async list(actorId: string) {
     const organizationIds = await this.authorizedOrganizationIds(actorId, false)

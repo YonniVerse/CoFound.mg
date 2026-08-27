@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Req, Inject } from '@nestjs/common'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
 import { AllowAnonymous, RequirePermissions } from '../rbac/rbac.decorators.js'
 import { Permission } from '../rbac/permissions.js'
@@ -6,7 +6,7 @@ import { OpportunityService } from './opportunity.service.js'
 
 @Controller('opportunities')
 export class PublicOpportunityController {
-  constructor(private readonly service: OpportunityService) {}
+  constructor(@Inject(OpportunityService) private readonly service: OpportunityService) {}
 
   @Get()
   @AllowAnonymous()
@@ -24,7 +24,7 @@ export class PublicOpportunityController {
 @Controller('organizations/:organizationId/opportunities')
 @RequirePermissions(Permission.ORG_READ)
 export class OrganizationOpportunityController {
-  constructor(private readonly service: OpportunityService) {}
+  constructor(@Inject(OpportunityService) private readonly service: OpportunityService) {}
 
   @Get()
   listForOrganization(@Param('organizationId') organizationId: string, @Req() request: AuthenticatedRequest) {

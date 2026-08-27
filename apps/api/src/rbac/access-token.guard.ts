@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import type { CanActivate, ExecutionContext } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { jwtVerify } from 'jose'
@@ -8,10 +8,15 @@ import type { AuthenticatedRequest } from '../auth/auth-request.js'
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+  private readonly reflector: Reflector
+
+  constructor(@Inject(Reflector) reflector?: Reflector) {
+    this.reflector = reflector ?? new Reflector()
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isAnonymous = this.reflector.getAllAndOverride<boolean>(ANONYMOUS_KEY, [
+
       context.getHandler(),
       context.getClass(),
     ])

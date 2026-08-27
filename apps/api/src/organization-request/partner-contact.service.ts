@@ -1,11 +1,11 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
+import { ConflictException, ForbiddenException, Injectable, NotFoundException, BadRequestException, Inject } from '@nestjs/common'
 import { organizationProjectContactInputSchema } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { AuditService } from '../audit/audit.service.js'
 
 @Injectable()
 export class PartnerContactService {
-  constructor(private readonly prisma: PrismaService, private readonly audit: AuditService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Inject(AuditService) private readonly audit: AuditService) {}
 
   async contact(actorId: string, organizationId: string, projectId: string, body: unknown) {
     const membership = await this.prisma.organizationMember.findUnique({ where: { organizationId_userId: { organizationId, userId: actorId } }, select: { role: true, user: { select: { status: true } }, organization: { select: { capabilities: { select: { capability: true } } } } } })

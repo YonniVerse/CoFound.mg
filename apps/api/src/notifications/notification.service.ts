@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { NotificationsQueueService } from './notifications-queue.service.js'
@@ -6,7 +6,7 @@ import type { BusinessEmailJob } from './notification-job.js'
 
 @Injectable()
 export class NotificationService {
-  constructor(private readonly prisma: PrismaService, private readonly queue: NotificationsQueueService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Inject(NotificationsQueueService) private readonly queue: NotificationsQueueService) {}
 
   async list(userId: string) {
     return await this.prisma.notification.findMany({ where: { userId }, orderBy: { createdAt: 'desc' }, take: 50 })

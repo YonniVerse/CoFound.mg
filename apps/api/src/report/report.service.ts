@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, Optional } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException, Optional, Inject } from '@nestjs/common'
 import { moderationDecisionSchema, moderationQueueQuerySchema, reportCreateSchema } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { AuditService } from '../audit/audit.service.js'
@@ -6,11 +6,7 @@ import { NotificationService } from '../notifications/notification.service.js'
 
 @Injectable()
 export class ReportService {
-  constructor(
-    private readonly prisma: PrismaService,
-    @Optional() private readonly notifications?: NotificationService,
-    @Optional() private readonly audit?: AuditService,
-  ) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Optional() @Inject(NotificationService) private readonly notifications?: NotificationService, @Optional() @Inject(AuditService) private readonly audit?: AuditService) {}
 
   async create(reporterId: string, input: unknown) {
     const parsed = reportCreateSchema.safeParse(input)

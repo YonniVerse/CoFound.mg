@@ -1,10 +1,10 @@
-import { ForbiddenException, Injectable, NotFoundException, Optional } from '@nestjs/common'
+import { ForbiddenException, Injectable, NotFoundException, Optional, Inject } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { NotificationService } from '../notifications/notification.service.js'
 
 @Injectable()
 export class ConnectionService {
-  constructor(private readonly prisma: PrismaService, @Optional() private readonly notifications?: NotificationService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Optional() @Inject(NotificationService) private readonly notifications?: NotificationService) {}
 
   async acceptRequest(userId: string, requestId: string) {
     const result = await this.prisma.$transaction(async (tx) => {

@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common'
+import { ForbiddenException, Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import type { CanActivate, ExecutionContext } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
@@ -7,9 +7,14 @@ import { PLATFORM_ROLE_PERMISSIONS, Permission, type Permission as PermissionTyp
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+  private readonly reflector: Reflector
+
+  constructor(@Inject(Reflector) reflector?: Reflector) {
+    this.reflector = reflector ?? new Reflector()
+  }
 
   canActivate(context: ExecutionContext): boolean {
+
     const isAnonymous = this.reflector.getAllAndOverride<boolean>(ANONYMOUS_KEY, [
       context.getHandler(),
       context.getClass(),

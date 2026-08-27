@@ -1,10 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { consentGrantSchema, consentPurposeSchema, consentRevokeSchema, ApiErrorCode, type ConsentPurpose } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 
 @Injectable()
 export class ConsentService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async listMine(userId: string) {
     const consents = await this.prisma.consent.findMany({ where: { userId }, orderBy: [{ purpose: 'asc' }, { grantedAt: 'desc' }] })

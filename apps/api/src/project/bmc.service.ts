@@ -1,11 +1,11 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { BMC_BLOCK_KEYS, type BmcBlocks, type BmcPatchInput } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 
 @Injectable()
 export class BmcService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async get(actorId: string, projectId: string) {
     await this.assertMember(actorId, projectId)

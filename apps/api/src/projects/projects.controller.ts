@@ -1,11 +1,11 @@
-import { Controller, Get, Query } from '@nestjs/common'
+import { Controller, Get, Query, Inject } from '@nestjs/common'
 import { projectFeedQuerySchema, projectPostFeedQuerySchema, type ProjectFeedResponse, type ProjectPostFeedResponse } from '@cofound/shared'
 import { AllowAnonymous } from '../rbac/rbac.decorators.js'
 import { ProjectsService } from './projects.service.js'
 
 @Controller('projects')
 export class ProjectsController {
-  constructor(private readonly projectsService: ProjectsService) {}
+  constructor(@Inject(ProjectsService) private readonly projectsService: ProjectsService) {}
 
   @Get('feed')
   @AllowAnonymous()

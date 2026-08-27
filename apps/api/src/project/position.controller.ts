@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common'
+import { Body, Controller, Get, Param, Patch, Post, Req, Inject } from '@nestjs/common'
 import { openPositionCreateSchema, openPositionPatchSchema } from '@cofound/shared'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
 import { Permission } from '../rbac/permissions.js'
@@ -7,7 +7,7 @@ import { PositionService } from './position.service.js'
 
 @Controller('projects/:projectId/positions')
 export class PositionController {
-  constructor(private readonly positionService: PositionService) {}
+  constructor(@Inject(PositionService) private readonly positionService: PositionService) {}
 
   @Get()
   @RequirePermissions(Permission.PROJECT_READ)

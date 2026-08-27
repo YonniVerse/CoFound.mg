@@ -1,12 +1,10 @@
-import {
-  Controller,
+import { Controller,
   Get,
   Post,
   Patch,
   Body,
   Param,
-  Req,
-} from '@nestjs/common'
+  Req, Inject } from '@nestjs/common'
 import { ApplicationsService } from './applications.service.js'
 import { RequirePermissions } from '../rbac/rbac.decorators.js'
 import { Permission } from '../rbac/permissions.js'
@@ -23,7 +21,7 @@ import {
 
 @Controller('applications')
 export class ApplicationsController {
-  constructor(private readonly applicationsService: ApplicationsService) {}
+  constructor(@Inject(ApplicationsService) private readonly applicationsService: ApplicationsService) {}
 
   @Post()
   @RequirePermissions(Permission.PROJECT_APPLY)

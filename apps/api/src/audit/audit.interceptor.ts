@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import type { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { tap } from 'rxjs'
@@ -8,12 +8,15 @@ import { AuditService } from './audit.service.js'
 
 @Injectable()
 export class AuditInterceptor implements NestInterceptor {
-  constructor(
-    private readonly reflector: Reflector,
-    private readonly auditService: AuditService,
-  ) {}
+  private readonly reflector: Reflector
+
+  constructor(@Inject(Reflector) reflector: Reflector = new Reflector(), @Inject(AuditService) private readonly auditService: AuditService) {
+    this.reflector = reflector
+  }
 
   intercept(context: ExecutionContext, next: CallHandler) {
+
+
     const metadata = this.reflector.getAllAndOverride<AuditActionMetadata>(AUDIT_ACTION_KEY, [
       context.getHandler(),
       context.getClass(),
