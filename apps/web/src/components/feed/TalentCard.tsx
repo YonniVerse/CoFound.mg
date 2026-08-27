@@ -1,7 +1,7 @@
 import type { TalentFeedCard } from "@cofound/shared";
 import { Avatar } from "@/components/shared/Avatar";
 import { Button } from "@/components/ui/button";
-import { Eye, MessageSquare, Clock } from "lucide-react";
+import { MessageSquare, Clock } from "lucide-react";
 import { ReportButton } from "@/components/shared/ReportButton";
 import { BlockButton } from "@/components/shared/BlockButton";
 import { useI18n } from "@/i18n";
@@ -53,6 +53,10 @@ export function TalentCard({ talent }: TalentCardProps) {
           {talent.completion}% {t('common.completed')}
         </span>
       </div>
+
+      <p className="text-xs font-medium text-muted-foreground/80">
+        {t('common.identityProtected')}
+      </p>
 
       {/* Headline & Bio */}
       <div className="space-y-1.5 min-w-0">
@@ -112,14 +116,6 @@ export function TalentCard({ talent }: TalentCardProps) {
         )}
 
         <div className="flex flex-wrap items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-9 px-3 text-xs sm:text-sm font-medium rounded-lg border-border hover:bg-accent cursor-pointer gap-1.5"
-          >
-            <Eye className="h-4 w-4" />
-            <span>{t('common.profile')}</span>
-          </Button>
           <ReportButton targetType="PROFILE" targetId={talent.id} />
           <BlockButton userId={talent.id} />
           <Button
@@ -127,7 +123,7 @@ export function TalentCard({ talent }: TalentCardProps) {
             className="h-9 px-3 text-xs sm:text-sm font-medium rounded-lg cursor-pointer gap-1.5"
           >
             <MessageSquare className="h-4 w-4" />
-            <span>{t('common.contact')}</span>
+            <span>{t('common.proposeExchange')}</span>
           </Button>
         </div>
       </div>
