@@ -817,7 +817,7 @@ export const talentFeedCardSchema = z.object({
   cohortYear: z.number().int().nullable(),
   availabilityHours: z.number().int().nullable(),
   goals: z.array(z.string()),
-  skills: z.array(z.object({ id: idSchema, slug: z.string(), labelKey: z.string() })),
+  skills: z.array(z.object({ id: idSchema, slug: z.string(), labelKey: z.string(), category: z.string().nullable() })),
   completion: z.number().int().min(0).max(100),
 })
 

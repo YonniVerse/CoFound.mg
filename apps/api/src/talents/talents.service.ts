@@ -69,6 +69,7 @@ export class TalentsService {
         id: ts.skill.id,
         slug: ts.skill.slug,
         labelKey: ts.skill.labelKey,
+        category: ts.skill.category ?? null,
       })),
       completion: p.completion,
     }))
