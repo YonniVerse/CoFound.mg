@@ -4,7 +4,7 @@
 **Phase** : correction de déploiement Prisma/Neon fusionnée dans `main`
 **Ticket / vague** : correctif déploiement Render — migrations Prisma via connexion Neon directe
 **Branche locale** : `main`
-**État Git** : `main` est synchronisée avec `origin/main` sur `333c3fa` et le dépôt est propre.
+**État Git** : `main` est synchronisée avec `origin/main` sur `e6c710c` et le dépôt est propre.
 
 ## 1. État courant
 
@@ -31,13 +31,13 @@ Le diagnostic Neon a identifié le PID `15843` (`application_name=pgbouncer`, é
 
 `DIRECT_URL` est maintenant reconnue par Render, comme le confirme le log du commit `b22ad57`. Ne pas remplacer `DATABASE_URL`, qui reste la connexion poolée utilisée par l’application.
 
-Le verrou Neon ayant été libéré, relancer le déploiement de `main`. La commande de démarrage doit exécuter Prisma Migrate sur la connexion directe puis lancer `node dist/main.js`.
+Le verrou Neon ayant été libéré, relancer le déploiement de `main`. La commande de démarrage doit exécuter Prisma Migrate sur la connexion directe puis lancer `node dist/main.js`. Les commits de style et de réorganisation du feed reçus à distance ont également été intégrés dans `main` avant la validation finale.
 
 Si le déploiement échoue encore, récupérer le log complet suivant et vérifier qu’un nouveau PID ne reprend pas le verrou `72707369`. Ne pas désactiver l’advisory lock globalement sans nouvelle analyse de concurrence.
 
 ## 4. Validation et limites
 
-Les contrôles locaux réussis après la modification sont `prisma validate` avec une URL factice, typecheck API, lint API et `git diff --check`. Le script confirme la résolution de `DIRECT_URL` avant l’appel Prisma, mais aucun accès réel à la base de production n’a été lancé depuis le dépôt.
+Les contrôles locaux réussis après la modification sont `prisma validate` avec une URL factice, typecheck API, lint API, typecheck frontend, lint frontend et `git diff --check`. Le script confirme la résolution de `DIRECT_URL` avant l’appel Prisma, mais aucun accès réel à la base de production n’a été lancé depuis le dépôt.
 
 La base Neon a été interrogée en lecture pour l’état des migrations et des verrous. L’historique `_prisma_migrations` montre 9 migrations terminées jusqu’à `20260822200000_add_organization_project_contacts`. La seule action d’écriture a été la terminaison autorisée de la session PostgreSQL `15843`; aucun `DROP`, `DELETE`, `TRUNCATE`, `UPDATE` métier ni reset de base n’a été effectué.
 
