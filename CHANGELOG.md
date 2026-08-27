@@ -10,6 +10,55 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-27 — Refonte sociale de l’onglet Projet du feed
+
+### Décidé
+
+- Afficher les publications sous l’identité du projet plutôt que sous celle de l’utilisateur, afin que le feed reste centré sur les équipes et leurs avancées.
+- Limiter le compositeur aux projets possédés par le compte connecté et ne rendre publiques que les publications non expirées des projets `RECRUITING` ou `ACTIVE`, afin de protéger les brouillons et les projets inactifs.
+
+### Ajouté
+
+- Fil social `ProjectSocialFeed` dans l’onglet Projet de `/feed`, avec sélection du projet, type de publication, validation, états de chargement/erreur/vide et lien vers le projet.
+- Endpoint authentifié `GET /api/v1/projects/mine` et endpoint public `GET /api/v1/projects/posts/feed`.
+- Contrats shared pour les projets possédés et les publications enrichies avec les informations du projet.
+- Tests backend ciblés pour la liste des projets possédés et le feed de publications projet-branded.
+- Traductions françaises et malgaches du nouveau parcours.
+
+### Modifié
+
+- `/feed` n’affiche plus le parcours de la page `/projects` dans l’onglet Projet avec les libellés « Projets qui recrutent » et « Nouveau projet » ; il affiche désormais le fil social dédié aux projets.
+- Les fonctionnalités existantes des onglets Tous et Co-fondateurs restent inchangées.
+
+### Validation
+
+- Shared build, typecheck/lint/build frontend et typecheck/lint/build API réussis.
+- Tests backend ciblés : **10/10 réussis**.
+- Aucun test Playwright ni déploiement Vercel n’a été exécuté pour cette fonctionnalité pendant cette session.
+
+---
+
+## 2026-08-27 — Nettoyage des branches obsolètes
+
+### Décidé
+
+- Conserver uniquement `main` et `dev`, afin de réduire le dépôt aux deux branches de référence sans modifier le code applicatif.
+- Ne pas fusionner mécaniquement les branches anciennes divergentes lorsqu’un livrable fonctionnel équivalent ou ultérieur est déjà présent dans `main`, afin d’éviter de réintroduire du code obsolète.
+
+### Retiré
+
+- Suppression de **56 branches distantes** obsolètes sur GitHub après audit de leur historique et de leurs pull requests.
+- L’ancien outillage de mock de discussion de P-10 n’a pas été réintroduit dans `main`, car le canal de discussion réel est déjà présent dans `main`.
+
+### Validation
+
+- Avant nettoyage : **58 branches distantes** détectées par l’API GitHub ; aucune pull request ouverte.
+- Résultat : l’API GitHub et les références locales après `git fetch --all --prune` ne contiennent plus que `main` et `dev`.
+- Suppressions réussies : **56/56** ; échec : **0**.
+- Aucun fichier de code n’a été modifié et aucun build ou test applicatif n’a été relancé.
+
+---
+
 ## 2026-08-24 — Recette Playwright du rôle Talent et raccordement du détail projet
 
 ### Décidé

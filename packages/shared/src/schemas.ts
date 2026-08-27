@@ -676,6 +676,41 @@ export type ProjectPostUpdateInput = z.infer<typeof projectPostUpdateSchema>
 export type ProjectPost = z.infer<typeof projectPostSchema>
 export type ProjectPostsResponse = z.infer<typeof projectPostsResponseSchema>
 
+export const ownedProjectSchema = z.object({
+  id: idSchema,
+  title: z.string(),
+  pitch: z.string(),
+  status: z.nativeEnum(ProjectStatus),
+  createdAt: z.coerce.date(),
+})
+export const ownedProjectsResponseSchema = z.object({ projects: z.array(ownedProjectSchema) })
+export type OwnedProject = z.infer<typeof ownedProjectSchema>
+export type OwnedProjectsResponse = z.infer<typeof ownedProjectsResponseSchema>
+
+export const projectPostFeedItemSchema = z.object({
+  id: idSchema,
+  projectId: idSchema,
+  type: projectPostTypeSchema,
+  content: z.string(),
+  expiresAt: z.coerce.date().nullable(),
+  createdAt: z.coerce.date(),
+  project: z.object({
+    id: idSchema,
+    title: z.string(),
+    pitch: z.string(),
+    status: z.nativeEnum(ProjectStatus),
+    sector: z.object({ id: idSchema, slug: z.string(), labelKey: z.string() }).nullable(),
+    region: z.object({ id: idSchema, slug: z.string(), labelKey: z.string() }).nullable(),
+  }),
+})
+export const projectPostFeedResponseSchema = z.object({
+  items: z.array(projectPostFeedItemSchema),
+  nextCursor: z.string().nullable(),
+  hasMore: z.boolean(),
+})
+export type ProjectPostFeedItem = z.infer<typeof projectPostFeedItemSchema>
+export type ProjectPostFeedResponse = z.infer<typeof projectPostFeedResponseSchema>
+
 // ─── Détail projet privé (P-01/P-05) ───────────────────────────────────────────
 export const projectPrivateDetailSchema = z.object({
   id: idSchema,
@@ -797,6 +832,13 @@ export const projectFeedResponseSchema = z.object({
   nextCursor: z.string().nullable(),
   hasMore: z.boolean(),
 })
+
+export const projectPostFeedQuerySchema = z.object({
+  search: z.string().trim().max(100).optional(),
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+})
+export type ProjectPostFeedQuery = z.infer<typeof projectPostFeedQuerySchema>
 
 // ─── Talent Feed (M-04) ───────────────────────────────────────────────────────
 

@@ -8,6 +8,7 @@ import { SuggestedProfilesWidget } from "@/components/feed/SuggestedProfilesWidg
 import { TalentCard } from "@/components/feed/TalentCard";
 import { TalentCardSkeleton } from "@/components/feed/TalentCardSkeleton";
 import { FeedErrorWidget } from "@/components/feed/FeedErrorWidget";
+import { ProjectSocialFeed } from "@/components/feed/ProjectSocialFeed";
 import { useFeedData } from "@/hooks/useFeedData";
 import { useTalentFeedData } from "@/hooks/useTalentFeedData";
 import { Users } from "lucide-react";
@@ -77,7 +78,7 @@ export default function FeedPage() {
       <div className="flex items-start px-4 sm:px-10 py-8 gap-6 max-w-[1400px] mx-auto w-full">
         {/* Main Column: Feed */}
         <div className="flex-1 min-w-0 max-w-3xl flex flex-col gap-6">
-          {isLoading && (
+          {filter !== "projects" && isLoading && (
             <div className="space-y-4">
               <TalentCardSkeleton />
               <TalentCardSkeleton />
@@ -85,14 +86,16 @@ export default function FeedPage() {
             </div>
           )}
 
-          {error && (
+          {filter !== "projects" && error && (
             <FeedErrorWidget
               message={error}
               onRetry={retry}
             />
           )}
 
-          {!isLoading && !error && (
+          {filter === "projects" ? (
+            <ProjectSocialFeed />
+          ) : !isLoading && !error && (
             <>
               {/* ── Real API Talents Feed (M-04) ── */}
               {showTalents && hasTalents && (
