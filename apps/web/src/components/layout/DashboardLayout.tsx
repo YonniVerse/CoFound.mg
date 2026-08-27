@@ -7,7 +7,8 @@ import {
   Search, 
   Users,
   BarChart2,
-  User, 
+  User,
+  CheckCircle2,
   Settings,
   Menu
 } from "lucide-react";
@@ -153,12 +154,23 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 lg:pl-64 w-full">
+      <main className="min-w-0 w-full flex-1 overflow-x-hidden lg:pl-64">
         {completionReminder?.shouldRemind && location.pathname !== '/onboarding' && (
           <div className="border-b border-primary/20 bg-primary/5 px-4 py-3 sm:px-8" role="status">
-            <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 text-sm">
-              <p className="text-foreground">{t('profile.completionReminder.message').replace('{completion}', String(completionReminder.completion))}</p>
-              <Link to={completionReminder.ctaPath} className="shrink-0 font-semibold text-primary underline-offset-4 hover:underline">{t('profile.completionReminder.action')}</Link>
+            <div className="mx-auto flex max-w-5xl items-center gap-3 sm:gap-4">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+                  <p className="text-sm font-semibold text-foreground">{t('profile.completionReminder.message').replace('{completion}', String(completionReminder.completion))}</p>
+                  <span className="shrink-0 text-sm font-bold text-primary">{completionReminder.completion}%</span>
+                </div>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-primary/10" role="progressbar" aria-label="Progression du profil" aria-valuemin={0} aria-valuemax={100} aria-valuenow={completionReminder.completion}>
+                  <div className="h-full rounded-full bg-primary transition-[width]" style={{ width: `${completionReminder.completion}%` }} />
+                </div>
+              </div>
+              <Link to={completionReminder.ctaPath} className="shrink-0 rounded-lg px-3 py-2 text-xs font-semibold text-primary transition-colors hover:bg-primary/10">{t('profile.completionReminder.action')}</Link>
             </div>
           </div>
         )}

@@ -75,9 +75,9 @@ export default function FeedPage() {
         setSearch={setSearch}
       />
 
-      <div className="flex items-start px-4 sm:px-10 py-8 gap-6 max-w-[1400px] mx-auto w-full">
+      <div className="mx-auto flex w-full min-w-0 max-w-full flex-col lg:max-w-[calc(100vw-16rem)] items-start gap-6 overflow-x-hidden px-4 py-8 sm:px-10 lg:flex-row">
         {/* Main Column: Feed */}
-        <div className="flex-1 min-w-0 max-w-3xl flex flex-col gap-6">
+        <div className="w-full min-w-0 flex-1 flex flex-col gap-6 lg:max-w-[800px]">
           {filter !== "projects" && isLoading && (
             <div className="space-y-4">
               <TalentCardSkeleton />
@@ -158,10 +158,13 @@ export default function FeedPage() {
           )}
         </div>
 
-        {/* Messaging widget fixed to the bottom of the viewport. */}
-        <div className={isMessagesCollapsed ? "fixed bottom-0 right-4 z-40 w-[min(360px,calc(100vw-2rem))]" : "flex w-[360px] shrink-0 self-start"}>
-          <MessagesPanel isCollapsed={isMessagesCollapsed} onCollapsedChange={setIsMessagesCollapsed} />
-        </div>
+        {/* Reserve the sidebar column in both collapsed and expanded states. */}
+        <aside className="flex w-full shrink-0 flex-col self-start lg:sticky lg:top-[90px] lg:w-[360px]">
+          {isMessagesCollapsed && <div className="h-10 w-full" aria-hidden="true" />}
+          <div className={isMessagesCollapsed ? "fixed bottom-2 right-4 z-40 w-[min(360px,calc(100vw-2rem))]" : "w-full"}>
+            <MessagesPanel isCollapsed={isMessagesCollapsed} onCollapsedChange={setIsMessagesCollapsed} />
+          </div>
+        </aside>
       </div>
     </DashboardLayout>
   );

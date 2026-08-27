@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { ChevronDown, ChevronUp, Send } from 'lucide-react'
+import { Expand, MessageSquare, Send } from 'lucide-react'
 import { getMessages, listConversations, sendMessage } from '@/data/messagingApi'
 import type { ConversationMessage, ConversationView } from '@cofound/shared'
 
@@ -65,16 +65,24 @@ export function MessagesPanel({ isCollapsed, onCollapsedChange }: MessagesPanelP
   return (
     <section className={`flex w-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-2xs ${isCollapsed ? '' : 'min-h-[24rem]'}`} aria-label="Messagerie">
       <header className="border-b border-border/70 px-5 py-4">
-        <div className="flex items-center gap-2">
-          <div className="min-w-0 flex-1">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Messagerie</p>
-            <h2 className="mt-1 truncate text-lg font-bold text-foreground">Vos conversations</h2>
+        <div className="flex items-start gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <MessageSquare className="h-4 w-4" aria-hidden="true" />
           </div>
-          <span className="inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground" aria-label={`${messages.length} message${messages.length > 1 ? 's' : ''}`}>
-            {messages.length}
-          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-primary">Messagerie</p>
+            <h2 className="mt-0.5 truncate text-lg font-bold leading-tight text-foreground">Vos conversations</h2>
+            {!isCollapsed && <p className="mt-1 text-xs leading-relaxed text-muted-foreground">Les échanges affichent uniquement les pseudonymes.</p>}
+          </div>
+          <div className="flex shrink-0 items-center gap-1.5">
+            <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground" aria-label={`${messages.length} message${messages.length > 1 ? 's' : ''}`}>
+              {messages.length}
+            </span>
+            <button type="button" className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => onCollapsedChange(!isCollapsed)} aria-label={isCollapsed ? 'Développer la messagerie' : 'Réduire la messagerie'} title={isCollapsed ? 'Développer la messagerie' : 'Réduire la messagerie'} aria-expanded={!isCollapsed} aria-controls="messages-panel-content">
+              <Expand className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
         </div>
-        {!isCollapsed && <p className="mt-1 text-xs leading-relaxed text-muted-foreground">Les échanges affichent uniquement les pseudonymes.</p>}
       </header>
       {!isCollapsed && <div id="messages-panel-content" className="grid min-h-0 flex-1 grid-rows-[auto_1fr]">
         <div className="border-b border-border/70 p-3">
@@ -108,11 +116,6 @@ export function MessagesPanel({ isCollapsed, onCollapsedChange }: MessagesPanelP
           </div>
         </div>
       </div>}
-      <footer className="border-t border-border/70 px-3 py-2">
-        <button type="button" className="flex w-full items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => onCollapsedChange(!isCollapsed)} aria-label={isCollapsed ? 'Développer la messagerie' : 'Réduire la messagerie'} aria-expanded={!isCollapsed} aria-controls="messages-panel-content">
-          {isCollapsed ? <><ChevronDown className="h-4 w-4" aria-hidden="true" />Développer</> : <><ChevronUp className="h-4 w-4" aria-hidden="true" />Réduire</>}
-        </button>
-      </footer>
     </section>
   )
 }
