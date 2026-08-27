@@ -158,7 +158,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Main Content Area */}
       <main className="min-w-0 w-full flex-1 overflow-x-hidden lg:pl-64">
-        {completionReminder?.shouldRemind && location.pathname !== '/onboarding' && (
+        {completionReminder?.shouldRemind && completionReminder.completion < 100 && location.pathname !== '/onboarding' && (
           <div className="border-b border-primary/20 bg-primary/5 px-4 py-3 sm:px-8" role="status">
             <div className="mx-auto flex max-w-5xl items-center gap-3 sm:gap-4">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
