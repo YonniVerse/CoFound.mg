@@ -30,7 +30,7 @@ import { OrganizationRequestModule } from './organization-request/organization-r
 import { FinancialModule } from './financial/financial.module.js'
 
 @Module({
-  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, PrivacyModule, AuditModule, BounceModule, ImportModule, AccountStatusModule, ProfileModule, OnboardingModule, ConsentModule, InstitutionModule, ApplicationsModule, ProjectModule, ConnectionModule, MessagingModule, SearchModule, ProjectsModule, TalentsModule, DreamMatchModule, ReportModule, BlockModule, OrganizationRequestModule, FinancialModule],
+  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, ProjectsModule, TalentsModule, PrivacyModule, AuditModule, BounceModule, ImportModule, AccountStatusModule, ProfileModule, OnboardingModule, ConsentModule, InstitutionModule, ApplicationsModule, ProjectModule, ConnectionModule, MessagingModule, SearchModule, DreamMatchModule, ReportModule, BlockModule, OrganizationRequestModule, FinancialModule],
   controllers: [HealthController, MeController],
   providers: [
     { provide: APP_FILTER, useClass: SentryGlobalFilter },
