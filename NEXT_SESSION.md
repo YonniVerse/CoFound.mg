@@ -1,63 +1,58 @@
 # Reprise de session — CoFound.mg
 
 **Dernière mise à jour** : 2026-08-27
-**Phase** : fil social projet fusionné dans `main`, branche temporaire supprimée
-**Ticket / vague** : chantier lié à P-11 — publications projet et fil social
+**Phase** : correction de déploiement Prisma/Neon fusionnée dans `main`
+**Ticket / vague** : correctif déploiement Render — migrations Prisma via connexion Neon directe
 **Branche locale** : `main`
-**État Git** : `main` est synchronisée avec `origin/main` sur `fb026d3` et le dépôt est propre.
+**État Git** : `main` est synchronisée avec `origin/main` sur `3334831` et le dépôt est propre.
 
 ## 1. État courant
 
-L’onglet **Projet** de `/feed` affiche désormais un fil social dédié aux publications de projets. Le composant est intégré dans `FeedPage.tsx` lorsque le filtre `projects` est sélectionné. Les onglets Tous et Co-fondateurs conservent leur comportement existant.
+Le déploiement Render du commit `fb041342f8b51790e5b44f44abc8410eae6cb4a1` construisait correctement l’API, mais échouait au démarrage sur `prisma migrate deploy` avec `P1002`. Prisma ne pouvait pas obtenir l’advisory lock PostgreSQL `72707369` dans le délai de 10 secondes.
 
-Le parcours permet à un compte ayant créé au moins un projet de choisir ce projet, sélectionner un type de publication, saisir un message de 1 à 2 000 caractères et publier. Les publications sont rendues avec le titre du projet comme identité visible, sans afficher le pseudonyme de l’utilisateur auteur dans ce fil.
+Le correctif a été implémenté dans la branche temporaire `fix/render-prisma-direct-url`, commité en `665f2f2`, fusionné dans `main` par `3334831`, puis poussé sur GitHub. La branche temporaire a été supprimée localement ; elle n’avait pas été poussée à distance.
 
-Les changements ont été portés par la branche temporaire `feat/project-social-feed`, commités dans `8782019`, fusionnés dans `main` par le commit `7550a44`, puis poussés sur GitHub. Deux commits distants supplémentaires ont ensuite été récupérés sur `main` (`90f63a4` et `fb026d3`). La branche temporaire locale et distante a été supprimée ; elle n’existait pas encore sur GitHub, donc sa suppression distante a simplement confirmé l’absence de référence.
+Le correctif fait utiliser `DIRECT_URL` par Prisma Migrate lorsqu’elle est définie, tout en conservant `DATABASE_URL` comme fallback local. `DATABASE_URL` reste destinée à la connexion poolée de l’application ; `DIRECT_URL` doit être la connexion Neon directe, sans suffixe `-pooler`.
 
 ## 2. Travail réellement effectué
 
-- Ajout des contrats shared pour les projets possédés et les publications enrichies avec les informations du projet.
-- Ajout de `GET /api/v1/projects/mine`, protégé par `PROJECT_READ`, pour alimenter le sélecteur des projets créés par l’utilisateur.
-- Ajout de `GET /api/v1/projects/posts/feed`, qui retourne les publications non expirées des projets `RECRUITING` ou `ACTIVE`.
-- Création de `apps/web/src/components/feed/ProjectSocialFeed.tsx` avec sélection du projet, types de publication, validation, publication, états de chargement/erreur/vide et cartes sociales au nom du projet.
-- Intégration du composant dans `apps/web/src/pages/FeedPage.tsx` uniquement pour l’onglet Projet.
-- Ajout des traductions françaises et malgaches et de tests backend ciblés.
-- Création de la branche temporaire `feat/project-social-feed`, commit `8782019`, fusion non fast-forward dans `main` (`7550a44`), push GitHub et suppression de la branche temporaire.
-- Les corrections documentaires du handoff ont été mises à jour après la fusion.
+- Analyse du log Render : installation, build shared, génération Prisma et build API réussissaient ; seul le démarrage bloquait pendant la migration.
+- Identification du projet Neon `CoFound.mg` (`autumn-scene-61665488`) et de sa branche principale (`br-snowy-credit-aragwop4`).
+- Vérification en lecture seule de l’état Neon et de `_prisma_migrations` : les 9 migrations existantes sont terminées et aucune migration partiellement appliquée n’a été identifiée.
+- Ajout du support `DIRECT_URL` dans `apps/api/package.json` pour la commande `prisma:migrate:deploy`.
+- Ajout de `DIRECT_URL` comme variable secrète déclarative dans `render.yaml` et alignement de la commande Docker Render.
+- Documentation de `DIRECT_URL` dans `apps/api/.env.example`.
+- Commit `665f2f2`, fusion dans `main` par `3334831`, push GitHub et suppression de la branche corrective.
+- Mise à jour du handoff et du changelog après la correction.
 
-## 3. Corrections locales en cours
+## 3. Action restante côté Render
 
-Aucune correction de code connue n’est en échec. Le code est fusionné dans `main` et le dépôt local est propre.
+Le dépôt ne peut pas fournir le secret Neon. Dans le groupe d’environnement Render `cofound-api-runtime`, ajouter `DIRECT_URL` avec la chaîne de connexion **Direct connection** fournie par Neon, sans `-pooler`, avec `sslmode=require`. Ne pas remplacer `DATABASE_URL`, qui reste la connexion poolée utilisée par l’application.
 
-La fonctionnalité est fusionnée mais doit encore être vérifiée sur le déploiement Vercel avec un compte de recette possédant un projet. Le client conserve la gestion de refresh token existante dans `apps/web/src/lib/api-client.ts`; aucun changement d’authentification n’a été effectué.
+Une fois `DIRECT_URL` enregistrée, relancer le déploiement de `main` (`3334831`). La commande de démarrage exécutera alors Prisma Migrate sur la connexion directe avant de lancer `node dist/main.js`.
 
-La création reste soumise aux permissions et à l’appartenance active au projet côté API. L’interface propose uniquement les projets créés par l’utilisateur, conformément à la demande fonctionnelle.
+Si le déploiement échoue encore après configuration de `DIRECT_URL`, récupérer le nouveau log complet. Le log fourni s’arrêtait au début d’une nouvelle tentative à `2026-08-27T08:39:36Z`, sans résultat de cette tentative.
 
 ## 4. Validation et limites
 
-Les validations applicatives réussies avant la fusion sont : build shared, typecheck/lint/build frontend, typecheck/lint/build API et **10/10 tests backend ciblés**. `git diff --check` passe.
+Les contrôles locaux réussis après la modification sont `prisma validate` avec une URL factice, typecheck API, lint API et `git diff --check`. Le script confirme la résolution de `DIRECT_URL` avant l’appel Prisma, mais aucun accès réel à la base de production n’a été lancé depuis le dépôt.
 
-La fusion et la synchronisation sont validées : `main` pointe sur `fb026d3`, `8782019` est bien ancêtre de `origin/main`, et aucune branche `feat/project-social-feed` n’existe plus localement ou à distance.
+La base Neon a été interrogée uniquement en lecture. L’historique `_prisma_migrations` montre 9 migrations terminées jusqu’à `20260822200000_add_organization_project_contacts`. Aucun `DROP`, `DELETE`, `TRUNCATE`, `UPDATE` métier ni reset de base n’a été effectué.
 
-Aucun test Playwright de cette interface n’a été exécuté dans cette session. La validation visuelle et le test fonctionnel de `/feed`, de `/projects/mine` et de la publication réelle restent à effectuer après déploiement.
+Le déploiement Render n’est pas confirmé comme réussi après ce correctif, car la variable secrète `DIRECT_URL` doit être ajoutée dans Render et le service doit être relancé. Aucun test Playwright n’a été exécuté dans cette session.
 
 ## 5. Fichiers importants et décisions
 
-- `apps/web/src/components/feed/ProjectSocialFeed.tsx` : nouveau fil social et compositeur.
-- `apps/web/src/pages/FeedPage.tsx` : activation du nouveau composant pour l’onglet Projet.
-- `apps/web/src/data/projectApi.ts` : appels aux nouveaux endpoints.
-- `apps/api/src/project/project.controller.ts` et `project.service.ts` : liste des projets possédés.
-- `apps/api/src/projects/projects.controller.ts` et `projects.service.ts` : feed public des publications.
-- `packages/shared/src/schemas.ts` : contrats de données.
-- `apps/web/src/i18n.tsx` : libellés français et malgaches.
-- `apps/api/test/project.test.ts` et `apps/api/test/projects.test.ts` : couverture ciblée.
+- `apps/api/package.json` : `prisma:migrate:deploy` privilégie `DIRECT_URL` puis retombe sur `DATABASE_URL`.
+- `render.yaml` : déclaration de `DIRECT_URL` et commande Docker alignée sur ce comportement.
+- `apps/api/.env.example` : distinction entre URL poolée d’exécution et URL directe de migration.
+- `/tmp/render-neon-diagnosis.md` : note locale contenant les faits du log et les références officielles consultées.
+- `NEXT_SESSION.md` et `CHANGELOG.md` : documentation du diagnostic et du correctif.
 
-Décision produit : dans le feed social, l’identité éditoriale d’une publication est le projet (`project.title`) et non l’utilisateur. Les pages détaillées historiques de publications projet conservent leur contrat `authorPseudonym` tant qu’elles ne sont pas migrées vers ce nouveau format.
+Décision technique : ne pas désactiver globalement l’advisory lock Prisma. Utiliser une connexion directe Neon pour les migrations réduit le risque lié au pooler et respecte la séparation recommandée entre accès applicatif poolé et accès CLI de migration.
 
-Décision de visibilité : seules les publications non expirées des projets `RECRUITING` ou `ACTIVE` sont proposées dans le feed public. Les brouillons, projets en pause et projets archivés n’y apparaissent pas.
-
-Aucune migration Prisma, modification d’architecture générale ou mise à jour du périmètre MVP n’a été nécessaire.
+Décision de sécurité : ne jamais inscrire la valeur réelle de `DIRECT_URL` dans Git, dans `render.yaml` ou dans les logs. Elle doit être ajoutée comme secret dans Render.
 
 ## 6. Prochaine action
 
-Déployer `main` en preview, ouvrir `/feed` avec un compte de recette possédant un projet, puis vérifier le scénario complet de l’onglet Projet : chargement de `/projects/mine`, publication via `POST /projects/:id/posts` et apparition du post dans `GET /projects/posts/feed`.
+Configurer `DIRECT_URL` dans Render avec l’URL Neon directe, relancer le service `cofound-api` depuis `main`, puis confirmer dans le log que `prisma migrate deploy` termine avant le lancement de l’API et que `/api/v1/health` répond correctement.

@@ -10,6 +10,33 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-27 — Correctif Render/Neon pour Prisma Migrate
+
+### Corrigé
+
+- Le script `prisma:migrate:deploy` utilise désormais `DIRECT_URL` lorsqu’elle est définie, avec repli sur `DATABASE_URL` pour le développement local.
+- La configuration Render déclare `DIRECT_URL` comme secret distinct et utilise le même override dans la commande Docker.
+- L’exemple `apps/api/.env.example` distingue la connexion Neon poolée utilisée par l’application de la connexion directe utilisée par Prisma Migrate.
+
+### Diagnostic
+
+- Le build Render réussissait, mais le démarrage échouait sur `P1002` pendant l’acquisition de l’advisory lock PostgreSQL `72707369`.
+- La base Neon contenait 9 migrations terminées ; aucune migration partiellement appliquée n’a été détectée.
+- Aucun reset, suppression ou modification destructive de la base n’a été effectué.
+
+### Livraison
+
+- Correctif commit `665f2f2`, fusionné dans `main` par `3334831` et poussé sur GitHub.
+- La branche corrective locale a été supprimée et aucune branche distante corrective n’existait.
+- Une action manuelle reste nécessaire dans Render : renseigner `DIRECT_URL` avec la connexion Neon directe sans suffixe `-pooler`, puis relancer le déploiement.
+
+### Validation
+
+- `prisma validate`, typecheck API, lint API et `git diff --check` réussis.
+- La réussite du prochain déploiement Render reste à confirmer après configuration du secret.
+
+---
+
 ## 2026-08-27 — Fusion et nettoyage de la branche du fil social projet
 
 ### Modifié
