@@ -1,5 +1,7 @@
+import './instrument.js'
 import { startNotificationsWorker } from './notifications/notifications.worker.js'
 import { startPersonalDataExportWorker } from './privacy/personal-data-export.worker.js'
+
 
 const notificationWorker = await startNotificationsWorker()
 const personalDataExportWorker = await startPersonalDataExportWorker()

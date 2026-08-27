@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Req } from '@nestjs/common'
+import { Body, Controller, Get, Param, Patch, Req, Inject } from '@nestjs/common'
 import { bmcPatchSchema } from '@cofound/shared'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
 import { Permission } from '../rbac/permissions.js'
@@ -7,7 +7,7 @@ import { BmcService } from './bmc.service.js'
 
 @Controller('projects/:projectId/bmc')
 export class BmcController {
-  constructor(private readonly bmcService: BmcService) {}
+  constructor(@Inject(BmcService) private readonly bmcService: BmcService) {}
 
   @Get()
   @RequirePermissions(Permission.PROJECT_READ)

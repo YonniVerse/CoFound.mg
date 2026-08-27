@@ -85,7 +85,7 @@ export const onboardingProgressSchema = z.object({
   isComplete: z.boolean(),
   stepName: onboardingStepNameSchema,
 })
-export const onboardingStepResponseSchema = z.object({ progress: onboardingProgressSchema, profile: z.object({ id: idSchema, completion: z.number().int().min(0).max(100) }).nullable() })
+export const onboardingStepResponseSchema = z.object({ progress: onboardingProgressSchema, profile: z.object({ id: idSchema, completion: z.number().int().min(0).max(100) }).nullable(), data: z.record(z.string(), z.unknown()).optional() })
 export const profileCompletionReminderSchema = z.object({ shouldRemind: z.boolean(), completion: z.number().int().min(0).max(100), minimumCompletion: z.number().int().min(0).max(100), missingFields: z.array(z.string()), ctaPath: z.literal('/onboarding') })
 export type ProfileCompletionReminder = z.infer<typeof profileCompletionReminderSchema>
 export const consentPurposeSchema = z.enum(['PROFILE_VISIBILITY', 'TALENT_MATCHING', 'PARTNER_CONTACT', 'AGGREGATED_ANALYTICS'])

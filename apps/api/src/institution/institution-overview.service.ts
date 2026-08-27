@@ -1,11 +1,11 @@
-import { ForbiddenException, Injectable } from '@nestjs/common'
+import { ForbiddenException, Injectable, Inject } from '@nestjs/common'
 import { MIN_AGGREGATION_THRESHOLD } from '@cofound/shared'
 import { OrganizationRole } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service.js'
 
 @Injectable()
 export class InstitutionOverviewService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async getMine(userId: string) {
     const memberships = await this.prisma.organizationMember.findMany({ where: { userId, organization: { type: 'INSTITUTION' } }, include: { organization: true } })

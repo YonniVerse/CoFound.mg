@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Inject } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { MIN_AGGREGATION_THRESHOLD } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 
 @Injectable()
 export class ProductHealthService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async get() {
     const [invited, activated, completion, projects, matches, applications, reports, bounces, invitations] = await Promise.all([

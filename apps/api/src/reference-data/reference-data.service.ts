@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ConflictException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import type { ReferenceCreateInput, ReferenceKind, ReferencePatchInput } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
@@ -8,7 +8,7 @@ type GenericDelegate = { findMany: (args: { orderBy: Array<Record<string, string
 
 @Injectable()
 export class ReferenceDataService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async list(kind: ReferenceKind) {
     const orderBy = kind === 'regions' ? [{ slug: 'asc' }] : [{ sortOrder: 'asc' }, { slug: 'asc' }]
@@ -24,6 +24,24 @@ export class ReferenceDataService {
       select: { id: true, slug: true, labelKey: true, sortOrder: true },
     })
     return { kind: 'fields', items }
+  }
+
+  async listPublicSkills() {
+    const items = await this.prisma.skill.findMany({
+      where: { isActive: true },
+      orderBy: [{ sortOrder: 'asc' }, { slug: 'asc' }],
+      select: { id: true, slug: true, labelKey: true, category: true, sortOrder: true },
+    })
+    return { kind: 'skills', items }
+  }
+
+  async listPublicSectors() {
+    const items = await this.prisma.sector.findMany({
+      where: { isActive: true },
+      orderBy: [{ sortOrder: 'asc' }, { slug: 'asc' }],
+      select: { id: true, slug: true, labelKey: true, sortOrder: true },
+    })
+    return { kind: 'sectors', items }
   }
 
   async create(kind: ReferenceKind, input: ReferenceCreateInput) {

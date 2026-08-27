@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common'
+import { Body, Controller, Get, Param, Patch, Post, Inject } from '@nestjs/common'
 import { referenceCreateSchema, referenceKindSchema, referencePatchSchema } from '@cofound/shared'
 import { Permission } from '../rbac/permissions.js'
 import { RequirePermissions } from '../rbac/rbac.decorators.js'
@@ -7,7 +7,7 @@ import { ReferenceDataService } from './reference-data.service.js'
 @Controller('staff/reference-data')
 @RequirePermissions(Permission.REFERENCE_DATA_MANAGE)
 export class ReferenceDataController {
-  constructor(private readonly service: ReferenceDataService) {}
+  constructor(@Inject(ReferenceDataService) private readonly service: ReferenceDataService) {}
 
   @Get(':kind')
   list(@Param('kind') kind: string) {

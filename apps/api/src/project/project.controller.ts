@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Req, Inject } from '@nestjs/common'
 import { projectCreateSchema } from '@cofound/shared'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
 import { Permission } from '../rbac/permissions.js'
@@ -7,7 +7,7 @@ import { ProjectService } from './project.service.js'
 
 @Controller('projects')
 export class ProjectController {
-  constructor(private readonly projectService: ProjectService) {}
+  constructor(@Inject(ProjectService) private readonly projectService: ProjectService) {}
 
   @Get('mine')
   @RequirePermissions(Permission.PROJECT_READ)

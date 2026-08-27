@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Inject } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service.js'
 import type { TalentFeedCard, TalentFeedQuery, TalentFeedResponse } from '@cofound/shared'
 
 @Injectable()
 export class TalentsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async getFeed(query: TalentFeedQuery): Promise<TalentFeedResponse> {
     const limit = query.limit ?? 20

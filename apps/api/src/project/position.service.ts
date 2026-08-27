@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import type { OpenPositionCreateInput, OpenPositionPatchInput } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
@@ -7,7 +7,7 @@ type PositionWithSkills = { id: string; projectId: string; title: string; descri
 
 @Injectable()
 export class PositionService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async list(actorId: string, projectId: string) {
     await this.assertMember(actorId, projectId)

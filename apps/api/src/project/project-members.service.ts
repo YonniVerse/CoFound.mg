@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { ProjectRole } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service.js'
 import type {
@@ -9,7 +9,7 @@ import type {
 
 @Injectable()
 export class ProjectMembersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   private async findActiveMembership(projectId: string, userId: string) {
     return this.prisma.projectMember.findFirst({ where: { projectId, userId, leftAt: null } })

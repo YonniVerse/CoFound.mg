@@ -28,9 +28,10 @@ import { BlockModule } from './block/block.module.js'
 import { AccountStatusModule } from './account-status/account-status.module.js'
 import { OrganizationRequestModule } from './organization-request/organization-request.module.js'
 import { FinancialModule } from './financial/financial.module.js'
+import { ReferenceDataModule } from './reference-data/reference-data.module.js'
 
 @Module({
-  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, ProjectsModule, TalentsModule, PrivacyModule, AuditModule, BounceModule, ImportModule, AccountStatusModule, ProfileModule, OnboardingModule, ConsentModule, InstitutionModule, ApplicationsModule, ProjectModule, ConnectionModule, MessagingModule, SearchModule, DreamMatchModule, ReportModule, BlockModule, OrganizationRequestModule, FinancialModule],
+  imports: [SentryModule.forRoot(), PrismaModule, AuthModule, ProjectsModule, TalentsModule, PrivacyModule, AuditModule, BounceModule, ImportModule, AccountStatusModule, ProfileModule, OnboardingModule, ConsentModule, InstitutionModule, ApplicationsModule, ProjectModule, ConnectionModule, MessagingModule, SearchModule, DreamMatchModule, ReportModule, BlockModule, OrganizationRequestModule, FinancialModule, ReferenceDataModule],
   controllers: [HealthController, MeController],
   providers: [
     { provide: APP_FILTER, useClass: SentryGlobalFilter },

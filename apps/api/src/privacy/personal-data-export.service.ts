@@ -1,4 +1,4 @@
-import { ConflictException, GoneException, Injectable, NotFoundException } from '@nestjs/common'
+import { ConflictException, GoneException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { PersonalDataExportStatus } from '@prisma/client'
@@ -11,7 +11,7 @@ const ACTIVE_STATUSES: PersonalDataExportStatus[] = [PersonalDataExportStatus.PE
 
 @Injectable()
 export class PersonalDataExportService {
-  constructor(private readonly prisma: PrismaService, private readonly audit: AuditService, private readonly queue: PersonalDataExportQueueService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Inject(AuditService) private readonly audit: AuditService, @Inject(PersonalDataExportQueueService) private readonly queue: PersonalDataExportQueueService) {}
 
   async request(userId: string, input: PersonalDataExportRequest) {
     if (!input.confirmation) throw new ConflictException('La confirmation explicite est requise.')

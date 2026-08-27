@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Inject } from '@nestjs/common'
 import type { OnModuleDestroy, OnModuleInit } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service.js'
 
@@ -24,7 +24,7 @@ export class ApplicationReminderService implements OnModuleInit, OnModuleDestroy
     if (this.timer) clearInterval(this.timer)
     this.timer = undefined
   }
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async runOnce(now = new Date()): Promise<{ created: number; skipped: number }> {
     const thresholdDays = Number(process.env.APPLICATION_REMINDER_DAYS ?? DEFAULT_REMINDER_DAYS)

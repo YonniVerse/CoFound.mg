@@ -1,4 +1,4 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { ConflictException, ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { OrganizationRole } from '@prisma/client'
 import type { InstitutionMemberInvite, InstitutionMemberUpdate } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
@@ -8,7 +8,7 @@ const READERS: OrganizationRole[] = [...MANAGERS, OrganizationRole.ORG_VIEWER]
 
 @Injectable()
 export class InstitutionMembersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async list(organizationId: string, actorId: string) {
     await this.assertManager(organizationId, actorId, false)

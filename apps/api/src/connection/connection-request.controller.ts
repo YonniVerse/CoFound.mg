@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Get, Param, Patch, Post, Req, Inject } from '@nestjs/common'
 import { contactRequestCreateSchema, contactRequestDecisionSchema } from '@cofound/shared'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
 import { Permission } from '../rbac/permissions.js'
@@ -8,7 +8,7 @@ import { ConnectionService } from './connection.service.js'
 
 @Controller('connections/requests')
 export class ConnectionRequestController {
-  constructor(private readonly service: ConnectionRequestService, private readonly connectionService: ConnectionService) {}
+  constructor(@Inject(ConnectionRequestService) private readonly service: ConnectionRequestService, @Inject(ConnectionService) private readonly connectionService: ConnectionService) {}
   @Post()
   @RequirePermissions(Permission.CONNECTION_REQUEST)
   create(@Req() req: AuthenticatedRequest, @Body() body: unknown) {

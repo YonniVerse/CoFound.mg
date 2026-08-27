@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Inject } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service.js'
 
 @Injectable()
 export class BlockService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async create(blockerId: string, blockedId: string) {
     if (blockerId === blockedId) return { blocked: false, blockedId }

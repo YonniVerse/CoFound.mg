@@ -1,11 +1,11 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { ConflictException, ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { AffiliationStatus, OrganizationRole } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service.js'
 
 const MANAGERS: OrganizationRole[] = [OrganizationRole.ORG_ADMIN, OrganizationRole.ORG_MANAGER]
 @Injectable()
 export class InstitutionAffiliationService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
   async list(organizationId: string, actorId: string, filters: { cohortYear?: number; fieldId?: string; status?: string }) {
     await this.assertManager(organizationId, actorId)
     const affiliations = await this.prisma.affiliation.findMany({ where: { organizationId, ...(filters.cohortYear ? { cohortYear: filters.cohortYear } : {}), ...(filters.fieldId ? { fieldId: filters.fieldId } : {}), ...(filters.status ? { status: filters.status as AffiliationStatus } : {}) }, include: { user: { select: { id: true, email: true, status: true, activatedAt: true } }, field: { select: { id: true, labelKey: true } } }, orderBy: { startedAt: 'desc' } })

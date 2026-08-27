@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { financialEngagementCreateSchema } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { AuditService } from '../audit/audit.service.js'
@@ -6,11 +6,7 @@ import { OffPlatformPaymentProvider } from './off-platform-payment.provider.js'
 
 @Injectable()
 export class FinancialEngagementService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly audit: AuditService,
-    private readonly paymentProvider: OffPlatformPaymentProvider,
-  ) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Inject(AuditService) private readonly audit: AuditService, @Inject(OffPlatformPaymentProvider) private readonly paymentProvider: OffPlatformPaymentProvider) {}
 
   async create(actorId: string, organizationId: string, body: unknown) {
     const parsed = financialEngagementCreateSchema.safeParse(body)

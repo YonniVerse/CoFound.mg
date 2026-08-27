@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { Injectable, UnauthorizedException, Inject } from '@nestjs/common'
 import { createHmac, timingSafeEqual } from 'node:crypto'
 import type { EmailBounceWebhook } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
@@ -6,7 +6,7 @@ import { readEmailConfig } from '../notifications/email-config.js'
 
 @Injectable()
 export class BounceService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   verifySignature(rawBody: string, signature: string | undefined): void {
     const secret = readEmailConfig().webhookSecret

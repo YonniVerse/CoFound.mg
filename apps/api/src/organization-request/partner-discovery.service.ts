@@ -1,10 +1,10 @@
-import { ForbiddenException, Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
+import { ForbiddenException, Injectable, NotFoundException, BadRequestException, Inject } from '@nestjs/common'
 import { partnerProjectSearchSchema, partnerTalentSearchSchema, projectWatchInputSchema } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 
 @Injectable()
 export class PartnerDiscoveryService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async search(actorId: string, organizationId: string, input: unknown) {
     await this.assertRecruiter(actorId, organizationId)

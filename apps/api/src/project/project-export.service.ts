@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service.js'
 
@@ -21,7 +21,7 @@ const projectArchiveSelect = {
 
 @Injectable()
 export class ProjectExportService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async export(projectId: string, requesterId: string) {
     return this.prisma.$transaction(async (transaction) => {

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Req } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Query, Req, Inject } from '@nestjs/common'
 import { Permission } from '../rbac/permissions.js'
 import { RequirePermissions } from '../rbac/rbac.decorators.js'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
@@ -8,7 +8,7 @@ import { OrganizationRequestStaffService } from './organization-request-staff.se
 @Controller('staff/organization-requests')
 @RequirePermissions(Permission.ORGANIZATION_REQUEST_READ)
 export class OrganizationRequestStaffController {
-  constructor(private readonly service: OrganizationRequestStaffService) {}
+  constructor(@Inject(OrganizationRequestStaffService) private readonly service: OrganizationRequestStaffService) {}
 
   @Get()
   list(@Query() query: unknown) {
@@ -44,7 +44,7 @@ export class OrganizationRequestStaffController {
 @Controller('organizations')
 @RequirePermissions(Permission.ORGANIZATION_CAPABILITY_MANAGE)
 export class OrganizationCapabilityController {
-  constructor(private readonly service: OrganizationRequestStaffService) {}
+  constructor(@Inject(OrganizationRequestStaffService) private readonly service: OrganizationRequestStaffService) {}
 
   @Post(':organizationId/capabilities')
   @AuditAction('ORGANIZATION_CAPABILITY_GRANTED', 'OrganizationCapability')

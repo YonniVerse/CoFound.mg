@@ -1,10 +1,10 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { publicTalentViewSchema, revealedTalentViewSchema } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 
 @Injectable()
 export class PrivacyService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async getTalentView(viewerId: string, talentId: string) {
     const talent = await this.prisma.talentProfile.findUnique({

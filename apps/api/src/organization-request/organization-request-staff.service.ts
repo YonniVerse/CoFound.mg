@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException, Optional } from '@nestjs/common'
+import { BadRequestException, ConflictException, Injectable, NotFoundException, Optional, Inject } from '@nestjs/common'
 import { organizationCapabilityUpdateSchema, organizationRequestDecisionSchema, organizationRequestQueueQuerySchema } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { AuditService } from '../audit/audit.service.js'
@@ -8,11 +8,7 @@ const MVP_CAPABILITIES = new Set(['CERTIFY_AFFILIATION', 'PUBLISH_OPPORTUNITY', 
 
 @Injectable()
 export class OrganizationRequestStaffService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly audit: AuditService,
-    @Optional() private readonly cloudinary?: CloudinaryService,
-  ) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Inject(AuditService) private readonly audit: AuditService, @Optional() @Inject(CloudinaryService) private readonly cloudinary?: CloudinaryService) {}
 
   async list(input: unknown) {
     const parsed = organizationRequestQueueQuerySchema.safeParse(input)
