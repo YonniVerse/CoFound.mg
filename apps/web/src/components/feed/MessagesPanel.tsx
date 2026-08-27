@@ -3,14 +3,18 @@ import { ChevronDown, ChevronUp, Send } from 'lucide-react'
 import { getMessages, listConversations, sendMessage } from '@/data/messagingApi'
 import type { ConversationMessage, ConversationView } from '@cofound/shared'
 
-export function MessagesPanel() {
+interface MessagesPanelProps {
+  isCollapsed: boolean
+  onCollapsedChange: (collapsed: boolean) => void
+}
+
+export function MessagesPanel({ isCollapsed, onCollapsedChange }: MessagesPanelProps) {
   const [conversations, setConversations] = useState<ConversationView[]>([])
   const [selectedId, setSelectedId] = useState('')
   const [messages, setMessages] = useState<ConversationMessage[]>([])
   const [body, setBody] = useState('')
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
-  const [isCollapsed, setIsCollapsed] = useState(true)
 
   const loadConversations = useCallback(async () => {
     const result = await listConversations()
@@ -105,7 +109,7 @@ export function MessagesPanel() {
         </div>
       </div>}
       <footer className="border-t border-border/70 px-3 py-2">
-        <button type="button" className="flex w-full items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => setIsCollapsed((current) => !current)} aria-label={isCollapsed ? 'Développer la messagerie' : 'Réduire la messagerie'} aria-expanded={!isCollapsed} aria-controls="messages-panel-content">
+        <button type="button" className="flex w-full items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => onCollapsedChange(!isCollapsed)} aria-label={isCollapsed ? 'Développer la messagerie' : 'Réduire la messagerie'} aria-expanded={!isCollapsed} aria-controls="messages-panel-content">
           {isCollapsed ? <><ChevronDown className="h-4 w-4" aria-hidden="true" />Développer</> : <><ChevronUp className="h-4 w-4" aria-hidden="true" />Réduire</>}
         </button>
       </footer>
