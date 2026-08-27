@@ -158,10 +158,10 @@ export default function FeedPage() {
           )}
         </div>
 
-        {/* Messaging widget fixed to the bottom of the viewport. */}
-        <div className={isMessagesCollapsed ? "fixed bottom-2 right-4 z-40 w-[min(360px,calc(100vw-2rem))]" : "hidden w-[360px] shrink-0 self-start lg:flex"}>
+        {/* Reserve the sidebar column in both collapsed and expanded states. */}
+        <aside className="flex w-full shrink-0 self-start lg:sticky lg:top-[90px] lg:w-[360px]">
           <MessagesPanel isCollapsed={isMessagesCollapsed} onCollapsedChange={setIsMessagesCollapsed} />
-        </div>
+        </aside>
       </div>
     </DashboardLayout>
   );
