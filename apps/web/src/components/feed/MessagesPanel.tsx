@@ -74,9 +74,14 @@ export function MessagesPanel({ isCollapsed, onCollapsedChange }: MessagesPanelP
             <h2 className="mt-0.5 truncate text-lg font-bold leading-tight text-foreground">Vos conversations</h2>
             {!isCollapsed && <p className="mt-1 text-xs leading-relaxed text-muted-foreground">Les échanges affichent uniquement les pseudonymes.</p>}
           </div>
-          <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground" aria-label={`${messages.length} message${messages.length > 1 ? 's' : ''}`}>
-            {messages.length}
-          </span>
+          <div className="flex shrink-0 items-center gap-1.5">
+            <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground" aria-label={`${messages.length} message${messages.length > 1 ? 's' : ''}`}>
+              {messages.length}
+            </span>
+            <button type="button" className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => onCollapsedChange(!isCollapsed)} aria-label={isCollapsed ? 'Développer la messagerie' : 'Réduire la messagerie'} title={isCollapsed ? 'Développer la messagerie' : 'Réduire la messagerie'} aria-expanded={!isCollapsed} aria-controls="messages-panel-content">
+              <Expand className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
         </div>
       </header>
       {!isCollapsed && <div id="messages-panel-content" className="grid min-h-0 flex-1 grid-rows-[auto_1fr]">
@@ -111,11 +116,6 @@ export function MessagesPanel({ isCollapsed, onCollapsedChange }: MessagesPanelP
           </div>
         </div>
       </div>}
-      <footer className="border-t border-border/70 px-3 py-2">
-        <button type="button" className="mx-auto flex h-7 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => onCollapsedChange(!isCollapsed)} aria-label={isCollapsed ? 'Développer la messagerie' : 'Réduire la messagerie'} title={isCollapsed ? 'Développer la messagerie' : 'Réduire la messagerie'} aria-expanded={!isCollapsed} aria-controls="messages-panel-content">
-          <Expand className="h-4 w-4" aria-hidden="true" />
-        </button>
-      </footer>
     </section>
   )
 }
