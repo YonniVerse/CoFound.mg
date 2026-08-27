@@ -10,6 +10,25 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-27 — Compositeur social projet rapproché des standards réseau social
+
+### Modifié
+
+- Le panneau de publication de l’onglet Projet utilise désormais une carte compacte avec avatar circulaire du projet, champ « Commencer un post » et actions Vidéo, Photo et Rédiger un article.
+- L’éditeur s’ouvre inline au clic sur le champ ou sur une action, tout en conservant la sélection du projet, le type de publication, la validation et le style CoFound.
+- Les nouveaux libellés ont été ajoutés en français et en malgache.
+
+### Limite connue
+
+- Vidéo et Photo sont actuellement des modes visuels de composition textuelle. Aucun upload média n’a été ajouté, car le contrat backend existant ne gère pas encore les fichiers.
+
+### Validation
+
+- Build shared, typecheck frontend, lint frontend, build frontend et `git diff --check` réussis.
+- Les changements frontend restent non commités et non déployés à la fin de cette session.
+
+---
+
 ## 2026-08-27 — Libération du verrou Prisma bloquant Render
 
 ### Diagnostic
