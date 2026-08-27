@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { ChevronDown, ChevronUp, Send } from 'lucide-react'
 import { getMessages, listConversations, sendMessage } from '@/data/messagingApi'
 import type { ConversationMessage, ConversationView } from '@cofound/shared'
 
@@ -10,6 +11,7 @@ export function MessagesPanel() {
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
   const loadConversations = useCallback(async () => {
     const result = await listConversations()
@@ -59,14 +61,19 @@ export function MessagesPanel() {
   }
 
   return (
-    <section className="flex min-h-[24rem] flex-col overflow-hidden rounded-xl border border-border bg-card shadow-2xs" aria-label="Messagerie">
-      <header className="border-b border-border/70 px-5 py-4">
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Messagerie</p>
-        <h2 className="mt-1 text-lg font-bold text-foreground">Vos conversations</h2>
-        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">Les échanges affichent uniquement les pseudonymes.</p>
+    <section className={`flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-2xs ${isCollapsed ? '' : 'min-h-[24rem]'}`} aria-label="Messagerie">
+      <header className="flex items-center justify-between gap-3 border-b border-border/70 px-5 py-4">
+        <button type="button" className="min-w-0 text-left" onClick={() => setIsCollapsed((current) => !current)} aria-expanded={!isCollapsed} aria-controls="messages-panel-content">
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Messagerie</p>
+          <h2 className="mt-1 truncate text-lg font-bold text-foreground">Vos conversations</h2>
+          {!isCollapsed && <p className="mt-1 text-xs leading-relaxed text-muted-foreground">Les échanges affichent uniquement les pseudonymes.</p>}
+        </button>
+        <button type="button" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => setIsCollapsed((current) => !current)} aria-label={isCollapsed ? 'Développer la messagerie' : 'Réduire la messagerie'} aria-expanded={!isCollapsed} aria-controls="messages-panel-content">
+          {isCollapsed ? <ChevronDown className="h-4 w-4" aria-hidden="true" /> : <ChevronUp className="h-4 w-4" aria-hidden="true" />}
+        </button>
       </header>
-      {error && <p role="alert" className="border-b border-destructive/20 bg-destructive/5 px-4 py-3 text-xs text-destructive">{error}</p>}
-      <div className="grid min-h-0 flex-1 grid-rows-[auto_1fr]">
+      {!isCollapsed && error && <p role="alert" className="border-b border-destructive/20 bg-destructive/5 px-4 py-3 text-xs text-destructive">{error}</p>}
+      {!isCollapsed && <div id="messages-panel-content" className="grid min-h-0 flex-1 grid-rows-[auto_1fr]">
         <div className="border-b border-border/70 p-3">
           <p className="px-2 pb-2 text-xs font-semibold text-muted-foreground">Conversations</p>
           {loading && <p className="px-2 py-2 text-xs text-muted-foreground">Chargement…</p>}
@@ -94,10 +101,10 @@ export function MessagesPanel() {
           </div>
           <div className="mt-3 flex gap-2 border-t border-border/70 pt-3">
             <textarea className="min-h-16 min-w-0 flex-1 resize-none rounded-lg border border-border bg-background px-2.5 py-2 text-xs outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20" maxLength={4000} value={body} onChange={(event) => setBody(event.target.value)} placeholder="Écrivez un message…" aria-label="Écrivez un message" />
-            <button type="button" className="self-end rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground disabled:opacity-50" onClick={() => void submit()} disabled={busy || !selectedId || !body.trim()}>Envoyer</button>
+            <button type="button" className="flex h-9 w-9 shrink-0 items-center justify-center self-end rounded-lg bg-primary text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50" onClick={() => void submit()} disabled={busy || !selectedId || !body.trim()} aria-label="Envoyer le message" title="Envoyer le message"><Send className="h-4 w-4" aria-hidden="true" /></button>
           </div>
         </div>
-      </div>
+      </div>}
     </section>
   )
 }
