@@ -15,6 +15,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { PlatformRoleGate } from "@/components/auth/PlatformRoleGate";
 
 const OnboardingPage = lazy(() => import("@/pages/OnboardingPage"));
+const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
 const FeedPage = lazy(() => import("@/pages/FeedPage"));
 const ProjectsFeedPage = lazy(() => import("@/pages/ProjectsFeedPage"));
 const TalentsFeedPage = lazy(() => import("@/pages/TalentsFeedPage"));
@@ -112,7 +113,7 @@ function App() {
     <Route path="/staff/audit" element={<PlatformRoleGate allowedRoles={["STAFF"]}><AuditLogPage /></PlatformRoleGate>} />
     <Route path="/staff/reference-data" element={<PlatformRoleGate allowedRoles={["STAFF"]}><ReferenceDataPage /></PlatformRoleGate>} />
     <Route path="/staff/health" element={<PlatformRoleGate allowedRoles={["STAFF"]}><ProductHealthPage /></PlatformRoleGate>} />
-    <Route path="/profile/me" element={<OnboardingPage />} />
+    <Route path="/profile/me" element={<ProfilePage />} />
     <Route path="/settings" element={<SettingsPage />} />
     <Route path="/account-status" element={<AccountStatusPage />} />
   </Routes></Suspense></AccountStatusBoundary></BrowserRouter></AuthProvider>;
