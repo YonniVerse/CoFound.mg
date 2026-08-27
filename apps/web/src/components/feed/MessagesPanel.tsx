@@ -10,7 +10,6 @@ export function MessagesPanel() {
   const [body, setBody] = useState('')
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
-  const [error, setError] = useState('')
   const [isCollapsed, setIsCollapsed] = useState(false)
 
   const loadConversations = useCallback(async () => {
@@ -29,7 +28,7 @@ export function MessagesPanel() {
     let active = true
     const initialLoad = window.setTimeout(() => {
       void loadConversations()
-        .catch(() => { if (active) setError('Impossible de charger vos conversations.') })
+        .catch(() => undefined)
         .finally(() => { if (active) setLoading(false) })
     }, 0)
     return () => { active = false; window.clearTimeout(initialLoad) }
@@ -38,7 +37,7 @@ export function MessagesPanel() {
   useEffect(() => {
     if (!selectedId) return
     const initialMessages = window.setTimeout(() => {
-      void loadMessages(selectedId).catch(() => setError('Impossible de charger les messages.'))
+      void loadMessages(selectedId).catch(() => undefined)
     }, 0)
     const timer = window.setInterval(() => { void loadMessages(selectedId).catch(() => undefined) }, 10_000)
     return () => { window.clearTimeout(initialMessages); window.clearInterval(timer) }
@@ -48,13 +47,12 @@ export function MessagesPanel() {
     const trimmed = body.trim()
     if (!selectedId || !trimmed || trimmed.length > 4_000) return
     setBusy(true)
-    setError('')
     try {
       await sendMessage(selectedId, trimmed)
       setBody('')
       await loadMessages(selectedId)
     } catch {
-      setError('Le message n’a pas pu être envoyé.')
+      // Keep technical transport errors out of the user-facing panel.
     } finally {
       setBusy(false)
     }
@@ -74,7 +72,6 @@ export function MessagesPanel() {
         </div>
         {!isCollapsed && <p className="mt-1 text-xs leading-relaxed text-muted-foreground">Les échanges affichent uniquement les pseudonymes.</p>}
       </header>
-      {!isCollapsed && error && <p role="alert" className="border-b border-destructive/20 bg-destructive/5 px-4 py-3 text-xs text-destructive">{error}</p>}
       {!isCollapsed && <div id="messages-panel-content" className="grid min-h-0 flex-1 grid-rows-[auto_1fr]">
         <div className="border-b border-border/70 p-3">
           <p className="px-2 pb-2 text-xs font-semibold text-muted-foreground">Conversations</p>
