@@ -4,7 +4,6 @@ import {
     BriefcaseBusiness,
     Clock,
     MessageSquare,
-    ShieldCheck,
     UserRound,
 } from "lucide-react";
 import { ReportButton } from "@/components/shared/ReportButton";
@@ -52,29 +51,25 @@ export function TalentCard({ talent }: TalentCardProps) {
                     >
                         <UserRound className="h-5 w-5" />
                     </div>
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex flex-col">
                         <h3 className="truncate text-base font-bold leading-tight text-foreground transition-colors group-hover:text-primary sm:text-lg">
                             {t("common.anonymous")}
                         </h3>
-                        <div className="mt-1 flex min-w-0 items-center gap-1.5 truncate text-xs font-medium text-muted-foreground sm:text-sm">
-                        <span>{categoryLabel}</span>
-                        {talent.cohortYear && (
-                            <>
-                                <span>·</span>
-                                <span>
-                                    {t("common.cohort")} {talent.cohortYear}
-                                </span>
-                            </>
-                        )}
-                        </div>
+                        <span className="text-xs font-medium text-muted-foreground mt-0.5">
+                            {t("common.identityProtected")}
+                        </span>
                     </div>
                 </div>
-                <div className="flex max-w-[52%] shrink-0 items-start gap-1 text-right text-xs font-medium leading-snug text-muted-foreground">
-                    <ShieldCheck
-                        className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary"
-                        aria-hidden="true"
-                    />
-                    <span>{t("common.identityProtected")}</span>
+                <div className="flex shrink-0 items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                    <span>{categoryLabel}</span>
+                    {talent.cohortYear && (
+                        <>
+                            <span>·</span>
+                            <span>
+                                {t("common.cohort")} {talent.cohortYear}
+                            </span>
+                        </>
+                    )}
                 </div>
             </header>
 

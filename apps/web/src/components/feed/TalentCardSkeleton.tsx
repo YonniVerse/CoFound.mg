@@ -7,12 +7,12 @@ export function TalentCardSkeleton() {
           <div className="h-10 w-10 shrink-0 rounded-full bg-muted" />
           <div className="min-w-0 space-y-1.5">
             <div className="h-4 w-24 rounded bg-muted" />
-            <div className="h-3 w-36 rounded bg-muted" />
+            <div className="h-3 w-48 rounded bg-muted" />
           </div>
         </div>
-        <div className="flex max-w-[52%] shrink-0 items-start gap-1">
-          <div className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded-full bg-muted" />
-          <div className="h-3.5 w-28 rounded bg-muted" />
+        <div className="flex shrink-0 items-center gap-1.5">
+          <div className="h-3.5 w-20 rounded bg-muted" />
+          <div className="h-3.5 w-12 rounded bg-muted" />
         </div>
       </header>
 
