@@ -23,8 +23,8 @@ Retiré · En cours · Bloqué**.
 ### Validation
 
 - Build shared, typecheck API, lint API, typecheck frontend, lint frontend, build frontend et `git diff --check` réussis après le retrait du champ pseudo.
-- Commit fonctionnel `4d84547` créé directement sur `main`, puis intégré avec les commits distants dans le merge `8aa4efb`.
-- Le handoff a été mis à jour après le push.
+- Commit fonctionnel `4d84547` créé directement sur `main`, puis conservé avec le commit de retrait du pseudo `62dc5ae` et intégré avec les commits distants dans le merge final `605a8b9`.
+- Le conflit d’intégration dans `OnboardingPage.tsx` a été résolu en conservant les améliorations distantes et le retrait du pseudo ; le handoff a été mis à jour après le push final.
 
 ---
 

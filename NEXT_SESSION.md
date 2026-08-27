@@ -4,7 +4,7 @@
 **Phase** : select de filière et retrait du champ pseudo d’onboarding implémentés et poussés dans `main`
 **Ticket / vague** : onboarding — référentiels et parcours utilisateur
 **Branche locale** : `main`
-**État Git** : `main` est synchronisée avec `origin/main` sur `8aa4efb` et le dépôt est propre.
+**État Git** : `main` est synchronisée avec `origin/main` sur `605a8b9` et le dépôt est propre.
 
 ## 1. État courant
 
@@ -19,10 +19,11 @@ Les libellés affichés sont localisés en français et en malgache : Informatiq
 - Enregistrement du contrôleur public dans `ReferenceDataModule` sans ouvrir les routes staff existantes.
 - Remplacement de l’input `fieldId` dans `apps/web/src/pages/OnboardingPage.tsx` par un select chargé depuis l’API.
 - Ajout des traductions des filières et de l’erreur de chargement en français et en malgache dans `apps/web/src/i18n.tsx`.
-- Commit fonctionnel `4d84547` créé directement sur `main`.
-- Intégration de 15 commits distants arrivés pendant la session, puis push final avec le merge `8aa4efb`.
+- Commit fonctionnel `4d84547` créé directement sur `main` pour le select de filière.
+- Commit `62dc5ae` créé pour retirer le champ pseudo, puis intégration des commits distants avec les merges `881d954` et `605a8b9`.
+- Intégration des commits distants arrivés pendant la session, résolution du conflit dans `OnboardingPage.tsx`, puis push final avec le merge `605a8b9`.
 - Suppression du champ pseudo de l’étape « Ta visibilité » et envoi uniquement de la bio, de la visibilité et du genre.
-- Mise à jour du handoff et du changelog après le push.
+- Mise à jour du handoff et du changelog après le push final.
 
 ## 3. Validation
 
