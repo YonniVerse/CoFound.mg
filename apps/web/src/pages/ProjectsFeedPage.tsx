@@ -94,8 +94,8 @@ export default function ProjectsFeedPage() {
           </div>
         </header>
 
-        <div className="flex w-full items-start gap-6">
-          <main className="flex min-w-0 max-w-3xl flex-1 flex-col gap-6">
+        <div className="flex w-full flex-col items-start gap-6 lg:flex-row">
+          <main className="w-full min-w-0 flex-none flex flex-col gap-6 lg:w-[800px] lg:max-w-[800px]">
             {isLoading && (
               <div className="space-y-4">
                 <ProjectCardSkeleton />
@@ -139,7 +139,7 @@ export default function ProjectsFeedPage() {
             )}
           </main>
 
-          <aside className={isMessagesCollapsed ? "fixed bottom-2 right-4 z-40 w-[min(360px,calc(100vw-2rem))]" : "flex w-[360px] shrink-0 self-start"}>
+          <aside className={isMessagesCollapsed ? "fixed bottom-2 right-4 z-40 w-[min(360px,calc(100vw-2rem))]" : "hidden w-[360px] shrink-0 self-start lg:flex"}>
             <MessagesPanel isCollapsed={isMessagesCollapsed} onCollapsedChange={setIsMessagesCollapsed} />
           </aside>
         </div>
