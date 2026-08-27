@@ -1,41 +1,52 @@
 export function TalentCardSkeleton() {
   return (
-    <div className="bg-card border border-border rounded-xl p-5 shadow-2xs flex flex-col gap-3.5 animate-pulse">
-      {/* Header: Avatar + Pseudonym + Field & Cohort + Completion */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-full bg-muted shrink-0" />
-          <div className="flex flex-col gap-1.5">
-            <div className="h-4 w-32 rounded bg-muted" />
-            <div className="h-3 w-40 rounded bg-muted" />
+    <div className="group flex min-w-0 flex-col gap-4 overflow-hidden rounded-xl border border-border bg-card p-5 shadow-2xs animate-pulse sm:p-6">
+      {/* Header: neutral avatar + anonymous identity + protected identity */}
+      <header className="flex min-w-0 items-start justify-between gap-4">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="h-10 w-10 shrink-0 rounded-full bg-muted" />
+          <div className="min-w-0 space-y-1.5">
+            <div className="h-4 w-24 rounded bg-muted" />
+            <div className="h-3 w-36 rounded bg-muted" />
           </div>
         </div>
-        <div className="h-5 w-20 rounded bg-muted" />
-      </div>
-
-      {/* Headline & Bio */}
-      <div className="space-y-1.5">
-        <div className="h-3.5 w-48 rounded bg-muted" />
-        <div className="h-3 w-full rounded bg-muted" />
-        <div className="h-3 w-5/6 rounded bg-muted" />
-      </div>
-
-      {/* Skills & Goals Tags */}
-      <div className="flex flex-wrap gap-1.5 pt-1">
-        <div className="h-5 w-16 rounded-md bg-muted" />
-        <div className="h-5 w-20 rounded-md bg-muted" />
-        <div className="h-5 w-14 rounded-md bg-muted" />
-        <div className="h-5 w-24 rounded-md bg-muted" />
-      </div>
-
-      {/* Footer Info & Actions */}
-      <div className="flex items-center justify-between pt-2 border-t border-border/50 mt-1">
-        <div className="h-3.5 w-20 rounded bg-muted" />
-        <div className="flex items-center gap-2">
-          <div className="h-8 w-20 rounded-lg bg-muted" />
-          <div className="h-8 w-24 rounded-lg bg-muted" />
+        <div className="flex max-w-[52%] shrink-0 items-start gap-1">
+          <div className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded-full bg-muted" />
+          <div className="h-3.5 w-28 rounded bg-muted" />
         </div>
+      </header>
+
+      {/* Headline */}
+      <div className="h-4 w-3/4 rounded bg-muted" />
+
+      {/* Category & skills */}
+      <div className="flex flex-wrap items-center gap-2 border-t border-border/50 pt-3">
+        <div className="h-3.5 w-20 rounded bg-muted" />
+        <div className="h-6 w-24 rounded-md bg-muted" />
+        <div className="h-3.5 w-1 rounded bg-muted" />
+        <div className="h-3.5 w-20 rounded bg-muted" />
+        <div className="h-6 w-16 rounded-md bg-muted" />
+        <div className="h-6 w-20 rounded-md bg-muted" />
+        <div className="h-6 w-14 rounded-md bg-muted" />
       </div>
+
+      {/* Goals */}
+      <div className="flex flex-wrap gap-2">
+        <div className="h-6 w-20 rounded-md bg-muted" />
+        <div className="h-6 w-28 rounded-md bg-muted" />
+      </div>
+
+      {/* Availability & actions */}
+      <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-border/50 pt-3">
+        <div className="h-3.5 w-28 rounded bg-muted" />
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="h-8 w-20 rounded-lg bg-muted" />
+          <div className="h-8 w-20 rounded-lg bg-muted" />
+          <div className="h-9 w-36 rounded-lg bg-muted" />
+        </div>
+      </footer>
     </div>
   );
 }
+
+export default TalentCardSkeleton;
