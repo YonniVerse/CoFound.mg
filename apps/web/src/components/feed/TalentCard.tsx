@@ -5,6 +5,7 @@ import {
     Clock,
     MessageSquare,
     ShieldCheck,
+    UserRound,
 } from "lucide-react";
 import { ReportButton } from "@/components/shared/ReportButton";
 import { BlockButton } from "@/components/shared/BlockButton";
@@ -44,11 +45,18 @@ export function TalentCard({ talent }: TalentCardProps) {
     return (
         <article className="group flex min-w-0 flex-col gap-4 overflow-hidden rounded-xl border border-border bg-card p-5 shadow-2xs transition-all duration-150 hover:border-border/80 sm:p-6">
             <header className="flex min-w-0 items-start justify-between gap-4">
-                <div className="min-w-0">
-                    <h3 className="truncate text-base font-bold leading-tight text-foreground transition-colors group-hover:text-primary sm:text-lg">
-                        {talent.pseudonym}
-                    </h3>
-                    <div className="mt-1 flex min-w-0 items-center gap-1.5 truncate text-xs font-medium text-muted-foreground sm:text-sm">
+                <div className="flex min-w-0 items-center gap-3">
+                    <div
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border/70 bg-muted text-muted-foreground"
+                        aria-hidden="true"
+                    >
+                        <UserRound className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                        <h3 className="truncate text-base font-bold leading-tight text-foreground transition-colors group-hover:text-primary sm:text-lg">
+                            {t("common.anonymous")}
+                        </h3>
+                        <div className="mt-1 flex min-w-0 items-center gap-1.5 truncate text-xs font-medium text-muted-foreground sm:text-sm">
                         <span>{categoryLabel}</span>
                         {talent.cohortYear && (
                             <>
@@ -58,6 +66,7 @@ export function TalentCard({ talent }: TalentCardProps) {
                                 </span>
                             </>
                         )}
+                        </div>
                     </div>
                 </div>
                 <div className="flex max-w-[52%] shrink-0 items-start gap-1 text-right text-xs font-medium leading-snug text-muted-foreground">
