@@ -248,7 +248,7 @@ export const opportunityApplicationCreateSchema = z.object({
   message: z.string().trim().min(10).max(2_000),
 })
 export const opportunityApplicationDecisionSchema = z.object({
-  status: z.enum(['ACCEPTED', 'REJECTED']),
+  status: z.enum(['REVIEWING', 'SHORTLISTED', 'INTERVIEW', 'WAITLISTED', 'ACCEPTED', 'REJECTED']),
   rejectionReason: z.string().trim().min(5).max(1_000).optional(),
 }).superRefine((value, context) => {
   if (value.status === 'REJECTED' && !value.rejectionReason) context.addIssue({ code: z.ZodIssueCode.custom, path: ['rejectionReason'], message: 'A rejection reason is required.' })
@@ -272,7 +272,7 @@ export const opportunityApplicationSchema = z.object({
   applicantType: z.enum(['TALENT', 'PROJECT']),
   applicantId: idSchema,
   message: z.string(),
-  status: z.enum(['PENDING', 'ACCEPTED', 'REJECTED', 'WITHDRAWN']),
+  status: z.enum(['PENDING', 'REVIEWING', 'SHORTLISTED', 'INTERVIEW', 'WAITLISTED', 'ACCEPTED', 'REJECTED', 'WITHDRAWN']),
   rejectionReason: z.string().nullable(),
   createdAt: z.coerce.date(),
 })
@@ -503,7 +503,7 @@ export const applicationItemSchema = z.object({
   positionId: idSchema.nullable(),
   applicantId: idSchema,
   message: z.string(),
-  status: z.enum(['PENDING', 'ACCEPTED', 'REJECTED', 'WITHDRAWN']),
+  status: z.enum(['PENDING', 'REVIEWING', 'SHORTLISTED', 'INTERVIEW', 'WAITLISTED', 'ACCEPTED', 'REJECTED', 'WITHDRAWN']),
   rejectionReason: z.string().nullable(),
   decidedAt: z.coerce.date().nullable(),
   createdAt: z.coerce.date(),
@@ -1078,3 +1078,87 @@ export type PersonalDataExportResponse = z.infer<typeof personalDataExportRespon
 
 export const accountStatusResponseSchema = z.object({ status: accountStatusSchema, messageKey: z.string(), canAppeal: z.boolean(), endsAt: z.coerce.date().nullable() })
 export type AccountStatusResponse = z.infer<typeof accountStatusResponseSchema>
+
+
+// ─── Wallet fictif organisation/projet ────────────────────────────────────────
+export const walletOwnerTypeSchema = z.enum(['ORGANIZATION', 'PROJECT'])
+export const walletTransactionTypeSchema = z.enum(['CREDIT', 'DEBIT'])
+export const walletOperationSchema = z.object({
+  amount: z.number().finite().positive().max(1_000_000_000),
+  currency: z.string().length(3).toUpperCase().default('MGA'),
+  description: z.string().trim().min(3).max(500),
+  referenceType: z.string().trim().max(80).optional(),
+  referenceId: idSchema.optional(),
+})
+export const walletTransactionSchema = z.object({
+  id: idSchema,
+  walletId: idSchema,
+  type: walletTransactionTypeSchema,
+  amount: z.string(),
+  currency: z.string().length(3),
+  description: z.string(),
+  referenceType: z.string().nullable(),
+  referenceId: idSchema.nullable(),
+  createdById: idSchema,
+  createdAt: z.coerce.date(),
+})
+export const walletSchema = z.object({
+  id: idSchema,
+  ownerType: walletOwnerTypeSchema,
+  organizationId: idSchema.nullable(),
+  projectId: idSchema.nullable(),
+  currency: z.string().length(3),
+  balance: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  transactions: z.array(walletTransactionSchema),
+})
+export type WalletOperationInput = z.infer<typeof walletOperationSchema>
+export type Wallet = z.infer<typeof walletSchema>
+export type WalletTransaction = z.infer<typeof walletTransactionSchema>
+
+export const applicationStatusSchema = z.enum(['PENDING', 'REVIEWING', 'SHORTLISTED', 'INTERVIEW', 'WAITLISTED', 'ACCEPTED', 'REJECTED', 'WITHDRAWN'])
+export const opportunityApplicationStatusUpdateSchema = z.object({
+  status: applicationStatusSchema.exclude(['PENDING', 'WITHDRAWN']),
+  rejectionReason: z.string().trim().min(5).max(1_000).optional(),
+}).superRefine((value, context) => {
+  if (value.status === 'REJECTED' && !value.rejectionReason) context.addIssue({ code: z.ZodIssueCode.custom, path: ['rejectionReason'], message: 'A rejection reason is required.' })
+})
+export type OpportunityApplicationStatusUpdate = z.infer<typeof opportunityApplicationStatusUpdateSchema>
+
+export const opportunityApplicationWorkflowSchema = z.object({
+  id: idSchema,
+  opportunityId: idSchema,
+  applicantType: z.enum(['TALENT', 'PROJECT']),
+  applicantId: idSchema,
+  message: z.string(),
+  status: applicationStatusSchema,
+  rejectionReason: z.string().nullable(),
+  createdAt: z.coerce.date(),
+})
+export type OpportunityApplicationWorkflow = z.infer<typeof opportunityApplicationWorkflowSchema>
+
+export type OpportunityApplicationDecision = z.infer<typeof opportunityApplicationDecisionSchema>
+
+export const walletResponseSchema = walletSchema
+export type WalletResponse = z.infer<typeof walletResponseSchema>
+
+export const applicationStatusHistorySchema = z.object({
+  id: idSchema,
+  applicationId: idSchema,
+  fromStatus: applicationStatusSchema.nullable(),
+  toStatus: applicationStatusSchema,
+  changedById: idSchema,
+  note: z.string().nullable(),
+  createdAt: z.coerce.date(),
+})
+export type ApplicationStatusHistory = z.infer<typeof applicationStatusHistorySchema>
+
+export const applicationWorkflowResponseSchema = opportunityApplicationWorkflowSchema.extend({
+  history: z.array(applicationStatusHistorySchema),
+})
+export type ApplicationWorkflowResponse = z.infer<typeof applicationWorkflowResponseSchema>
+
+export const walletOwnerQuerySchema = z.object({
+  ownerType: walletOwnerTypeSchema,
+})

@@ -90,6 +90,10 @@ enum TaskStatus {
 
 enum ApplicationStatus {
   PENDING
+  REVIEWING
+  SHORTLISTED
+  INTERVIEW
+  WAITLISTED
   ACCEPTED
   REJECTED
   WITHDRAWN
@@ -251,6 +255,7 @@ model User {
   importRows                 ImportRow[]
   bmcUpdates                 BusinessModelCanvas[]     @relation("BmcUpdater")
   personalDataExports        PersonalDataExport[]
+  walletTransactionsCreated  WalletTransaction[]
 }
 
 model TalentProfile {
@@ -345,6 +350,7 @@ model Organization {
   approvedRequest      OrganizationRequest?      @relation("OrganizationRequestApprovedOrganization")
   projectWatches       ProjectWatch[]
   projectContacts      OrganizationProjectContact[]
+  wallet               Wallet?
 
   @@index([type, verificationStatus])
 }
@@ -605,6 +611,7 @@ model Project {
   posts                Post[]
   conversation         Conversation?
   financialEngagements FinancialEngagement[]
+  wallet               Wallet?
   projectWatches       ProjectWatch[]
   organizationContacts OrganizationProjectContact[]
 
@@ -696,9 +703,9 @@ model Application {
   message         String
   status          ApplicationStatus @default(PENDING)
   rejectionReason String?
-  decidedAt       DateTime?
-  decidedById     String?
-  createdAt       DateTime          @default(now())
+  decidedAt      DateTime?
+  decidedById    String?
+  createdAt      DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   project         Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
   position        OpenPosition?     @relation(fields: [positionId], references: [id])
@@ -707,6 +714,49 @@ model Application {
 
   @@unique([projectId, applicantId, status])
   @@index([projectId, status])
+}
+
+enum WalletOwnerType {
+  ORGANIZATION
+  PROJECT
+}
+
+enum WalletTransactionType {
+  CREDIT
+  DEBIT
+}
+
+model Wallet {
+  id             String              @id @default(cuid())
+  organizationId String?             @unique
+  projectId      String?             @unique
+  ownerType      WalletOwnerType
+  currency       String              @default("MGA")
+  balance        Decimal             @default(0) @db.Decimal(18, 2)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  organization   Organization?       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  project        Project?            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  transactions   WalletTransaction[]
+
+  @@index([ownerType])
+}
+
+model WalletTransaction {
+  id            String                @id @default(cuid())
+  walletId      String
+  type          WalletTransactionType
+  amount        Decimal               @db.Decimal(18, 2)
+  currency      String
+  description   String
+  referenceType String?
+  referenceId   String?
+  createdById   String
+  createdAt     DateTime              @default(now())
+  wallet        Wallet                @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  createdBy     User                  @relation(fields: [createdById], references: [id])
+
+  @@index([walletId, createdAt])
 }
 
 model Task {
@@ -835,10 +885,14 @@ model OpportunityApplication {
   opportunityId String
   applicantType OpportunityApplicantType
   applicantId   String
-    message         String
-  status          ApplicationStatus
+  message       String
+  status        ApplicationStatus
   rejectionReason String?
-  createdAt       DateTime                 @default(now())
+  reviewedAt    DateTime?
+  shortlistedAt DateTime?
+  interviewAt  DateTime?
+  waitlistedAt DateTime?
+  createdAt     DateTime                 @default(now())
 
   opportunity   Opportunity              @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
 

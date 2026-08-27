@@ -58,10 +58,30 @@ export class OpportunityService {
     if (!parsed.success) throw new BadRequestException({ code: 'VALIDATION_ERROR', issues: parsed.error.issues })
     const application = await this.prisma.opportunityApplication.findUnique({ where: { id: applicationId }, select: { id: true, status: true, opportunity: { select: { organizationId: true } } } })
     if (!application || application.opportunity.organizationId !== organizationId) throw new NotFoundException({ code: 'OPPORTUNITY_APPLICATION_NOT_FOUND', messageKey: 'errors.notFound' })
-    if (application.status !== 'PENDING') throw new ConflictException({ code: 'OPPORTUNITY_APPLICATION_ALREADY_DECIDED', messageKey: 'errors.alreadyProcessed' })
-    const updated = await this.prisma.opportunityApplication.update({ where: { id: applicationId }, data: { status: parsed.data.status, rejectionReason: parsed.data.status === 'REJECTED' ? parsed.data.rejectionReason : null }, select: { id: true, opportunityId: true, applicantType: true, applicantId: true, message: true, status: true, rejectionReason: true, createdAt: true } })
-    await this.audit.record({ actorId, action: 'OPPORTUNITY_APPLICATION_DECIDED', targetType: 'OpportunityApplication', targetId: applicationId, metadata: { organizationId, status: parsed.data.status } })
+    if (!this.canTransition(application.status, parsed.data.status)) throw new ConflictException({ code: 'INVALID_OPPORTUNITY_APPLICATION_TRANSITION', messageKey: 'errors.invalidApplicationTransition' })
+    const now = new Date()
+    const timestamps: { reviewedAt?: Date; shortlistedAt?: Date; interviewAt?: Date; waitlistedAt?: Date } = {}
+    if (parsed.data.status === 'REVIEWING') timestamps.reviewedAt = now
+    if (parsed.data.status === 'SHORTLISTED') timestamps.shortlistedAt = now
+    if (parsed.data.status === 'INTERVIEW') timestamps.interviewAt = now
+    if (parsed.data.status === 'WAITLISTED') timestamps.waitlistedAt = now
+    const updated = await this.prisma.opportunityApplication.update({ where: { id: applicationId }, data: { status: parsed.data.status, rejectionReason: parsed.data.status === 'REJECTED' ? parsed.data.rejectionReason : null, ...timestamps }, select: { id: true, opportunityId: true, applicantType: true, applicantId: true, message: true, status: true, rejectionReason: true, createdAt: true } })
+    await this.audit.record({ actorId, action: 'OPPORTUNITY_APPLICATION_STATUS_CHANGED', targetType: 'OpportunityApplication', targetId: applicationId, metadata: { organizationId, from: application.status, status: parsed.data.status } })
     return updated
+  }
+
+  private canTransition(current: string, next: string) {
+    const allowed: Record<string, string[]> = {
+      PENDING: ['REVIEWING', 'SHORTLISTED', 'INTERVIEW', 'WAITLISTED', 'ACCEPTED', 'REJECTED'],
+      REVIEWING: ['SHORTLISTED', 'INTERVIEW', 'WAITLISTED', 'ACCEPTED', 'REJECTED'],
+      SHORTLISTED: ['INTERVIEW', 'WAITLISTED', 'ACCEPTED', 'REJECTED'],
+      INTERVIEW: ['WAITLISTED', 'ACCEPTED', 'REJECTED'],
+      WAITLISTED: ['INTERVIEW', 'ACCEPTED', 'REJECTED'],
+      ACCEPTED: [],
+      REJECTED: [],
+      WITHDRAWN: [],
+    }
+    return allowed[current]?.includes(next) ?? false
   }
 
   private async assertOrganizationReader(actorId: string, organizationId: string) {

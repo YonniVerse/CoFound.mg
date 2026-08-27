@@ -50,3 +50,27 @@ test('B-08 empêche une décision répétée', async () => {
   } as unknown as PrismaService
   await assert.rejects(() => new OpportunityService(prisma, auditMock()).decideApplication('u1', 'org1', 'app1', { status: 'REJECTED', rejectionReason: 'Déjà traité' }), (error: unknown) => error instanceof ConflictException)
 })
+
+test('B-08 fait progresser une candidature vers REVIEWING, SHORTLISTED puis INTERVIEW', async () => {
+  let status = 'PENDING'
+  const prisma = {
+    organizationMember: { findUnique: async () => capabilityMember },
+    opportunityApplication: {
+      findUnique: async () => ({ id: 'app1', status, opportunity: { organizationId: 'org1' } }),
+      update: async ({ data }: { data: { status: string } }) => { status = data.status; return { id: 'app1', opportunityId: 'opp1', applicantType: 'TALENT', applicantId: 'u2', message: 'Candidature suffisamment longue.', status, rejectionReason: null, createdAt: new Date() } },
+    },
+  } as unknown as PrismaService
+  const service = new OpportunityService(prisma, auditMock())
+  await service.decideApplication('u1', 'org1', 'app1', { status: 'REVIEWING' })
+  await service.decideApplication('u1', 'org1', 'app1', { status: 'SHORTLISTED' })
+  const result = await service.decideApplication('u1', 'org1', 'app1', { status: 'INTERVIEW' })
+  assert.equal(result.status, 'INTERVIEW')
+})
+
+test('B-08 refuse un retour vers PENDING depuis une étape avancée', async () => {
+  const prisma = {
+    organizationMember: { findUnique: async () => capabilityMember },
+    opportunityApplication: { findUnique: async () => ({ id: 'app1', status: 'INTERVIEW', opportunity: { organizationId: 'org1' } }) },
+  } as unknown as PrismaService
+  await assert.rejects(() => new OpportunityService(prisma, auditMock()).decideApplication('u1', 'org1', 'app1', { status: 'PENDING' }), (error: unknown) => error instanceof BadRequestException)
+})

@@ -148,6 +148,10 @@ export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
 
 export const ApplicationStatus = {
   PENDING: 'PENDING',
+  REVIEWING: 'REVIEWING',
+  SHORTLISTED: 'SHORTLISTED',
+  INTERVIEW: 'INTERVIEW',
+  WAITLISTED: 'WAITLISTED',
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
   WITHDRAWN: 'WITHDRAWN',

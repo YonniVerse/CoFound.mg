@@ -26,6 +26,26 @@ const statusBadges: Record<
     icon: <Clock className="h-3.5 w-3.5" />,
     color: "bg-amber-500/10 text-amber-600 border-amber-500/20",
   },
+  REVIEWING: {
+    label: "En cours d’examen",
+    icon: <Clock className="h-3.5 w-3.5" />,
+    color: "bg-blue-500/10 text-blue-600 border-blue-500/20",
+  },
+  SHORTLISTED: {
+    label: "Présélectionnée",
+    icon: <Sparkles className="h-3.5 w-3.5" />,
+    color: "bg-violet-500/10 text-violet-600 border-violet-500/20",
+  },
+  INTERVIEW: {
+    label: "Entretien",
+    icon: <Calendar className="h-3.5 w-3.5" />,
+    color: "bg-cyan-500/10 text-cyan-600 border-cyan-500/20",
+  },
+  WAITLISTED: {
+    label: "Liste d’attente",
+    icon: <AlertTriangle className="h-3.5 w-3.5" />,
+    color: "bg-orange-500/10 text-orange-600 border-orange-500/20",
+  },
   ACCEPTED: {
     label: "Acceptée",
     icon: <CheckCircle2 className="h-3.5 w-3.5" />,
@@ -50,6 +70,10 @@ export default function MyApplicationsPage() {
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
   const statusLabels: Record<ApplicationStatus, string> = {
     PENDING: t('applications.pending'),
+    REVIEWING: "En cours d’examen",
+    SHORTLISTED: "Présélectionnée",
+    INTERVIEW: "Entretien",
+    WAITLISTED: "Liste d’attente",
     ACCEPTED: t('applications.accepted'),
     REJECTED: t('applications.rejected'),
     WITHDRAWN: t('applications.withdrawn'),
@@ -93,7 +117,7 @@ export default function MyApplicationsPage() {
 
         {/* Status Filters */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2">
-          {(["ALL", "PENDING", "ACCEPTED", "REJECTED", "WITHDRAWN"] as const).map(
+          {(["ALL", "PENDING", "REVIEWING", "SHORTLISTED", "INTERVIEW", "WAITLISTED", "ACCEPTED", "REJECTED", "WITHDRAWN"] as const).map(
             (statusKey) => {
               const isActive = filter === statusKey;
               const label =
