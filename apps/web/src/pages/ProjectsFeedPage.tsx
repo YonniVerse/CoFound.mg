@@ -138,7 +138,7 @@ export default function ProjectsFeedPage() {
             )}
           </main>
 
-          <aside className="sticky top-[90px] hidden h-fit shrink-0 self-start lg:flex lg:w-[360px]">
+          <aside className="fixed bottom-0 right-4 z-40 w-[min(360px,calc(100vw-2rem))]">
             <MessagesPanel />
           </aside>
         </div>
