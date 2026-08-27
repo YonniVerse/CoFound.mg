@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-import { profileCompletionReminderSchema, type ProfileCompletionReminder } from "@cofound/shared";
+import { onboardingStepResponseSchema } from "@cofound/shared";
 import { apiClient } from "@/lib/api-client";
 import { 
   Home, 
@@ -42,14 +42,17 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading, logout } = useAuth();
   const { t } = useI18n();
-  const [completionReminder, setCompletionReminder] = useState<ProfileCompletionReminder | null>(null);
+  const [completionReminder, setCompletionReminder] = useState<{ shouldRemind: boolean; completion: number; ctaPath: '/onboarding' } | null>(null);
   const [currentProfile, setCurrentProfile] = useState<CurrentProfile | null>(null);
 
   useEffect(() => {
     let active = true;
     if (!isAuthenticated) return () => { active = false; };
-    void apiClient.get('/me/profile/completion-reminder', profileCompletionReminderSchema)
-      .then((reminder) => { if (active) setCompletionReminder(reminder); })
+    void apiClient.get('/me/onboarding', onboardingStepResponseSchema)
+      .then((result) => {
+        const completion = Math.max(result.progress.completion, Math.round((result.progress.completedSteps.length / 6) * 100))
+        if (active) setCompletionReminder({ shouldRemind: !result.progress.isComplete, completion, ctaPath: '/onboarding' })
+      })
       .catch(() => { if (active) setCompletionReminder(null); });
     return () => { active = false; };
   }, [isAuthenticated, location.pathname]);
