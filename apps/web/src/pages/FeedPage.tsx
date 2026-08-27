@@ -77,7 +77,7 @@ export default function FeedPage() {
 
       <div className="flex items-start px-4 sm:px-10 py-8 gap-6 max-w-[1400px] mx-auto w-full">
         {/* Main Column: Feed */}
-        <div className="flex-1 min-w-0 max-w-3xl flex flex-col gap-6">
+        <div className="w-full min-w-0 max-w-3xl flex-[0_0_auto] flex flex-col gap-6">
           {filter !== "projects" && isLoading && (
             <div className="space-y-4">
               <TalentCardSkeleton />
@@ -159,7 +159,7 @@ export default function FeedPage() {
         </div>
 
         {/* Messaging widget fixed to the bottom of the viewport. */}
-        <div className={isMessagesCollapsed ? "fixed bottom-0 right-4 z-40 w-[min(360px,calc(100vw-2rem))]" : "flex w-[360px] shrink-0 self-start"}>
+        <div className={isMessagesCollapsed ? "fixed bottom-2 right-4 z-40 w-[min(360px,calc(100vw-2rem))]" : "flex w-[360px] shrink-0 self-start"}>
           <MessagesPanel isCollapsed={isMessagesCollapsed} onCollapsedChange={setIsMessagesCollapsed} />
         </div>
       </div>
