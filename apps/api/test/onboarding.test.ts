@@ -5,7 +5,7 @@ import { OnboardingService } from '../src/onboarding/onboarding.service.js'
 
 test('E-13 retourne une progression initiale reprenable', async () => {
   const prisma = {
-    talentProfile: { findUnique: async () => null },
+    user: { findUnique: async () => null },
   } as unknown as PrismaService
   const result = await new OnboardingService(prisma).getMine('user-1')
   assert.deepEqual(result.progress, { currentStep: 1, completedSteps: [], completion: 0, minimumCompletion: 60, isComplete: false, stepName: 'identity' })
