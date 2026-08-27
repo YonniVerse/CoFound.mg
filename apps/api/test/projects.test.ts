@@ -5,12 +5,18 @@ import { ProjectsController } from '../src/projects/projects.controller.js'
 import { ProjectStatus } from '@cofound/shared'
 import type { PrismaService } from '../src/prisma/prisma.service.js'
 
-function mockPrismaService(projects: unknown[] = []) {
+function mockPrismaService(projects: unknown[] = [], posts: unknown[] = []) {
   return {
     project: {
       findMany: async (args: Record<string, unknown>) => {
         const limit = typeof args.take === 'number' ? args.take : 21
         return projects.slice(0, limit)
+      },
+    },
+    post: {
+      findMany: async (args: Record<string, unknown>) => {
+        const limit = typeof args.take === 'number' ? args.take : 21
+        return posts.slice(0, limit)
       },
     },
   } as unknown as PrismaService
@@ -51,6 +57,33 @@ test('ProjectsService.getFeed returns paginated project cards', async () => {
   assert.equal(item.owner?.pseudonym, 'Razafy')
   assert.equal(response.hasMore, false)
   assert.equal(response.nextCursor, null)
+})
+
+test('ProjectsService.getPostsFeed returns project-branded publication items', async () => {
+  const mockDate = new Date('2026-08-20T10:00:00Z')
+  const service = new ProjectsService(mockPrismaService([], [{
+    id: 'post_1',
+    projectId: 'proj_1',
+    type: 'UPDATE',
+    content: 'Nous avons validé notre première maquette.',
+    expiresAt: null,
+    createdAt: mockDate,
+    project: {
+      id: 'proj_1',
+      title: 'AgriTech Madagascar',
+      pitch: 'Solutions d’irrigation intelligentes pour agriculteurs',
+      status: 'RECRUITING',
+      sector: { id: 'sec_1', slug: 'agritech', labelKey: 'sectors.agritech' },
+      region: null,
+    },
+  }]))
+
+  const response = await service.getPostsFeed({ limit: 20 })
+
+  assert.equal(response.items.length, 1)
+  assert.equal(response.items[0]?.project.title, 'AgriTech Madagascar')
+  assert.equal(response.items[0]?.content, 'Nous avons validé notre première maquette.')
+  assert.equal(response.items[0]?.project.status, ProjectStatus.RECRUITING)
 })
 
 test('ProjectsController.getFeed handles valid query params', async () => {

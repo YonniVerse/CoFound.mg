@@ -1,17 +1,34 @@
 import {
+  ownedProjectsResponseSchema,
   projectMembersResponseSchema,
   projectPositionsResponseSchema,
+  projectPostFeedResponseSchema,
   projectPrivateDetailSchema,
   projectPostsResponseSchema,
   projectTasksResponseSchema,
   publicProjectDetailSchema,
   type CreateProjectTaskInput,
+  type ProjectPostFeedResponse,
+  type ProjectPostFeedQuery,
   type UpdateProjectTaskInput,
   type ProjectRoleInput,
   type ProjectPostCreateInput,
   type ProjectPostUpdateInput,
 } from '@cofound/shared'
 import { apiClient } from '@/lib/api-client'
+
+export function getOwnedProjects() {
+  return apiClient.get('/projects/mine', ownedProjectsResponseSchema)
+}
+
+export function getProjectPostsFeed(query: Partial<ProjectPostFeedQuery> = {}) {
+  const params = new URLSearchParams()
+  if (query.search) params.set('search', query.search)
+  if (query.cursor) params.set('cursor', query.cursor)
+  if (query.limit) params.set('limit', String(query.limit))
+  const path = `/projects/posts/feed${params.toString() ? `?${params.toString()}` : ''}`
+  return apiClient.get<ProjectPostFeedResponse>(path, projectPostFeedResponseSchema)
+}
 
 export async function getProjectById(id: string) {
   const [project, positions] = await Promise.all([

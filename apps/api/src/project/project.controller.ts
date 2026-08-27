@@ -9,6 +9,12 @@ import { ProjectService } from './project.service.js'
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
+  @Get('mine')
+  @RequirePermissions(Permission.PROJECT_READ)
+  getMine(@Req() request: AuthenticatedRequest) {
+    return this.projectService.getMine(request.user!.userId)
+  }
+
   @Post()
   @RequirePermissions(Permission.PROJECT_CREATE)
   create(@Req() request: AuthenticatedRequest, @Body() body: unknown) {

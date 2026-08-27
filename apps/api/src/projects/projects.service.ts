@@ -5,6 +5,9 @@ import {
   type ProjectFeedCard,
   type ProjectFeedQuery,
   type ProjectFeedResponse,
+  type ProjectPostFeedItem,
+  type ProjectPostFeedResponse,
+  type ProjectPostType,
 } from '@cofound/shared'
 
 @Injectable()
@@ -66,7 +69,6 @@ export class ProjectsService {
     const itemsRaw = hasMore ? projects.slice(0, limit) : projects
     const nextCursor = hasMore && itemsRaw.length > 0 ? (itemsRaw[itemsRaw.length - 1]?.id ?? null) : null
 
-
     const items: ProjectFeedCard[] = itemsRaw.map((p) => {
       const creatorProfile = p.createdBy?.talentProfile
       return {
@@ -97,5 +99,69 @@ export class ProjectsService {
       nextCursor,
       hasMore,
     }
+  }
+
+  async getPostsFeed(query: { search?: string; cursor?: string; limit?: number }): Promise<ProjectPostFeedResponse> {
+    const limit = query.limit ?? 20
+    const searchTerm = query.search?.trim()
+    const posts = await this.prisma.post.findMany({
+      where: {
+        OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
+        project: {
+          status: { in: [ProjectStatus.RECRUITING, ProjectStatus.ACTIVE] },
+          ...(searchTerm
+            ? {
+                OR: [
+                  { title: { contains: searchTerm, mode: 'insensitive' } },
+                  { pitch: { contains: searchTerm, mode: 'insensitive' } },
+                ],
+              }
+            : {}),
+        },
+      },
+      select: {
+        id: true,
+        projectId: true,
+        type: true,
+        content: true,
+        expiresAt: true,
+        createdAt: true,
+        project: {
+          select: {
+            id: true,
+            title: true,
+            pitch: true,
+            status: true,
+            sector: { select: { id: true, slug: true, labelKey: true } },
+            region: { select: { id: true, slug: true, labelKey: true } },
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: limit + 1,
+      ...(query.cursor ? { skip: 1, cursor: { id: query.cursor } } : {}),
+    })
+
+    const hasMore = posts.length > limit
+    const itemsRaw = hasMore ? posts.slice(0, limit) : posts
+    const nextCursor = hasMore && itemsRaw.length > 0 ? (itemsRaw[itemsRaw.length - 1]?.id ?? null) : null
+    const items: ProjectPostFeedItem[] = itemsRaw.map((post) => ({
+      id: post.id,
+      projectId: post.projectId,
+      type: post.type as ProjectPostType,
+      content: post.content,
+      expiresAt: post.expiresAt,
+      createdAt: post.createdAt,
+      project: {
+        id: post.project.id,
+        title: post.project.title,
+        pitch: post.project.pitch,
+        status: post.project.status as ProjectStatus,
+        sector: post.project.sector,
+        region: post.project.region,
+      },
+    }))
+
+    return { items, nextCursor, hasMore }
   }
 }

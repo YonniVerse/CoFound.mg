@@ -43,6 +43,19 @@ test('P-01 crée un projet DRAFT et ajoute le créateur comme OWNER dans une tra
   })
 })
 
+test('P-01 retourne les projets possédés pour le compositeur du feed', async () => {
+  const createdAt = new Date('2026-08-20T10:00:00Z')
+  const prisma = {
+    project: {
+      findMany: async () => [{ id: 'p1', title: 'Projet test', pitch: 'Un pitch', status: 'DRAFT', createdAt }],
+    },
+  } as unknown as PrismaService
+
+  const result = await new ProjectService(prisma).getMine('u1')
+
+  assert.deepEqual(result.projects, [{ id: 'p1', title: 'Projet test', pitch: 'Un pitch', status: 'DRAFT', createdAt }])
+})
+
 test('P-01 refuse la consultation d’un projet dont l’utilisateur n’est pas membre', async () => {
   const prisma = { project: { findUnique: async () => ({ ...project, members: [{ userId: 'other', role: 'OWNER' }] }) } } as unknown as PrismaService
   await assert.rejects(() => new ProjectService(prisma).getById('u1', 'p1'), /Accès au projet refusé/)
@@ -50,6 +63,7 @@ test('P-01 refuse la consultation d’un projet dont l’utilisateur n’est pas
 
 test('P-01 expose PROJECT_CREATE et PROJECT_READ sur les routes attendues', () => {
   assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, ProjectController.prototype.create), [Permission.PROJECT_CREATE])
+  assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, ProjectController.prototype.getMine), [Permission.PROJECT_READ])
   assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, ProjectController.prototype.getById), [Permission.PROJECT_READ])
 })
 
