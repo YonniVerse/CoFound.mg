@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ArrowUpRight, Download, ShieldCheck } from 'lucide-react'
+import { ArrowLeft, ArrowUpRight, Download, ShieldCheck } from 'lucide-react'
 import { useI18n, LanguageSwitcher } from '@/i18n'
 import { apiClient } from '@/lib/api-client'
 import { consentRecordSchema, consentRegistrySchema, personalDataExportRequestSchema, personalDataExportResponseSchema, type ConsentPurpose, type ConsentRecord } from '@cofound/shared'
@@ -61,6 +61,13 @@ export default function SettingsPage() {
   return (
     <main className="min-h-screen bg-muted/20 px-4 py-8 sm:px-8 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-5xl space-y-8">
+        <div className="flex items-center justify-between gap-3">
+          <Button variant="ghost" size="sm" asChild className="-ml-2 text-muted-foreground">
+            <a href="/feed"><ArrowLeft className="mr-2 h-4 w-4" aria-hidden="true" />Retour au Feed</a>
+          </Button>
+          <LanguageSwitcher />
+        </div>
+
         <header className="flex flex-col gap-5 border-b border-border/60 pb-7 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-4">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary">
@@ -72,7 +79,6 @@ export default function SettingsPage() {
               <p className="mt-2 max-w-2xl text-sm font-medium leading-relaxed text-muted-foreground">{t('settings.subtitle')}</p>
             </div>
           </div>
-          <LanguageSwitcher />
         </header>
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
@@ -116,10 +122,10 @@ export default function SettingsPage() {
             </Card>
 
             <Card className="rounded-2xl border-border/70 bg-primary/[0.03] shadow-2xs">
-              <CardContent className="p-5">
-                <p className="text-sm font-semibold text-foreground">{t('settings.backProfile')}</p>
+              <CardContent className="p-4 sm:p-5">
+                <p className="text-sm font-semibold leading-snug text-foreground">{t('settings.backProfile')}</p>
                 <p className="mt-1 text-xs leading-relaxed text-muted-foreground">Complète ou mets à jour les informations de ton profil.</p>
-                <Button className="mt-4 w-full justify-center" asChild>
+                <Button className="mt-3 h-9 w-full justify-center text-sm" asChild>
                   <a href="/onboarding">Accéder au profil <ArrowUpRight className="ml-2 h-4 w-4" aria-hidden="true" /></a>
                 </Button>
               </CardContent>
