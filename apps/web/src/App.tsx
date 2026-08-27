@@ -9,6 +9,7 @@ import OrganizationProfilePage from "@/pages/OrganizationProfilePage";
 import PartnerProjectsPage from "@/pages/PartnerProjectsPage";
 import PartnerTalentsPage from "@/pages/PartnerTalentsPage";
 import PartnerOpportunitiesPage from "@/pages/PartnerOpportunitiesPage";
+import WalletPage from "@/pages/WalletPage";
 import ActivationPage from "@/pages/ActivationPage";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { AuthProvider } from "@/hooks/useAuth";
@@ -80,6 +81,8 @@ function App() {
     <Route path="/organizations/:organizationId/projects" element={<PartnerProjectsPage />} />
     <Route path="/organizations/:organizationId/talents" element={<PartnerTalentsPage />} />
     <Route path="/organizations/:organizationId/opportunities" element={<PartnerOpportunitiesPage />} />
+    <Route path="/organizations/:organizationId/wallet" element={<WalletPage />} />
+    <Route path="/projects/:id/wallet" element={<WalletPage />} />
     <Route path="/onboarding" element={<OnboardingPage />} />
     <Route path="/feed" element={<FeedPage />} />
     <Route path="/search" element={<SearchPage />} />

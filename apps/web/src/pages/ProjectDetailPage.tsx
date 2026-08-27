@@ -1,5 +1,5 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { ArrowLeft, WalletCards } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ProjectHeader } from "@/components/project/ProjectHeader";
@@ -50,6 +50,10 @@ export default function ProjectDetailPage() {
 
             {/* RIGHT SIDEBAR */}
             <div className="w-full lg:w-[320px] shrink-0 space-y-6 lg:sticky lg:top-[90px] lg:h-fit lg:self-start">
+              <Link to={`/projects/${project.id}/wallet`} className="flex items-center justify-between rounded-2xl border border-primary/15 bg-primary/5 px-4 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary/10">
+                <span className="flex items-center gap-2"><WalletCards className="h-4 w-4" /> Wallet du projet</span>
+                <span aria-hidden="true">→</span>
+              </Link>
               <ProjectActionCard 
                 project={project} 
                 onApply={applyToProject}
