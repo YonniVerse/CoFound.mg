@@ -15,7 +15,7 @@
     "test": "tsx --test test/**/*.test.ts",
     "prisma:validate": "prisma validate --schema prisma/schema.prisma",
     "prisma:generate": "prisma generate --schema prisma/schema.prisma",
-    "prisma:migrate:deploy": "prisma migrate deploy --schema prisma/schema.prisma",
+    "prisma:migrate:deploy": "DATABASE_URL=\"${DIRECT_URL:-$DATABASE_URL}\" prisma migrate deploy --schema prisma/schema.prisma",
     "prisma:migrate:diff": "prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script",
     "seed:reference": "tsx prisma/seed-reference.ts",
     "seed:recette": "tsx prisma/seed-recette.ts",
