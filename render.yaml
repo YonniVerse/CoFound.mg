@@ -11,8 +11,8 @@ services:
     dockerfilePath: ./deploy/api.Dockerfile
     dockerContext: .
     dockerCommand: >-
-      sh -c "./node_modules/.bin/prisma migrate deploy --schema prisma/schema.prisma
-      && node dist/main.js"
+      sh -c 'DATABASE_URL="${DIRECT_URL:-$DATABASE_URL}" ./node_modules/.bin/prisma migrate deploy
+      --schema prisma/schema.prisma && node dist/main.js'
     healthCheckPath: /api/v1/health
     autoDeployTrigger: checksPass
     maxShutdownDelaySeconds: 60
@@ -44,6 +44,9 @@ envVarGroups:
   - name: cofound-api-runtime
     envVars:
       - key: DATABASE_URL
+        sync: false
+      # Connexion Neon directe, sans suffixe -pooler, réservée aux migrations Prisma.
+      - key: DIRECT_URL
         sync: false
       - key: JWT_SECRET
         generateValue: true
