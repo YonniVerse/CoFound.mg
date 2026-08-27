@@ -26,7 +26,7 @@ export class ApiClientError extends Error {
 }
 
 export class ApiClient {
-  private readonly baseUrl = (import.meta.env.VITE_API_URL ?? '/api/v1').replace(/\/$/, '')
+  private readonly baseUrl = (import.meta.env.VITE_API_URL ?? (import.meta.env.PROD ? 'https://cofound-mg.onrender.com/api/v1' : '/api/v1')).replace(/\/$/, '')
   private accessToken: string | null = null
   private refreshHandler: RefreshHandler | null = null
   private refreshInFlight: Promise<boolean> | null = null
