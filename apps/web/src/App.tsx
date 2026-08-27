@@ -36,7 +36,6 @@ const ProjectTeamPage = lazy(() => import("@/pages/ProjectTeamPage"));
 const ProjectTasksPage = lazy(() => import("@/pages/ProjectTasksPage"));
 const ProjectPostsPage = lazy(() => import("@/pages/ProjectPostsPage"));
 const ProjectChannelPage = lazy(() => import("@/pages/ProjectChannelPage"));
-const MessagesPage = lazy(() => import("@/pages/MessagesPage"));
 const NotificationsPage = lazy(() => import("@/pages/NotificationsPage"));
 const ModerationQueuePage = lazy(() => import("@/pages/ModerationQueuePage"));
 const AuditLogPage = lazy(() => import("@/pages/AuditLogPage"));
@@ -108,7 +107,6 @@ function App() {
     <Route path="/projects/feed" element={<ProjectsFeedPage />} />
     <Route path="/profiles" element={<TalentsFeedPage />} />
     <Route path="/talents/feed" element={<TalentsFeedPage />} />
-    <Route path="/messages" element={<MessagesPage />} />
     <Route path="/notifications" element={<NotificationsPage />} />
     <Route path="/moderation" element={<PlatformRoleGate allowedRoles={["STAFF"]}><ModerationQueuePage /></PlatformRoleGate>} />
     <Route path="/staff/audit" element={<PlatformRoleGate allowedRoles={["STAFF"]}><AuditLogPage /></PlatformRoleGate>} />

@@ -3,8 +3,7 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ProjectCard, type ProjectData } from "@/components/feed/ProjectCard";
 import { ProfileCard, type ProfileData } from "@/components/feed/ProfileCard";
 import { FeedFilters, type FeedFilterType } from "@/components/feed/FeedFilters";
-import { ParityWidget } from "@/components/feed/ParityWidget";
-import { SuggestedProfilesWidget } from "@/components/feed/SuggestedProfilesWidget";
+import { MessagesPanel } from "@/components/feed/MessagesPanel";
 import { TalentCard } from "@/components/feed/TalentCard";
 import { TalentCardSkeleton } from "@/components/feed/TalentCardSkeleton";
 import { FeedErrorWidget } from "@/components/feed/FeedErrorWidget";
@@ -15,7 +14,7 @@ import { Users } from "lucide-react";
 
 export default function FeedPage() {
   const [filter, setFilter] = useState<FeedFilterType>("all");
-  const { feedItems, suggestedProfiles, isLoading: isLoadingMock, error: mockError } = useFeedData();
+  const { feedItems, isLoading: isLoadingMock, error: mockError } = useFeedData();
 
   const {
     talents,
@@ -158,10 +157,9 @@ export default function FeedPage() {
           )}
         </div>
 
-        {/* Right Fixed/Sticky Panel */}
-        <div className="hidden lg:flex w-[320px] flex-col gap-6 sticky top-[90px] h-fit shrink-0 self-start">
-          <ParityWidget percentage={38} />
-          <SuggestedProfilesWidget profiles={suggestedProfiles} />
+        {/* Inline messages panel: the former parity and suggested-profile widgets are intentionally removed. */}
+        <div className="hidden w-[360px] shrink-0 self-start lg:sticky lg:top-[90px] lg:flex">
+          <MessagesPanel />
         </div>
       </div>
     </DashboardLayout>
