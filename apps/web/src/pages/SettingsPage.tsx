@@ -87,18 +87,18 @@ export default function SettingsPage() {
               <CardTitle className="text-base font-bold tracking-tight">{t('settings.privacy.title')}</CardTitle>
               <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{t('settings.privacy.description')}</p>
             </CardHeader>
-            <CardContent className="space-y-4 px-5 py-5 sm:px-6">
+            <CardContent className="space-y-3 px-5 py-5 sm:px-6">
               {loading && <p className="text-sm text-muted-foreground" role="status">{t('settings.loading')}</p>}
               {error && <p className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{t('settings.error')}</p>}
               {!loading && PURPOSES.map(({ purpose, titleKey }) => {
                 const record = consents.find((consent) => consent.purpose === purpose && consent.active)
                 return (
-                  <div key={purpose} className="flex items-center justify-between gap-4 rounded-xl border border-border/70 bg-muted/20 p-4 transition-colors hover:border-primary/25">
+                  <div key={purpose} className="flex min-h-0 items-center justify-between gap-3 rounded-xl border border-border/70 bg-muted/20 px-3.5 py-3 transition-colors hover:border-primary/25 sm:px-4">
                     <div className="min-w-0">
-                      <p className="font-semibold text-foreground">{t(titleKey)}</p>
-                      <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{record ? `${t('settings.version')} ${record.policyVersion} · ${new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(record.grantedAt)}` : t('settings.notGranted')}</p>
+                      <p className="text-sm font-semibold leading-snug text-foreground sm:text-base">{t(titleKey)}</p>
+                      <p className="mt-1 text-xs leading-snug text-muted-foreground">{record ? `${t('settings.version')} ${record.policyVersion} · ${new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(record.grantedAt)}` : t('settings.notGranted')}</p>
                     </div>
-                    <Switch checked={active.has(purpose)} disabled={pending === purpose} onCheckedChange={(checked) => void toggle(purpose, checked)} aria-label={t(titleKey)} />
+                    <Switch className="shrink-0" checked={active.has(purpose)} disabled={pending === purpose} onCheckedChange={(checked) => void toggle(purpose, checked)} aria-label={t(titleKey)} />
                   </div>
                 )
               })}
