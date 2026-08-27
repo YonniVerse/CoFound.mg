@@ -75,9 +75,9 @@ export default function FeedPage() {
         setSearch={setSearch}
       />
 
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col items-start gap-6 px-4 py-8 sm:px-10 lg:flex-row">
+      <div className="mx-auto flex w-full min-w-0 max-w-full flex-col lg:max-w-[calc(100vw-16rem)] items-start gap-6 overflow-x-hidden px-4 py-8 sm:px-10 lg:flex-row">
         {/* Main Column: Feed */}
-        <div className="w-full min-w-0 flex-none flex flex-col gap-6 lg:w-[800px] lg:max-w-[800px]">
+        <div className="w-full min-w-0 flex-1 flex flex-col gap-6 lg:max-w-[800px]">
           {filter !== "projects" && isLoading && (
             <div className="space-y-4">
               <TalentCardSkeleton />
