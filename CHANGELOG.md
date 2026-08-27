@@ -25,7 +25,7 @@ Retiré · En cours · Bloqué**.
 ### Validation
 
 - Build shared, typecheck frontend, lint frontend, build frontend et `git diff --check` réussis.
-- Les changements frontend restent non commités et non déployés à la fin de cette session.
+- Les changements frontend sont commités dans `f7d209f`, fusionnés dans `main` par `fb781db` et poussés sur GitHub ; leur déploiement Vercel reste à confirmer.
 
 ---
 

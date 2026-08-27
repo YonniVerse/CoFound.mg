@@ -1,10 +1,10 @@
 # Reprise de session — CoFound.mg
 
 **Dernière mise à jour** : 2026-08-27
-**Phase** : amélioration visuelle du compositeur social projet terminée, changements non committés
+**Phase** : amélioration visuelle du compositeur social projet fusionnée et poussée dans `main`
 **Ticket / vague** : P-11 — publications projet et fil social
 **Branche locale** : `main`
-**État Git** : `main` est à jour sur `b8fbb7d`, avec deux fichiers frontend modifiés non committés : `ProjectSocialFeed.tsx` et `i18n.tsx`.
+**État Git** : `main` est synchronisée avec `origin/main` sur `fb781db` et le dépôt est propre.
 
 ## 1. État courant
 
@@ -29,7 +29,7 @@ Les publications restent attribuées au projet et non à l’utilisateur dans le
 
 Les boutons Vidéo et Photo constituent actuellement des points d’entrée visuels vers le même éditeur de publication textuelle. Le contrat backend existant ne gère pas encore l’upload ou le stockage de fichiers médias ; aucune fausse fonctionnalité d’upload n’a donc été ajoutée.
 
-La modification frontend est prête localement mais n’est pas encore commitée, poussée ni déployée. La production Vercel ne reflétera pas ce changement avant publication de `main`.
+La modification frontend est commitée dans `f7d209f`, fusionnée dans `main` par `fb781db` et poussée sur GitHub. Son déploiement Vercel reste à confirmer.
 
 Le mécanisme d’authentification et de refresh token n’a pas été modifié. Le diagnostic Render/Neon reste documenté : `DIRECT_URL` est utilisée pour Prisma Migrate et le verrou advisory `72707369` précédemment bloquant a été libéré ; le succès d’un nouveau déploiement Render reste à confirmer.
 
@@ -49,4 +49,4 @@ Décision technique : ne pas créer de nouveau contrat d’upload tant qu’un b
 
 ## 5. Prochaine action
 
-Relire le rendu en preview avec un compte possédant un projet, puis, si le résultat est validé, committer et pousser les deux fichiers frontend modifiés. Si les boutons Vidéo et Photo doivent accepter de vrais médias, définir séparément le contrat d’upload, le stockage et la modération avant implémentation.
+Relire le rendu en preview avec un compte possédant un projet et confirmer que Vercel a bien déployé `main` sur `fb781db`. Si les boutons Vidéo et Photo doivent accepter de vrais médias, définir séparément le contrat d’upload, le stockage et la modération avant implémentation.
