@@ -59,10 +59,10 @@ export function MessagesPanel() {
   }
 
   return (
-    <section className="flex min-h-[30rem] flex-col overflow-hidden rounded-2xl border border-border/70 bg-card shadow-2xs" aria-label="Messagerie">
+    <section className="flex min-h-[24rem] flex-col overflow-hidden rounded-xl border border-border bg-card shadow-2xs" aria-label="Messagerie">
       <header className="border-b border-border/70 px-5 py-4">
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Messagerie</p>
-        <h2 className="mt-1 text-xl font-bold text-foreground">Vos conversations</h2>
+        <h2 className="mt-1 text-lg font-bold text-foreground">Vos conversations</h2>
         <p className="mt-1 text-xs leading-relaxed text-muted-foreground">Les échanges affichent uniquement les pseudonymes.</p>
       </header>
       {error && <p role="alert" className="border-b border-destructive/20 bg-destructive/5 px-4 py-3 text-xs text-destructive">{error}</p>}
@@ -71,7 +71,7 @@ export function MessagesPanel() {
           <p className="px-2 pb-2 text-xs font-semibold text-muted-foreground">Conversations</p>
           {loading && <p className="px-2 py-2 text-xs text-muted-foreground">Chargement…</p>}
           {!loading && conversations.length === 0 && <p className="px-2 py-2 text-xs text-muted-foreground">Aucune conversation.</p>}
-          <div className="flex max-h-32 flex-col gap-1 overflow-y-auto">
+          <div className="flex max-h-28 flex-col gap-1 overflow-y-auto">
             {conversations.map((conversation) => (
               <button key={conversation.id} type="button" className={`rounded-lg px-2.5 py-2 text-left text-xs transition-colors ${selectedId === conversation.id ? 'bg-primary/10 font-semibold text-primary' : 'text-foreground hover:bg-muted'}`} onClick={() => setSelectedId(conversation.id)}>
                 {conversation.type === 'PROJECT' ? 'Canal projet' : 'Conversation directe'}
