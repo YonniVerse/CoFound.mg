@@ -94,7 +94,7 @@ export default function ProjectsFeedPage() {
           </div>
         </header>
 
-        <div className="flex items-start gap-6">
+        <div className="flex w-full items-start gap-6">
           <main className="flex min-w-0 max-w-3xl flex-1 flex-col gap-6">
             {isLoading && (
               <div className="space-y-4">
@@ -139,7 +139,7 @@ export default function ProjectsFeedPage() {
             )}
           </main>
 
-          <aside className={isMessagesCollapsed ? "fixed bottom-0 right-4 z-40 w-[min(360px,calc(100vw-2rem))]" : "flex w-[360px] shrink-0 self-start"}>
+          <aside className={isMessagesCollapsed ? "fixed bottom-2 right-4 z-40 w-[min(360px,calc(100vw-2rem))]" : "flex w-[360px] shrink-0 self-start"}>
             <MessagesPanel isCollapsed={isMessagesCollapsed} onCollapsedChange={setIsMessagesCollapsed} />
           </aside>
         </div>
