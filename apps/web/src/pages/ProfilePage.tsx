@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, ArrowUpRight, Clock3, Mail, Pencil, ShieldCheck, UserRound } from 'lucide-react'
+import { ArrowLeft, ArrowUpRight, BriefcaseBusiness, Clock3, Mail, Pencil, ShieldCheck, UserRound } from 'lucide-react'
 import { privateTalentProfileSchema } from '@cofound/shared'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { Button } from '@/components/ui/button'
@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
 import { apiClient } from '@/lib/api-client'
-import { useI18n } from '@/i18n'
 
 type PrivateProfileResponse = ReturnType<typeof privateTalentProfileSchema.parse>
 
@@ -59,7 +58,6 @@ function ProfileSkeleton() {
 }
 
 export default function ProfilePage() {
-  const { t } = useI18n()
   const [data, setData] = useState<PrivateProfileResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -80,29 +78,15 @@ export default function ProfilePage() {
 
   return (
     <DashboardLayout>
-      <main className="min-h-screen bg-muted/20 px-4 pb-10 pt-8 sm:px-8 sm:pt-10 lg:px-10 lg:pb-12 lg:pt-12">
-        <div className="mx-auto max-w-5xl space-y-8">
+      <main className="min-h-screen bg-muted/20 px-4 py-8 sm:px-10">
+        <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <Button variant="ghost" size="sm" asChild className="-ml-2 text-muted-foreground">
-              <Link to="/feed"><ArrowLeft className="mr-2 h-4 w-4" aria-hidden="true" />{t('common.back')} au Feed</Link>
-            </Button>
-            <Button size="sm" asChild className="gap-2">
-              <Link to="/onboarding"><Pencil className="h-4 w-4" aria-hidden="true" />Modifier mon profil<ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link>
-            </Button>
-          </div>
-
-          <header className="flex flex-col gap-5 border-b border-border/60 pb-7 sm:flex-row sm:items-start sm:justify-between">
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary">
-                <UserRound className="h-6 w-6" aria-hidden="true" />
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Espace personnel</p>
-                <h1 className="mt-2 text-3xl font-black tracking-tight text-foreground sm:text-4xl">Mon profil</h1>
-                <p className="mt-2 max-w-2xl text-sm font-medium leading-relaxed text-muted-foreground">Gère tes informations privées et contrôle ce qui peut apparaître dans les espaces publics.</p>
-              </div>
+            <Link to="/feed" className="group inline-flex h-9 w-fit shrink-0 items-center gap-2 rounded-lg px-2 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:text-sm"><ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" aria-hidden="true" />Retour au Feed</Link>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button variant="outline" size="sm" asChild className="h-9 gap-1.5 rounded-lg px-3.5 text-xs font-medium sm:text-sm"><Link to="/projects/new"><BriefcaseBusiness className="h-4 w-4" aria-hidden="true" />Nouveau projet</Link></Button>
+              <Button size="sm" asChild className="h-9 gap-1.5 rounded-lg px-3.5 text-xs font-medium sm:text-sm"><Link to="/onboarding"><Pencil className="h-4 w-4" aria-hidden="true" />Modifier mon profil<ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link></Button>
             </div>
-          </header>
+          </div>
 
           {loading && <ProfileSkeleton />}
           {!loading && error && (
@@ -115,7 +99,7 @@ export default function ProfilePage() {
           )}
           {!loading && !error && (
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
-              <Card className="overflow-hidden rounded-2xl border-border/70 shadow-2xs">
+              <Card className="overflow-hidden rounded-xl border-border bg-card shadow-2xs">
                 <CardHeader className="border-b border-border/60 px-5 py-5 sm:px-6">
                   <CardTitle className="text-base font-bold tracking-tight">Informations du profil</CardTitle>
                   <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Ces informations sont visibles uniquement par toi dans cet espace.</p>
@@ -158,7 +142,7 @@ export default function ProfilePage() {
               </Card>
 
               <div className="space-y-6">
-                <Card className="rounded-2xl border-border/70 shadow-2xs">
+                <Card className="rounded-xl border-border bg-card shadow-2xs">
                   <CardHeader className="px-5 py-5">
                     <CardTitle className="text-base font-bold tracking-tight">Progression du profil</CardTitle>
                     <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Complète les étapes à ton rythme.</p>
@@ -169,7 +153,7 @@ export default function ProfilePage() {
                     <Button variant="outline" className="w-full justify-center" asChild><Link to="/onboarding">Continuer la mise à jour<ArrowUpRight className="ml-2 h-4 w-4" aria-hidden="true" /></Link></Button>
                   </CardContent>
                 </Card>
-                <Card className="rounded-2xl border-border/70 bg-primary/[0.03] shadow-2xs">
+                <Card className="rounded-xl border-primary/20 bg-primary/5 shadow-2xs">
                   <CardContent className="p-5">
                     <div className="flex items-start gap-3"><ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" /><div><p className="text-sm font-semibold leading-snug text-foreground">Identité protégée</p><p className="mt-1 text-xs leading-relaxed text-muted-foreground">Ton nom et tes données privées ne sont pas affichés dans le Feed public.</p></div></div>
                   </CardContent>
