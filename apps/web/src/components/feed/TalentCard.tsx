@@ -1,5 +1,4 @@
 import type { TalentFeedCard } from "@cofound/shared";
-import { Avatar } from "@/components/shared/Avatar";
 import { Button } from "@/components/ui/button";
 import { BriefcaseBusiness, Clock, MessageSquare, ShieldCheck } from "lucide-react";
 import { ReportButton } from "@/components/shared/ReportButton";
@@ -39,33 +38,22 @@ export function TalentCard({ talent }: TalentCardProps) {
 
   return (
     <article className="group flex min-w-0 flex-col gap-4 overflow-hidden rounded-xl border border-border bg-card p-5 shadow-2xs transition-all duration-150 hover:border-border/80 sm:p-6">
-      <header className="flex flex-wrap items-start justify-between gap-3">
-        <div className="flex min-w-0 flex-1 items-center gap-3.5">
-          <Avatar
-            name={talent.pseudonym}
-            src={null}
-            size="md"
-            className="h-12 w-12 shrink-0 border border-border/60 shadow-2xs sm:h-13 sm:w-13"
-          />
-          <div className="min-w-0">
-            <h3 className="truncate text-base font-bold leading-tight text-foreground transition-colors group-hover:text-primary sm:text-lg">
-              {talent.pseudonym}
-            </h3>
-            <div className="mt-1 flex min-w-0 items-center gap-1.5 truncate text-xs font-medium text-muted-foreground sm:text-sm">
-              <span>{categoryLabel}</span>
-              {talent.cohortYear && <><span>·</span><span>{t("common.cohort")} {talent.cohortYear}</span></>}
-            </div>
-          </div>
-        </div>
-        <span className="shrink-0 rounded-md bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
-          {talent.completion}% {t("common.completed")}
-        </span>
-      </header>
-
       <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
         <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
         <span>{t("common.identityProtected")}</span>
       </div>
+
+      <header className="flex min-w-0 items-center gap-3">
+        <div className="min-w-0">
+          <h3 className="truncate text-base font-bold leading-tight text-foreground transition-colors group-hover:text-primary sm:text-lg">
+            {talent.pseudonym}
+          </h3>
+          <div className="mt-1 flex min-w-0 items-center gap-1.5 truncate text-xs font-medium text-muted-foreground sm:text-sm">
+            <span>{categoryLabel}</span>
+            {talent.cohortYear && <><span>·</span><span>{t("common.cohort")} {talent.cohortYear}</span></>}
+          </div>
+        </div>
+      </header>
 
       {talent.headline && (
         <p className="text-sm font-semibold leading-relaxed text-foreground sm:text-base">
