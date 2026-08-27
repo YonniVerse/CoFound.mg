@@ -17,11 +17,12 @@ Retiré · En cours · Bloqué**.
 - L’étape « Ton parcours » utilise désormais un select alimenté par `GET /reference-data/fields`.
 - Seules les filières actives sont proposées, avec des libellés lisibles en français et en malgache.
 - La valeur soumise reste l’identifiant interne `fieldId` attendu par l’API.
+- Le champ pseudo a été retiré de l’étape « Ta visibilité » ; le pseudo généré côté backend est conservé automatiquement.
 - Les routes staff de gestion des référentiels restent protégées ; seule la lecture publique des filières est exposée.
 
 ### Validation
 
-- Build shared, typecheck API, lint API, typecheck frontend, lint frontend, build frontend et `git diff --check` réussis.
+- Build shared, typecheck API, lint API, typecheck frontend, lint frontend, build frontend et `git diff --check` réussis après le retrait du champ pseudo.
 - Commit fonctionnel `4d84547` créé directement sur `main`, puis intégré avec les commits distants dans le merge `8aa4efb`.
 - Le handoff a été mis à jour après le push.
 

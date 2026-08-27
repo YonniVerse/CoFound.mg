@@ -24,9 +24,9 @@ type FieldOption = { id: string; slug: string; labelKey: string; sortOrder: numb
 
 const STEPS = ['Toi', 'Ton parcours', 'Tes compétences', 'Tes aspirations', 'Ta disponibilité', 'Ta visibilité']
 
-type FormState = { firstName: string; lastName: string; pseudonym: string; bio: string; fieldId: string; cohortYear: string; skillIds: string; goals: string; sectorIds: string; availabilityHours: string; visibleInTalentFeed: boolean; gender: string | null }
+type FormState = { firstName: string; lastName: string; bio: string; fieldId: string; cohortYear: string; skillIds: string; goals: string; sectorIds: string; availabilityHours: string; visibleInTalentFeed: boolean; gender: string | null }
 
-const initialForm: FormState = { firstName: '', lastName: '', pseudonym: '', bio: '', fieldId: '', cohortYear: '', skillIds: '', goals: '', sectorIds: '', availabilityHours: '', visibleInTalentFeed: false, gender: null }
+const initialForm: FormState = { firstName: '', lastName: '', bio: '', fieldId: '', cohortYear: '', skillIds: '', goals: '', sectorIds: '', availabilityHours: '', visibleInTalentFeed: false, gender: null }
 
 export default function OnboardingPage() {
   const navigate = useNavigate()
@@ -72,7 +72,7 @@ export default function OnboardingPage() {
     if (step === 3) return { skillIds: form.skillIds.split(',').map((value) => value.trim()).filter(Boolean) }
     if (step === 4) return { goals: form.goals.split(',').map((value) => value.trim()).filter(Boolean), sectorIds: form.sectorIds.split(',').map((value) => value.trim()).filter(Boolean) }
     if (step === 5) return { availabilityHours: form.availabilityHours ? Number(form.availabilityHours) : undefined }
-    return { pseudonym: form.pseudonym, bio: form.bio || undefined, visibleInTalentFeed: form.visibleInTalentFeed, gender: form.gender }
+    return { bio: form.bio || undefined, visibleInTalentFeed: form.visibleInTalentFeed, gender: form.gender }
   }
   const save = async () => {
     setSaving(true); setError(null)
@@ -94,7 +94,7 @@ export default function OnboardingPage() {
       {step === 3 && <div className="space-y-4"><h2 className="text-xl font-bold">Ce que tu sais faire</h2><p className="text-sm text-muted-foreground">Saisis 3 à 8 identifiants de compétences, séparés par des virgules.</p><Input value={form.skillIds} onChange={(event) => update('skillIds', event.target.value)} placeholder="skill-1, skill-2, skill-3" /></div>}
       {step === 4 && <div className="space-y-4"><h2 className="text-xl font-bold">Ce que tu veux faire</h2><div><Label htmlFor="goals">Objectifs</Label><Input id="goals" value={form.goals} onChange={(event) => update('goals', event.target.value)} placeholder="Créer, apprendre" /></div><div><Label htmlFor="sectorIds">Secteurs</Label><Input id="sectorIds" value={form.sectorIds} onChange={(event) => update('sectorIds', event.target.value)} placeholder="sector-1, sector-2" /></div></div>}
       {step === 5 && <div className="space-y-4"><h2 className="text-xl font-bold">Ta disponibilité</h2><Label htmlFor="availabilityHours">Heures par semaine</Label><Input id="availabilityHours" type="number" min="0" max="168" value={form.availabilityHours} onChange={(event) => update('availabilityHours', event.target.value)} /></div>}
-      {step === 6 && <div className="space-y-4"><h2 className="text-xl font-bold">Ta visibilité</h2><p className="text-sm text-muted-foreground">Ton pseudonyme est visible. Ton nom, ta photo et ton genre ne sont jamais affichés dans les profils publics.</p><Input value={form.pseudonym} onChange={(event) => update('pseudonym', event.target.value)} placeholder="Pseudonyme" /><Textarea value={form.bio} onChange={(event) => update('bio', event.target.value)} placeholder="Une courte présentation" /><label className="flex items-center gap-3 text-sm"><input type="checkbox" checked={form.visibleInTalentFeed} onChange={(event) => update('visibleInTalentFeed', event.target.checked)} />Apparaître dans le Feed Talents si mon profil est assez complet</label><Button type="button" variant="outline" onClick={() => update('gender', form.gender ? null : 'prefer-not-to-say')}>{form.gender ? 'Effacer la donnée de genre' : 'Je préfère ne pas répondre au genre'}</Button></div>}
+      {step === 6 && <div className="space-y-4"><h2 className="text-xl font-bold">Ta visibilité</h2><p className="text-sm text-muted-foreground">Ton profil utilise un pseudonyme généré automatiquement. Ton nom, ta photo et ton genre ne sont jamais affichés dans les profils publics.</p><Textarea value={form.bio} onChange={(event) => update('bio', event.target.value)} placeholder="Une courte présentation" /><label className="flex items-center gap-3 text-sm"><input type="checkbox" checked={form.visibleInTalentFeed} onChange={(event) => update('visibleInTalentFeed', event.target.checked)} />Apparaître dans le Feed Talents si mon profil est assez complet</label><Button type="button" variant="outline" onClick={() => update('gender', form.gender ? null : 'prefer-not-to-say')}>{form.gender ? 'Effacer la donnée de genre' : 'Je préfère ne pas répondre au genre'}</Button></div>}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       <div className="flex items-center justify-between border-t pt-6"><Button variant="ghost" disabled={saving || step === 1} onClick={() => setStep((current) => current - 1)}>Précédent</Button><div className="flex gap-2"><Button variant="ghost" disabled={saving} onClick={() => navigate('/feed')}>Plus tard</Button><Button disabled={saving} onClick={() => void save()}>{saving ? 'Enregistrement…' : step === 6 ? 'Terminer' : 'Continuer'}</Button></div></div>
     </div>
