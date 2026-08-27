@@ -14,6 +14,7 @@ import { Users } from "lucide-react";
 
 export default function FeedPage() {
   const [filter, setFilter] = useState<FeedFilterType>("all");
+  const [isMessagesCollapsed, setIsMessagesCollapsed] = useState(true);
   const { feedItems, isLoading: isLoadingMock, error: mockError } = useFeedData();
 
   const {
@@ -158,8 +159,8 @@ export default function FeedPage() {
         </div>
 
         {/* Messaging widget fixed to the bottom of the viewport. */}
-        <div className="fixed bottom-0 right-4 z-40 w-[min(360px,calc(100vw-2rem))]">
-          <MessagesPanel />
+        <div className={isMessagesCollapsed ? "fixed bottom-0 right-4 z-40 w-[min(360px,calc(100vw-2rem))]" : "flex w-[360px] shrink-0 self-start"}>
+          <MessagesPanel isCollapsed={isMessagesCollapsed} onCollapsedChange={setIsMessagesCollapsed} />
         </div>
       </div>
     </DashboardLayout>

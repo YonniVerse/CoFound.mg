@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Plus, Search, SearchX, SlidersHorizontal } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
@@ -13,6 +13,7 @@ import { useI18n } from '@/i18n'
 
 export default function ProjectsFeedPage() {
   const { t } = useI18n()
+  const [isMessagesCollapsed, setIsMessagesCollapsed] = useState(true)
   const {
     apiProjects,
     isLoading,
@@ -138,8 +139,8 @@ export default function ProjectsFeedPage() {
             )}
           </main>
 
-          <aside className="fixed bottom-0 right-4 z-40 w-[min(360px,calc(100vw-2rem))]">
-            <MessagesPanel />
+          <aside className={isMessagesCollapsed ? "fixed bottom-0 right-4 z-40 w-[min(360px,calc(100vw-2rem))]" : "flex w-[360px] shrink-0 self-start"}>
+            <MessagesPanel isCollapsed={isMessagesCollapsed} onCollapsedChange={setIsMessagesCollapsed} />
           </aside>
         </div>
       </div>
