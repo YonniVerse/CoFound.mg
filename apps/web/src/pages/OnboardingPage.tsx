@@ -6,7 +6,21 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { Textarea } from '@/components/ui/textarea'
+import { useI18n } from '@/i18n'
 import { apiClient } from '@/lib/api-client'
+
+const FIELD_LABEL_KEYS = {
+  'computer-science': 'onboarding.field.computerScience',
+  law: 'onboarding.field.law',
+  economics: 'onboarding.field.economics',
+  management: 'onboarding.field.management',
+  communication: 'onboarding.field.communication',
+  engineering: 'onboarding.field.engineering',
+  design: 'onboarding.field.design',
+  agriculture: 'onboarding.field.agriculture',
+} as const
+
+type FieldOption = { id: string; slug: string; labelKey: string; sortOrder: number }
 
 const STEPS = ['Toi', 'Ton parcours', 'Tes compétences', 'Tes aspirations', 'Ta disponibilité', 'Ta visibilité']
 
@@ -16,13 +30,28 @@ const initialForm: FormState = { firstName: '', lastName: '', pseudonym: '', bio
 
 export default function OnboardingPage() {
   const navigate = useNavigate()
+  const { t } = useI18n()
   const [step, setStep] = useState(1)
   const [form, setForm] = useState(initialForm)
   const [completion, setCompletion] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
+  const [fields, setFields] = useState<FieldOption[]>([])
+  const [fieldsLoading, setFieldsLoading] = useState(true)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let active = true
+    void apiClient.get<{ items: FieldOption[] }>('/reference-data/fields').then((payload) => {
+      if (active) setFields(payload.items)
+    }).catch(() => {
+      if (active) setError(t('onboarding.fieldsLoadError'))
+    }).finally(() => {
+      if (active) setFieldsLoading(false)
+    })
+    return () => { active = false }
+  }, [t])
 
   useEffect(() => {
     let active = true
@@ -61,7 +90,7 @@ export default function OnboardingPage() {
     <header className="space-y-3"><p className="text-sm font-medium text-muted-foreground">Étape {step} sur 6 · {STEPS[step - 1]}</p><h1 className="font-heading text-3xl font-black">Construisons ton profil, à ton rythme.</h1><Progress value={progressValue} className="h-2" /><p className="text-sm text-muted-foreground">{progressValue}% complété · Tu peux continuer plus tard.</p></header>
     <div className="rounded-2xl border bg-background p-6 shadow-sm sm:p-8 space-y-6">
       {step === 1 && <div className="space-y-4"><h2 className="text-xl font-bold">Toi</h2><p className="text-sm text-muted-foreground">Ces informations restent privées.</p><div className="grid gap-4 sm:grid-cols-2"><div><Label htmlFor="firstName">Prénom</Label><Input id="firstName" value={form.firstName} onChange={(event) => update('firstName', event.target.value)} /></div><div><Label htmlFor="lastName">Nom</Label><Input id="lastName" value={form.lastName} onChange={(event) => update('lastName', event.target.value)} /></div></div></div>}
-      {step === 2 && <div className="space-y-4"><h2 className="text-xl font-bold">Ton parcours</h2><p className="text-sm text-muted-foreground">Utilise les identifiants des référentiels fournis par la plateforme.</p><div><Label htmlFor="fieldId">Identifiant de filière</Label><Input id="fieldId" value={form.fieldId} onChange={(event) => update('fieldId', event.target.value)} /></div><div><Label htmlFor="cohortYear">Année</Label><Input id="cohortYear" type="number" value={form.cohortYear} onChange={(event) => update('cohortYear', event.target.value)} /></div></div>}
+      {step === 2 && <div className="space-y-4"><h2 className="text-xl font-bold">Ton parcours</h2><p className="text-sm text-muted-foreground">Sélectionne ta filière dans la liste proposée par la plateforme.</p><div><Label htmlFor="fieldId">Filière</Label><select id="fieldId" value={form.fieldId} disabled={fieldsLoading} onChange={(event) => update('fieldId', event.target.value)} className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60"><option value="">{fieldsLoading ? 'Chargement des filières…' : 'Sélectionne ta filière'}</option>{fields.map((field) => <option key={field.id} value={field.id}>{field.slug in FIELD_LABEL_KEYS ? t(FIELD_LABEL_KEYS[field.slug as keyof typeof FIELD_LABEL_KEYS]) : field.slug}</option>)}</select></div><div><Label htmlFor="cohortYear">Année</Label><Input id="cohortYear" type="number" value={form.cohortYear} onChange={(event) => update('cohortYear', event.target.value)} /></div></div>}
       {step === 3 && <div className="space-y-4"><h2 className="text-xl font-bold">Ce que tu sais faire</h2><p className="text-sm text-muted-foreground">Saisis 3 à 8 identifiants de compétences, séparés par des virgules.</p><Input value={form.skillIds} onChange={(event) => update('skillIds', event.target.value)} placeholder="skill-1, skill-2, skill-3" /></div>}
       {step === 4 && <div className="space-y-4"><h2 className="text-xl font-bold">Ce que tu veux faire</h2><div><Label htmlFor="goals">Objectifs</Label><Input id="goals" value={form.goals} onChange={(event) => update('goals', event.target.value)} placeholder="Créer, apprendre" /></div><div><Label htmlFor="sectorIds">Secteurs</Label><Input id="sectorIds" value={form.sectorIds} onChange={(event) => update('sectorIds', event.target.value)} placeholder="sector-1, sector-2" /></div></div>}
       {step === 5 && <div className="space-y-4"><h2 className="text-xl font-bold">Ta disponibilité</h2><Label htmlFor="availabilityHours">Heures par semaine</Label><Input id="availabilityHours" type="number" min="0" max="168" value={form.availabilityHours} onChange={(event) => update('availabilityHours', event.target.value)} /></div>}

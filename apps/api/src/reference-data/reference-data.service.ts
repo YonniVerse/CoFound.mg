@@ -17,6 +17,15 @@ export class ReferenceDataService {
     return { kind, items }
   }
 
+  async listPublicFields() {
+    const items = await this.prisma.field.findMany({
+      where: { isActive: true },
+      orderBy: [{ sortOrder: 'asc' }, { slug: 'asc' }],
+      select: { id: true, slug: true, labelKey: true, sortOrder: true },
+    })
+    return { kind: 'fields', items }
+  }
+
   async create(kind: ReferenceKind, input: ReferenceCreateInput) {
     try {
       const created = await this.prisma.$transaction(async (tx) => this.delegate(kind, tx).create({ data: this.data(kind, input) }))
