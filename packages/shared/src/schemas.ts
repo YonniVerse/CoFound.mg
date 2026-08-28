@@ -524,12 +524,47 @@ export const applicationItemSchema = z.object({
     .nullable(),
 })
 
+export const projectApplicationHistoryItemSchema = applicationItemSchema.extend({
+  source: z.literal('PROJECT'),
+  opportunity: z.null(),
+})
+
+export const opportunityHistoryItemSchema = z.object({
+  source: z.literal('OPPORTUNITY'),
+  id: idSchema,
+  opportunityId: idSchema,
+  applicantId: idSchema,
+  message: z.string(),
+  status: z.enum(['PENDING', 'REVIEWING', 'SHORTLISTED', 'INTERVIEW', 'WAITLISTED', 'ACCEPTED', 'REJECTED', 'WITHDRAWN']),
+  rejectionReason: z.string().nullable(),
+  createdAt: z.coerce.date(),
+  project: z.null(),
+  position: z.null(),
+  opportunity: z.object({
+    id: idSchema,
+    organizationId: idSchema,
+    title: z.string(),
+    description: z.string(),
+    deadline: z.coerce.date().nullable(),
+    seats: z.number().int().nullable(),
+    status: opportunityStatusSchema,
+  }),
+})
+
+export const myApplicationHistoryItemSchema = z.discriminatedUnion('source', [
+  projectApplicationHistoryItemSchema,
+  opportunityHistoryItemSchema,
+])
+
 export const myApplicationsResponseSchema = z.object({
-  items: z.array(applicationItemSchema),
+  items: z.array(myApplicationHistoryItemSchema),
 })
 
 export type CreateApplicationInput = z.infer<typeof createApplicationInputSchema>
 export type ApplicationItem = z.infer<typeof applicationItemSchema>
+export type ProjectApplicationHistoryItem = z.infer<typeof projectApplicationHistoryItemSchema>
+export type OpportunityHistoryItem = z.infer<typeof opportunityHistoryItemSchema>
+export type MyApplicationHistoryItem = z.infer<typeof myApplicationHistoryItemSchema>
 export type MyApplicationsResponse = z.infer<typeof myApplicationsResponseSchema>
 
 

@@ -70,6 +70,15 @@ export class ApplicationsController {
     return this.applicationsService.reject(req.user!.userId, id, input)
   }
 
+  @Patch('opportunity/:id/withdraw')
+  @RequirePermissions(Permission.PROJECT_APPLY)
+  async withdrawOpportunity(
+    @Req() req: AuthenticatedRequest,
+    @Param('id') id: string,
+  ) {
+    return this.applicationsService.withdrawOpportunity(req.user!.userId, id)
+  }
+
   @Patch(':id/withdraw')
   @RequirePermissions(Permission.PROJECT_APPLY)
   async withdraw(
