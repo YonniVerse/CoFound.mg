@@ -30,7 +30,7 @@ function ProfileSkeleton() {
           <div className="mt-2 flex items-start gap-4">
             <Skeleton className="h-16 w-16 shrink-0 rounded-2xl" />
             <div className="min-w-0 space-y-2">
-              <Skeleton className="h-6 w-48 max-w-full" />
+              <Skeleton className="mt-3 h-6 w-48 max-w-full" />
               <Skeleton className="h-4 w-60 max-w-full" />
               <Skeleton className="h-3 w-52 max-w-full" />
             </div>
@@ -103,7 +103,7 @@ export default function ProfilePage() {
                       <UserRound className="h-7 w-7" aria-hidden="true" />
                     </div>
                     <div className="min-w-0">
-                      <h2 className="truncate text-xl font-bold text-foreground">{displayName}</h2>
+                      <h2 className="mt-3 truncate text-xl font-bold text-foreground">{displayName}</h2>
                       {data?.user.email && <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground"><Mail className="h-3.5 w-3.5" aria-hidden="true" />{data.user.email}</p>}
                       {profile?.pseudonym && <p className="mt-1 text-xs font-medium text-muted-foreground">Pseudonyme public : {profile.pseudonym}</p>}
                     </div>
