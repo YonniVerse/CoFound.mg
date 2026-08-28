@@ -27,7 +27,7 @@ function ProfileSkeleton() {
           <Skeleton className="mt-2 h-4 w-64" />
         </CardHeader>
         <CardContent className="space-y-5 px-5 py-6 sm:px-6">
-          <div className="flex items-center gap-4">
+          <div className="mt-2 flex items-center gap-4">
             <Skeleton className="h-16 w-16 rounded-2xl" />
             <div className="space-y-2">
               <Skeleton className="h-5 w-44" />
@@ -103,7 +103,7 @@ export default function ProfilePage() {
                   <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Ces informations sont visibles uniquement par toi dans cet espace.</p>
                 </CardHeader>
                 <CardContent className="space-y-6 px-5 py-6 sm:px-6">
-                  <div className="flex items-start gap-4">
+                  <div className="mt-2 flex items-start gap-4">
                     <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-border/70 bg-muted text-muted-foreground">
                       <UserRound className="h-7 w-7" aria-hidden="true" />
                     </div>
