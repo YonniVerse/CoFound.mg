@@ -20,36 +20,31 @@ function formatLabel(value: string | null | undefined) {
 
 function ProfileSkeleton() {
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]" role="status" aria-label="Chargement du profil">
-      <Card className="overflow-hidden rounded-2xl border-border/70 shadow-2xs">
+    <div className="mx-auto w-full max-w-4xl" role="status" aria-label="Chargement du profil">
+      <Card className="overflow-hidden rounded-xl border-border bg-card shadow-2xs">
         <CardHeader className="border-b border-border/60 px-5 py-5 sm:px-6">
-          <Skeleton className="h-5 w-40" />
-          <Skeleton className="mt-2 h-4 w-64" />
+          <Skeleton className="h-5 w-44" />
+          <Skeleton className="mt-2 h-4 w-72 max-w-full" />
         </CardHeader>
-        <CardContent className="space-y-5 px-5 py-6 sm:px-6">
-          <div className="mt-2 flex items-center gap-4">
-            <Skeleton className="h-16 w-16 rounded-2xl" />
-            <div className="space-y-2">
-              <Skeleton className="h-5 w-44" />
-              <Skeleton className="h-4 w-56" />
+        <CardContent className="space-y-6 px-5 py-6 sm:px-6">
+          <div className="mt-2 flex items-start gap-4">
+            <Skeleton className="h-16 w-16 shrink-0 rounded-2xl" />
+            <div className="min-w-0 space-y-2">
+              <Skeleton className="h-6 w-48 max-w-full" />
+              <Skeleton className="h-4 w-60 max-w-full" />
+              <Skeleton className="h-3 w-52 max-w-full" />
             </div>
           </div>
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-5/6" />
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Skeleton className="h-16 rounded-xl" />
-            <Skeleton className="h-16 rounded-xl" />
+          <div className="space-y-3 border-t border-border/60 pt-5">
+            <Skeleton className="h-5 w-2/3 max-w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
           </div>
-        </CardContent>
-      </Card>
-      <Card className="rounded-2xl border-border/70 shadow-2xs">
-        <CardHeader className="px-5 py-5">
-          <Skeleton className="h-5 w-36" />
-        </CardHeader>
-        <CardContent className="space-y-4 px-5 pb-5">
-          <Skeleton className="h-3 w-full" />
-          <Skeleton className="h-2 w-full rounded-full" />
-          <Skeleton className="h-10 w-full rounded-lg" />
+          <div className="grid gap-3 border-t border-border/60 pt-5 sm:grid-cols-2">
+            <Skeleton className="h-20 rounded-xl" />
+            <Skeleton className="h-20 rounded-xl" />
+          </div>
+          <div className="space-y-3 border-t border-border/60 pt-5"><Skeleton className="h-3 w-24" /><div className="flex gap-2"><Skeleton className="h-9 w-24 rounded-lg" /><Skeleton className="h-9 w-32 rounded-lg" /><Skeleton className="h-9 w-28 rounded-lg" /></div></div>
         </CardContent>
       </Card>
     </div>
@@ -88,7 +83,7 @@ export default function ProfilePage() {
 
           {loading && <ProfileSkeleton />}
           {!loading && error && (
-            <Card className="rounded-2xl border-border/70 shadow-2xs">
+            <Card className="rounded-xl border-border bg-card shadow-2xs">
               <CardContent className="p-10 text-center">
                 <p className="font-semibold text-foreground">Impossible de charger ton profil.</p>
                 <p className="mt-2 text-sm text-muted-foreground">Réessaie dans quelques instants.</p>
@@ -96,10 +91,10 @@ export default function ProfilePage() {
             </Card>
           )}
           {!loading && !error && (
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+            <div className="mx-auto w-full max-w-4xl">
               <Card className="overflow-hidden rounded-xl border-border bg-card shadow-2xs">
                 <CardHeader className="border-b border-border/60 px-5 py-5 sm:px-6">
-                  <CardTitle className="text-base font-bold tracking-tight">Informations du profil</CardTitle>
+                      <CardTitle className="text-lg font-bold tracking-tight">Informations du profil</CardTitle>
                   <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Ces informations sont visibles uniquement par toi dans cet espace.</p>
                 </CardHeader>
                 <CardContent className="space-y-6 px-5 py-6 sm:px-6">
@@ -128,7 +123,7 @@ export default function ProfilePage() {
                           <p className="mt-2 flex items-center gap-1.5 font-semibold text-foreground"><Clock3 className="h-4 w-4 text-primary" aria-hidden="true" />{profile.availabilityHours === null ? '—' : `${profile.availabilityHours} h / semaine`}</p>
                         </div>
                       </div>
-                      {profile.goals.length > 0 && <div className="border-t border-border/60 pt-5"><p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Objectifs</p><div className="mt-3 flex flex-wrap gap-2">{profile.goals.map((goal) => <span key={goal} className="rounded-lg bg-muted px-3 py-1.5 text-sm font-medium text-foreground">{goal}</span>)}</div></div>}
+                      {profile.goals.length > 0 && <div className="border-t border-border/60 pt-5"><p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Objectifs</p><div className="mt-3 flex flex-wrap gap-2">{profile.goals.map((goal) => <span key={goal} className="rounded-lg border border-border bg-card px-3.5 py-2 text-sm font-medium text-muted-foreground shadow-2xs">{goal}</span>)}</div></div>}
                     </>
                   ) : (
                     <div className="rounded-xl border border-dashed border-border bg-muted/20 p-5">
