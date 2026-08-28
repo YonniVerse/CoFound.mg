@@ -35,7 +35,7 @@ export function InstitutionErrorState({ error, onRetry, fallbackDescription = 'L
 
   return (
     <Card className="border-destructive/20 bg-destructive/[0.03] shadow-2xs">
-      <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+      <CardContent className="mt-3 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <div className="flex items-start gap-3">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
             <AlertCircle className="h-4 w-4" aria-hidden="true" />
