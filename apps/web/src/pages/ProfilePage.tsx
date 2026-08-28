@@ -28,7 +28,7 @@ function ProfileSkeleton() {
         </CardHeader>
         <CardContent className="space-y-6 px-5 py-6 sm:px-6">
           <div className="mt-2 flex items-start gap-4">
-            <Skeleton className="h-16 w-16 shrink-0 rounded-2xl" />
+            <Skeleton className="mt-3 h-16 w-16 shrink-0 rounded-2xl" />
             <div className="min-w-0 space-y-2">
               <Skeleton className="mt-3 h-6 w-48 max-w-full" />
               <Skeleton className="h-4 w-60 max-w-full" />
@@ -99,7 +99,7 @@ export default function ProfilePage() {
                 </CardHeader>
                 <CardContent className="space-y-6 px-5 py-6 sm:px-6">
                   <div className="mt-2 flex items-start gap-4">
-                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-border/70 bg-muted text-muted-foreground">
+                    <div className="mt-3 flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-border/70 bg-muted text-muted-foreground">
                       <UserRound className="h-7 w-7" aria-hidden="true" />
                     </div>
                     <div className="min-w-0">
