@@ -40,11 +40,7 @@ function ProfileSkeleton() {
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-5/6" />
           </div>
-          <div className="grid gap-2 border-t border-border/50 pt-3 sm:grid-cols-2">
-            <Skeleton className="h-16 rounded-lg" />
-            <Skeleton className="h-16 rounded-lg" />
-          </div>
-          <div className="space-y-3 border-t border-border/50 pt-3"><Skeleton className="h-3 w-20" /><div className="flex gap-2"><Skeleton className="h-7 w-20 rounded-md" /><Skeleton className="h-7 w-28 rounded-md" /><Skeleton className="h-7 w-24 rounded-md" /></div></div>
+          <div className="divide-y divide-border/50 border-t border-border/50 pt-1"><div className="flex items-center justify-between gap-4 py-3"><Skeleton className="h-3 w-28" /><Skeleton className="h-4 w-24" /></div><div className="flex items-center justify-between gap-4 py-3"><Skeleton className="h-3 w-24" /><Skeleton className="h-4 w-32" /></div><div className="flex items-center justify-between gap-4 py-3"><Skeleton className="h-3 w-16" /><div className="flex gap-2"><Skeleton className="h-7 w-20 rounded-md" /><Skeleton className="h-7 w-28 rounded-md" /></div></div></div>
         </CardContent>
       </Card>
     </div>
@@ -113,17 +109,11 @@ export default function ProfilePage() {
                     <>
                       {profile.headline && <p className="border-t border-border/50 pt-3 text-base font-semibold leading-relaxed text-foreground">{profile.headline}</p>}
                       {profile.bio && <p className="text-sm leading-6 text-muted-foreground">{profile.bio}</p>}
-                      <div className="grid gap-2 border-t border-border/50 pt-3 sm:grid-cols-2">
-                        <div className="rounded-lg border border-border/60 bg-muted/30 p-3">
-                          <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground"><BriefcaseBusiness className="h-3.5 w-3.5 text-primary" aria-hidden="true" />Domaine d’études</p>
-                          <p className="mt-1.5 text-sm font-semibold text-foreground">{formatLabel(profile.field?.slug)}</p>
-                        </div>
-                        <div className="rounded-lg border border-border/60 bg-muted/30 p-3">
-                          <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground"><Clock3 className="h-3.5 w-3.5 text-primary" aria-hidden="true" />Disponibilité</p>
-                          <p className="mt-1.5 flex items-center gap-1.5 text-sm font-semibold text-foreground">{profile.availabilityHours === null ? '—' : `${profile.availabilityHours} h / semaine`}</p>
-                        </div>
-                      </div>
-                      {profile.goals.length > 0 && <div className="border-t border-border/50 pt-3"><p className="text-xs font-semibold text-muted-foreground">Objectifs</p><div className="mt-2 flex flex-wrap gap-2">{profile.goals.map((goal) => <span key={goal} className="rounded-md bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">{goal}</span>)}</div></div>}
+                      <dl className="divide-y divide-border/50 border-t border-border/50 pt-1">
+                        <div className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6"><dt className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground"><BriefcaseBusiness className="h-3.5 w-3.5 text-primary" aria-hidden="true" />Domaine d’études</dt><dd className="text-sm font-semibold text-foreground sm:text-right">{formatLabel(profile.field?.slug)}</dd></div>
+                        <div className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6"><dt className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground"><Clock3 className="h-3.5 w-3.5 text-primary" aria-hidden="true" />Disponibilité</dt><dd className="text-sm font-semibold text-foreground sm:text-right">{profile.availabilityHours === null ? '—' : `${profile.availabilityHours} h / semaine`}</dd></div>
+                        {profile.goals.length > 0 && <div className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6"><dt className="text-xs font-semibold text-muted-foreground">Objectifs</dt><dd className="flex flex-wrap gap-2 sm:justify-end">{profile.goals.map((goal) => <span key={goal} className="rounded-md bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">{goal}</span>)}</dd></div>}
+                      </dl>
                     </>
                   ) : (
                     <div className="rounded-xl border border-dashed border-border bg-muted/20 p-5">
