@@ -4,6 +4,7 @@ import {
   myApplicationsResponseSchema,
   applicationItemSchema,
   type ApplicationItem,
+  type MyApplicationHistoryItem,
   type CreateApplicationInput,
 } from "@cofound/shared";
 
@@ -20,7 +21,7 @@ function messageForApplicationError(error: unknown): string {
 }
 
 export function useMyApplications() {
-  const [applications, setApplications] = useState<ApplicationItem[]>([]);
+  const [applications, setApplications] = useState<MyApplicationHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,17 +47,23 @@ export function useMyApplications() {
   const applyToProject = async (input: CreateApplicationInput): Promise<ApplicationItem> => {
     try {
       const response = await apiClient.post("/applications", input, applicationItemSchema);
-      setApplications((prev) => [response, ...prev]);
+      setApplications((prev) => [{ ...response, source: 'PROJECT', opportunity: null }, ...prev]);
       return response;
     } catch (err) {
       throw new Error(messageForApplicationError(err), { cause: err });
     }
   };
 
-  const withdrawApplication = async (applicationId: string) => {
+  const withdrawApplication = async (application: MyApplicationHistoryItem) => {
     try {
-      const updated = await apiClient.patch(`/applications/${applicationId}/withdraw`, {}, applicationItemSchema);
-      setApplications((prev) => prev.map((app) => (app.id === applicationId ? updated : app)));
+      let historyItem: MyApplicationHistoryItem
+      if (application.source === 'OPPORTUNITY') {
+        historyItem = await apiClient.patch(`/applications/opportunity/${application.id}/withdraw`, {}, myApplicationsResponseSchema.shape.items.element)
+      } else {
+        const updated = await apiClient.patch(`/applications/${application.id}/withdraw`, {}, applicationItemSchema)
+        historyItem = { ...updated, source: 'PROJECT', opportunity: null }
+      }
+      setApplications((prev) => prev.map((app) => (app.id === application.id ? historyItem : app)));
     } catch (err) {
       throw new Error(messageForApplicationError(err), { cause: err });
     }

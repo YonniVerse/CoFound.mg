@@ -84,10 +84,10 @@ export default function MyApplicationsPage() {
     return app.status === filter;
   });
 
-  const handleWithdraw = async (id: string) => {
+  const handleWithdraw = async (application: (typeof applications)[number]) => {
     try {
-      setWithdrawingId(id);
-      await withdrawApplication(id);
+      setWithdrawingId(application.id);
+      await withdrawApplication(application);
     } finally {
       setWithdrawingId(null);
     }
@@ -171,13 +171,13 @@ export default function MyApplicationsPage() {
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <h3 className="font-heading font-bold text-base sm:text-lg text-foreground">
-                          {app.project.title}
+                          {app.source === 'OPPORTUNITY' ? app.opportunity.title : app.project.title}
                         </h3>
                       </div>
                       <p className="text-xs sm:text-sm text-muted-foreground font-medium">
-                        {app.project.pitch}
+                        {app.source === 'OPPORTUNITY' ? app.opportunity.description : app.project.pitch}
                       </p>
-                      {app.position && (
+                      {app.source === 'PROJECT' && app.position && (
                         <div className="flex items-center gap-1.5 text-xs text-primary font-medium pt-0.5">
                           <Sparkles className="h-3 w-3" />
                           <span>{t('applications.targetPosition')}: {app.position.title}</span>
@@ -224,7 +224,7 @@ export default function MyApplicationsPage() {
                         variant="outline"
                         size="sm"
                         disabled={withdrawingId === app.id}
-                        onClick={() => handleWithdraw(app.id)}
+                        onClick={() => handleWithdraw(app)}
                         className="h-8 text-xs font-semibold rounded-xl text-destructive border-destructive/20 hover:bg-destructive/10 cursor-pointer"
                       >
                         {withdrawingId === app.id ? "Retrait..." : "Retirer la candidature"}

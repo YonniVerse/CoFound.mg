@@ -11,6 +11,7 @@ function mockPrisma(initialData: {
   projects?: any[]
   positions?: any[]
   applications?: any[]
+    opportunityApplications?: any[]
 } = {}) {
   const projects = initialData.projects ?? [
     {
@@ -30,6 +31,7 @@ function mockPrisma(initialData: {
     },
   ]
   const applications = initialData.applications ?? []
+  const opportunityApplications = initialData.opportunityApplications ?? []
 
   return {
     project: {
@@ -77,6 +79,15 @@ function mockPrisma(initialData: {
         if (app) {
           app.status = data.status
         }
+        return app
+      },
+    },
+    opportunityApplication: {
+      findMany: async ({ where }: any) => opportunityApplications.filter((a) => a.applicantType === where.applicantType && a.applicantId === where.applicantId),
+      findUnique: async ({ where }: any) => opportunityApplications.find((a) => a.id === where.id) ?? null,
+      update: async ({ where, data }: any) => {
+        const app = opportunityApplications.find((a) => a.id === where.id)
+        if (app) app.status = data.status
         return app
       },
     },
@@ -156,6 +167,52 @@ test('ApplicationsService: candidate can list their own applications', async () 
 
   assert.equal(result.items.length, 1)
   assert.equal(result.items[0]?.id, 'app-1')
+})
+
+test('ApplicationsService: candidate history merges project and opportunity applications', async () => {
+  const createdAt = new Date('2026-01-02T00:00:00.000Z')
+  const prisma = mockPrisma({
+    applications: [{
+      id: 'project-app', projectId: 'proj-1', positionId: null, applicantId: 'user-1',
+      message: 'Projet', status: ApplicationStatus.PENDING, rejectionReason: null, decidedAt: null,
+      createdAt: new Date('2026-01-01T00:00:00.000Z'), updatedAt: createdAt,
+      project: { id: 'proj-1', title: 'EcoDrive', pitch: 'Pitch', status: ProjectStatus.RECRUITING }, position: null,
+    }],
+    opportunityApplications: [{
+      id: 'opp-app', opportunityId: 'opp-1', applicantType: 'TALENT', applicantId: 'user-1', message: 'Opportunité',
+      status: 'REVIEWING', rejectionReason: null, createdAt,
+      opportunity: { id: 'opp-1', organizationId: 'org-1', title: 'Programme', description: 'Description', deadline: null, seats: 5, status: 'PUBLISHED' },
+    }],
+  })
+  const result = await new ApplicationsService(prisma).getMyApplications('user-1')
+  assert.deepEqual(result.items.map((item) => item.source), ['OPPORTUNITY', 'PROJECT'])
+  const first = result.items[0]
+  assert.ok(first && first.source === 'OPPORTUNITY')
+  assert.equal(first.opportunity.title, 'Programme')
+})
+
+test('ApplicationsService: candidate can withdraw pending opportunity application', async () => {
+  const prisma = mockPrisma({
+    opportunityApplications: [{
+      id: 'opp-app', opportunityId: 'opp-1', applicantType: 'TALENT', applicantId: 'user-1', message: 'Message opportunité',
+      status: ApplicationStatus.PENDING, rejectionReason: null, createdAt: new Date(),
+      opportunity: { id: 'opp-1', organizationId: 'org-1', title: 'Programme', description: 'Description', deadline: null, seats: 5, status: 'PUBLISHED' },
+    }],
+  })
+  const result = await new ApplicationsService(prisma).withdrawOpportunity('user-1', 'opp-app')
+  assert.equal(result.source, 'OPPORTUNITY')
+  assert.equal(result.status, ApplicationStatus.WITHDRAWN)
+})
+
+test('ApplicationsService: candidate cannot withdraw advanced opportunity application', async () => {
+  const prisma = mockPrisma({
+    opportunityApplications: [{
+      id: 'opp-app', opportunityId: 'opp-1', applicantType: 'TALENT', applicantId: 'user-1', message: 'Message opportunité',
+      status: 'REVIEWING', rejectionReason: null, createdAt: new Date(),
+      opportunity: { id: 'opp-1', organizationId: 'org-1', title: 'Programme', description: 'Description', deadline: null, seats: 5, status: 'PUBLISHED' },
+    }],
+  })
+  await assert.rejects(() => new ApplicationsService(prisma).withdrawOpportunity('user-1', 'opp-app'))
 })
 
 test('ApplicationsService: candidate can withdraw pending application', async () => {

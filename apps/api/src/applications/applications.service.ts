@@ -10,6 +10,7 @@ import {
   ProjectStatus,
   type CreateApplicationInput,
   type ApplicationItem,
+  type MyApplicationHistoryItem,
   type MyApplicationsResponse,
   type OwnerApplicationItem,
   type OwnerApplicationsResponse,
@@ -127,16 +128,33 @@ export class ApplicationsService {
   async getMyApplications(
     applicantId: string,
   ): Promise<MyApplicationsResponse> {
-    const applications = await this.prisma.application.findMany({
-      where: { applicantId },
-      include: {
-        project: true,
-        position: true,
-      },
-      orderBy: { createdAt: 'desc' },
-    })
+    const [applications, opportunityApplications] = await Promise.all([
+      this.prisma.application.findMany({
+        where: { applicantId },
+        include: { project: true, position: true },
+      }),
+      this.prisma.opportunityApplication
+        ? this.prisma.opportunityApplication.findMany({
+            where: { applicantType: 'TALENT', applicantId },
+            include: {
+              opportunity: {
+                select: {
+                  id: true,
+                  organizationId: true,
+                  title: true,
+                  description: true,
+                  deadline: true,
+                  seats: true,
+                  status: true,
+                },
+              },
+            },
+          })
+        : Promise.resolve([]),
+    ])
 
-    const items: ApplicationItem[] = applications.map((app) => ({
+    const projectItems: MyApplicationHistoryItem[] = applications.map((app) => ({
+      source: 'PROJECT' as const,
       id: app.id,
       projectId: app.projectId,
       positionId: app.positionId,
@@ -154,15 +172,38 @@ export class ApplicationsService {
         status: app.project.status as ProjectStatus,
       },
       position: app.position
-        ? {
-            id: app.position.id,
-            title: app.position.title,
-            description: app.position.description,
-          }
+        ? { id: app.position.id, title: app.position.title, description: app.position.description }
         : null,
+      opportunity: null,
     }))
 
-    return { items }
+    const opportunityItems: MyApplicationHistoryItem[] = opportunityApplications.map((app) => ({
+      source: 'OPPORTUNITY' as const,
+      id: app.id,
+      opportunityId: app.opportunityId,
+      applicantId: app.applicantId,
+      message: app.message,
+      status: app.status as ApplicationStatus,
+      rejectionReason: app.rejectionReason,
+      createdAt: app.createdAt,
+      project: null,
+      position: null,
+      opportunity: {
+        id: app.opportunity.id,
+        organizationId: app.opportunity.organizationId,
+        title: app.opportunity.title,
+        description: app.opportunity.description,
+        deadline: app.opportunity.deadline,
+        seats: app.opportunity.seats,
+        status: app.opportunity.status,
+      },
+    }))
+
+    return {
+      items: [...projectItems, ...opportunityItems].sort(
+        (left, right) => right.createdAt.getTime() - left.createdAt.getTime(),
+      ),
+    }
   }
 
   private async assertProjectOwner(projectId: string, ownerId: string) {
@@ -275,6 +316,55 @@ export class ApplicationsService {
       }
     }
     return this.toOwnerItem(updated)
+  }
+
+  async withdrawOpportunity(
+    applicantId: string,
+    applicationId: string,
+  ): Promise<MyApplicationHistoryItem> {
+    const application = await this.prisma.opportunityApplication.findUnique({
+      where: { id: applicationId },
+      include: { opportunity: true },
+    })
+
+    if (!application || application.applicantType !== 'TALENT' || application.applicantId !== applicantId) {
+      throw new NotFoundException({ code: 'NOT_FOUND', messageKey: 'errors.applicationNotFound' })
+    }
+    if (
+      application.status !== ApplicationStatus.PENDING ||
+      application.opportunity.status !== 'PUBLISHED' ||
+      (application.opportunity.deadline && application.opportunity.deadline < new Date())
+    ) {
+      throw new BadRequestException({ code: 'CANNOT_WITHDRAW', messageKey: 'errors.cannotWithdrawNonPending' })
+    }
+
+    const updated = await this.prisma.opportunityApplication.update({
+      where: { id: applicationId },
+      data: { status: ApplicationStatus.WITHDRAWN },
+      include: { opportunity: true },
+    })
+
+    return {
+      source: 'OPPORTUNITY',
+      id: updated.id,
+      opportunityId: updated.opportunityId,
+      applicantId: updated.applicantId,
+      message: updated.message,
+      status: updated.status as ApplicationStatus,
+      rejectionReason: updated.rejectionReason,
+      createdAt: updated.createdAt,
+      project: null,
+      position: null,
+      opportunity: {
+        id: updated.opportunity.id,
+        organizationId: updated.opportunity.organizationId,
+        title: updated.opportunity.title,
+        description: updated.opportunity.description,
+        deadline: updated.opportunity.deadline,
+        seats: updated.opportunity.seats,
+        status: updated.opportunity.status,
+      },
+    }
   }
 
   async withdraw(
