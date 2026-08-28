@@ -338,7 +338,20 @@ export const projectCreateSchema = z.object({
   sectorId: idSchema.optional(),
   regionId: idSchema.optional(),
 })
+export const projectCreateResponseSchema = z.object({
+  id: idSchema,
+  title: z.string(),
+  pitch: z.string(),
+  status: z.nativeEnum(ProjectStatus),
+  sectorId: idSchema.nullable(),
+  regionId: idSchema.nullable(),
+  createdById: idSchema,
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  members: z.array(z.object({ userId: idSchema, role: z.enum(['OWNER', 'MEMBER']) })),
+})
 export type ProjectCreateInput = z.infer<typeof projectCreateSchema>
+export type ProjectCreateResponse = z.infer<typeof projectCreateResponseSchema>
 
 export const BMC_BLOCK_KEYS = [
   'customerSegments',
@@ -1063,6 +1076,8 @@ export const referenceCreateSchema = z.object({ slug: z.string().trim().min(2).m
 export const referencePatchSchema = referenceCreateSchema.partial()
 export const referenceItemSchema = z.object({ id: idSchema, slug: z.string(), labelKey: z.string(), category: z.string().nullable(), countryCode: z.string().nullable(), isActive: z.boolean(), sortOrder: z.number().int(), usageCount: z.number().int().nonnegative() })
 export const referenceListSchema = z.object({ kind: referenceKindSchema, items: z.array(referenceItemSchema) })
+export const publicReferenceItemSchema = z.object({ id: idSchema, slug: z.string(), labelKey: z.string(), sortOrder: z.number().int() })
+export const publicReferenceListSchema = z.object({ kind: z.enum(['sectors', 'regions']), items: z.array(publicReferenceItemSchema) })
 export const productHealthSchema = z.object({ generatedAt: z.coerce.date(), threshold: z.number().int().positive(), activation: z.object({ invited: z.number().int().nonnegative(), activated: z.number().int().nonnegative(), rate: z.number().min(0).max(100).nullable() }), profileCompletionAverage: z.number().min(0).max(100).nullable(), projectsByStatus: z.record(z.string(), z.number().int().nonnegative()), acceptedMatchRate: z.number().min(0).max(100).nullable(), applicationResponseMedianHours: z.number().nonnegative().nullable(), moderation: z.object({ volume: z.number().int().nonnegative(), medianResolutionHours: z.number().nonnegative().nullable() }), invitationBounceRate: z.number().min(0).max(100).nullable() })
 export type ReferenceKind = z.infer<typeof referenceKindSchema>
 export type ReferenceCreateInput = z.infer<typeof referenceCreateSchema>

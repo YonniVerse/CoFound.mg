@@ -93,3 +93,49 @@ test('P-03 passe un projet complet de DRAFT à RECRUITING dans une transaction',
 test('P-03 expose la transition avec PROJECT_MANAGE', () => {
   assert.deepEqual(Reflect.getMetadata(PERMISSIONS_KEY, ProjectController.prototype.publish), [Permission.PROJECT_MANAGE])
 })
+
+test('P-01 persiste les références actives fournies dans la transaction', async () => {
+  let createData: Record<string, unknown> | undefined
+  const prisma = {
+    $transaction: async (callback: (tx: unknown) => Promise<unknown>) => callback({
+      sector: { findFirst: async () => ({ id: 's1' }) },
+      region: { findFirst: async () => ({ id: 'r1' }) },
+      project: { create: async (args: { data: Record<string, unknown> }) => { createData = args.data; return { ...project, sectorId: 's1', regionId: 'r1' } } },
+    }),
+  } as unknown as PrismaService
+
+  await new ProjectService(prisma).create('u1', { title: 'Projet test', pitch: 'Une proposition de valeur suffisamment longue.', sectorId: 's1', regionId: 'r1' })
+  assert.equal(createData?.sectorId, 's1')
+  assert.equal(createData?.regionId, 'r1')
+})
+
+test('P-01 refuse une référence inactive ou inexistante sans créer de projet', async () => {
+  let createCalled = false
+  const prisma = {
+    $transaction: async (callback: (tx: unknown) => Promise<unknown>) => callback({
+      sector: { findFirst: async () => null },
+      project: { create: async () => { createCalled = true; return project } },
+    }),
+  } as unknown as PrismaService
+
+  await assert.rejects(async () => new ProjectService(prisma).create('u1', { title: 'Projet test', pitch: 'Une proposition de valeur suffisamment longue.', sectorId: 'inactive' }), (error: unknown) => error instanceof Error && 'getResponse' in error && JSON.stringify((error as { getResponse: () => unknown }).getResponse()).includes('sectorNotFound'))
+  assert.equal(createCalled, false)
+})
+
+test('P-01 refuse les comptes qui ne sont pas ACTIVE côté serveur', async () => {
+  let transactionCalled = false
+  const prisma = { $transaction: async () => { transactionCalled = true; return project } } as unknown as PrismaService
+  await assert.rejects(async () => new ProjectService(prisma).create('u1', { title: 'Projet test', pitch: 'Une proposition de valeur suffisamment longue.' }, 'ALUMNI'), (error: unknown) => error instanceof Error && 'getResponse' in error && JSON.stringify((error as { getResponse: () => unknown }).getResponse()).includes('accountCannotCreate'))
+  assert.equal(transactionCalled, false)
+})
+
+test('P-01 ne laisse aucune donnée partielle si la création atomique échoue', async () => {
+  let transactionRejected = false
+  const prisma = {
+    $transaction: async (callback: (tx: unknown) => Promise<unknown>) => {
+      try { return await callback({ project: { create: async () => { throw new Error('transaction failed') } } }) } catch (error) { transactionRejected = error instanceof Error && error.message === 'transaction failed'; throw error }
+    },
+  } as unknown as PrismaService
+  await assert.rejects(() => new ProjectService(prisma).create('u1', { title: 'Projet test', pitch: 'Une proposition de valeur suffisamment longue.' }), /transaction failed/)
+  assert.equal(transactionRejected, true)
+})

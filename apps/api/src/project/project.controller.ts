@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, Inject } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Get, Param, Post, Req, Inject } from '@nestjs/common'
 import { projectCreateSchema } from '@cofound/shared'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
 import { Permission } from '../rbac/permissions.js'
@@ -18,7 +18,11 @@ export class ProjectController {
   @Post()
   @RequirePermissions(Permission.PROJECT_CREATE)
   create(@Req() request: AuthenticatedRequest, @Body() body: unknown) {
-    return this.projectService.create(request.user!.userId, projectCreateSchema.parse(body))
+    const parsed = projectCreateSchema.safeParse(body)
+    if (!parsed.success) {
+      throw new BadRequestException({ code: 'VALIDATION_FAILED', messageKey: 'errors.validation', details: { issues: parsed.error.issues } })
+    }
+    return this.projectService.create(request.user!.userId, parsed.data, request.user!.status)
   }
 
   @Post(':id/recruiting')

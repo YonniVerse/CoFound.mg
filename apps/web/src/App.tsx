@@ -23,6 +23,7 @@ const ProjectsFeedPage = lazy(() => import("@/pages/ProjectsFeedPage"));
 const TalentsFeedPage = lazy(() => import("@/pages/TalentsFeedPage"));
 const ProjectDetailPage = lazy(() => import("@/pages/ProjectDetailPage"));
 const ProjectCreatePage = lazy(() => import("@/pages/ProjectCreatePage"));
+const ProjectBmcPage = lazy(() => import("@/pages/ProjectBmcPage"));
 const ImpactPage = lazy(() => import("@/pages/ImpactPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 const AccountStatusPage = lazy(() => import("@/pages/AccountStatusPage"));
@@ -90,6 +91,7 @@ function App() {
     <Route path="/search" element={<SearchPage />} />
     <Route path="/dream-match" element={<DreamMatchPage />} />
     <Route path="/projects/new" element={<ProjectCreatePage />} />
+    <Route path="/projects/:id/bmc" element={<ProjectBmcPage />} />
     <Route path="/projects/:id" element={<ProjectDetailPage />} />
     <Route path="/projects/:id/applications" element={<ProjectApplicationsPage />} />
     <Route path="/projects/:id/team" element={<ProjectTeamPage />} />

@@ -1,5 +1,8 @@
 import {
   ownedProjectsResponseSchema,
+  projectCreateResponseSchema,
+  publicReferenceListSchema,
+  type ProjectCreateInput,
   projectMembersResponseSchema,
   projectPositionsResponseSchema,
   projectPostFeedResponseSchema,
@@ -19,6 +22,14 @@ import { apiClient } from '@/lib/api-client'
 
 export function getOwnedProjects() {
   return apiClient.get('/projects/mine', ownedProjectsResponseSchema)
+}
+
+export function createProject(input: ProjectCreateInput) {
+  return apiClient.post('/projects', input, projectCreateResponseSchema)
+}
+
+export function getProjectReferenceData(kind: 'sectors' | 'regions') {
+  return apiClient.get(`/reference-data/${kind}`, publicReferenceListSchema)
 }
 
 export function getProjectPostsFeed(query: Partial<ProjectPostFeedQuery> = {}) {

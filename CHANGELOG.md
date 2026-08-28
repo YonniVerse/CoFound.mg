@@ -10,6 +10,34 @@ Retiré · En cours · Bloqué**.
 
 ---
 
+## 2026-08-28 — Création de projet P-01 complète
+
+### Ajouté
+
+- Contrats partagés pour la réponse de création et les listes publiques de secteurs/régions.
+- Helpers frontend typés pour créer un projet et charger les référentiels.
+- Route publique `GET /api/v1/reference-data/regions`, limitée aux régions actives.
+- Route frontend `/projects/:id/bmc` vers la page BMC existante.
+- Tests API ciblés pour les références, le statut de compte et l’atomicité.
+
+### Modifié
+
+- Le formulaire `/projects/new` contient désormais exactement titre, pitch, secteur facultatif et région facultative, avec états de chargement, validation par champ, conservation locale de la saisie, prévention de double soumission et redirection vers le BMC.
+- La création serveur exige un compte `ACTIVE`, vérifie les secteurs et régions actifs, puis persiste le projet `DRAFT` et son membre `OWNER` dans une seule transaction.
+- Les corps invalides sont rejetés avec une erreur structurée et les détails des issues Zod.
+
+### Décidé
+
+- Aucune migration Prisma n’a été produite, car le schéma existant contient déjà les champs et relations nécessaires ; une migration artificielle aurait ajouté du bruit sans garantie supplémentaire.
+- Le BMC reste une étape postérieure non bloquante, car la création d’un projet doit rester réalisable en moins de deux minutes.
+
+### Validation
+
+- `pnpm install --frozen-lockfile`, `pnpm typecheck`, `pnpm lint`, `pnpm test` (210 tests), `pnpm build`, `pnpm e2e:list` et `git diff --check` réussissent.
+- Aucun test E2E ou test frontend unitaire dédié à P-01 n’a été ajouté, car ces infrastructures ne sont pas présentes dans le dépôt.
+
+---
+
 ## 2026-08-27 — Select de filière dans l’onboarding
 
 ### Ajouté
