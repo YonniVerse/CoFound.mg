@@ -115,7 +115,7 @@ export default function ImportMappingPage() {
               <CardTitle>{t('import.mappingTitle')}</CardTitle>
               <p className="text-sm text-muted-foreground">Trois exemples issus du fichier sont affichés sous chaque colonne pour vous aider à confirmer la proposition.</p>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="mt-3 space-y-4">
               {DETECTED_COLUMNS.map((column) => {
                 const selectedField = mapping[column.name] ?? null
                 const isDuplicate = selectedField !== null && duplicateFields.includes(selectedField)
@@ -153,7 +153,7 @@ export default function ImportMappingPage() {
           </Card>
 
           <Card className={hasErrors ? 'border-amber-500/40' : 'border-emerald-500/40'}>
-            <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <CardContent className="mt-3 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
                 {hasErrors ? <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" /> : <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />}
                 <div>
