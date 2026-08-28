@@ -9,17 +9,18 @@ Retiré · En cours · Bloqué**.
 > Mis à jour par la commande `/handoff`.
 
 ---
-## 2026-08-28 — Livraison main et tentative de déploiement P-01
+## 2026-08-28 — Livraison main et déploiement Vercel/Render de P-01
 
 ### Livré
 
-- Les changements P-01 ont été intégrés sur `main` et poussés dans les commits `1167654`, le merge avec `origin/main`, puis `5d1d85a`.
+- Les changements P-01 ont été intégrés sur `main` et poussés dans les commits `1167654`, le merge avec `origin/main`, `5d1d85a` et `ceea156`.
 - La branche locale `P-01` a été supprimée ; aucune branche distante `P-01` n’existait.
-- La construction des images API/worker et backup a réussi dans le workflow GitHub `33157160497` après correction des chemins `COPY` dans `deploy/backup/Dockerfile`.
+- Le frontend Vercel a confirmé un déploiement de production réussi sur le commit `ceea156`.
+- L’API Render `https://cofound-mg.onrender.com` répond au healthcheck avec une base de données disponible.
 
-### Bloqué
+### Incident non bloquant
 
-- Le déploiement VPS n’a pas été effectué : l’étape SSH a échoué car le secret GitHub `DEPLOY_SSH_KEY` est vide ou absent. Le job de mise à jour des services a été ignoré ; aucune connexion SSH ni modification du serveur n’a eu lieu.
+- Le workflow VPS `deploy-api.yml` a été déclenché par erreur pendant la première tentative de livraison. Il a été arrêté avant toute connexion SSH, d’abord à cause d’un chemin Docker backup corrigé dans `5d1d85a`, puis parce que `DEPLOY_SSH_KEY` est absent. Ce workflow n’est pas la cible de production de CoFound et aucune modification VPS n’a eu lieu.
 
 ### Validation
 

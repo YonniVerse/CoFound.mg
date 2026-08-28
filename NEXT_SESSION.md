@@ -1,14 +1,14 @@
 # Reprise de session — CoFound.mg
 
 **Dernière mise à jour** : 2026-08-28
-**Phase** : P-01 intégré sur `main` ; production préparée mais déploiement VPS bloqué par la configuration SSH
+**Phase** : P-01 intégré sur `main` ; déploiement frontend Vercel confirmé, API Render saine
 **Ticket / vague** : P-01 / Vague 3 — Le projet
 **Branche locale** : `main`
-**État Git** : dépôt propre, `main` synchronisé avec `origin/main` à `5d1d85a` ; branche locale `P-01` supprimée ; aucune branche distante `P-01` n’existait.
+**État Git** : dépôt propre, `main` synchronisé avec `origin/main` à `ceea156` ; branche locale `P-01` supprimée ; aucune branche distante `P-01` n’existait.
 
 ## 1. État courant
 
-Le parcours de création de projet est intégré sur `main` côté contrat partagé, API NestJS, persistance Prisma et frontend. Les commits de livraison sont `1167654` (fonctionnalité), le merge avec `origin/main`, puis `5d1d85a` (correction du Dockerfile backup). Un utilisateur autorisé dont le compte est `ACTIVE` peut créer un projet avec un titre, un pitch, un secteur facultatif et une région facultative. Le serveur ignore toute tentative de fournir un propriétaire, un statut, un rôle, une date de publication ou une liste de membres : ces valeurs ne font pas partie du contrat d’entrée.
+Le parcours de création de projet est intégré sur `main` côté contrat partagé, API NestJS, persistance Prisma et frontend. Les commits de livraison sont `1167654` (fonctionnalité), le merge avec `origin/main`, `5d1d85a` (correction du Dockerfile backup), puis `ceea156` (handoff et état Vercel/Render). Un utilisateur autorisé dont le compte est `ACTIVE` peut créer un projet avec un titre, un pitch, un secteur facultatif et une région facultative. Le serveur ignore toute tentative de fournir un propriétaire, un statut, un rôle, une date de publication ou une liste de membres : ces valeurs ne font pas partie du contrat d’entrée.
 
 La création vérifie côté serveur que le compte est `ACTIVE` et que les références fournies existent et sont actives. Elle crée le projet en `DRAFT` et le premier `ProjectMember` avec le rôle `OWNER` dans la même transaction Prisma. Le schéma Prisma existant était déjà suffisant ; aucune migration n’a été ajoutée.
 
@@ -48,10 +48,10 @@ Décisions techniques : pas de migration Prisma, pas d’API HTTP parallèle, pa
 
 ## 5. Problèmes connus / blocages
 
-Le développement local est validé, mais la mise en production est bloquée : la construction des images API/worker et backup réussit dans le workflow GitHub `33157160497`, puis le job VPS échoue à l’étape `Installer la clé SSH` car le secret GitHub `DEPLOY_SSH_KEY` est vide ou absent. Aucune connexion SSH ni modification du VPS n’a eu lieu. Il reste à effectuer une recette navigateur avec un compte Talent `ACTIVE` et, idéalement, un test E2E P-01 dédié. Le formulaire utilise les traductions textuelles déjà présentes dans la page pour le contenu général ; une passe i18n complète reste à traiter dans le ticket de finition prévu par le backlog.
+Le frontend Vercel est confirmé en production sur le commit `ceea156` par le statut GitHub `Vercel: success`. L’API Render `https://cofound-mg.onrender.com` répond au healthcheck public avec `{"status":"ok","database":"ok"}` ; l’association exacte du dernier déploiement Render au SHA n’est pas exposée par le dépôt, donc une vérification depuis le dashboard Render reste recommandée. Le workflow VPS `deploy-api.yml` n’est pas la cible de production de l’application et ne doit pas être relancé. Il reste à effectuer une recette navigateur avec un compte Talent `ACTIVE` et, idéalement, un test E2E P-01 dédié. Le formulaire utilise les traductions textuelles déjà présentes dans la page pour le contenu général ; une passe i18n complète reste à traiter dans le ticket de finition prévu par le backlog.
 
 Aucune décision durable supplémentaire n’a nécessité de modification de `CLAUDE.md`, `docs/mvp-scope.md` ou des documents d’architecture. Les changements fonctionnels et la correction de déploiement sont committés et poussés sur `main` ; le dépôt est propre au moment du handoff.
 
 ## 6. Prochaine action
 
-Configurer correctement `DEPLOY_SSH_KEY` dans l’environnement GitHub `production` avec la clé correspondant à l’hôte autorisé, puis relancer `deploy-api.yml` sur `main` avec l’image `5d1d85a`. Vérifier les étapes `Installer la configuration`, `Mettre à jour les services`, les healthchecks et la version déployée. Ensuite faire la recette manuelle de `/projects/new` avec un compte Talent `ACTIVE` et vérifier la création `DRAFT`, le membre `OWNER` et la redirection vers `/projects/<id>/bmc`.
+Vérifier dans les dashboards Vercel et Render que les services ciblent bien le dépôt `YonniVerse/CoFound.mg` et le commit `ceea156`, puis faire la recette manuelle de `/projects/new` avec un compte Talent `ACTIVE`. Vérifier la création `DRAFT`, le membre `OWNER`, la lecture des référentiels via Render et la redirection vers `/projects/<id>/bmc` côté Vercel. Ne pas utiliser le workflow VPS pour cette application.
