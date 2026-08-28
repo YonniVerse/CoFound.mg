@@ -30,7 +30,7 @@ function BmcSkeleton() {
         </div>
         <div className="mt-6 h-2 animate-pulse rounded-full bg-muted" />
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{BMC_BLOCK_KEYS.map((key) => <div key={key} className="rounded-xl border border-border bg-card p-5 shadow-2xs"><div className="h-5 w-2/3 animate-pulse rounded bg-muted" /><div className="mt-2 h-4 w-full animate-pulse rounded bg-muted" /><div className="mt-1 h-4 w-5/6 animate-pulse rounded bg-muted" /><div className="mt-5 h-36 animate-pulse rounded-xl bg-muted" /></div>)}</div>
+      <div className="grid gap-4 sm:grid-cols-2">{BMC_BLOCK_KEYS.map((key) => <div key={key} className="rounded-xl border border-border bg-card p-5 shadow-2xs"><div className="h-5 w-2/3 animate-pulse rounded bg-muted" /><div className="mt-2 h-4 w-full animate-pulse rounded bg-muted" /><div className="mt-1 h-4 w-5/6 animate-pulse rounded bg-muted" /><div className="mt-5 h-36 animate-pulse rounded-xl bg-muted" /></div>)}</div>
     </div>
   )
 }
@@ -86,7 +86,7 @@ export default function ProjectBmcPage() {
             {error && <p role="status" className="mt-3 flex items-center gap-2 text-xs font-medium text-destructive"><AlertCircle className="h-3.5 w-3.5" aria-hidden="true" />{error}</p>}
           </section>
 
-          <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3" aria-label="Blocs du Business Model Canvas">
+          <section className="grid gap-4 sm:grid-cols-2" aria-label="Blocs du Business Model Canvas">
             {BMC_BLOCK_KEYS.map((key) => {
               const label = labels[key]
               return <Card key={key} className="overflow-hidden rounded-xl border-border bg-card shadow-2xs transition-shadow hover:shadow-sm">
@@ -95,7 +95,7 @@ export default function ProjectBmcPage() {
                   <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{label.explanation}</p>
                 </CardHeader>
                 <CardContent className="space-y-3 px-5 py-5">
-                  <p className="rounded-lg border border-border/60 bg-muted/30 px-3 py-2 text-xs leading-relaxed text-muted-foreground"><span className="font-semibold text-foreground">Exemple :</span> {label.example}</p>
+                  <p className="mt-3 rounded-lg border border-border/60 bg-muted/30 px-3 py-2 text-xs leading-relaxed text-muted-foreground"><span className="font-semibold text-foreground">Exemple :</span> {label.example}</p>
                   <Textarea aria-label={label.title} value={blocks[key].content} onChange={(event) => update(key, event.target.value)} rows={5} placeholder="Votre réponse…" className="min-h-36 resize-y rounded-xl border border-border/80 bg-background px-4 py-3 text-sm font-medium leading-relaxed shadow-2xs transition-[border-color,box-shadow] placeholder:text-muted-foreground/80 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20" />
                   <div className="flex min-h-4 justify-end text-xs text-muted-foreground" aria-live="polite">{saving === key ? 'Enregistrement…' : `${blocks[key].content.length}/1000`}</div>
                 </CardContent>
