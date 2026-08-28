@@ -93,6 +93,7 @@ function App() {
     <Route path="/projects/new" element={<ProjectCreatePage />} />
     <Route path="/projects/:id/bmc" element={<ProjectBmcPage />} />
     <Route path="/projects/:id" element={<ProjectDetailPage />} />
+    <Route path="/projects/:id/bmc" element={<ProjectBmcPage />} />
     <Route path="/projects/:id/applications" element={<ProjectApplicationsPage />} />
     <Route path="/projects/:id/team" element={<ProjectTeamPage />} />
     <Route path="/projects/:id/tasks" element={<ProjectTasksPage />} />
