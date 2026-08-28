@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, ArrowUpRight, BriefcaseBusiness, Clock3, Mail, Pencil, ShieldCheck, UserRound } from 'lucide-react'
+import { ArrowLeft, ArrowUpRight, BriefcaseBusiness, Clock3, Mail, Pencil, UserRound } from 'lucide-react'
 import { privateTalentProfileSchema } from '@cofound/shared'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
 import { apiClient } from '@/lib/api-client'
 
@@ -74,7 +73,6 @@ export default function ProfilePage() {
   const profile = data?.profile
   const identityName = [data?.identity?.firstName, data?.identity?.lastName].filter(Boolean).join(' ').trim()
   const displayName = identityName || profile?.pseudonym || data?.user.email || 'Mon profil'
-  const completion = profile?.completion ?? 0
 
   return (
     <DashboardLayout>
@@ -141,24 +139,7 @@ export default function ProfilePage() {
                 </CardContent>
               </Card>
 
-              <div className="space-y-6">
-                <Card className="rounded-xl border-border bg-card shadow-2xs">
-                  <CardHeader className="px-5 py-5">
-                    <CardTitle className="text-base font-bold tracking-tight">Progression du profil</CardTitle>
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Complète les étapes à ton rythme.</p>
-                  </CardHeader>
-                  <CardContent className="space-y-4 px-5 pb-5">
-                    <div className="flex items-center justify-between text-sm"><span className="font-medium text-muted-foreground">Complétion</span><span className="font-bold text-primary">{completion}%</span></div>
-                    <Progress value={completion} className="h-2" />
-                    <Button variant="outline" className="w-full justify-center" asChild><Link to="/onboarding">Continuer la mise à jour<ArrowUpRight className="ml-2 h-4 w-4" aria-hidden="true" /></Link></Button>
-                  </CardContent>
-                </Card>
-                <Card className="rounded-xl border-primary/20 bg-primary/5 shadow-2xs">
-                  <CardContent className="p-5">
-                    <div className="flex items-start gap-3"><ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" /><div><p className="text-sm font-semibold leading-snug text-foreground">Identité protégée</p><p className="mt-1 text-xs leading-relaxed text-muted-foreground">Ton nom et tes données privées ne sont pas affichés dans le Feed public.</p></div></div>
-                  </CardContent>
-                </Card>
-              </div>
+
             </div>
           )}
         </div>
