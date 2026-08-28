@@ -9,8 +9,25 @@ Retiré · En cours · Bloqué**.
 > Mis à jour par la commande `/handoff`.
 
 ---
+## 2026-08-28 — Livraison main et tentative de déploiement P-01
 
+### Livré
+
+- Les changements P-01 ont été intégrés sur `main` et poussés dans les commits `1167654`, le merge avec `origin/main`, puis `5d1d85a`.
+- La branche locale `P-01` a été supprimée ; aucune branche distante `P-01` n’existait.
+- La construction des images API/worker et backup a réussi dans le workflow GitHub `33157160497` après correction des chemins `COPY` dans `deploy/backup/Dockerfile`.
+
+### Bloqué
+
+- Le déploiement VPS n’a pas été effectué : l’étape SSH a échoué car le secret GitHub `DEPLOY_SSH_KEY` est vide ou absent. Le job de mise à jour des services a été ignoré ; aucune connexion SSH ni modification du serveur n’a eu lieu.
+
+### Validation
+
+- Après intégration avec les changements distants, `pnpm typecheck`, `pnpm lint`, `pnpm test` (213 tests), `pnpm build` et `git diff --check` réussissent.
+
+---
 ## 2026-08-28 — Création de projet P-01 complète
+
 
 ### Ajouté
 
