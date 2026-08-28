@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { AlertCircle, ArrowLeft, BriefcaseBusiness, FileText, Lightbulb } from 'lucide-react'
 import { projectCreateSchema } from '@cofound/shared'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
@@ -47,13 +47,17 @@ export default function ProjectCreatePage() {
               Commencez par un titre et un pitch. Vous pourrez compléter le BMC ensuite.
             </p>
           </div>
-          <Link
-            to="/projects"
-            className="group inline-flex h-9 w-fit shrink-0 items-center gap-2 rounded-lg px-2 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:text-sm"
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate(-1)}
+            aria-label="Retour à la page précédente"
+            className="group h-9 w-fit shrink-0 gap-2 px-2 text-xs font-semibold text-muted-foreground hover:bg-muted hover:text-foreground sm:text-sm"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" aria-hidden="true" />
-            Retour aux projets
-          </Link>
+            Retour
+          </Button>
         </header>
 
         <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
