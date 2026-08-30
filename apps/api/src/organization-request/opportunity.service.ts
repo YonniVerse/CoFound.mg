@@ -20,7 +20,8 @@ export class OpportunityService {
     await this.assertCapability(actorId, organizationId, 'PUBLISH_OPPORTUNITY')
     const parsed = opportunityCreateSchema.safeParse(input)
     if (!parsed.success) throw new BadRequestException({ code: 'VALIDATION_ERROR', issues: parsed.error.issues })
-    const opportunity = await this.prisma.opportunity.create({ data: { organizationId, type: parsed.data.type, title: parsed.data.title, description: parsed.data.description, eligibility: parsed.data.eligibility || null, deadline: parsed.data.deadline ?? null, seats: parsed.data.seats ?? null, status: 'DRAFT' }, select: this.opportunitySelect() })
+    await this.assertOpportunityPlacement(organizationId, parsed.data.programId, parsed.data.cohortId)
+    const opportunity = await this.prisma.opportunity.create({ data: { organizationId, programId: parsed.data.programId ?? null, cohortId: parsed.data.cohortId ?? null, type: parsed.data.type, title: parsed.data.title, description: parsed.data.description, eligibility: parsed.data.eligibility || null, deadline: parsed.data.deadline ?? null, seats: parsed.data.seats ?? null, status: 'DRAFT' }, select: this.opportunitySelect() })
     await this.audit.record({ actorId, action: 'OPPORTUNITY_CREATED', targetType: 'Opportunity', targetId: opportunity.id, metadata: { organizationId } })
     return opportunity
   }
@@ -111,7 +112,22 @@ export class OpportunityService {
     if (!member) throw new ForbiddenException({ code: 'PROJECT_MEMBER_REQUIRED', messageKey: 'errors.forbidden' })
   }
 
+  private async assertOpportunityPlacement(organizationId: string, programId?: string, cohortId?: string) {
+    if (!programId && !cohortId) return
+    if (cohortId) {
+      const cohort = await this.prisma.cohort.findFirst({ where: { id: cohortId, program: { organizationId } }, select: { id: true, programId: true, status: true } })
+      if (!cohort) throw new BadRequestException({ code: 'COHORT_ORGANIZATION_MISMATCH', messageKey: 'errors.invalidReference' })
+      if (programId && cohort.programId !== programId) throw new BadRequestException({ code: 'COHORT_PROGRAM_MISMATCH', messageKey: 'errors.invalidReference' })
+      if (cohort.status === 'ARCHIVED') throw new ConflictException({ code: 'COHORT_ARCHIVED', messageKey: 'errors.alreadyProcessed' })
+    }
+    if (programId) {
+      const program = await this.prisma.program.findFirst({ where: { id: programId, organizationId }, select: { id: true, status: true } })
+      if (!program) throw new BadRequestException({ code: 'PROGRAM_ORGANIZATION_MISMATCH', messageKey: 'errors.invalidReference' })
+      if (program.status === 'ARCHIVED') throw new ConflictException({ code: 'PROGRAM_ARCHIVED', messageKey: 'errors.alreadyProcessed' })
+    }
+  }
+
   private opportunitySelect() {
-    return { id: true, organizationId: true, type: true, title: true, description: true, eligibility: true, deadline: true, seats: true, status: true, createdAt: true, updatedAt: true } as const
+    return { id: true, organizationId: true, programId: true, cohortId: true, type: true, title: true, description: true, eligibility: true, deadline: true, seats: true, status: true, createdAt: true, updatedAt: true, program: { select: { id: true, name: true } }, cohort: { select: { id: true, name: true, region: true } } } as const
   }
 }

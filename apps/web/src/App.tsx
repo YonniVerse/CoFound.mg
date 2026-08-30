@@ -35,6 +35,7 @@ const InstitutionAffiliationsPage = lazy(() => import("@/pages/InstitutionAffili
 const InstitutionDirectoryPage = lazy(() => import("@/pages/InstitutionDirectoryPage"));
 const MyApplicationsPage = lazy(() => import("@/pages/MyApplicationsPage"));
 const ProjectApplicationsPage = lazy(() => import("@/pages/ProjectApplicationsPage"));
+const IncubatorProgramsPage = lazy(() => import("@/pages/IncubatorProgramsPage"));
 const ProjectTeamPage = lazy(() => import("@/pages/ProjectTeamPage"));
 const ProjectTasksPage = lazy(() => import("@/pages/ProjectTasksPage"));
 const ProjectPostsPage = lazy(() => import("@/pages/ProjectPostsPage"));
@@ -82,6 +83,7 @@ function App() {
     <Route path="/organizations/:organizationId/projects" element={<PartnerProjectsPage />} />
     <Route path="/organizations/:organizationId/talents" element={<PartnerTalentsPage />} />
     <Route path="/organizations/:organizationId/opportunities" element={<PartnerOpportunitiesPage />} />
+    <Route path="/organizations/:organizationId/incubator" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><IncubatorProgramsPage /></PlatformRoleGate>} />
     <Route path="/opportunities/:opportunityId" element={<OpportunityDetailPage />} />
     <Route path="/organizations/:organizationId/wallet" element={<WalletPage />} />
     <Route path="/projects/:id/wallet" element={<WalletPage />} />
