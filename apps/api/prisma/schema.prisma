@@ -32,6 +32,36 @@ enum OrganizationType {
   ASSOCIATION
 }
 
+enum OrganizationPlan {
+  INCUBATOR_STARTER
+  INCUBATOR_GROWTH
+  COMPANY_STARTER
+  COMPANY_GROWTH
+  NGO_PROGRAM
+  FREE
+}
+
+enum BillingStatus {
+  FREE
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+enum ProgramStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum CohortStatus {
+  PLANNED
+  OPEN
+  CLOSED
+  ARCHIVED
+}
+
 enum OrganizationRole {
   ORG_ADMIN
   ORG_MANAGER
@@ -339,6 +369,12 @@ model Organization {
   logoKey              String?
   description          String?
   verificationStatus   String                   @default("PENDING")
+  plan                 OrganizationPlan         @default(FREE)
+  billingStatus        BillingStatus            @default(FREE)
+  seatsLimit           Int                      @default(1)
+  programsLimit        Int                      @default(0)
+  cohortsLimit         Int                      @default(0)
+  opportunitiesLimit   Int                      @default(3)
   createdAt            DateTime                 @default(now())
   updatedAt            DateTime                 @updatedAt
   capabilities         OrganizationCapability[]
@@ -351,6 +387,7 @@ model Organization {
   projectWatches       ProjectWatch[]
   projectContacts      OrganizationProjectContact[]
   wallet               Wallet?
+  programs             Program[]
 
   @@index([type, verificationStatus])
 }
@@ -867,6 +904,8 @@ model Message {
 model Opportunity {
   id             String                   @id @default(cuid())
   organizationId String
+  programId      String?
+  cohortId       String?
   type           OpportunityType
   title          String
   description    String
@@ -877,7 +916,44 @@ model Opportunity {
   createdAt      DateTime                 @default(now())
   updatedAt      DateTime                 @updatedAt
   organization   Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  program        Program?                 @relation(fields: [programId], references: [id], onDelete: SetNull)
+  cohort         Cohort?                  @relation(fields: [cohortId], references: [id], onDelete: SetNull)
   applications   OpportunityApplication[]
+
+  @@index([organizationId, programId, cohortId])
+}
+
+model Program {
+  id             String         @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  status         ProgramStatus  @default(DRAFT)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  cohorts        Cohort[]
+  opportunities  Opportunity[]
+
+  @@unique([organizationId, name])
+  @@index([organizationId, status])
+}
+
+model Cohort {
+  id          String        @id @default(cuid())
+  programId   String
+  name        String
+  region      String?
+  startsAt    DateTime?
+  endsAt      DateTime?
+  status      CohortStatus  @default(PLANNED)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  program     Program       @relation(fields: [programId], references: [id], onDelete: Cascade)
+  opportunities Opportunity[]
+
+  @@unique([programId, name])
+  @@index([programId, status])
 }
 
 model OpportunityApplication {

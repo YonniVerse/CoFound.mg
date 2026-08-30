@@ -13,10 +13,12 @@ import { OpportunityService } from './opportunity.service.js'
 import { PartnerContactController } from './partner-contact.controller.js'
 import { PartnerContactService } from './partner-contact.service.js'
 import { CloudinaryService } from './cloudinary.service.js'
+import { IncubatorController } from './incubator.controller.js'
+import { IncubatorService } from './incubator.service.js'
 
 @Module({
   imports: [PrismaModule],
-  controllers: [OrganizationRequestController, OrganizationRequestStaffController, OrganizationCapabilityController, OrganizationProfileController, PartnerDiscoveryController, PublicOpportunityController, OrganizationOpportunityController, PartnerContactController],
-  providers: [CloudinaryService, OrganizationRequestService, OrganizationRequestStaffService, OrganizationProfileService, PartnerDiscoveryService, OpportunityService, PartnerContactService],
+  controllers: [OrganizationRequestController, OrganizationRequestStaffController, OrganizationCapabilityController, OrganizationProfileController, PartnerDiscoveryController, PublicOpportunityController, OrganizationOpportunityController, PartnerContactController, IncubatorController],
+  providers: [CloudinaryService, OrganizationRequestService, OrganizationRequestStaffService, OrganizationProfileService, PartnerDiscoveryService, OpportunityService, PartnerContactService, IncubatorService],
 })
 export class OrganizationRequestModule {}

@@ -6,6 +6,13 @@ import { CloudinaryService, type CloudinaryDocument } from './cloudinary.service
 
 const MVP_CAPABILITIES = new Set(['CERTIFY_AFFILIATION', 'PUBLISH_OPPORTUNITY', 'RECRUIT'])
 
+function commercialDefaults(type: string) {
+  if (type === 'INCUBATOR') return { plan: 'INCUBATOR_STARTER' as const, seatsLimit: 3, programsLimit: 1, cohortsLimit: 2, opportunitiesLimit: 3 }
+  if (type === 'COMPANY') return { plan: 'COMPANY_STARTER' as const, seatsLimit: 3, programsLimit: 0, cohortsLimit: 0, opportunitiesLimit: 3 }
+  if (type === 'NGO') return { plan: 'NGO_PROGRAM' as const, seatsLimit: 3, programsLimit: 1, cohortsLimit: 2, opportunitiesLimit: 3 }
+  return { plan: 'FREE' as const, seatsLimit: 1, programsLimit: 0, cohortsLimit: 0, opportunitiesLimit: 3 }
+}
+
 @Injectable()
 export class OrganizationRequestStaffService {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Inject(AuditService) private readonly audit: AuditService, @Optional() @Inject(CloudinaryService) private readonly cloudinary?: CloudinaryService) {}
@@ -73,6 +80,7 @@ export class OrganizationRequestStaffService {
       if (!request) throw new NotFoundException({ code: 'ORGANIZATION_REQUEST_NOT_FOUND', messageKey: 'errors.notFound' })
       this.assertPending(request.status)
 
+      const defaults = commercialDefaults(request.organizationType)
       const organization = await transaction.organization.create({
         data: {
           name: request.organizationName,
@@ -80,8 +88,10 @@ export class OrganizationRequestStaffService {
           countryCode: request.countryCode,
           description: request.description,
           verificationStatus: 'VERIFIED',
+          billingStatus: 'TRIAL',
+          ...defaults,
         },
-        select: { id: true, name: true, type: true, verificationStatus: true },
+        select: { id: true, name: true, type: true, verificationStatus: true, plan: true, billingStatus: true, seatsLimit: true, programsLimit: true, cohortsLimit: true, opportunitiesLimit: true },
       })
       const existingUser = await transaction.user.findUnique({ where: { email: request.contactEmail } })
       const user = existingUser

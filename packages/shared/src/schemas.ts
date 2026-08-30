@@ -234,6 +234,22 @@ export type PartnerProjectSearch = z.infer<typeof partnerProjectSearchSchema>
 export type ProjectWatchInput = z.infer<typeof projectWatchInputSchema>
 export const opportunityTypeSchema = z.enum(['CALL_FOR_APPLICATIONS', 'CONTEST', 'INCUBATION_PROGRAM', 'FUNDING_OFFER', 'EVENT', 'INTERNSHIP'])
 export const opportunityStatusSchema = z.enum(['DRAFT', 'PUBLISHED', 'CLOSED', 'ARCHIVED'])
+export const organizationPlanSchema = z.enum(['INCUBATOR_STARTER', 'INCUBATOR_GROWTH', 'COMPANY_STARTER', 'COMPANY_GROWTH', 'NGO_PROGRAM', 'FREE'])
+export const billingStatusSchema = z.enum(['FREE', 'TRIAL', 'ACTIVE', 'PAST_DUE', 'CANCELED'])
+export const programStatusSchema = z.enum(['DRAFT', 'ACTIVE', 'ARCHIVED'])
+export const cohortStatusSchema = z.enum(['PLANNED', 'OPEN', 'CLOSED', 'ARCHIVED'])
+export const programCreateSchema = z.object({
+  name: z.string().trim().min(3).max(160),
+  description: z.string().trim().max(2_000).optional(),
+})
+export const cohortCreateSchema = z.object({
+  name: z.string().trim().min(2).max(160),
+  region: z.string().trim().max(160).optional(),
+  startsAt: z.coerce.date().nullable().optional(),
+  endsAt: z.coerce.date().nullable().optional(),
+}).superRefine((value, context) => {
+  if (value.startsAt && value.endsAt && value.endsAt < value.startsAt) context.addIssue({ code: z.ZodIssueCode.custom, path: ['endsAt'], message: 'Cohort end must be after its start.' })
+})
 export const opportunityCreateSchema = z.object({
   type: opportunityTypeSchema.default('CALL_FOR_APPLICATIONS'),
   title: z.string().trim().min(3).max(180),
@@ -241,6 +257,36 @@ export const opportunityCreateSchema = z.object({
   eligibility: z.string().trim().max(2_000).optional(),
   deadline: z.coerce.date().nullable().optional(),
   seats: z.number().int().positive().max(100_000).nullable().optional(),
+  programId: idSchema.optional(),
+  cohortId: idSchema.optional(),
+})
+export const programSchema = z.object({
+  id: idSchema,
+  organizationId: idSchema,
+  name: z.string(),
+  description: z.string().nullable(),
+  status: programStatusSchema,
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  cohortsCount: z.number().int().nonnegative(),
+  opportunitiesCount: z.number().int().nonnegative(),
+})
+export const cohortSchema = z.object({
+  id: idSchema,
+  programId: idSchema,
+  name: z.string(),
+  region: z.string().nullable(),
+  startsAt: z.coerce.date().nullable(),
+  endsAt: z.coerce.date().nullable(),
+  status: cohortStatusSchema,
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  opportunitiesCount: z.number().int().nonnegative(),
+})
+export const incubatorApplicationFilterSchema = z.object({
+  programId: idSchema.optional(),
+  cohortId: idSchema.optional(),
+  status: z.enum(['PENDING', 'REVIEWING', 'SHORTLISTED', 'INTERVIEW', 'WAITLISTED', 'ACCEPTED', 'REJECTED', 'WITHDRAWN']).optional(),
 })
 export const opportunityApplicationCreateSchema = z.object({
   applicantType: z.enum(['TALENT', 'PROJECT']),
@@ -265,6 +311,10 @@ export const opportunitySchema = z.object({
   status: opportunityStatusSchema,
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
+  programId: idSchema.nullable().optional(),
+  cohortId: idSchema.nullable().optional(),
+  program: z.object({ id: idSchema, name: z.string() }).nullable().optional(),
+  cohort: z.object({ id: idSchema, name: z.string(), region: z.string().nullable() }).nullable().optional(),
 })
 export const opportunityApplicationSchema = z.object({
   id: idSchema,
@@ -275,10 +325,21 @@ export const opportunityApplicationSchema = z.object({
   status: z.enum(['PENDING', 'REVIEWING', 'SHORTLISTED', 'INTERVIEW', 'WAITLISTED', 'ACCEPTED', 'REJECTED', 'WITHDRAWN']),
   rejectionReason: z.string().nullable(),
   createdAt: z.coerce.date(),
+  opportunity: z.object({
+    id: idSchema,
+    title: z.string(),
+    program: z.object({ id: idSchema, name: z.string() }).nullable(),
+    cohort: z.object({ id: idSchema, name: z.string(), region: z.string().nullable() }).nullable(),
+  }).optional(),
 })
 export type Opportunity = z.infer<typeof opportunitySchema>
 export type OpportunityCreate = z.infer<typeof opportunityCreateSchema>
 export type OpportunityApplicationCreate = z.infer<typeof opportunityApplicationCreateSchema>
+export type ProgramCreate = z.infer<typeof programCreateSchema>
+export type CohortCreate = z.infer<typeof cohortCreateSchema>
+export type Program = z.infer<typeof programSchema>
+export type Cohort = z.infer<typeof cohortSchema>
+export type IncubatorApplicationFilter = z.infer<typeof incubatorApplicationFilterSchema>
 export const organizationProjectContactSchema = z.object({
   id: idSchema,
   organizationId: idSchema,
