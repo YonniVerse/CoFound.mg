@@ -1,4 +1,5 @@
 import { ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
+import { AccountStatus } from '@cofound/shared'
 import { ProjectStatus } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { BMC_BLOCK_KEYS, type BmcBlockKey, type OwnedProjectsResponse, type ProjectCreateInput } from '@cofound/shared'
@@ -18,8 +19,20 @@ export class ProjectService {
     return { projects }
   }
 
-  async create(actorId: string, input: ProjectCreateInput) {
+  async create(actorId: string, input: ProjectCreateInput, accountStatus: string = AccountStatus.ACTIVE) {
+    if (accountStatus !== AccountStatus.ACTIVE) {
+      throw new ForbiddenException({ code: 'FORBIDDEN', messageKey: 'project.errors.accountCannotCreate' })
+    }
+
     return this.prisma.$transaction(async (transaction) => {
+      if (input.sectorId) {
+        const sector = await transaction.sector.findFirst({ where: { id: input.sectorId, isActive: true }, select: { id: true } })
+        if (!sector) throw new NotFoundException({ code: 'NOT_FOUND', messageKey: 'project.errors.sectorNotFound' })
+      }
+      if (input.regionId) {
+        const region = await transaction.region.findFirst({ where: { id: input.regionId, isActive: true }, select: { id: true } })
+        if (!region) throw new NotFoundException({ code: 'NOT_FOUND', messageKey: 'project.errors.regionNotFound' })
+      }
       const project = await transaction.project.create({
         data: {
           title: input.title,

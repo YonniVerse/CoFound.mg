@@ -21,4 +21,9 @@ export class PublicReferenceDataController {
   listSectors() {
     return this.service.listPublicSectors()
   }
+
+  @Get('regions')
+  listRegions() {
+    return this.service.listPublicRegions()
+  }
 }

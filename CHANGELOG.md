@@ -9,6 +9,52 @@ Retiré · En cours · Bloqué**.
 > Mis à jour par la commande `/handoff`.
 
 ---
+## 2026-08-28 — Livraison main et déploiement Vercel/Render de P-01
+
+### Livré
+
+- Les changements P-01 ont été intégrés sur `main` et poussés dans les commits `1167654`, le merge avec `origin/main`, `5d1d85a` et `ceea156`.
+- La branche locale `P-01` a été supprimée ; aucune branche distante `P-01` n’existait.
+- Le frontend Vercel a confirmé un déploiement de production réussi sur le commit `ceea156`.
+- L’API Render `https://cofound-mg.onrender.com` répond au healthcheck avec une base de données disponible.
+
+### Incident non bloquant
+
+- Le workflow VPS `deploy-api.yml` a été déclenché par erreur pendant la première tentative de livraison. Il a été arrêté avant toute connexion SSH, d’abord à cause d’un chemin Docker backup corrigé dans `5d1d85a`, puis parce que `DEPLOY_SSH_KEY` est absent. Ce workflow n’est pas la cible de production de CoFound et aucune modification VPS n’a eu lieu.
+
+### Validation
+
+- Après intégration avec les changements distants, `pnpm typecheck`, `pnpm lint`, `pnpm test` (213 tests), `pnpm build` et `git diff --check` réussissent.
+
+---
+## 2026-08-28 — Création de projet P-01 complète
+
+
+### Ajouté
+
+- Contrats partagés pour la réponse de création et les listes publiques de secteurs/régions.
+- Helpers frontend typés pour créer un projet et charger les référentiels.
+- Route publique `GET /api/v1/reference-data/regions`, limitée aux régions actives.
+- Route frontend `/projects/:id/bmc` vers la page BMC existante.
+- Tests API ciblés pour les références, le statut de compte et l’atomicité.
+
+### Modifié
+
+- Le formulaire `/projects/new` contient désormais exactement titre, pitch, secteur facultatif et région facultative, avec états de chargement, validation par champ, conservation locale de la saisie, prévention de double soumission et redirection vers le BMC.
+- La création serveur exige un compte `ACTIVE`, vérifie les secteurs et régions actifs, puis persiste le projet `DRAFT` et son membre `OWNER` dans une seule transaction.
+- Les corps invalides sont rejetés avec une erreur structurée et les détails des issues Zod.
+
+### Décidé
+
+- Aucune migration Prisma n’a été produite, car le schéma existant contient déjà les champs et relations nécessaires ; une migration artificielle aurait ajouté du bruit sans garantie supplémentaire.
+- Le BMC reste une étape postérieure non bloquante, car la création d’un projet doit rester réalisable en moins de deux minutes.
+
+### Validation
+
+- `pnpm install --frozen-lockfile`, `pnpm typecheck`, `pnpm lint`, `pnpm test` (210 tests), `pnpm build`, `pnpm e2e:list` et `git diff --check` réussissent.
+- Aucun test E2E ou test frontend unitaire dédié à P-01 n’a été ajouté, car ces infrastructures ne sont pas présentes dans le dépôt.
+
+---
 
 ## 2026-08-27 — Select de filière dans l’onboarding
 

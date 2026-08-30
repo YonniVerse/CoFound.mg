@@ -44,6 +44,15 @@ export class ReferenceDataService {
     return { kind: 'sectors', items }
   }
 
+  async listPublicRegions() {
+    const items = await this.prisma.region.findMany({
+      where: { isActive: true },
+      orderBy: [{ slug: 'asc' }],
+      select: { id: true, slug: true, labelKey: true },
+    })
+    return { kind: 'regions', items: items.map((item) => ({ ...item, sortOrder: 0 })) }
+  }
+
   async create(kind: ReferenceKind, input: ReferenceCreateInput) {
     try {
       const created = await this.prisma.$transaction(async (tx) => this.delegate(kind, tx).create({ data: this.data(kind, input) }))
