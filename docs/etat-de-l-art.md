@@ -2,7 +2,8 @@
 
 **Projet :** CoFound.mg — Équipe You-ARY
 **Contexte :** Cahier des charges V1, présentation hackathon
-**Date :** Août 2026
+**Date :** Septembre 2026
+**Auteur :** Manus AI
 
 ---
 
@@ -10,34 +11,91 @@
 
 Cet état de l'art recense les solutions existantes qui répondent, en tout ou partie, aux mêmes problématiques que CoFound.mg : la mise en relation de cofondateurs, la structuration de projets entrepreneuriaux et l'accompagnement de jeunes porteurs de projet. Il couvre trois échelles :
 
-1. les plateformes internationales de matching de cofondateurs,
-2. l'écosystème d'accompagnement entrepreneurial en Afrique,
-3. l'écosystème malgache (incubateurs, hubs, initiatives numériques),
+1. les plateformes internationales de mise en relation et de matching de cofondateurs ;
+2. les réseaux sociaux et professionnels qui peuvent être utilisés pour découvrir des collaborateurs ;
+3. l'écosystème d'accompagnement entrepreneurial en Afrique et à Madagascar.
 
-et s'appuie enfin sur des travaux académiques portant sur la formation algorithmique d'équipes, qui éclairent la logique du futur module **Dream-Match**.
+Il s'appuie enfin sur des travaux académiques portant sur la formation algorithmique d'équipes, qui éclairent la logique du futur module **Dream-Match**.
 
-L'objectif n'est pas de conclure que « rien n'existe », mais d'identifier précisément **ce qui existe déjà, ce qui manque, et où se situe l'espace laissé libre pour CoFound.mg** dans le contexte malgache et estudiantin.
+L'objectif n'est pas de conclure que « rien n'existe », mais d'identifier précisément **ce qui existe déjà, ce qui manque, et où se situe l'espace complémentaire pour CoFound.mg** dans le contexte malgache et estudiantin. Facebook et LinkedIn sont donc analysés selon leur finalité propre, sans comparaison agressive ni jugement de valeur.
 
 ---
 
-## 2. Solutions populaires et pratiques similaires à CoFound.mg
+## 2. Facebook et LinkedIn : deux environnements aux finalités distinctes
 
-Cette section se limite volontairement aux solutions les plus connues ou les plus réellement utilisées, y compris deux outils génériques (LinkedIn, WhatsApp) qui ne sont pas conçus pour la cofondation mais qui sont, dans les faits, les moyens que les étudiants malgaches emploient déjà pour chercher des collaborateurs.
+### 2.1 Facebook
 
-### 2.1 LinkedIn
-Réseau professionnel généraliste le plus utilisé au monde, régulièrement cité comme option par défaut pour chercher un cofondateur faute de mieux. Ses atouts sont sa base d'utilisateurs massive et la visibilité du parcours de chacun (études, expériences). Ses limites pour ce cas d'usage : aucun algorithme dédié à la complémentarité de compétences pour monter une équipe fondatrice, aucun outil de structuration de projet, et une audience dominée par des professionnels déjà en poste plutôt que par des étudiants en phase d'idéation.
+#### 2.1.1 Présentation
 
-### 2.2 WhatsApp et groupes Facebook (méthode informelle dominante à Madagascar)
-Dans les faits, la majorité des étudiants malgaches trouvent aujourd'hui leurs collaborateurs par le bouche-à-oreille, via des groupes WhatsApp ou Facebook d'école, ces deux outils étant les canaux de réseautage les plus populaires localement. C'est efficace pour des contacts déjà connus, mais cette méthode ne propose aucune vérification du profil, aucun matching par compétences réelles, et aucun cadre pour structurer le projet une fois l'équipe formée — tout repose sur la bonne volonté et le réseau personnel de chacun. C'est la référence la plus concrète à laquelle CoFound.mg se substitue en pratique.
+Facebook est une plateforme sociale généraliste intégrée à l'écosystème de Meta. Meta présente sa mission autour de la connexion entre les personnes, les intérêts et les expériences, ainsi que de la construction de communautés [1]. Cette orientation explique la diversité des profils présents sur la plateforme et la variété des usages sociaux, associatifs, locaux et professionnels qui peuvent s'y développer.
 
-### 2.3 Y Combinator Co-Founder Matching
-Lancée en juillet 2022 par l'accélérateur Y Combinator, cette plateforme gratuite et la plus connue du secteur permet de créer un profil détaillant ses compétences et le profil de cofondateur recherché ; un algorithme propose ensuite des correspondances par complémentarité. Le service revendique plus de 100 000 mises en relation facilitées. Sa limite : aucun ancrage institutionnel ou académique, et aucun outil de structuration de projet une fois le binôme formé.
+#### 2.1.2 Forces et apports
 
-### 2.4 CoFoundersLab
-La plus grande communauté dédiée du secteur (650 000+ entrepreneurs revendiqués), avec un algorithme propriétaire de suggestion de cofondateurs, mentors et investisseurs, sur un modèle freemium. Sa taille est à double tranchant : volume élevé de profils, mais aucune vérification de l'identité académique ou professionnelle des utilisateurs.
+Facebook dispose d'une base d'utilisateurs mondiale très importante et occupe une place significative dans les usages quotidiens. La plateforme facilite la communication, la publication d'informations, les interactions sociales et la création de communautés. Elle permet également de toucher des profils variés, y compris dans des contextes locaux ou thématiques.
 
-### 2.5 Limite commune à l'ensemble de ces solutions
-Aucune des solutions ci-dessus — génériques (LinkedIn, WhatsApp) ou spécialisées (YC, CoFoundersLab) — ne combine vérification institutionnelle des utilisateurs, matching par compétences et objectifs, **et** environnement de structuration de projet intégré (Business Model Canvas obligatoire, gestion de tâches, finances). Elles s'arrêtent à la mise en relation (ou n'en font même pas une fonction dédiée, pour LinkedIn/WhatsApp), laissant les fondateurs repartir vers des outils tiers une fois le binôme formé — ce que CoFound.mg intègre nativement.
+Les groupes constituent l'un de ses principaux apports. Le centre d'aide officiel de Facebook les décrit comme des espaces permettant de se connecter, d'apprendre et de partager avec des personnes ayant des intérêts communs [2]. Ils peuvent être publics ou privés et servent à organiser des échanges autour d'une école, d'une association, d'un territoire, d'un secteur d'activité ou d'un centre d'intérêt. La messagerie et les interactions liées aux publications complètent cette logique communautaire.
+
+#### 2.1.3 Usage dans la recherche de collaborateurs et de communautés
+
+Dans la recherche de collaborateurs, Facebook peut être utilisé au moyen de groupes d'établissement, de communautés entrepreneuriales, de réseaux associatifs ou de publications ouvertes. Un porteur de projet peut y présenter une idée, demander des recommandations, rechercher une compétence ou identifier des personnes intéressées par un même sujet.
+
+Cette approche est particulièrement utile lorsque la diffusion rapide d'une opportunité et l'existence d'un réseau social préalable sont importantes. Facebook peut ainsi faciliter la première prise de contact et la mobilisation d'une communauté. Il serait donc réducteur de limiter Facebook à un usage purement social, car ses communautés peuvent aussi soutenir des démarches entrepreneuriales et collaboratives.
+
+#### 2.1.4 Limites fonctionnelles par rapport au besoin spécifique de CoFound
+
+La limite principale tient au positionnement généraliste et social de Facebook. Les groupes, les publications et la messagerie facilitent le contact, mais ils ne constituent pas nécessairement un parcours spécialisé pour décrire un projet, préciser les rôles recherchés, comparer les compétences complémentaires et formaliser progressivement une collaboration.
+
+Dans ce contexte précis, la recherche structurée de cofondateurs et le matching de compétences peuvent nécessiter des démarches complémentaires : lecture manuelle des profils, échanges successifs, vérification des informations et utilisation d'outils distincts pour structurer le projet. Cette observation décrit une différence de finalité et non une faiblesse générale de Facebook.
+
+> Facebook constitue un puissant environnement de communication et de création de communautés. Cependant, son positionnement généraliste implique que les besoins liés à la recherche structurée de cofondateurs, au matching de compétences et à la formalisation d'une collaboration nécessitent souvent des démarches complémentaires.
+
+#### 2.1.5 Ce que CoFound apporte en complément
+
+CoFound se positionne comme un espace complémentaire lorsque le besoin passe de la diffusion d'une opportunité à la construction structurée d'une équipe. Dans le périmètre documenté du projet, les profils peuvent être orientés vers les compétences, les intérêts, les objectifs et les complémentarités recherchées. Les fonctions de projet et de structuration, dont le Business Model Canvas lorsque le parcours le prévoit, prolongent la mise en relation.
+
+CoFound ne remplace donc pas les groupes Facebook. Facebook peut conserver son rôle de diffusion et d'animation communautaire, tandis que CoFound apporte un environnement davantage centré sur la formation d'équipes autour d'un projet concret.
+
+### 2.2 LinkedIn
+
+#### 2.2.1 Présentation
+
+LinkedIn est un réseau professionnel majeur. Sa page institutionnelle le présente comme « the world's largest professional network » et publie des indicateurs relatifs aux membres, aux connexions, aux rôles professionnels, aux candidatures, aux écoles et aux compétences [3]. Son objectif principal est orienté vers la visibilité professionnelle, la construction de relations de travail, le recrutement, le développement de carrière et le partage de contenus professionnels.
+
+#### 2.2.2 Forces et apports
+
+LinkedIn permet de présenter un parcours détaillé au moyen des études, des expériences, des compétences, des certifications et des réalisations. Cette structuration facilite la découverte de profils et la recherche de personnes dont le parcours correspond à un besoin professionnel. La plateforme met en relation des professionnels, des entreprises, des recruteurs, des écoles et des institutions.
+
+Elle apporte une valeur importante au networking professionnel, au recrutement et au développement de carrière. Les publications, les interactions et les connexions contribuent à accroître la visibilité et à maintenir des relations professionnelles. Les indicateurs institutionnels de LinkedIn font notamment apparaître les connexions, les candidatures, les mises à jour du fil et les contenus d'apprentissage comme des activités importantes de son écosystème [3].
+
+#### 2.2.3 Usage dans le networking et la recherche de profils
+
+LinkedIn est très pertinent pour le networking professionnel et la découverte de profils. Un utilisateur peut rechercher une expertise, consulter un parcours, suivre une publication, demander une mise en relation et prendre contact dans un cadre professionnel. Les recruteurs et les organisations peuvent également l'utiliser pour rechercher des candidats et développer leur réseau.
+
+Dans le contexte entrepreneurial, LinkedIn peut aider à identifier une expérience, une compétence ou une relation professionnelle utile à un projet. Il peut également accroître la visibilité d'une initiative auprès d'un réseau professionnel. Ces usages constituent des apports réels et importants, et ne doivent pas être minimisés.
+
+#### 2.2.4 Limites fonctionnelles par rapport au besoin spécifique de CoFound
+
+La différence avec CoFound concerne principalement le parcours et l'objectif central. LinkedIn est organisé autour de l'identité professionnelle, de la carrière, du recrutement, de la visibilité et du networking. La recherche de cofondateurs peut y être menée par la recherche de profils et la prise de contact, mais la construction d'une équipe autour d'un projet précis repose généralement sur une coordination complémentaire entre les utilisateurs.
+
+Dans le besoin spécifique étudié par CoFound, il peut être utile de disposer dès le départ d'informations orientées vers le projet : rôle recherché, compétences complémentaires, intérêts communs, objectifs de collaboration, disponibilité et étapes de structuration. Cette différence ne signifie pas que LinkedIn serait inefficace ; elle traduit une spécialisation distincte.
+
+#### 2.2.5 Ce que CoFound apporte en complément
+
+CoFound cherche à compléter le networking professionnel par une expérience centrée sur la formation d'équipes et la construction de projets. Dans le périmètre fonctionnel documenté, le matching peut prendre en compte les compétences, les intérêts, les objectifs et les complémentarités, tandis que les profils sont davantage orientés vers un projet et les rôles recherchés.
+
+La plateforme peut également prolonger la mise en relation par des outils de structuration tels que le Business Model Canvas lorsque celui-ci est pertinent. Elle vise ainsi un contexte où des étudiants, de jeunes talents, des porteurs de projets et des institutions souhaitent passer de la découverte d'un profil à une collaboration organisée.
+
+### 2.3 Autres solutions et pratiques complémentaires
+
+Les groupes de messagerie et les communautés locales peuvent accélérer la diffusion d'une opportunité et favoriser les recommandations. Les plateformes internationales spécialisées dans le matching de cofondateurs, telles que Y Combinator Co-Founder Matching ou CoFoundersLab, répondent quant à elles à une demande plus directement liée à la recherche de partenaires entrepreneuriaux. Les incubateurs et les hubs apportent pour leur part du mentorat, des formations, des ressources et un accès à des réseaux.
+
+Ces solutions ne sont pas nécessairement concurrentes. Elles interviennent à des étapes différentes : visibilité, découverte de profils, mise en relation, accompagnement ou structuration. CoFound est étudié ici comme une solution complémentaire située à l'intersection de la formation d'équipes et de la structuration de projets.
+
+### 2.4 Besoin complémentaire identifié
+
+Facebook et LinkedIn répondent efficacement à leurs propres objectifs. Facebook facilite principalement la communication sociale, la diffusion et l'animation de communautés. LinkedIn facilite principalement la visibilité professionnelle, le networking, la découverte de compétences, le recrutement et la carrière.
+
+Dans le contexte particulier de la formation d'une équipe autour d'un projet, un besoin complémentaire peut être identifié : relier la description du projet aux rôles recherchés, comparer les compétences et les objectifs, puis accompagner la collaboration au-delà du premier contact. C'est sur ce besoin ciblé que se construit le positionnement de CoFound.mg.
 
 ---
 
@@ -50,17 +108,20 @@ Aucune des solutions ci-dessus — génériques (LinkedIn, WhatsApp) ou spécial
 ## 4. Écosystème malgache existant
 
 ### 4.1 Structures d'incubation physiques
+
 - **Habaka – Innovation Hub** : premier hub technologique de Madagascar (né en 2011 sous le nom Malagasy i-Hub), il propose un FabLab, un espace de coworking et anime des communautés thématiques (développement logiciel, machine learning, jeu vidéo, geotech, astronomie). Habaka reste centré sur l'infrastructure physique et l'animation communautaire, sans plateforme numérique de matching de cofondateurs.
 - **NextA** : plateforme d'accélération portée par le groupe Axian, explicitement inspirée de StationF à Paris, orientée vers l'accompagnement de startups déjà constituées.
 - **Incubons** : structure d'accompagnement et de financement de démarrage pour porteurs de projet.
 - **PPAEI** (Plateforme rassemblant les professionnels de l'accompagnement en entrepreneuriat et innovation) : réseau fédérant les incubateurs malgaches à Antananarivo, avec un rôle de coordination plutôt que d'outil numérique destiné aux étudiants eux-mêmes.
 
 ### 4.2 Initiatives numériques nationales
-- **E-toolia** : plateforme numérique hébergée par l'Economic Development Board of Madagascar (EDBM), conçue pour améliorer la visibilité des incubateurs existants et de leur offre de services. C'est l'initiative la plus proche d'une infrastructure numérique nationale pour l'entrepreneuriat, mais elle fonctionne comme un annuaire institutionnel et non comme un outil de matching entre pairs ni comme un espace de structuration de projet.
+
+- **E-toolia** : plateforme numérique hébergée par l'Economic Development Board of Madagascar (EDBM), conçue pour améliorer la visibilité des incubateurs existants et de leur offre de services. C'est une initiative proche d'une infrastructure numérique nationale pour l'entrepreneuriat, mais elle fonctionne comme un annuaire institutionnel et non comme un outil de matching entre pairs ni comme un espace de structuration de projet.
 - **EDM-Talent** : plateforme de recrutement digital généraliste, sans logique de cofondation ni de structuration entrepreneuriale.
 
 ### 4.3 Constat
-Aucune des structures malgaches identifiées ne propose aujourd'hui un service numérique combinant : liste blanche institutionnelle (universités), profil étudiant structuré, algorithme de matching par compétences/objectifs, et environnement de projet obligatoire (BMC, tâches, finances) avec anonymat partiel comme mécanisme de protection psychologique. L'accompagnement existant est **physique, sélectif et post-idéation** ; CoFound.mg se positionne **en amont**, comme couche numérique gratuite et ouverte à l'ensemble des étudiants affiliés, avant même la formation d'une équipe.
+
+Les structures malgaches identifiées apportent des services utiles d'incubation, de recrutement, de mise en réseau ou de visibilité. Dans le périmètre observé, aucune ne réunit toutefois l'ensemble suivant : liste blanche institutionnelle, profil étudiant structuré, matching par compétences et objectifs, environnement de projet et protection progressive de l'identité. L'accompagnement existant est souvent physique, sélectif ou situé après la première maturation du projet ; CoFound.mg vise un positionnement plus en amont, avant ou pendant la formation d'une équipe.
 
 ---
 
@@ -74,46 +135,66 @@ Des systèmes plus récents comme *TeamUp*, conçu pour la formation d'équipes 
 
 ## 6. Tableau comparatif synthétique
 
-| Critère | LinkedIn | WhatsApp / Facebook (informel) | YC Co-Founder Matching | CoFoundersLab | Habaka / NextA (physique) | E-toolia (EDBM) | **CoFound.mg** |
+| Critère | Facebook | LinkedIn | YC Co-Founder Matching | CoFoundersLab | Habaka / NextA | E-toolia | **CoFound.mg** |
 |---|---|---|---|---|---|---|---|
-| Vérification institutionnelle (liste blanche université) | Non | Non | Non | Non | Sélection sur dossier | Non (annuaire) | **Oui** |
-| Matching par compétences/objectifs | Non (recherche manuelle) | Non | Oui | Oui | Non (humain) | Non | **Oui (Dream-Match)** |
-| Structuration de projet intégrée (BMC, tâches, finances) | Non | Non | Non | Non | Variable, hors plateforme | Non | **Oui, obligatoire** |
-| Anonymat / protection psychologique | Non | Non | Non | Non | Non | Non | **Oui, partiel** |
-| Ciblage spécifique étudiants malgaches | Non | Oui (usage local) | Non | Non | Partiel (physique) | Non | **Oui** |
-| Coût pour l'utilisateur final | Gratuit | Gratuit | Gratuit | Freemium | Gratuit à sélectif | Gratuit | **Gratuit (B2B2C)** |
-| Optimisation contexte local (PWA, faible bande passante) | Non | Oui (déjà adopté) | Non | Non | N/A | Non | **Oui** |
+| Positionnement principal | Communication sociale et communautés | Réseau professionnel, carrière et recrutement | Matching de cofondateurs | Communauté entrepreneuriale et matching | Accompagnement et incubation | Annuaire et visibilité institutionnelle | Formation d'équipes et collaboration projet |
+| Découverte de personnes | Groupes, publications et interactions | Recherche de profils, connexions et contenus | Profils orientés cofondateur | Profils entrepreneuriaux | Réseaux et sélection humaine | Répertoire institutionnel | Matching par compétences, intérêts et objectifs |
+| Recherche de collaborateurs | Possible via communautés et publications | Possible via networking professionnel | Fonction centrale | Fonction centrale | Accompagnement humain | Non central | Fonction centrale orientée projet |
+| Présentation du profil | Identité et centres d'intérêt sociaux | Parcours, expériences et compétences | Préférences de cofondateur | Profil entrepreneurial | Dossier ou candidature | Informations institutionnelles | Profil orienté projet et rôles recherchés |
+| Structuration du projet | Outils ou échanges complémentaires | Outils ou échanges complémentaires | Limitée après la mise en relation | Variable selon le parcours | Accompagnement variable | Non central | Business Model Canvas lorsque pertinent |
+| Communautés | Groupes publics ou privés autour d'intérêts communs [2] | Réseau de professionnels, entreprises, écoles et institutions [3] | Communauté de cofondateurs | Communauté entrepreneuriale | Communautés locales et programmes | Réseau d'acteurs de l'accompagnement | Étudiants, talents, porteurs de projets et institutions |
+| Protection ou anonymat progressif | Selon les réglages et usages de la plateforme | Selon les réglages et usages de la plateforme | Variable | Variable | Selon le programme | Non central | Protection partielle documentée |
+| Complémentarité principale | Diffusion et mobilisation | Visibilité et networking | Mise en relation spécialisée | Mise en relation entrepreneuriale | Mentorat et incubation | Orientation institutionnelle | Mise en relation puis structuration |
+
+Les mentions « non central » ou « complémentaire » décrivent le positionnement principal observé et ne signifient pas qu'une plateforme ou une structure serait incapable de contribuer à un autre usage.
 
 ---
 
-## 7. Analyse des lacunes et positionnement de CoFound.mg
+## 7. Positionnement et valeur ajoutée de CoFound.mg
 
-Trois lacunes ressortent clairement de cette revue :
+### 7.1 Similarités
 
-1. **Une rupture entre matching et structuration.** Aujourd'hui, un étudiant malgache cherche un collaborateur soit sur LinkedIn (peu adapté, réseau de professionnels), soit via WhatsApp/Facebook (réseau personnel limité, aucun filtre par compétence), soit sur une plateforme spécialisée internationale (YC, CoFoundersLab) qui abandonne les utilisateurs juste après la mise en relation. Les structures malgaches physiques (Habaka, NextA) excellent à structurer et financer, mais interviennent tard, après sélection. CoFound.mg couvre le segment intermédiaire resté vide : matcher **et** structurer, dès l'idéation.
+Les plateformes étudiées facilitent toutes, à des degrés différents, la découverte de personnes, la communication et la création de relations. Facebook peut contribuer à la mobilisation d'une communauté, LinkedIn à l'identification de compétences et au networking, tandis que les plateformes spécialisées peuvent faciliter la recherche de partenaires entrepreneuriaux. CoFound partage cette finalité générale de mise en relation.
 
-2. **Une absence de couche numérique de confiance ancrée dans le tissu académique malgache.** E-toolia joue un rôle d'annuaire institutionnel national, mais aucun outil ne certifie l'appartenance étudiante pour sécuriser des mises en relation entre pairs, ni ne protège les utilisateurs vulnérables via un anonymat partiel — un besoin explicitement documenté dans le contexte de l'inclusion des jeunes femmes dans le numérique à Madagascar.
+### 7.2 Différences
 
-3. **Une absence d'adaptation aux contraintes locales.** Les plateformes internationales ne sont ni pensées pour une connectivité mobile limitée, ni disponibles en tarification locale, ni intégrées aux parcours universitaires malgaches.
+La différence porte sur la finalité du parcours. Facebook privilégie la sociabilité, les communautés et la diffusion. LinkedIn privilégie l'identité professionnelle, la carrière, le recrutement et les relations professionnelles. Les solutions spécialisées privilégient le matching ou l'accompagnement entrepreneurial. CoFound se concentre sur la complémentarité entre personnes et sur la construction collective d'un projet.
 
-CoFound.mg ne cherche donc pas à concurrencer Y Combinator ou CoFoundersLab sur le volume, ni Habaka ou NextA sur l'accompagnement physique post-sélection : il se positionne comme **la couche numérique manquante entre l'université et l'incubation**, spécifique au contexte malgache, gratuite pour les étudiants, et structurée autour de trois piliers différenciants — confiance institutionnelle, structuration collaborative obligatoire, et sécurité psychologique.
+### 7.3 Complémentarité
+
+CoFound ne doit pas être considéré comme un remplaçant de Facebook ou de LinkedIn. Un porteur de projet peut utiliser Facebook pour diffuser une idée ou rejoindre une communauté, LinkedIn pour développer son réseau et identifier une expertise, puis CoFound pour structurer la recherche d'une équipe autour d'un projet précis. Le chemin inverse est également possible : un projet découvert dans CoFound peut être rendu visible dans les réseaux sociaux ou professionnels adaptés.
+
+### 7.4 Valeur ajoutée
+
+Dans le périmètre fonctionnel documenté, CoFound rassemble plusieurs dimensions dans un même parcours : recherche de cofondateurs, matching selon les compétences, intérêts, objectifs et complémentarités, profils orientés projet, identification des rôles recherchés, structuration par Business Model Canvas lorsque pertinent, environnement favorisant la confiance et collaboration entre étudiants, jeunes talents, porteurs de projets et institutions.
+
+La plateforme prend également en compte la protection progressive de l'identité et la sécurité psychologique dans les premiers échanges, conformément aux règles d'anonymat documentées. Ces éléments ne suppriment pas la nécessité de construire une relation de confiance ; ils visent à adapter la présentation du profil au contexte de la plateforme et à réduire certains biais au début de la mise en relation.
+
+CoFound.mg se positionne donc comme une **plateforme complémentaire et spécialisée**, située entre la découverte de partenaires et la structuration d'une collaboration. Sa valeur ne réside pas dans le remplacement des réseaux généralistes ou professionnels, mais dans l'orientation d'un parcours vers la formation d'équipes autour de projets.
 
 ---
 
 ## 8. Conclusion
 
-Cette revue confirme qu'il n'existe, ni à l'international ni à Madagascar, de plateforme combinant liste blanche institutionnelle, matching algorithmique par compétences et objectifs, structuration de projet obligatoire via Business Model Canvas, et anonymat partiel comme mécanisme de protection psychologique, le tout pensé pour le contexte de connectivité et d'usage mobile malgache. Cet espace vacant constitue la justification centrale du positionnement de CoFound.mg et un argument solide à mettre en avant devant un jury de hackathon.
+Facebook et LinkedIn sont deux plateformes puissantes qui répondent efficacement à leurs objectifs propres. Facebook apporte une forte capacité de communication, de diffusion et d'animation de communautés. LinkedIn apporte une valeur importante pour la présentation des parcours, la visibilité des compétences, le networking professionnel, le recrutement et le développement de carrière [1] [2] [3].
+
+L'analyse ne conduit donc pas à les présenter comme des plateformes inefficaces ou inadaptées en général. Elle met en évidence une différence de positionnement : dans le besoin spécifique de formation d'une équipe autour d'un projet, la description des rôles, la comparaison des complémentarités et la structuration de la collaboration peuvent justifier l'utilisation d'un environnement spécialisé.
+
+CoFound.mg se positionne ainsi comme une solution complémentaire. Elle ne cherche pas à remplacer Facebook ou LinkedIn, mais à proposer un parcours davantage centré sur la recherche de cofondateurs, le matching orienté projet et la structuration d'une collaboration entre étudiants, jeunes talents, porteurs de projets et institutions.
+
+La pertinence de ce positionnement dans le contexte malgache devra être consolidée par des données de terrain : entretiens avec des étudiants et des porteurs de projets, échanges avec des institutions ou des incubateurs, et observation des pratiques locales de recherche de collaborateurs. Cette démarche permettra de distinguer les constats documentés des hypothèses propres au projet.
 
 ---
 
 ## 9. Webographie
 
-- CoFoundersLab — présentation et fonctionnement : startupintros.com, wellfound.com/company/cofounderslab
-- Comparatifs de plateformes de matching de cofondateurs 2025-2026 (incluant mentions de LinkedIn) : growthmentor.com, modall.ca, rocketdevs.com, coffeespace.com
-- Y Combinator Co-Founder Matching : rocketdevs.com/blog/yc-cofounder-matching-complete-guide
-- Popularité locale de WhatsApp/Facebook pour le réseautage entrepreneurial à Madagascar : edm-talent.com
-- Écosystème entrepreneurial malgache : lexpress.mg (PPAEI), madagascarnewsroom.com (E-toolia/EDBM), digigasy.com (NextA)
-- Habaka Innovation Hub : habaka.org, afrilabs.com
-- Recherche académique sur la formation d'équipes : Lappas et al., cité dans « TeamUp: Semantic Project Matching and Team Formation for Learning at Scale », arxiv.org/pdf/2605.03237
+- [1] Meta, « Company Info » : [https://www.meta.com/about/company-info/](https://www.meta.com/about/company-info/). Consulté en septembre 2026.
+- [2] Facebook Help Center, « Groups » : [https://www.facebook.com/help/groups](https://www.facebook.com/help/groups). Consulté en septembre 2026.
+- [3] LinkedIn Pressroom, « About Us » : [https://news.linkedin.com/about-us](https://news.linkedin.com/about-us). Consulté en septembre 2026.
+- CoFoundersLab — présentation et fonctionnement : startupintros.com, wellfound.com/company/cofounderslab.
+- Y Combinator Co-Founder Matching : rocketdevs.com/blog/yc-cofounder-matching-complete-guide.
+- Écosystème entrepreneurial malgache : lexpress.mg (PPAEI), madagascarnewsroom.com (E-toolia/EDBM), digigasy.com (NextA).
+- Habaka Innovation Hub : [https://habaka.org/](https://habaka.org/), afrilabs.com.
+- Recherche académique sur la formation d'équipes : Lappas et al., cité dans « TeamUp: Semantic Project Matching and Team Formation for Learning at Scale », arxiv.org/pdf/2605.03237.
 
-*Note méthodologique : ce document a été constitué à partir d'une revue de sources publiques disponibles en ligne (sites officiels, comparatifs spécialisés, presse économique malgache, article académique). Il est recommandé de le compléter, avant la présentation finale, par des entretiens courts avec 2-3 étudiants ou incubateurs locaux pour valider les constats sur le terrain.*
+*Note méthodologique : les sources [1] à [3] ont été vérifiées en septembre 2026. Les affirmations relatives aux usages locaux et aux fonctionnalités de CoFound.mg doivent être complétées par des sources de terrain ou par la documentation fonctionnelle du projet avant une soutenance académique. Les plateformes citées sont présentées de manière descriptive et équilibrée ; les limites évoquées concernent uniquement l'adéquation à un besoin spécifique de formation d'équipes.*
