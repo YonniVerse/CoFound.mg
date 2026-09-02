@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common'
 import { PrismaModule } from '../prisma/prisma.module.js'
+import { NotificationsModule } from '../notifications/notifications.module.js'
 import { OrganizationRequestController } from './organization-request.controller.js'
-import { OrganizationRequestStaffController, OrganizationCapabilityController } from './organization-request-staff.controller.js'
+import { OrganizationRequestStaffController, OrganizationCapabilityController, StaffOrganizationsAdminController } from './organization-request-staff.controller.js'
 import { OrganizationProfileController } from './organization-profile.controller.js'
 import { OrganizationRequestService } from './organization-request.service.js'
 import { OrganizationRequestStaffService } from './organization-request-staff.service.js'
@@ -17,8 +18,8 @@ import { IncubatorController } from './incubator.controller.js'
 import { IncubatorService } from './incubator.service.js'
 
 @Module({
-  imports: [PrismaModule],
-  controllers: [OrganizationRequestController, OrganizationRequestStaffController, OrganizationCapabilityController, OrganizationProfileController, PartnerDiscoveryController, PublicOpportunityController, OrganizationOpportunityController, PartnerContactController, IncubatorController],
+  imports: [PrismaModule, NotificationsModule],
+  controllers: [OrganizationRequestController, OrganizationRequestStaffController, StaffOrganizationsAdminController, OrganizationCapabilityController, OrganizationProfileController, PartnerDiscoveryController, PublicOpportunityController, OrganizationOpportunityController, PartnerContactController, IncubatorController],
   providers: [CloudinaryService, OrganizationRequestService, OrganizationRequestStaffService, OrganizationProfileService, PartnerDiscoveryService, OpportunityService, PartnerContactService, IncubatorService],
 })
 export class OrganizationRequestModule {}

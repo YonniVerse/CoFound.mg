@@ -1,7 +1,10 @@
+import { createHash, randomBytes } from 'node:crypto'
 import { BadRequestException, ConflictException, Injectable, NotFoundException, Optional, Inject } from '@nestjs/common'
+import * as argon2 from 'argon2'
 import { organizationCapabilityUpdateSchema, organizationRequestDecisionSchema, organizationRequestQueueQuerySchema } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { AuditService } from '../audit/audit.service.js'
+import { NotificationsQueueService } from '../notifications/notifications-queue.service.js'
 import { CloudinaryService, type CloudinaryDocument } from './cloudinary.service.js'
 
 const MVP_CAPABILITIES = new Set(['CERTIFY_AFFILIATION', 'PUBLISH_OPPORTUNITY', 'RECRUIT'])
@@ -15,7 +18,12 @@ function commercialDefaults(type: string) {
 
 @Injectable()
 export class OrganizationRequestStaffService {
-  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Inject(AuditService) private readonly audit: AuditService, @Optional() @Inject(CloudinaryService) private readonly cloudinary?: CloudinaryService) {}
+  constructor(
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(AuditService) private readonly audit: AuditService,
+    @Optional() @Inject(CloudinaryService) private readonly cloudinary?: CloudinaryService,
+    @Optional() @Inject(NotificationsQueueService) private readonly notificationsQueue?: NotificationsQueueService,
+  ) {}
 
   async list(input: unknown) {
     const parsed = organizationRequestQueueQuerySchema.safeParse(input)
@@ -137,14 +145,318 @@ export class OrganizationRequestStaffService {
     return capability
   }
 
-  async revokeCapability(actorId: string, organizationId: string, capabilityName: string) {
-    const parsed = organizationCapabilityUpdateSchema.safeParse({ capability: capabilityName })
-    if (!parsed.success) throw new BadRequestException({ code: 'VALIDATION_ERROR', issues: parsed.error.issues })
-    const capability = await this.prisma.organizationCapability.findUnique({ where: { organizationId_capability: { organizationId, capability: parsed.data.capability } }, select: { id: true, capability: true } })
-    if (!capability) throw new NotFoundException({ code: 'ORGANIZATION_CAPABILITY_NOT_FOUND', messageKey: 'errors.notFound' })
-    await this.prisma.organizationCapability.delete({ where: { id: capability.id } })
-    await this.audit.record({ actorId, action: 'ORGANIZATION_CAPABILITY_REVOKED', targetType: 'OrganizationCapability', targetId: capability.id, metadata: { organizationId, capability: capability.capability } })
-    return { removed: true, capability: capability.capability }
+  async listOrganizations(query: { type?: string; status?: string; search?: string }) {
+    const where: any = {}
+    if (query.type) where.type = query.type
+    if (query.status) where.verificationStatus = query.status
+    if (query.search) {
+      where.name = { contains: query.search, mode: 'insensitive' }
+    }
+
+    const orgs = await this.prisma.organization.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        capabilities: { select: { capability: true } },
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                status: true,
+                talentIdentity: { select: { firstName: true, lastName: true } },
+              },
+            },
+          },
+        },
+        _count: {
+          select: {
+            members: true,
+            affiliations: true,
+            importBatches: true,
+            opportunities: true,
+          },
+        },
+      },
+    })
+
+    const items = orgs.map((org) => {
+      const adminMember = org.members.find((m) => m.role === 'ORG_ADMIN') ?? org.members[0]
+      const primaryAdmin = adminMember
+        ? {
+            id: adminMember.user.id,
+            email: adminMember.user.email,
+            firstName: adminMember.user.talentIdentity?.firstName ?? null,
+            lastName: adminMember.user.talentIdentity?.lastName ?? null,
+            status: adminMember.user.status,
+          }
+        : null
+
+      return {
+        id: org.id,
+        name: org.name,
+        type: org.type,
+        countryCode: org.countryCode,
+        description: org.description,
+        verificationStatus: org.verificationStatus,
+        createdAt: org.createdAt,
+        capabilities: org.capabilities.map((c) => c.capability),
+        membersCount: org._count.members,
+        affiliationsCount: org._count.affiliations,
+        importBatchesCount: org._count.importBatches,
+        projectsCount: org._count.opportunities,
+        primaryAdmin,
+      }
+    })
+
+    return { items, total: items.length }
+  }
+
+  async getOrganizationDetail(organizationId: string) {
+    const org = await this.prisma.organization.findUnique({
+      where: { id: organizationId },
+      include: {
+        capabilities: { select: { capability: true } },
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                status: true,
+                talentIdentity: { select: { firstName: true, lastName: true } },
+              },
+            },
+          },
+          orderBy: { createdAt: 'asc' },
+        },
+        importBatches: {
+          orderBy: { createdAt: 'desc' },
+          take: 20,
+        },
+        _count: {
+          select: {
+            affiliations: true,
+            importBatches: true,
+            opportunities: true,
+          },
+        },
+      },
+    })
+
+    if (!org) throw new NotFoundException({ code: 'ORGANIZATION_NOT_FOUND', messageKey: 'errors.notFound' })
+
+    const activatedCount = await this.prisma.affiliation.count({
+      where: {
+        organizationId,
+        user: { status: 'ACTIVE' },
+      },
+    })
+
+    const lastImport = org.importBatches[0]
+
+    return {
+      id: org.id,
+      name: org.name,
+      type: org.type,
+      countryCode: org.countryCode,
+      logoKey: org.logoKey,
+      description: org.description,
+      verificationStatus: org.verificationStatus,
+      plan: org.plan,
+      billingStatus: org.billingStatus,
+      createdAt: org.createdAt,
+      updatedAt: org.updatedAt,
+      capabilities: org.capabilities.map((c) => c.capability),
+      stats: {
+        affiliationsCount: org._count.affiliations,
+        activatedStudentsCount: activatedCount,
+        activationRatePercent: org._count.affiliations > 0 ? Math.round((activatedCount / org._count.affiliations) * 100) : 0,
+        projectsCount: org._count.opportunities,
+        importBatchesCount: org._count.importBatches,
+        lastImportDate: lastImport?.createdAt ?? null,
+      },
+      members: org.members.map((m) => ({
+        id: m.id,
+        userId: m.user.id,
+        email: m.user.email,
+        firstName: m.user.talentIdentity?.firstName ?? null,
+        lastName: m.user.talentIdentity?.lastName ?? null,
+        role: m.role,
+        status: m.user.status,
+        createdAt: m.createdAt,
+      })),
+      importBatches: org.importBatches.map((b) => ({
+        id: b.id,
+        fileKey: b.fileKey,
+        status: b.status,
+        totalRows: b.totalRows,
+        createdRows: b.createdRows,
+        updatedRows: b.updatedRows,
+        errorRows: b.errorRows,
+        createdAt: b.createdAt,
+      })),
+    }
+  }
+
+  async createOrganization(actorId: string, input: any) {
+    const rawToken = randomBytes(32).toString('hex')
+    const tokenHash = createHash('sha256').update(rawToken).digest('hex')
+    const tempPassword = this.generateTemporaryPassword()
+    const passwordHash = await argon2.hash(tempPassword, { type: argon2.argon2id })
+    const defaults = commercialDefaults(input.type)
+
+    const result = await this.prisma.$transaction(async (transaction) => {
+      const org = await transaction.organization.create({
+        data: {
+          name: input.name,
+          type: input.type,
+          countryCode: input.countryCode ?? 'MG',
+          description: input.description ?? null,
+          logoKey: input.logoKey ?? null,
+          verificationStatus: 'VERIFIED',
+          billingStatus: 'TRIAL',
+          ...defaults,
+        },
+      })
+
+      let user = await transaction.user.findUnique({ where: { email: input.adminEmail.toLowerCase() } })
+      if (!user) {
+        user = await transaction.user.create({
+          data: {
+            email: input.adminEmail.toLowerCase(),
+            passwordHash,
+            status: 'INVITED',
+            platformRole: 'ORG_MEMBER',
+            locale: 'fr',
+          },
+        })
+      } else {
+        user = await transaction.user.update({
+          where: { id: user.id },
+          data: { platformRole: 'ORG_MEMBER' },
+        })
+      }
+
+      await transaction.talentIdentity.upsert({
+        where: { userId: user.id },
+        create: {
+          userId: user.id,
+          firstName: input.adminFirstName,
+          lastName: input.adminLastName,
+        },
+        update: {
+          firstName: input.adminFirstName,
+          lastName: input.adminLastName,
+        },
+      })
+
+      await transaction.organizationMember.create({
+        data: {
+          organizationId: org.id,
+          userId: user.id,
+          role: 'ORG_ADMIN',
+        },
+      })
+
+      // Capabilities
+      if (Array.isArray(input.capabilities) && input.capabilities.length > 0) {
+        for (const cap of input.capabilities) {
+          if (cap === 'CERTIFY_AFFILIATION' && org.type !== 'INSTITUTION') continue
+          await transaction.organizationCapability.create({
+            data: {
+              organizationId: org.id,
+              capability: cap,
+              grantedById: actorId,
+            },
+          })
+        }
+      }
+
+      // Invitation token
+      await transaction.invitationToken.create({
+        data: {
+          userId: user.id,
+          tokenHash,
+          expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+        },
+      })
+
+      return { org, user }
+    })
+
+    if (this.notificationsQueue) {
+      await this.notificationsQueue.enqueue({
+        kind: 'account.credentials',
+        recipient: input.adminEmail.toLowerCase(),
+        temporaryPassword: tempPassword,
+        activationToken: rawToken,
+        locale: 'fr',
+      }).catch(() => undefined)
+    }
+
+    await this.audit.record({
+      actorId,
+      action: 'ORGANIZATION_PROVISIONED',
+      targetType: 'Organization',
+      targetId: result.org.id,
+      metadata: { name: result.org.name, type: result.org.type, firstAdmin: result.user.email },
+    })
+
+    return result.org
+  }
+
+  async updateOrganization(actorId: string, organizationId: string, input: any) {
+    const existing = await this.prisma.organization.findUnique({ where: { id: organizationId } })
+    if (!existing) throw new NotFoundException({ code: 'ORGANIZATION_NOT_FOUND', messageKey: 'errors.notFound' })
+
+    const updated = await this.prisma.organization.update({
+      where: { id: organizationId },
+      data: {
+        name: input.name ?? undefined,
+        type: input.type ?? undefined,
+        countryCode: input.countryCode ?? undefined,
+        description: input.description !== undefined ? input.description : undefined,
+        verificationStatus: input.verificationStatus ?? undefined,
+      },
+    })
+
+    await this.audit.record({
+      actorId,
+      action: 'ORGANIZATION_UPDATED',
+      targetType: 'Organization',
+      targetId: organizationId,
+      metadata: { previousStatus: existing.verificationStatus, newStatus: updated.verificationStatus },
+    })
+
+    return updated
+  }
+
+  async suspendOrganization(actorId: string, organizationId: string, reason?: string) {
+    const existing = await this.prisma.organization.findUnique({ where: { id: organizationId } })
+    if (!existing) throw new NotFoundException({ code: 'ORGANIZATION_NOT_FOUND', messageKey: 'errors.notFound' })
+
+    const nextStatus = existing.verificationStatus === 'SUSPENDED' ? 'VERIFIED' : 'SUSPENDED'
+    const updated = await this.prisma.organization.update({
+      where: { id: organizationId },
+      data: { verificationStatus: nextStatus },
+    })
+
+    await this.audit.record({
+      actorId,
+      action: nextStatus === 'SUSPENDED' ? 'ORGANIZATION_SUSPENDED' : 'ORGANIZATION_REACTIVATED',
+      targetType: 'Organization',
+      targetId: organizationId,
+      metadata: { reason: reason ?? 'Staff administrative action', newStatus: nextStatus },
+    })
+
+    return updated
+  }
+
+  private generateTemporaryPassword(): string {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#'
+    return Array.from({ length: 12 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
   }
 
   private assertPending(status: string) {

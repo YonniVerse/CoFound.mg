@@ -8,6 +8,7 @@ export const IMPORT_FIELDS = [
   'level',
   'entryYear',
   'gender',
+  'dateOfBirth',
   'studentNumber',
 ] as const
 
@@ -21,6 +22,7 @@ export type NormalizedStudent = {
   level: string
   entryYear: number
   gender?: string
+  dateOfBirth?: string
   studentNumber?: string
 }
 
@@ -73,6 +75,17 @@ export const FIELD_ALIASES: Record<ImportField, readonly string[]> = {
     'promo',
   ],
   gender: ['genre', 'sexe', 'gender', 'sex'],
+  dateOfBirth: [
+    'date de naissance',
+    'date naissance',
+    'date of birth',
+    'birth date',
+    'dob',
+    'age',
+    'âge',
+    'annee de naissance',
+    'année de naissance',
+  ],
   studentNumber: ['matricule', 'numero matricule', 'numéro matricule', 'student number', 'student id', 'id etudiant', 'num etudiant', 'n° matricule'],
 }
 
@@ -97,6 +110,57 @@ export function cleanText(value: unknown): string {
 
 export function normalizeEmail(value: string): string {
   return value.replace(/\s+/gu, '').toLocaleLowerCase('en-US')
+}
+
+export function parseDateOfBirth(value: unknown): string | undefined {
+  if (!value) return undefined
+  if (value instanceof Date && !isNaN(value.getTime())) {
+    return value.toISOString()
+  }
+  const text = cleanText(value)
+  if (!text) return undefined
+
+  // If provided as age (e.g. "21", "21 ans", 21)
+  const ageMatch = text.match(/^(\d{1,2})(\s*ans)?$/i)
+  if (ageMatch && ageMatch[1]) {
+    const age = Number(ageMatch[1])
+    if (age >= 10 && age <= 100) {
+      const birthYear = new Date().getFullYear() - age
+      return new Date(birthYear, 0, 1).toISOString()
+    }
+  }
+
+  // If provided as year only (e.g. 2002)
+  if (/^\d{4}$/.test(text)) {
+    const year = Number(text)
+    if (year >= 1920 && year <= new Date().getFullYear()) {
+      return new Date(year, 0, 1).toISOString()
+    }
+  }
+
+  // DD/MM/YYYY or DD-MM-YYYY
+  const dmyMatch = text.match(/^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/)
+  if (dmyMatch && dmyMatch[1] && dmyMatch[2] && dmyMatch[3]) {
+    const day = Number(dmyMatch[1])
+    const month = Number(dmyMatch[2]) - 1
+    const year = Number(dmyMatch[3])
+    const date = new Date(year, month, day)
+    if (!isNaN(date.getTime())) return date.toISOString()
+  }
+
+  // YYYY-MM-DD
+  const ymdMatch = text.match(/^(\d{4})[/.-](\d{1,2})[/.-](\d{1,2})$/)
+  if (ymdMatch && ymdMatch[1] && ymdMatch[2] && ymdMatch[3]) {
+    const year = Number(ymdMatch[1])
+    const month = Number(ymdMatch[2]) - 1
+    const day = Number(ymdMatch[3])
+    const date = new Date(year, month, day)
+    if (!isNaN(date.getTime())) return date.toISOString()
+  }
+
+  const parsed = new Date(text)
+  if (!isNaN(parsed.getTime())) return parsed.toISOString()
+  return undefined
 }
 
 export function parseEntryYear(value: unknown): number | undefined {
@@ -206,6 +270,8 @@ export function extractStudentFromRow(
   const entryYearText = getCell(raw, resolveHeader('entryYear'))
   const entryYear = parseEntryYear(entryYearText)
   const gender = getCell(raw, resolveHeader('gender'))
+  const dateOfBirthRaw = getCell(raw, resolveHeader('dateOfBirth'))
+  const dateOfBirth = parseDateOfBirth(dateOfBirthRaw)
   const studentNumber = getCell(raw, resolveHeader('studentNumber'))
 
   const errors: string[] = []
@@ -227,6 +293,7 @@ export function extractStudentFromRow(
   }
   if (entryYear !== undefined) student.entryYear = entryYear
   if (gender) student.gender = gender
+  if (dateOfBirth) student.dateOfBirth = dateOfBirth
   if (studentNumber) student.studentNumber = studentNumber
 
   return { student, errors }

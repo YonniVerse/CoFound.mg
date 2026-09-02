@@ -359,6 +359,20 @@ export default function ImportPreviewPage() {
                                   <p className="text-xs text-muted-foreground">
                                     {row.email}
                                   </p>
+                                  {(row.gender || row.age !== undefined && row.age !== null) && (
+                                    <div className="mt-1 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                                      {row.gender && (
+                                        <span className="inline-flex items-center rounded bg-muted/60 px-1.5 py-0.5 font-medium">
+                                          {row.gender}
+                                        </span>
+                                      )}
+                                      {row.age !== undefined && row.age !== null && (
+                                        <span className="inline-flex items-center rounded bg-muted/60 px-1.5 py-0.5 font-medium">
+                                          {row.age} ans
+                                        </span>
+                                      )}
+                                    </div>
+                                  )}
                                 </td>
 
                                 <td className="px-4 py-3.5 text-xs text-muted-foreground">

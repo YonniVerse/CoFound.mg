@@ -6,14 +6,13 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ProjectNavTabs } from "@/components/project/ProjectNavTabs";
 import { ProjectHeader } from "@/components/project/ProjectHeader";
 import { ProjectContent } from "@/components/project/ProjectContent";
-import { ProjectActionCard } from "@/components/project/ProjectActionCard";
 import { ProjectTeamCard } from "@/components/project/ProjectTeamCard";
 import { useProjectDetail } from "@/hooks/useProjectDetail";
 
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { project, isLoading, error, isApplying, applyToProject } = useProjectDetail(id);
+  const { project, isLoading, error } = useProjectDetail(id);
 
   return (
     <DashboardLayout>
@@ -79,12 +78,6 @@ export default function ProjectDetailPage() {
                     Design Thinking, BMC Strategyzer, Business Plan, Finances & Pitch.
                   </p>
                 </Link>
-
-                <ProjectActionCard
-                  project={project}
-                  onApply={applyToProject}
-                  isApplying={isApplying}
-                />
 
                 <ProjectTeamCard team={project.members} />
               </div>

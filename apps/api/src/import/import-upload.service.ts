@@ -217,6 +217,21 @@ export class ImportUploadService {
         }
       }
 
+      const gender = student.gender || null
+      const dateOfBirth = student.dateOfBirth || null
+      let age: number | null = null
+      if (dateOfBirth) {
+        const birthDate = new Date(dateOfBirth)
+        if (!isNaN(birthDate.getTime())) {
+          const now = new Date()
+          age = now.getFullYear() - birthDate.getFullYear()
+          const m = now.getMonth() - birthDate.getMonth()
+          if (m < 0 || (m === 0 && now.getDate() < birthDate.getDate())) {
+            age--
+          }
+        }
+      }
+
       return {
         lineNumber: row.lineNumber,
         displayName,
@@ -224,6 +239,9 @@ export class ImportUploadService {
         fieldOfStudy,
         level,
         entryYear,
+        gender,
+        dateOfBirth,
+        age,
         result,
         errorMessage,
       }

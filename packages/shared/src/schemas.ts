@@ -286,9 +286,112 @@ export const organizationRequestQueueSchema = z.object({
   nextCursor: idSchema.nullable(),
   hasMore: z.boolean(),
 })
+export type OrganizationRequestQueueItem = z.infer<typeof organizationRequestQueueItemSchema>
+export type OrganizationRequestQueue = z.infer<typeof organizationRequestQueueSchema>
 export type OrganizationRequestDecision = z.infer<typeof organizationRequestDecisionSchema>
 export type OrganizationCapabilityUpdate = z.infer<typeof organizationCapabilityUpdateSchema>
-export type OrganizationRequestQueueItem = z.infer<typeof organizationRequestQueueItemSchema>
+export const organizationStatusSchema = z.enum(['PENDING', 'VERIFIED', 'SUSPENDED'])
+export const adminCreateOrganizationSchema = z.object({
+  name: z.string().trim().min(2).max(160),
+  type: organizationTypeSchema,
+  countryCode: z.string().trim().length(2).toUpperCase().default('MG'),
+  region: z.string().trim().min(2).max(120),
+  logoKey: z.string().trim().max(255).optional().nullable(),
+  description: z.string().trim().max(2_000).optional().nullable(),
+  adminEmail: z.string().trim().email().max(255),
+  adminFirstName: z.string().trim().min(1).max(120),
+  adminLastName: z.string().trim().min(1).max(120),
+  capabilities: z.array(organizationCapabilitySchema).default([]),
+})
+
+export const adminUpdateOrganizationSchema = z.object({
+  name: z.string().trim().min(2).max(160).optional(),
+  type: organizationTypeSchema.optional(),
+  countryCode: z.string().trim().length(2).toUpperCase().optional(),
+  description: z.string().trim().max(2_000).optional().nullable(),
+  verificationStatus: organizationStatusSchema.optional(),
+})
+
+export const adminOrganizationItemSchema = z.object({
+  id: idSchema,
+  name: z.string(),
+  type: organizationTypeSchema,
+  countryCode: z.string(),
+  description: z.string().nullable(),
+  verificationStatus: z.string(),
+  createdAt: z.coerce.date(),
+  capabilities: z.array(organizationCapabilitySchema),
+  membersCount: z.number().int().nonnegative(),
+  affiliationsCount: z.number().int().nonnegative(),
+  importBatchesCount: z.number().int().nonnegative(),
+  projectsCount: z.number().int().nonnegative(),
+  primaryAdmin: z.object({
+    id: idSchema,
+    email: z.string(),
+    firstName: z.string().nullable(),
+    lastName: z.string().nullable(),
+    status: z.string(),
+  }).nullable(),
+})
+
+export const adminOrganizationsResponseSchema = z.object({
+  items: z.array(adminOrganizationItemSchema),
+  total: z.number().int().nonnegative(),
+})
+
+export const adminOrganizationDetailSchema = z.object({
+  id: idSchema,
+  name: z.string(),
+  type: organizationTypeSchema,
+  countryCode: z.string(),
+  logoKey: z.string().nullable(),
+  description: z.string().nullable(),
+  verificationStatus: z.string(),
+  plan: z.string(),
+  billingStatus: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  capabilities: z.array(organizationCapabilitySchema),
+  stats: z.object({
+    affiliationsCount: z.number().int().nonnegative(),
+    activatedStudentsCount: z.number().int().nonnegative(),
+    activationRatePercent: z.number().min(0).max(100),
+    projectsCount: z.number().int().nonnegative(),
+    importBatchesCount: z.number().int().nonnegative(),
+    lastImportDate: z.coerce.date().nullable(),
+  }),
+  members: z.array(
+    z.object({
+      id: idSchema,
+      userId: idSchema,
+      email: z.string(),
+      firstName: z.string().nullable(),
+      lastName: z.string().nullable(),
+      role: z.string(),
+      status: z.string(),
+      createdAt: z.coerce.date(),
+    })
+  ),
+  importBatches: z.array(
+    z.object({
+      id: idSchema,
+      fileKey: z.string(),
+      status: z.string(),
+      totalRows: z.number().int().nonnegative(),
+      createdRows: z.number().int().nonnegative(),
+      updatedRows: z.number().int().nonnegative(),
+      errorRows: z.number().int().nonnegative(),
+      createdAt: z.coerce.date(),
+    })
+  ),
+})
+
+export type AdminCreateOrganizationInput = z.infer<typeof adminCreateOrganizationSchema>
+export type AdminUpdateOrganizationInput = z.infer<typeof adminUpdateOrganizationSchema>
+export type AdminOrganizationItem = z.infer<typeof adminOrganizationItemSchema>
+export type AdminOrganizationsResponse = z.infer<typeof adminOrganizationsResponseSchema>
+export type AdminOrganizationDetail = z.infer<typeof adminOrganizationDetailSchema>
+
 export const organizationProfileSchema = z.object({
   id: idSchema,
   name: z.string(),
@@ -1268,6 +1371,7 @@ export const importFieldSchema = z.enum([
   'level',
   'entryYear',
   'gender',
+  'dateOfBirth',
   'studentNumber',
 ])
 
@@ -1312,6 +1416,9 @@ export const importPreviewRowSchema = z.object({
   fieldOfStudy: z.string().optional(),
   level: z.string().optional(),
   entryYear: z.number().int().nullable().optional(),
+  gender: z.string().nullable().optional(),
+  dateOfBirth: z.string().nullable().optional(),
+  age: z.number().int().nullable().optional(),
   result: importPreviewResultSchema,
   errorMessage: z.string().min(1).nullable(),
 })
@@ -1533,12 +1640,15 @@ export type OpenPositionPatchInput = z.infer<typeof openPositionPatchSchema>
 // ─── Tâches projet (P-09) ───────────────────────────────────────────────────────
 
 export const taskStatusSchema = z.enum(['TODO', 'DOING', 'BLOCKED', 'DONE'])
+export const taskPrioritySchema = z.enum(['LOW', 'MEDIUM', 'HIGH', 'URGENT'])
 
 export const createProjectTaskSchema = z.object({
   title: z.string().trim().min(1).max(160),
   description: z.string().trim().max(4_000).optional().nullable(),
   assigneeId: idSchema.optional().nullable(),
   dueDate: z.coerce.date().optional().nullable(),
+  startDate: z.coerce.date().optional().nullable(),
+  priority: taskPrioritySchema.optional().default('MEDIUM'),
   status: taskStatusSchema.optional(),
 })
 
@@ -1552,6 +1662,8 @@ export const projectTaskSchema = z.object({
   assigneeId: idSchema.nullable(),
   assigneePseudonym: z.string().nullable(),
   dueDate: z.coerce.date().nullable(),
+  startDate: z.coerce.date().nullable().optional(),
+  priority: taskPrioritySchema.optional().default('MEDIUM'),
   status: taskStatusSchema,
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
@@ -1563,6 +1675,7 @@ export const projectTasksResponseSchema = z.object({
 })
 
 export type TaskStatusInput = z.infer<typeof taskStatusSchema>
+export type TaskPriorityInput = z.infer<typeof taskPrioritySchema>
 export type CreateProjectTaskInput = z.infer<typeof createProjectTaskSchema>
 export type UpdateProjectTaskInput = z.infer<typeof updateProjectTaskSchema>
 export type ProjectTask = z.infer<typeof projectTaskSchema>

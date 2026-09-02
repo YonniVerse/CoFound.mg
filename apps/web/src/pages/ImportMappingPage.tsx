@@ -29,7 +29,8 @@ const FIELD_LABELS: Record<ImportField, { label: string; required: boolean }> = 
   fieldOfStudy: { label: 'Filière / Domaine', required: true },
   level: { label: 'Niveau d’études', required: true },
   entryYear: { label: 'Année d’entrée', required: true },
-  gender: { label: 'Genre', required: false },
+  gender: { label: 'Sexe / Genre', required: false },
+  dateOfBirth: { label: 'Âge / Date de naissance', required: false },
   studentNumber: { label: 'Matricule / Identifiant', required: false },
 }
 
@@ -53,7 +54,8 @@ const DEFAULT_COLUMNS: ImportDetectedColumn[] = [
   { name: 'Filière', suggestedField: 'fieldOfStudy', samples: ['Informatique', 'Gestion', 'Génie civil'] },
   { name: 'Niveau', suggestedField: 'level', samples: ['L3', 'M1', 'L2'] },
   { name: "Année d'entrée", suggestedField: 'entryYear', samples: ['2024', '2024', '2023'] },
-  { name: 'Genre', suggestedField: 'gender', samples: ['F', 'M', 'F'] },
+  { name: 'Sexe / Genre', suggestedField: 'gender', samples: ['F', 'M', 'F'] },
+  { name: 'Âge / Date de naissance', suggestedField: 'dateOfBirth', samples: ['21 ans', '15/04/2003', '22'] },
   { name: 'Matricule', suggestedField: 'studentNumber', samples: ['ETU-001', 'ETU-002', 'ETU-015'] },
 ]
 
@@ -318,7 +320,8 @@ export default function ImportMappingPage() {
                                   ))}
                                 </optgroup>
                                 <optgroup label="Champs facultatifs">
-                                  <option value="gender">Genre</option>
+                                  <option value="gender">Sexe / Genre</option>
+                                  <option value="dateOfBirth">Âge / Date de naissance</option>
                                   <option value="studentNumber">Matricule / Identifiant</option>
                                 </optgroup>
                               </select>

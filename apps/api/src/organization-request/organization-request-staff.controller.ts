@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Req, Inject } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, Inject } from '@nestjs/common'
 import { Permission } from '../rbac/permissions.js'
 import { RequirePermissions } from '../rbac/rbac.decorators.js'
 import type { AuthenticatedRequest } from '../auth/auth-request.js'
@@ -38,6 +38,43 @@ export class OrganizationRequestStaffController {
   @AuditAction('ORGANIZATION_REQUEST_REJECTED', 'OrganizationRequest')
   reject(@Param('id') id: string, @Body() body: unknown, @Req() request: AuthenticatedRequest) {
     return this.service.reject(request.user!.userId, id, body)
+  }
+}
+
+@Controller('staff/organizations')
+@RequirePermissions(Permission.ORGANIZATION_REQUEST_READ)
+export class StaffOrganizationsAdminController {
+  constructor(@Inject(OrganizationRequestStaffService) private readonly service: OrganizationRequestStaffService) {}
+
+  @Get()
+  list(@Query() query: { type?: string; status?: string; search?: string }) {
+    return this.service.listOrganizations(query)
+  }
+
+  @Get(':id')
+  getDetail(@Param('id') id: string) {
+    return this.service.getOrganizationDetail(id)
+  }
+
+  @Post()
+  @RequirePermissions(Permission.ORGANIZATION_REQUEST_MANAGE)
+  @AuditAction('ORGANIZATION_PROVISIONED', 'Organization')
+  create(@Req() request: AuthenticatedRequest, @Body() body: unknown) {
+    return this.service.createOrganization(request.user!.userId, body)
+  }
+
+  @Patch(':id')
+  @RequirePermissions(Permission.ORGANIZATION_REQUEST_MANAGE)
+  @AuditAction('ORGANIZATION_UPDATED', 'Organization')
+  update(@Req() request: AuthenticatedRequest, @Param('id') id: string, @Body() body: unknown) {
+    return this.service.updateOrganization(request.user!.userId, id, body)
+  }
+
+  @Post(':id/suspend')
+  @RequirePermissions(Permission.ORGANIZATION_REQUEST_MANAGE)
+  @AuditAction('ORGANIZATION_SUSPENDED', 'Organization')
+  suspend(@Req() request: AuthenticatedRequest, @Param('id') id: string, @Body() body: { reason?: string }) {
+    return this.service.suspendOrganization(request.user!.userId, id, body?.reason)
   }
 }
 

@@ -180,6 +180,7 @@ export class ImportApplyService {
 
         const firstName = this.optionalString(student.firstName) || ''
         const lastName = this.optionalString(student.lastName) || ''
+        const dateOfBirth = student.dateOfBirth ? new Date(student.dateOfBirth) : undefined
 
         await transaction.talentIdentity.upsert({
           where: { userId: user.id },
@@ -188,11 +189,13 @@ export class ImportApplyService {
             firstName,
             lastName,
             gender: this.optionalString(student.gender),
+            dateOfBirth: dateOfBirth && !isNaN(dateOfBirth.getTime()) ? dateOfBirth : undefined,
           },
           update: {
             firstName,
             lastName,
             gender: this.optionalString(student.gender),
+            ...(dateOfBirth && !isNaN(dateOfBirth.getTime()) ? { dateOfBirth } : {}),
           },
         })
 

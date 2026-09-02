@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common'
 import { PrismaModule } from '../prisma/prisma.module.js'
+import { AuditModule } from '../audit/audit.module.js'
+import { NotificationsModule } from '../notifications/notifications.module.js'
 import { ProjectController } from './project.controller.js'
 import { ProjectService } from './project.service.js'
 import { BmcController } from './bmc.controller.js'
@@ -29,7 +31,7 @@ import { JourneyController } from './journey.controller.js'
 import { JourneyService } from './journey.service.js'
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, AuditModule, NotificationsModule],
   controllers: [
     ProjectController,
     JourneyController,

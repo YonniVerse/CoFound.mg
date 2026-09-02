@@ -19,6 +19,18 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
+function extractUserIdFromToken(token: string): string {
+  try {
+    const parts = token.split('.')
+    if (parts.length < 2) return ''
+    const payloadJson = atob(parts[1]!.replace(/-/g, '+').replace(/_/g, '/'))
+    const payload = JSON.parse(payloadJson)
+    return typeof payload.sub === 'string' ? payload.sub : ''
+  } catch {
+    return ''
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>({ status: 'loading' })
   const refreshInFlight = useRef<Promise<boolean> | null>(null)
@@ -29,12 +41,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       { email, password },
     )
     apiClient.setAccessToken(response.accessToken)
-    setState({ status: 'authenticated', userId: '' })
+    const userId = extractUserIdFromToken(response.accessToken)
+    setState({ status: 'authenticated', userId })
   }, [])
 
   const setAccessToken = useCallback((accessToken: string) => {
     apiClient.setAccessToken(accessToken)
-    setState({ status: 'authenticated', userId: '' })
+    const userId = extractUserIdFromToken(accessToken)
+    setState({ status: 'authenticated', userId })
   }, [])
 
   const logout = useCallback(async () => {
@@ -57,7 +71,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           {},
         )
         apiClient.setAccessToken(response.accessToken)
-        setState({ status: 'authenticated', userId: '' })
+        const userId = extractUserIdFromToken(response.accessToken)
+        setState({ status: 'authenticated', userId })
         return true
       } catch (error) {
         if (error instanceof ApiClientError && error.status === 401) {
