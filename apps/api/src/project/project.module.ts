@@ -17,9 +17,58 @@ import { ProjectExportService } from './project-export.service.js'
 import { ProjectPublicController } from './project-public.controller.js'
 import { ProjectPublicService } from './project-public.service.js'
 
+import { DesignThinkingController } from './design-thinking.controller.js'
+import { DesignThinkingService } from './design-thinking.service.js'
+import { BusinessPlanController } from './business-plan.controller.js'
+import { BusinessPlanService } from './business-plan.service.js'
+import { FinanceController } from './finance.controller.js'
+import { FinanceService } from './finance.service.js'
+import { PitchController } from './pitch.controller.js'
+import { PitchService } from './pitch.service.js'
+import { JourneyController } from './journey.controller.js'
+import { JourneyService } from './journey.service.js'
+
 @Module({
   imports: [PrismaModule],
-  controllers: [ProjectController, BmcController, PositionController, ProjectMembersController, ProjectTasksController, ProjectPostsController, ProjectExportController, ProjectPublicController],
-  providers: [ProjectService, BmcService, PositionService, ProjectMembersService, ProjectTasksService, ProjectPostsService, ProjectExportService, ProjectPublicService],
+  controllers: [
+    ProjectController,
+    JourneyController,
+    DesignThinkingController,
+    BmcController,
+    BusinessPlanController,
+    FinanceController,
+    PitchController,
+    PositionController,
+    ProjectMembersController,
+    ProjectTasksController,
+    ProjectPostsController,
+    ProjectExportController,
+    ProjectPublicController,
+  ],
+  providers: [
+    ProjectService,
+    JourneyService,
+    DesignThinkingService,
+    BmcService,
+    BusinessPlanService,
+    FinanceService,
+    PitchService,
+    PositionService,
+    ProjectMembersService,
+    ProjectTasksService,
+    ProjectPostsService,
+    ProjectExportService,
+    ProjectPublicService,
+  ],
+  exports: [
+    ProjectService,
+    JourneyService,
+    DesignThinkingService,
+    BmcService,
+    BusinessPlanService,
+    FinanceService,
+    PitchService,
+  ],
 })
 export class ProjectModule {}
+

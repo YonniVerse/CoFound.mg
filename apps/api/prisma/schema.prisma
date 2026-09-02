@@ -284,6 +284,10 @@ model User {
   moderationTargets          ModerationAction[]        @relation("ModerationTarget")
   importRows                 ImportRow[]
   bmcUpdates                 BusinessModelCanvas[]     @relation("BmcUpdater")
+  designThinkingUpdates      ProjectDesignThinking[]   @relation("DesignThinkingUpdater")
+  businessPlanUpdates        ProjectBusinessPlan[]     @relation("BusinessPlanUpdater")
+  financeUpdates             ProjectFinance[]          @relation("FinanceUpdater")
+  pitchUpdates               ProjectPitch[]            @relation("PitchUpdater")
   personalDataExports        PersonalDataExport[]
   walletTransactionsCreated  WalletTransaction[]
 }
@@ -641,6 +645,10 @@ model Project {
   sector               Sector?               @relation(fields: [sectorId], references: [id])
   region               Region?               @relation(fields: [regionId], references: [id])
   canvas               BusinessModelCanvas?
+  designThinking       ProjectDesignThinking?
+  businessPlan         ProjectBusinessPlan?
+  finance              ProjectFinance?
+  pitchDeck            ProjectPitch?
   members              ProjectMember[]
   positions            OpenPosition[]
   applications         Application[]
@@ -692,6 +700,66 @@ model BusinessModelCanvas {
   updatedById String?
   project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   updatedBy   User?    @relation("BmcUpdater", fields: [updatedById], references: [id])
+
+  @@index([completion])
+}
+
+model ProjectDesignThinking {
+  id                   String   @id @default(cuid())
+  projectId            String   @unique
+  iterations           Json
+  activeIterationIndex Int      @default(0)
+  completion           Int      @default(0)
+  updatedAt            DateTime @updatedAt
+  updatedById          String?
+  project              Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  updatedBy            User?    @relation("DesignThinkingUpdater", fields: [updatedById], references: [id])
+
+  @@index([completion])
+}
+
+model ProjectBusinessPlan {
+  id          String   @id @default(cuid())
+  projectId   String   @unique
+  sections    Json
+  completion  Int      @default(0)
+  updatedAt   DateTime @updatedAt
+  updatedById String?
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  updatedBy   User?    @relation("BusinessPlanUpdater", fields: [updatedById], references: [id])
+
+  @@index([completion])
+}
+
+model ProjectFinance {
+  id                 String   @id @default(cuid())
+  projectId          String   @unique
+  currency           String   @default("MGA")
+  startingCash       Float    @default(0)
+  initialInvestments Json
+  revenues           Json
+  fixedCosts         Json
+  variableCosts      Json
+  projectionYears    Int      @default(3)
+  completion         Int      @default(0)
+  updatedAt          DateTime @updatedAt
+  updatedById        String?
+  project            Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  updatedBy          User?    @relation("FinanceUpdater", fields: [updatedById], references: [id])
+
+  @@index([completion])
+}
+
+model ProjectPitch {
+  id             String   @id @default(cuid())
+  projectId      String   @unique
+  selectedFormat String   @default("three_minutes")
+  slides         Json
+  completion     Int      @default(0)
+  updatedAt      DateTime @updatedAt
+  updatedById    String?
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  updatedBy      User?    @relation("PitchUpdater", fields: [updatedById], references: [id])
 
   @@index([completion])
 }

@@ -24,6 +24,11 @@ const TalentsFeedPage = lazy(() => import("@/pages/TalentsFeedPage"));
 const ProjectDetailPage = lazy(() => import("@/pages/ProjectDetailPage"));
 const ProjectCreatePage = lazy(() => import("@/pages/ProjectCreatePage"));
 const ProjectBmcPage = lazy(() => import("@/pages/ProjectBmcPage"));
+const ProjectJourneyPage = lazy(() => import("@/pages/ProjectJourneyPage"));
+const ProjectDesignThinkingPage = lazy(() => import("@/pages/ProjectDesignThinkingPage"));
+const ProjectBusinessPlanPage = lazy(() => import("@/pages/ProjectBusinessPlanPage"));
+const ProjectFinancesPage = lazy(() => import("@/pages/ProjectFinancesPage"));
+const ProjectPitchPage = lazy(() => import("@/pages/ProjectPitchPage"));
 const ImpactPage = lazy(() => import("@/pages/ImpactPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 const AccountStatusPage = lazy(() => import("@/pages/AccountStatusPage"));
@@ -94,9 +99,14 @@ function App() {
     <Route path="/search" element={<SearchPage />} />
     <Route path="/dream-match" element={<DreamMatchPage />} />
     <Route path="/projects/new" element={<ProjectCreatePage />} />
-    <Route path="/projects/:id/bmc" element={<ProjectBmcPage />} />
     <Route path="/projects/:id" element={<ProjectDetailPage />} />
+    <Route path="/projects/:id/journey" element={<ProjectJourneyPage />} />
+    <Route path="/projects/:id/build" element={<ProjectJourneyPage />} />
+    <Route path="/projects/:id/design-thinking" element={<ProjectDesignThinkingPage />} />
     <Route path="/projects/:id/bmc" element={<ProjectBmcPage />} />
+    <Route path="/projects/:id/business-plan" element={<ProjectBusinessPlanPage />} />
+    <Route path="/projects/:id/finances" element={<ProjectFinancesPage />} />
+    <Route path="/projects/:id/pitch" element={<ProjectPitchPage />} />
     <Route path="/projects/:id/applications" element={<ProjectApplicationsPage />} />
     <Route path="/projects/:id/team" element={<ProjectTeamPage />} />
     <Route path="/projects/:id/tasks" element={<ProjectTasksPage />} />

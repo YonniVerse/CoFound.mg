@@ -55,3 +55,25 @@ export const SUPPORTED_LOCALES = ['fr', 'mg'] as const
 export type Locale = (typeof SUPPORTED_LOCALES)[number]
 
 export const DEFAULT_LOCALE: Locale = 'fr'
+
+/**
+ * Constantes et attributions méthodologiques du parcours entrepreneurial CoFound.
+ */
+export const STRATEGYZER_ATTRIBUTION = 'Le Business Model Canvas est conçu par Alexander Osterwalder & Yves Pigneur (Strategyzer AG) sous licence CC BY-SA 3.0.'
+export const IDEO_METHODOLOGY_ATTRIBUTION = 'La démarche Design Thinking est inspirée de l\'approche Human-Centered Design développée par IDEO et la d.school de Stanford.'
+
+export const PITCH_FORMATS = ['elevator', 'three_minutes', 'five_minutes', 'investor'] as const
+export type PitchFormat = (typeof PITCH_FORMATS)[number]
+
+export const PROJECT_MATURITY_STAGES = [
+  'idea',
+  'problem_defined',
+  'solution_designed',
+  'solution_tested',
+  'business_model_structured',
+  'business_plan_written',
+  'financial_viability_analyzed',
+  'pitch_ready',
+] as const
+export type ProjectMaturityStage = (typeof PROJECT_MATURITY_STAGES)[number]
+

@@ -1,7 +1,8 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, WalletCards } from "lucide-react";
+import { ArrowLeft, WalletCards, Compass, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { ProjectNavTabs } from "@/components/project/ProjectNavTabs";
 import { ProjectHeader } from "@/components/project/ProjectHeader";
 import { ProjectContent } from "@/components/project/ProjectContent";
 import { ProjectActionCard } from "@/components/project/ProjectActionCard";
@@ -15,6 +16,8 @@ export default function ProjectDetailPage() {
 
   return (
     <DashboardLayout>
+      {project && <ProjectNavTabs projectId={project.id} />}
+
       <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-10 py-8">
         {/* Back Button */}
         <Button
@@ -50,6 +53,25 @@ export default function ProjectDetailPage() {
 
             {/* RIGHT SIDEBAR */}
             <div className="w-full lg:w-[320px] shrink-0 space-y-6 lg:sticky lg:top-[90px] lg:h-fit lg:self-start">
+              {/* Entrepreneurial Creation Journey CTA */}
+              <Link
+                to={`/projects/${project.id}/journey`}
+                className="group flex flex-col gap-2 rounded-2xl border-2 border-primary/30 bg-primary/5 p-4 transition-all hover:border-primary hover:bg-primary/10 hover:shadow-xs"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-bold text-primary">
+                    <Compass className="h-3.5 w-3.5" /> Parcours Création
+                  </span>
+                  <ChevronRight className="h-4 w-4 text-primary transition-transform group-hover:translate-x-1" />
+                </div>
+                <p className="font-heading text-sm font-bold text-foreground">
+                  Construire l’entreprise
+                </p>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Design Thinking, BMC Strategyzer, Business Plan, Modélisation Financière & Pitch.
+                </p>
+              </Link>
+
               <Link to={`/projects/${project.id}/wallet`} className="flex items-center justify-between rounded-2xl border border-primary/15 bg-primary/5 px-4 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary/10">
                 <span className="flex items-center gap-2"><WalletCards className="h-4 w-4" /> Wallet du projet</span>
                 <span aria-hidden="true">→</span>

@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { AccountStatus, ProjectStatus } from './enums.js'
 import { ApiErrorCode } from './errors.js'
+import { PITCH_FORMATS, PROJECT_MATURITY_STAGES } from './constants.js'
 
 export const idSchema = z.string().min(1)
 
@@ -444,6 +445,680 @@ export const bmcResponseSchema = z.object({
 export type BmcBlockKey = (typeof BMC_BLOCK_KEYS)[number]
 export type BmcBlocks = z.infer<typeof bmcBlocksSchema>
 export type BmcPatchInput = z.infer<typeof bmcPatchSchema>
+
+export interface BmcBlockMeta {
+  title: string
+  titleFr: string
+  subtitle: string
+  mainQuestion: string
+  explanation: string
+  madagascarExample: string
+  frequentPitfalls: string[]
+  tips: string[]
+  feedsTools: string[]
+  officialOrder: number
+}
+
+export const BMC_BLOCK_METADATA: Record<BmcBlockKey, BmcBlockMeta> = {
+  customerSegments: {
+    title: 'Customer Segments',
+    titleFr: 'Segments de clientèle',
+    subtitle: 'Pour qui créez-vous de la valeur ?',
+    mainQuestion: 'Qui sont vos clients ou bénéficiaires cibles prioritaires ?',
+    explanation: 'Définit les différents groupes de personnes ou organisations qu’une entreprise vise à toucher et à servir (marché de masse, marché de niche, segmenté, diversifié, plateforme multi-faces).',
+    madagascarExample: 'Petits producteurs agricoles et coopératives des Hautes Terres cherchant à vendre directement sans intermédiaires abusifs.',
+    frequentPitfalls: [
+      'Définir « tout le monde à Madagascar » comme cible au lieu d\'un segment restreint et qualifié.',
+      'Confondre l\'utilisateur final bénéficiaire (étudiant/paysan) et le client payeur (établissement/partenaire).',
+    ],
+    tips: [
+      'Identifiez un persona principal (Early Adopter) prêt à tester votre solution dès aujourd’hui.',
+      'Distinguez clairement les segments B2B (entreprises/institutions) et B2C (particuliers/étudiants).',
+    ],
+    feedsTools: ['Design Thinking (Personas)', 'Business Plan (Étude de marché)', 'Pitch (Cible & Marché)'],
+    officialOrder: 1,
+  },
+  valuePropositions: {
+    title: 'Value Propositions',
+    titleFr: 'Propositions de valeur',
+    subtitle: 'Quelle valeur unique apportez-vous ?',
+    mainQuestion: 'Quel problème résolvez-vous et quelle valeur livrez-vous concrètement au client ?',
+    explanation: 'L’ensemble des produits et services qui créent de la valeur pour un segment de clientèle spécifique (nouveauté, performance, réduction des coûts, gain de temps, accessibilité).',
+    madagascarExample: 'Plateforme mobile USSD/Web permettant aux coopératives de tracer les récoltes et d\'éliminer 3 intermédiaires, augmentant le revenu paysan de 25 %.',
+    frequentPitfalls: [
+      'Décrire des fonctionnalités techniques plutôt que les bénéfices réels pour l’utilisateur.',
+      'Proposer une valeur générique sans élément différenciateur face aux alternatives informelles existantes.',
+    ],
+    tips: [
+      'Formulez votre proposition sous la forme : « Nous aidons [Cible] à [Objectif] grâce à [Solution unique], contrairement à [Alternative] ».',
+    ],
+    feedsTools: ['Business Plan (Produit & Différenciation)', 'Pitch (Proposition de valeur unique)'],
+    officialOrder: 2,
+  },
+  channels: {
+    title: 'Channels',
+    titleFr: 'Canaux de distribution & communication',
+    subtitle: 'Comment touchez-vous vos clients ?',
+    mainQuestion: 'Par quels canaux vos segments clients veulent-ils être informés, convertis et livrés ?',
+    explanation: 'Comment l’entreprise communique avec ses segments de clients et les atteint pour leur délivrer sa proposition de valeur (sensibilisation, évaluation, achat, livraison, service après-vente).',
+    madagascarExample: 'Points relais communautaires dans les marchés ruraux, partenariats avec les coopératives et application mobile basse consommation.',
+    frequentPitfalls: [
+      'Miser uniquement sur un site web dans des zones à faible couverture internet 4G.',
+      'Négliger le coût et la complexité logistique du dernier kilomètre.',
+    ],
+    tips: [
+      'Intégrez des canaux digitaux légers (SMS, WhatsApp, Facebook Lite) combinés à des relais physiques de confiance.',
+    ],
+    feedsTools: ['Business Plan (Stratégie commerciale & Acquisition)', 'Pitch (Go-to-market)'],
+    officialOrder: 3,
+  },
+  customerRelationships: {
+    title: 'Customer Relationships',
+    titleFr: 'Relations avec les clients',
+    subtitle: 'Quel type de relation établissez-vous ?',
+    mainQuestion: 'Quel mode de relation chaque segment client attend-il de votre part ?',
+    explanation: 'Les types de relations qu’une entreprise établit avec des segments de clientèle spécifiques (assistance personnelle, libre-service, services automatisés, communautés, co-création).',
+    madagascarExample: 'Accompagnement de proximité par des animateurs terrain bilingues (malagasy/français) et groupe d’entraide communautaire.',
+    frequentPitfalls: [
+      'Penser qu’une relation purement automatisée suffit pour des offres complexes ou B2B.',
+      'Oublier la fidélisation et l’assistance après le premier achat.',
+    ],
+    tips: [
+      'Bâtissez la confiance : dans l’écosystème local, le bouche-à-oreille et la réputation sont cruciaux.',
+    ],
+    feedsTools: ['Business Plan (Stratégie commerciale & Fidélisation)'],
+    officialOrder: 4,
+  },
+  revenueStreams: {
+    title: 'Revenue Streams',
+    titleFr: 'Flux de revenus',
+    subtitle: 'Comment monétisez-vous la valeur ?',
+    mainQuestion: 'Pour quelle valeur vos clients sont-ils réellement prêts à payer et comment ?',
+    explanation: 'L’argent généré par chaque segment de clientèle (vente d’actifs, frais d’usage, abonnement, commission, licences, publicité).',
+    madagascarExample: 'Commission de 5 % sur les ventes sécurisées entre producteurs et grossistes, complétée par un abonnement premium d’accès aux cours du marché.',
+    frequentPitfalls: [
+      'Compter uniquement sur la publicité sans disposer d\'une audience massive prouvée.',
+      'Fixer un prix sans valider la capacité réelle et l\'habitude de paiement sur le terrain.',
+    ],
+    tips: [
+      'Diversifiez avec au moins un flux récurrent et prévisible (abonnement, maintenance ou commission transactionnelle).',
+    ],
+    feedsTools: ['Modélisation Financière (Revenus)', 'Business Plan (Business Model & Pricing)', 'Pitch (Finances & Modèle)'],
+    officialOrder: 5,
+  },
+  keyResources: {
+    title: 'Key Resources',
+    titleFr: 'Ressources clés',
+    subtitle: 'De quoi avez-vous impérativement besoin ?',
+    mainQuestion: 'Quelles ressources indispensables votre proposition de valeur et vos canaux exigent-ils ?',
+    explanation: 'Les actifs les plus importants requis pour faire fonctionner un modèle d’entreprise (physiques, intellectuelles, humaines, financières).',
+    madagascarExample: 'Plateforme logicielle propriétaire, réseau d’animateurs formés sur place, serveurs sécurisés et agréments ministériels.',
+    frequentPitfalls: [
+      'Sous-estimer les compétences humaines nécessaires (développement, vente, logistique).',
+      'Confondre ressources critiques internes et prestations externes facilement sous-traitables.',
+    ],
+    tips: [
+      'Identifiez l’actif stratégique difficile à copier (votre avantage distinctif ou barrière à l\'entrée).',
+    ],
+    feedsTools: ['Business Plan (Opérations & Ressources)', 'Modélisation Financière (Investissements)'],
+    officialOrder: 6,
+  },
+  keyActivities: {
+    title: 'Key Activities',
+    titleFr: 'Activités clés',
+    subtitle: 'Que devez-vous accomplir au quotidien ?',
+    mainQuestion: 'Quelles activités majeures devez-vous exécuter pour délivrer votre proposition de valeur ?',
+    explanation: 'Les actions les plus importantes qu’une entreprise doit mener pour fonctionner avec succès (production, résolution de problèmes, gestion de plateforme/réseau).',
+    madagascarExample: 'Développement continu de l’application, contrôle qualité sur site des denrées, animation du réseau d’agriculteurs et support utilisateur 6j/7.',
+    frequentPitfalls: [
+      'Lister des tâches administratives secondaires au lieu des processus moteurs de valeur.',
+      'Négliger les activités récurrentes d’acquisition et de support client.',
+    ],
+    tips: [
+      'Concentrez-vous sur les 3 à 4 activités créatrices de valeur sans lesquelles le service s’effondre.',
+    ],
+    feedsTools: ['Business Plan (Opérations & Processus)'],
+    officialOrder: 7,
+  },
+  keyPartners: {
+    title: 'Key Partnerships',
+    titleFr: 'Partenaires clés',
+    subtitle: 'Avec qui devez-vous vous allier ?',
+    mainQuestion: 'Qui sont vos partenaires et fournisseurs clés indispensables à vos opérations ?',
+    explanation: 'Le réseau de fournisseurs et de partenaires qui font tourner le modèle d’entreprise (alliances stratégiques, coopétition, co-entreprises, relations acheteur-fournisseur).',
+    madagascarExample: 'Opérateurs télécoms et Mobile Money (Orange Money, Mvola, Airtel Money), ministères de tutelle, associations paysannes et incubateurs partenaires.',
+    frequentPitfalls: [
+      'Considérer de simples prestataires payants comme des partenaires stratégiques.',
+      'Dépendre d’un partenaire unique sans plan de secours.',
+    ],
+    tips: [
+      'Formalisez les bénéfices mutuels (gagnant-gagnant) pour chaque partenaire stratégique.',
+    ],
+    feedsTools: ['Business Plan (Organisation & Écosystème)', 'Pitch (Traction & Partenaires)'],
+    officialOrder: 8,
+  },
+  costStructure: {
+    title: 'Cost Structure',
+    titleFr: 'Structure de coûts',
+    subtitle: 'Quelles sont vos dépenses majeures ?',
+    mainQuestion: 'Quels sont les coûts les plus importants inhérents à votre modèle économique ?',
+    explanation: 'Tous les coûts engagés pour faire fonctionner un modèle d’entreprise (coûts fixes, coûts variables, économies d’échelle, économies d’envergure, orientation coûts vs orientation valeur).',
+    madagascarExample: 'Salaires de l’équipe technique et terrain, frais de passerelle Mobile Money, hébergement cloud et frais de déplacement régional.',
+    frequentPitfalls: [
+      'Oublier les taxes, frais de télécommunications, commissions bancaires et amortissements.',
+      'Sous-évaluer le coût d’acquisition client (CAC).',
+    ],
+    tips: [
+      'Séparez nettement les charges fixes (récurrentes même sans vente) et charges variables (liées au volume).',
+    ],
+    feedsTools: ['Modélisation Financière (Coûts fixes & variables)', 'Business Plan (Prévisions financières)'],
+    officialOrder: 9,
+  },
+}
+
+/* ------------------------------------------------------------------ */
+/* Design Thinking Schemas                                            */
+/* ------------------------------------------------------------------ */
+
+export const dtInterviewSchema = z.object({
+  id: idSchema,
+  respondent: z.string().trim().min(1).max(120),
+  roleOrContext: z.string().trim().max(160).default(''),
+  keyQuotes: z.string().trim().max(2000).default(''),
+  mainInsights: z.string().trim().max(2000).default(''),
+})
+
+export const dtPersonaSchema = z.object({
+  id: idSchema,
+  name: z.string().trim().min(1).max(100),
+  roleOrOccupation: z.string().trim().max(120).default(''),
+  bio: z.string().trim().max(1000).default(''),
+  goals: z.array(z.string().trim().max(200)).default([]),
+  frustrations: z.array(z.string().trim().max(200)).default([]),
+  quote: z.string().trim().max(300).default(''),
+})
+
+export const dtBrainstormIdeaSchema = z.object({
+  id: idSchema,
+  title: z.string().trim().min(1).max(160),
+  description: z.string().trim().max(1500).default(''),
+  feasibilityScore: z.number().int().min(1).max(5).default(3),
+  impactScore: z.number().int().min(1).max(5).default(3),
+  desirabilityScore: z.number().int().min(1).max(5).default(3),
+  isSelected: z.boolean().default(false),
+})
+
+export const dtUnderstandSchema = z.object({
+  problem: z.string().trim().max(4000).default(''),
+  targetUsers: z.string().trim().max(3000).default(''),
+  context: z.string().trim().max(3000).default(''),
+  fieldObservations: z.string().trim().max(4000).default(''),
+  interviews: z.array(dtInterviewSchema).default([]),
+  userNeeds: z.array(z.string().trim().max(300)).default([]),
+  userFrustrations: z.array(z.string().trim().max(300)).default([]),
+  userMotivations: z.array(z.string().trim().max(300)).default([]),
+})
+
+export const dtDefineSchema = z.object({
+  personas: z.array(dtPersonaSchema).default([]),
+  mainNeeds: z.array(z.string().trim().max(300)).default([]),
+  keyInsights: z.array(z.string().trim().max(400)).default([]),
+  problemStatement: z.string().trim().max(2000).default(''),
+  howMightWe: z.array(z.string().trim().max(300)).default([]),
+})
+
+export const dtIdeateSchema = z.object({
+  brainstormIdeas: z.array(dtBrainstormIdeaSchema).default([]),
+  selectedIdeaId: z.string().nullable().default(null),
+  selectionRationale: z.string().trim().max(3000).default(''),
+})
+
+export const dtPrototypeSchema = z.object({
+  solutionDescription: z.string().trim().max(4000).default(''),
+  prototypeType: z.enum(['wireframe', 'storyboard', 'paper_mockup', 'landing_page', 'service_blueprint', 'functional_mvp', 'other']).default('wireframe'),
+  customPrototypeType: z.string().trim().max(100).optional(),
+  testedHypotheses: z.array(z.string().trim().max(400)).default([]),
+  prototypeElements: z.string().trim().max(4000).default(''),
+  userJourneySteps: z.array(z.string().trim().max(300)).default([]),
+})
+
+export const dtTestDecisionSchema = z.enum(['PERSEVERE', 'ITERATE', 'PIVOT', 'ABANDON'])
+
+export const dtTestSchema = z.object({
+  testedUsersSummary: z.string().trim().max(2000).default(''),
+  testedHypothesesResults: z.array(z.object({
+    hypothesis: z.string().trim().max(400),
+    status: z.enum(['VALIDATED', 'INVALIDATED', 'PARTIALLY_VALIDATED', 'INCONCLUSIVE']),
+    notes: z.string().trim().max(1000).default(''),
+  })).default([]),
+  observedResults: z.string().trim().max(4000).default(''),
+  userFeedback: z.string().trim().max(4000).default(''),
+  keyLearnings: z.array(z.string().trim().max(400)).default([]),
+  decision: dtTestDecisionSchema.default('ITERATE'),
+  nextActionPlan: z.string().trim().max(3000).default(''),
+})
+
+export const dtIterationSchema = z.object({
+  id: idSchema,
+  iterationNumber: z.number().int().min(1),
+  title: z.string().trim().min(1).max(160),
+  understand: dtUnderstandSchema,
+  define: dtDefineSchema,
+  ideate: dtIdeateSchema,
+  prototype: dtPrototypeSchema,
+  test: dtTestSchema,
+  phaseCompletion: z.object({
+    understand: z.number().int().min(0).max(100),
+    define: z.number().int().min(0).max(100),
+    ideate: z.number().int().min(0).max(100),
+    prototype: z.number().int().min(0).max(100),
+    test: z.number().int().min(0).max(100),
+  }),
+  completion: z.number().int().min(0).max(100),
+  updatedAt: z.coerce.date(),
+})
+
+export const dtResponseSchema = z.object({
+  projectId: idSchema,
+  iterations: z.array(dtIterationSchema),
+  activeIterationIndex: z.number().int().min(0),
+  completion: z.number().int().min(0).max(100),
+  updatedAt: z.coerce.date().nullable(),
+  updatedById: idSchema.nullable(),
+})
+
+export const dtPatchSchema = z.object({
+  iterationIndex: z.number().int().min(0).default(0),
+  phase: z.enum(['understand', 'define', 'ideate', 'prototype', 'test', 'iteration_meta']),
+  data: z.record(z.string(), z.unknown()),
+})
+
+export type DtInterview = z.infer<typeof dtInterviewSchema>
+export type DtPersona = z.infer<typeof dtPersonaSchema>
+export type DtBrainstormIdea = z.infer<typeof dtBrainstormIdeaSchema>
+export type DtUnderstand = z.infer<typeof dtUnderstandSchema>
+export type DtDefine = z.infer<typeof dtDefineSchema>
+export type DtIdeate = z.infer<typeof dtIdeateSchema>
+export type DtPrototype = z.infer<typeof dtPrototypeSchema>
+export type DtTest = z.infer<typeof dtTestSchema>
+export type DtIteration = z.infer<typeof dtIterationSchema>
+export type DtResponse = z.infer<typeof dtResponseSchema>
+export type DtPatchInput = z.infer<typeof dtPatchSchema>
+
+/* ------------------------------------------------------------------ */
+/* Business Plan Schemas                                              */
+/* ------------------------------------------------------------------ */
+
+export const bpExecutiveSummarySchema = z.object({
+  content: z.string().trim().max(6000).default(''),
+  keyHighlights: z.array(z.string().trim().max(300)).default([]),
+})
+
+export const bpProjectPresentationSchema = z.object({
+  projectName: z.string().trim().max(160).default(''),
+  problemSummary: z.string().trim().max(3000).default(''),
+  solutionSummary: z.string().trim().max(3000).default(''),
+  vision: z.string().trim().max(2000).default(''),
+  mission: z.string().trim().max(2000).default(''),
+  shortTermObjectives: z.array(z.string().trim().max(300)).default([]),
+  longTermObjectives: z.array(z.string().trim().max(300)).default([]),
+})
+
+export const bpCompetitorSchema = z.object({
+  name: z.string().trim().min(1).max(120),
+  type: z.enum(['DIRECT', 'INDIRECT', 'ALTERNATIVE']),
+  strengths: z.string().trim().max(1000).default(''),
+  weaknesses: z.string().trim().max(1000).default(''),
+})
+
+export const bpMarketStudySchema = z.object({
+  targetMarket: z.string().trim().max(3000).default(''),
+  marketSegments: z.array(z.string().trim().max(300)).default([]),
+  customerNeeds: z.string().trim().max(3000).default(''),
+  marketTrends: z.string().trim().max(3000).default(''),
+  competitors: z.array(bpCompetitorSchema).default([]),
+  existingAlternatives: z.string().trim().max(3000).default(''),
+  competitiveAdvantage: z.string().trim().max(3000).default(''),
+})
+
+export const bpProductServiceSchema = z.object({
+  description: z.string().trim().max(4000).default(''),
+  keyFeatures: z.array(z.string().trim().max(300)).default([]),
+  valueProposition: z.string().trim().max(3000).default(''),
+  differentiation: z.string().trim().max(3000).default(''),
+  developmentStage: z.string().trim().max(1000).default(''),
+  futureRoadmap: z.string().trim().max(3000).default(''),
+})
+
+export const bpBusinessModelSchema = z.object({
+  summary: z.string().trim().max(4000).default(''),
+  revenueStreamsDescription: z.string().trim().max(3000).default(''),
+  pricingStrategy: z.string().trim().max(3000).default(''),
+  costDrivers: z.string().trim().max(3000).default(''),
+})
+
+export const bpCommercialStrategySchema = z.object({
+  acquisitionChannels: z.array(z.string().trim().max(300)).default([]),
+  distributionStrategy: z.string().trim().max(3000).default(''),
+  pricingDetails: z.string().trim().max(3000).default(''),
+  communicationPlan: z.string().trim().max(3000).default(''),
+  conversionTactics: z.string().trim().max(3000).default(''),
+  retentionAndLoyalty: z.string().trim().max(3000).default(''),
+})
+
+export const bpFounderMemberSchema = z.object({
+  name: z.string().trim().min(1).max(120),
+  role: z.string().trim().max(120).default(''),
+  skills: z.array(z.string().trim().max(100)).default([]),
+  experienceSummary: z.string().trim().max(1000).default(''),
+})
+
+export const bpOrganizationSchema = z.object({
+  founders: z.array(bpFounderMemberSchema).default([]),
+  governanceAndRoles: z.string().trim().max(3000).default(''),
+  recruitmentNeeds: z.array(z.string().trim().max(300)).default([]),
+  externalAdvisorsAndPartners: z.array(z.string().trim().max(300)).default([]),
+})
+
+export const bpOperationsSchema = z.object({
+  productionProcess: z.string().trim().max(3000).default(''),
+  suppliersAndProcurement: z.string().trim().max(3000).default(''),
+  infrastructureAndEquipment: z.string().trim().max(3000).default(''),
+  technologyStack: z.string().trim().max(3000).default(''),
+  logisticsAndDelivery: z.string().trim().max(3000).default(''),
+  qualityControl: z.string().trim().max(2000).default(''),
+})
+
+export const bpRiskSchema = z.object({
+  category: z.enum(['COMMERCIAL', 'TECHNICAL', 'FINANCIAL', 'REGULATORY', 'HUMAN', 'ENVIRONMENTAL']),
+  description: z.string().trim().min(1).max(500),
+  severity: z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']),
+  mitigationMeasure: z.string().trim().min(1).max(1000),
+})
+
+export const bpImpactRisksSchema = z.object({
+  risks: z.array(bpRiskSchema).default([]),
+  environmentalAndSocialImpact: z.string().trim().max(3000).default(''),
+  sustainabilityCommitments: z.string().trim().max(2000).default(''),
+})
+
+export const bpFinancialPlanSchema = z.object({
+  financialSummary: z.string().trim().max(4000).default(''),
+  fundingRequired: z.number().finite().nonnegative().default(0),
+  fundingCurrency: z.string().length(3).default('MGA'),
+  useOfFunds: z.array(z.object({
+    item: z.string().trim().max(200),
+    amount: z.number().finite().nonnegative(),
+    percentage: z.number().min(0).max(100).optional(),
+  })).default([]),
+  breakEvenCommentary: z.string().trim().max(2000).default(''),
+})
+
+export const bpSectionsSchema = z.object({
+  executiveSummary: bpExecutiveSummarySchema,
+  projectPresentation: bpProjectPresentationSchema,
+  marketStudy: bpMarketStudySchema,
+  productService: bpProductServiceSchema,
+  businessModel: bpBusinessModelSchema,
+  commercialStrategy: bpCommercialStrategySchema,
+  organization: bpOrganizationSchema,
+  operations: bpOperationsSchema,
+  impactRisks: bpImpactRisksSchema,
+  financialPlan: bpFinancialPlanSchema,
+})
+
+export const bpResponseSchema = z.object({
+  projectId: idSchema,
+  sections: bpSectionsSchema,
+  sectionCompletion: z.record(z.string(), z.number().int().min(0).max(100)),
+  completion: z.number().int().min(0).max(100),
+  updatedAt: z.coerce.date().nullable(),
+  updatedById: idSchema.nullable(),
+})
+
+export const bpPatchSchema = z.object({
+  sectionKey: z.enum([
+    'executiveSummary',
+    'projectPresentation',
+    'marketStudy',
+    'productService',
+    'businessModel',
+    'commercialStrategy',
+    'organization',
+    'operations',
+    'impactRisks',
+    'financialPlan',
+  ]),
+  data: z.record(z.string(), z.unknown()),
+})
+
+export type BpCompetitor = z.infer<typeof bpCompetitorSchema>
+export type BpRisk = z.infer<typeof bpRiskSchema>
+export type BpFounderMember = z.infer<typeof bpFounderMemberSchema>
+export type BpSections = z.infer<typeof bpSectionsSchema>
+export type BpResponse = z.infer<typeof bpResponseSchema>
+export type BpPatchInput = z.infer<typeof bpPatchSchema>
+
+/* ------------------------------------------------------------------ */
+/* Financial Modeling Schemas                                         */
+/* ------------------------------------------------------------------ */
+
+export const financeInvestmentItemSchema = z.object({
+  id: idSchema,
+  label: z.string().trim().min(1).max(160),
+  category: z.enum(['EQUIPMENT', 'DEVELOPMENT', 'MARKETING_LAUNCH', 'WORKING_CAPITAL', 'LEGAL_ADMIN', 'OTHER']),
+  amount: z.number().finite().nonnegative(),
+})
+
+export const financeRevenueStreamSchema = z.object({
+  id: idSchema,
+  name: z.string().trim().min(1).max(160),
+  pricingModel: z.enum(['UNIT_SALE', 'SUBSCRIPTION', 'COMMISSION_PERCENT', 'SERVICE_FEE', 'OTHER']),
+  unitPrice: z.number().finite().nonnegative(),
+  monthlyVolumeMonth1: z.number().finite().nonnegative(),
+  monthlyVolumeMonth12: z.number().finite().nonnegative().optional(),
+  annualGrowthPercent: z.number().finite().min(-100).max(1000).default(15),
+})
+
+export const financeFixedCostSchema = z.object({
+  id: idSchema,
+  name: z.string().trim().min(1).max(160),
+  category: z.enum(['SALARIES', 'SOFTWARE_TOOLS', 'RENT_OFFICE', 'COMMUNICATION_INTERNET', 'TRANSPORT', 'ACCOUNTING_LEGAL', 'MARKETING_RECURRENT', 'OTHER']),
+  monthlyAmount: z.number().finite().nonnegative(),
+})
+
+export const financeVariableCostSchema = z.object({
+  id: idSchema,
+  name: z.string().trim().min(1).max(160),
+  category: z.enum(['PRODUCTION_SUPPLIES', 'PACKAGING_SHIPPING', 'TRANSACTION_FEES', 'CUSTOMER_ACQUISITION', 'COMMISSIONS', 'OTHER']),
+  costPerUnitOrPercent: z.number().finite().nonnegative(),
+  isPercentageOfRevenue: z.boolean().default(false),
+})
+
+export const financeForecastYearSchema = z.object({
+  year: z.number().int(),
+  revenue: z.number().finite(),
+  cogsVariableCosts: z.number().finite(),
+  grossMargin: z.number().finite(),
+  grossMarginPercent: z.number().finite(),
+  fixedCosts: z.number().finite(),
+  operatingResultEbitda: z.number().finite(),
+  netResult: z.number().finite(),
+  netMarginPercent: z.number().finite(),
+  endingCash: z.number().finite(),
+})
+
+export const financeIndicatorsSchema = z.object({
+  isReliable: z.boolean(),
+  missingDataReasons: z.array(z.string()),
+  grossMarginPercent: z.number().finite().nullable(),
+  netMarginPercent: z.number().finite().nullable(),
+  monthlyFixedCostsTotal: z.number().finite(),
+  monthlyBreakEvenRevenue: z.number().finite().nullable(),
+  annualBreakEvenRevenue: z.number().finite().nullable(),
+  monthlyBurnRate: z.number().finite().nullable(),
+  runwayMonths: z.number().finite().nullable(),
+  estimatedCac: z.number().finite().nullable(),
+  estimatedLtv: z.number().finite().nullable(),
+})
+
+export const financeResponseSchema = z.object({
+  projectId: idSchema,
+  currency: z.string().length(3).default('MGA'),
+  startingCash: z.number().finite().nonnegative().default(0),
+  projectionYears: z.number().int().min(1).max(5).default(3),
+  initialInvestments: z.array(financeInvestmentItemSchema),
+  revenues: z.array(financeRevenueStreamSchema),
+  fixedCosts: z.array(financeFixedCostSchema),
+  variableCosts: z.array(financeVariableCostSchema),
+  calculatedForecast: z.array(financeForecastYearSchema),
+  indicators: financeIndicatorsSchema,
+  completion: z.number().int().min(0).max(100),
+  updatedAt: z.coerce.date().nullable(),
+  updatedById: idSchema.nullable(),
+})
+
+export const financePatchSchema = z.object({
+  currency: z.string().length(3).optional(),
+  startingCash: z.number().finite().nonnegative().optional(),
+  projectionYears: z.number().int().min(1).max(5).optional(),
+  initialInvestments: z.array(financeInvestmentItemSchema).optional(),
+  revenues: z.array(financeRevenueStreamSchema).optional(),
+  fixedCosts: z.array(financeFixedCostSchema).optional(),
+  variableCosts: z.array(financeVariableCostSchema).optional(),
+})
+
+export type FinanceInvestmentItem = z.infer<typeof financeInvestmentItemSchema>
+export type FinanceRevenueStream = z.infer<typeof financeRevenueStreamSchema>
+export type FinanceFixedCost = z.infer<typeof financeFixedCostSchema>
+export type FinanceVariableCost = z.infer<typeof financeVariableCostSchema>
+export type FinanceForecastYear = z.infer<typeof financeForecastYearSchema>
+export type FinanceIndicators = z.infer<typeof financeIndicatorsSchema>
+export type FinanceResponse = z.infer<typeof financeResponseSchema>
+export type FinancePatchInput = z.infer<typeof financePatchSchema>
+
+/* ------------------------------------------------------------------ */
+/* Pitch Builder Schemas                                              */
+/* ------------------------------------------------------------------ */
+
+export const PITCH_SLIDE_KEYS = [
+  'hook',
+  'problem',
+  'targetUser',
+  'solution',
+  'valueProposition',
+  'productDemo',
+  'businessModel',
+  'tractionValidation',
+  'marketOpportunity',
+  'competitionAdvantage',
+  'goToMarket',
+  'team',
+  'financialsAsk',
+  'visionCallToAction',
+] as const
+
+export type PitchSlideKey = (typeof PITCH_SLIDE_KEYS)[number]
+
+export const pitchSlideSchema = z.object({
+  key: z.enum(PITCH_SLIDE_KEYS),
+  title: z.string().trim().min(1).max(160),
+  speechScript: z.string().trim().max(4000).default(''),
+  visualBulletPoints: z.array(z.string().trim().max(300)).default([]),
+  speakerNotes: z.string().trim().max(2000).default(''),
+  estimatedDurationSeconds: z.number().int().min(5).max(300).default(30),
+  isIncludedInFormat: z.boolean().default(true),
+  missingElementsAlert: z.string().trim().max(500).optional(),
+})
+
+export const pitchDeckSchema = z.object(
+  Object.fromEntries(PITCH_SLIDE_KEYS.map((k) => [k, pitchSlideSchema])) as Record<PitchSlideKey, typeof pitchSlideSchema>
+)
+
+export const pitchResponseSchema = z.object({
+  projectId: idSchema,
+  selectedFormat: z.enum(PITCH_FORMATS),
+  slides: pitchDeckSchema,
+  totalEstimatedSeconds: z.number().int().min(0),
+  formatTargetSeconds: z.number().int().min(0),
+  completion: z.number().int().min(0).max(100),
+  updatedAt: z.coerce.date().nullable(),
+  updatedById: idSchema.nullable(),
+})
+
+export const pitchPatchSchema = z.object({
+  selectedFormat: z.enum(PITCH_FORMATS).optional(),
+  slideKey: z.enum(PITCH_SLIDE_KEYS).optional(),
+  slideData: pitchSlideSchema.partial().optional(),
+})
+
+export const pitchGenerateInputSchema = z.object({
+  format: z.enum(PITCH_FORMATS).default('three_minutes').optional(),
+  overrideExisting: z.boolean().default(false).optional(),
+})
+
+export type PitchSlide = z.infer<typeof pitchSlideSchema>
+export type PitchDeck = z.infer<typeof pitchDeckSchema>
+export type PitchResponse = z.infer<typeof pitchResponseSchema>
+export type PitchPatchInput = z.infer<typeof pitchPatchSchema>
+export type PitchGenerateInput = z.input<typeof pitchGenerateInputSchema>
+
+/* ------------------------------------------------------------------ */
+/* Project Maturity & Creation Journey Schemas                        */
+/* ------------------------------------------------------------------ */
+
+export const projectMaturityStageInfoSchema = z.object({
+  id: z.enum(PROJECT_MATURITY_STAGES),
+  label: z.string(),
+  description: z.string(),
+  status: z.enum(['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED']),
+  completionPercent: z.number().int().min(0).max(100),
+  toolRoute: z.string(),
+  missingRequirements: z.array(z.string()),
+})
+
+export const projectJourneyResponseSchema = z.object({
+  projectId: idSchema,
+  projectTitle: z.string(),
+  overallScore: z.number().int().min(0).max(100),
+  currentStageId: z.enum(PROJECT_MATURITY_STAGES),
+  stages: z.array(projectMaturityStageInfoSchema),
+  completedStagesCount: z.number().int().min(0).max(8),
+  strengths: z.array(z.string()),
+  weaknesses: z.array(z.string()),
+  recommendedNextActions: z.array(z.object({
+    title: z.string(),
+    description: z.string(),
+    targetTool: z.string(),
+    targetRoute: z.string(),
+    priority: z.enum(['HIGH', 'MEDIUM', 'LOW']),
+  })),
+  dataCirculation: z.object({
+    designThinkingHasData: z.boolean(),
+    bmcHasData: z.boolean(),
+    businessPlanHasData: z.boolean(),
+    financesHasData: z.boolean(),
+    pitchHasData: z.boolean(),
+  }),
+})
+
+export const crossToolSyncRequestSchema = z.object({
+  sourceTool: z.enum(['DESIGN_THINKING', 'BMC', 'FINANCES', 'ALL']),
+  targetTool: z.enum(['BMC', 'BUSINESS_PLAN', 'PITCH', 'ALL']),
+  overwriteCustomFields: z.boolean().default(false),
+})
+
+export const crossToolSyncResponseSchema = z.object({
+  success: z.boolean(),
+  updatedSections: z.array(z.string()),
+  message: z.string(),
+})
+
+export type ProjectMaturityStageInfo = z.infer<typeof projectMaturityStageInfoSchema>
+export type ProjectJourneyResponse = z.infer<typeof projectJourneyResponseSchema>
+export type CrossToolSyncRequest = z.infer<typeof crossToolSyncRequestSchema>
+export type CrossToolSyncResponse = z.infer<typeof crossToolSyncResponseSchema>
+
 
 export const projectSummarySchema = z.object({
   id: idSchema,
