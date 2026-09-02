@@ -10,7 +10,13 @@ import {
   User,
   CheckCircle2,
   Settings,
-  Menu
+  Menu,
+  Upload,
+  Shield,
+  Layers,
+  Building2,
+  Activity,
+  FileSpreadsheet
 } from "lucide-react";
 import { LogoSVG } from "../ui/LogoSVG";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -28,12 +34,36 @@ type CurrentProfile = {
   profile?: { pseudonym?: string | null } | null;
 };
 
-const NAVIGATION = [
+type CurrentMe = {
+  platformRole?: 'TALENT' | 'ORG_MEMBER' | 'STAFF';
+};
+
+const TALENT_NAVIGATION = [
   { name: "Feed", href: "/feed", icon: Home },
   { name: "Recherche", href: "/search", icon: Search },
   { name: "Explorer Projets", href: "/projects", icon: Users },
+  { name: "Matching & Équipes", href: "/dream-match", icon: Layers },
+  { name: "Mes Candidatures", href: "/my-applications", icon: CheckCircle2 },
   { name: "Impact & Parité", href: "/impact", icon: BarChart2 },
   { name: "Mon Profil", href: "/profile/me", icon: User },
+  { name: "Paramètres", href: "/settings", icon: Settings },
+];
+
+const ORG_NAVIGATION = [
+  { name: "Tableau de bord", href: "/institution/dashboard", icon: BarChart2 },
+  { name: "Imports Étudiants", href: "/institution/imports", icon: Upload },
+  { name: "Annuaire Affiliés", href: "/institution/directory", icon: Users },
+  { name: "Affiliations", href: "/institution/affiliations", icon: FileSpreadsheet },
+  { name: "Membres Équipe", href: "/institution/members", icon: Shield },
+  { name: "Paramètres", href: "/settings", icon: Settings },
+];
+
+const STAFF_NAVIGATION = [
+  { name: "Modération", href: "/moderation", icon: Shield },
+  { name: "Audit & Sécurité", href: "/staff/audit", icon: Layers },
+  { name: "Organisations", href: "/staff/organizations", icon: Building2 },
+  { name: "Référentiels", href: "/staff/reference-data", icon: Layers },
+  { name: "Santé Plateforme", href: "/staff/health", icon: Activity },
   { name: "Paramètres", href: "/settings", icon: Settings },
 ];
 
@@ -44,10 +74,20 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const { t } = useI18n();
   const [completionReminder, setCompletionReminder] = useState<{ shouldRemind: boolean; completion: number; ctaPath: '/onboarding' } | null>(null);
   const [currentProfile, setCurrentProfile] = useState<CurrentProfile | null>(null);
+  const [platformRole, setPlatformRole] = useState<'TALENT' | 'ORG_MEMBER' | 'STAFF'>('TALENT');
 
   useEffect(() => {
     let active = true;
     if (!isAuthenticated) return () => { active = false; };
+    void apiClient.get<CurrentMe>('/me')
+      .then((res) => { if (active && res?.platformRole) setPlatformRole(res.platformRole); })
+      .catch(() => undefined);
+    return () => { active = false; };
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    let active = true;
+    if (!isAuthenticated || platformRole !== 'TALENT') return () => { active = false; };
     void apiClient.get('/me/onboarding', onboardingStepResponseSchema)
       .then((result) => {
         const completion = Math.max(result.progress.completion, Math.round((result.progress.completedSteps.length / 6) * 100))
@@ -55,7 +95,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       })
       .catch(() => { if (active) setCompletionReminder(null); });
     return () => { active = false; };
-  }, [isAuthenticated, location.pathname]);
+  }, [isAuthenticated, location.pathname, platformRole]);
 
   useEffect(() => {
     let active = true;
@@ -66,7 +106,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     return () => { active = false; };
   }, [isAuthenticated]);
 
-  const navContent = NAVIGATION.map((item) => {
+  const navigationItems = platformRole === 'ORG_MEMBER' 
+    ? ORG_NAVIGATION 
+    : platformRole === 'STAFF' 
+    ? STAFF_NAVIGATION 
+    : TALENT_NAVIGATION;
+
+  const navContent = navigationItems.map((item) => {
     const isActive = location.pathname === item.href || location.pathname.startsWith(item.href + '/');
     return (
       <Link

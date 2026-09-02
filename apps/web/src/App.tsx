@@ -88,18 +88,18 @@ function App() {
     <Route path="/organization-request" element={<OrganizationRequestPage />} />
     <Route path="/staff/organizations" element={<PlatformRoleGate allowedRoles={["STAFF"]}><StaffOrganizationsPage /></PlatformRoleGate>} />
     <Route path="/organizations/:organizationId/profile" element={<OrganizationProfilePage />} />
-    <Route path="/organizations/:organizationId/projects" element={<PartnerProjectsPage />} />
-    <Route path="/organizations/:organizationId/talents" element={<PartnerTalentsPage />} />
-    <Route path="/organizations/:organizationId/opportunities" element={<PartnerOpportunitiesPage />} />
+    <Route path="/organizations/:organizationId/projects" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><PartnerProjectsPage /></PlatformRoleGate>} />
+    <Route path="/organizations/:organizationId/talents" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><PartnerTalentsPage /></PlatformRoleGate>} />
+    <Route path="/organizations/:organizationId/opportunities" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><PartnerOpportunitiesPage /></PlatformRoleGate>} />
     <Route path="/organizations/:organizationId/incubator" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><IncubatorProgramsPage /></PlatformRoleGate>} />
     <Route path="/opportunities/:opportunityId" element={<OpportunityDetailPage />} />
-    <Route path="/organizations/:organizationId/wallet" element={<WalletPage />} />
+    <Route path="/organizations/:organizationId/wallet" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><WalletPage /></PlatformRoleGate>} />
     <Route path="/projects/:id/wallet" element={<WalletPage />} />
     <Route path="/onboarding" element={<OnboardingPage />} />
     <Route path="/feed" element={<FeedPage />} />
     <Route path="/search" element={<SearchPage />} />
-    <Route path="/dream-match" element={<DreamMatchPage />} />
-    <Route path="/projects/new" element={<ProjectCreatePage />} />
+    <Route path="/dream-match" element={<PlatformRoleGate allowedRoles={["TALENT"]}><DreamMatchPage /></PlatformRoleGate>} />
+    <Route path="/projects/new" element={<PlatformRoleGate allowedRoles={["TALENT"]}><ProjectCreatePage /></PlatformRoleGate>} />
     <Route path="/projects/:id" element={<ProjectDetailPage />} />
     <Route path="/projects/:id/journey" element={<ProjectJourneyPage />} />
     <Route path="/projects/:id/build" element={<ProjectJourneyPage />} />
@@ -115,7 +115,7 @@ function App() {
     <Route path="/projects/:id/channel" element={<ProjectChannelPage />} />
     <Route path="/projects/:id/export" element={<ProjectExportPage />} />
     <Route path="/projects/:id/public" element={<ProjectPublicPage />} />
-    <Route path="/my-applications" element={<MyApplicationsPage />} />
+    <Route path="/my-applications" element={<PlatformRoleGate allowedRoles={["TALENT"]}><MyApplicationsPage /></PlatformRoleGate>} />
     <Route path="/impact" element={<ImpactPage />} />
     <Route path="/institution" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><InstitutionDashboardPage /></PlatformRoleGate>} />
     <Route path="/institution/dashboard" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><InstitutionDashboardPage /></PlatformRoleGate>} />

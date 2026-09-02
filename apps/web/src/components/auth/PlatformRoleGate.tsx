@@ -17,6 +17,8 @@ const currentUserSchema = {
   },
 }
 
+import { AccessDeniedPage } from '@/pages/AccessDeniedPage'
+
 export function PlatformRoleGate({ allowedRoles, children }: { allowedRoles: PlatformRole[]; children: ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth()
   const { t } = useI18n()
@@ -41,6 +43,9 @@ export function PlatformRoleGate({ allowedRoles, children }: { allowedRoles: Pla
     return <div role="status" className="flex min-h-[40vh] items-center justify-center text-muted-foreground">{t('common.loading')}</div>
   }
   if (!isAuthenticated) return <Navigate to="/login" replace />
-  if (!role || !allowedRoles.includes(role)) return <Navigate to="/feed" replace />
+  if (!role || !allowedRoles.includes(role)) {
+    return <AccessDeniedPage currentRole={role} requiredRoles={allowedRoles} />
+  }
   return <>{children}</>
 }
+
