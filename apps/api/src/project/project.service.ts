@@ -11,11 +11,41 @@ export class ProjectService {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async getMine(actorId: string): Promise<OwnedProjectsResponse> {
-    const projects = await this.prisma.project.findMany({
-      where: { createdById: actorId },
-      select: { id: true, title: true, pitch: true, status: true, createdAt: true },
+    const rawProjects = await this.prisma.project.findMany({
+      where: {
+        OR: [
+          { createdById: actorId },
+          { members: { some: { userId: actorId, leftAt: null } } },
+        ],
+      },
+      select: {
+        id: true,
+        title: true,
+        pitch: true,
+        status: true,
+        createdAt: true,
+        sector: { select: { id: true, slug: true, labelKey: true } },
+        members: { where: { userId: actorId, leftAt: null }, select: { role: true, functionalRole: true } },
+      },
       orderBy: { updatedAt: 'desc' },
     })
+
+    const projects = rawProjects.map((p) => {
+      const activeMember = p.members[0]
+      const userRole = activeMember?.role || 'MEMBER'
+      const functionalRole = activeMember?.functionalRole || null
+      return {
+        id: p.id,
+        title: p.title,
+        pitch: p.pitch,
+        status: p.status,
+        createdAt: p.createdAt,
+        sector: p.sector,
+        userRole,
+        functionalRole,
+      }
+    })
+
     return { projects }
   }
 

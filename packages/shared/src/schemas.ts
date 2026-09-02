@@ -1510,6 +1510,9 @@ export const ownedProjectSchema = z.object({
   pitch: z.string(),
   status: z.nativeEnum(ProjectStatus),
   createdAt: z.coerce.date(),
+  sector: z.object({ id: idSchema, slug: z.string(), labelKey: z.string() }).nullable().optional(),
+  userRole: z.string().optional(),
+  functionalRole: z.string().nullable().optional(),
 })
 export const ownedProjectsResponseSchema = z.object({ projects: z.array(ownedProjectSchema) })
 export type OwnedProject = z.infer<typeof ownedProjectSchema>

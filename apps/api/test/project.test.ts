@@ -47,13 +47,13 @@ test('P-01 retourne les projets possédés pour le compositeur du feed', async (
   const createdAt = new Date('2026-08-20T10:00:00Z')
   const prisma = {
     project: {
-      findMany: async () => [{ id: 'p1', title: 'Projet test', pitch: 'Un pitch', status: 'DRAFT', createdAt }],
+      findMany: async () => [{ id: 'p1', title: 'Projet test', pitch: 'Un pitch', status: 'DRAFT', createdAt, sector: null, members: [{ role: 'OWNER', functionalRole: null }] }],
     },
   } as unknown as PrismaService
 
   const result = await new ProjectService(prisma).getMine('u1')
 
-  assert.deepEqual(result.projects, [{ id: 'p1', title: 'Projet test', pitch: 'Un pitch', status: 'DRAFT', createdAt }])
+  assert.deepEqual(result.projects, [{ id: 'p1', title: 'Projet test', pitch: 'Un pitch', status: 'DRAFT', createdAt, sector: null, userRole: 'OWNER', functionalRole: null }])
 })
 
 test('P-01 refuse la consultation d’un projet dont l’utilisateur n’est pas membre', async () => {
