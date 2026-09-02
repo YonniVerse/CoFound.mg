@@ -178,13 +178,16 @@ export default function ImportPreviewPage() {
 
                 <div className="flex flex-wrap items-center gap-3 pt-2">
                   <Button asChild className="gap-2 text-xs font-semibold">
-                    <Link to="/institution/directory">
-                      Consulter l’annuaire des affiliés
+                    <Link to={`/institution/imports/${importId}`}>
+                      Suivre les envois d’invitations
                       <ArrowRight className="h-3.5 w-3.5" />
                     </Link>
                   </Button>
                   <Button variant="outline" asChild className="text-xs font-semibold">
-                    <Link to="/institution/dashboard">Retour au tableau de bord</Link>
+                    <Link to="/institution/directory">Annuaire des affiliés</Link>
+                  </Button>
+                  <Button variant="ghost" asChild className="text-xs font-semibold">
+                    <Link to="/institution/dashboard">Tableau de bord</Link>
                   </Button>
                 </div>
               </CardContent>

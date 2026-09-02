@@ -12,7 +12,7 @@ export class SmtpNotificationTransport implements NotificationTransport {
     const host = process.env.SMTP_HOST?.trim()
     const port = Number(process.env.SMTP_PORT ?? 587)
     const user = process.env.SMTP_USER?.trim()
-    const pass = process.env.SMTP_PASS?.trim()
+    const pass = process.env.SMTP_PASSWORD?.trim() || process.env.SMTP_PASS?.trim()
 
     if (host && user && pass) {
       this.transporter = nodemailer.createTransport({
