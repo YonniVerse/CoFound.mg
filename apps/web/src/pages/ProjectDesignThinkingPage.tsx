@@ -5,7 +5,6 @@ import {
   ArrowLeft,
   Users,
   Search,
-  Sparkles,
   Layers,
   CheckCircle,
   Plus,
@@ -211,7 +210,7 @@ export default function ProjectDesignThinkingPage() {
   const phases = [
     { id: 'understand' as const, label: '1. Comprendre', icon: Search, sub: 'Immersion & Besoins' },
     { id: 'define' as const, label: '2. Synthétiser', icon: Users, sub: 'Personas & Défi' },
-    { id: 'ideate' as const, label: '3. Idéer', icon: Sparkles, sub: 'Brainstorming & Choix' },
+    { id: 'ideate' as const, label: '3. Idéer', icon: Lightbulb, sub: 'Brainstorming & Choix' },
     { id: 'prototype' as const, label: '4. Prototyper', icon: Layers, sub: 'MVP & Hypothèses' },
     { id: 'test' as const, label: '5. Tester', icon: CheckCircle, sub: 'Retours & Décision' },
   ]

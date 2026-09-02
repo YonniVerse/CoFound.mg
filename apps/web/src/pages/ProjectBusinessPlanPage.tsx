@@ -4,7 +4,7 @@ import {
   FileText,
   ArrowLeft,
   RefreshCw,
-  Sparkles,
+  CheckCircle2,
   Plus,
   Trash2,
   ShieldAlert,
@@ -44,7 +44,7 @@ export default function ProjectBusinessPlanPage() {
   const [error, setError] = useState<string | null>(null)
 
   const sectionsList: Array<{ key: BpSectionKey; number: number; label: string; icon: typeof FileText }> = [
-    { key: 'executiveSummary', number: 1, label: 'Executive Summary', icon: Sparkles },
+    { key: 'executiveSummary', number: 1, label: 'Executive Summary', icon: FileText },
     { key: 'projectPresentation', number: 2, label: 'Présentation du projet', icon: Target },
     { key: 'marketStudy', number: 3, label: 'Étude de marché', icon: BarChart },
     { key: 'productService', number: 4, label: 'Produit / Service', icon: Layers },
@@ -236,7 +236,7 @@ export default function ProjectBusinessPlanPage() {
           {syncMessage && (
             <div className="flex items-center justify-between rounded-xl border border-primary/20 bg-primary/10 p-4 text-sm text-primary animate-in fade-in duration-300">
               <div className="flex items-center gap-2.5">
-                <Sparkles className="h-4 w-4 shrink-0" />
+                <CheckCircle2 className="h-4 w-4 shrink-0" />
                 <span>{syncMessage}</span>
               </div>
               <Button variant="ghost" size="sm" onClick={() => setSyncMessage(null)} className="h-7 text-xs">

@@ -7,7 +7,6 @@ import {
   AlertTriangle,
   ArrowRight,
   RefreshCw,
-  Sparkles,
   Lightbulb,
   LayoutGrid,
   FileText,
@@ -80,7 +79,7 @@ export default function ProjectJourneyPage() {
   const stageIcons: Record<string, typeof Lightbulb> = {
     idea: Compass,
     problem_defined: Lightbulb,
-    solution_designed: Sparkles,
+    solution_designed: LayoutGrid,
     solution_tested: CheckCircle2,
     business_model_structured: LayoutGrid,
     business_plan_written: FileText,
@@ -139,7 +138,7 @@ export default function ProjectJourneyPage() {
           {syncMessage && (
             <div className="flex items-center justify-between rounded-xl border border-primary/20 bg-primary/10 p-4 text-sm text-primary animate-in fade-in duration-300">
               <div className="flex items-center gap-2.5">
-                <Sparkles className="h-4 w-4 shrink-0" />
+                <CheckCircle2 className="h-4 w-4 shrink-0" />
                 <span>{syncMessage}</span>
               </div>
               <Button variant="ghost" size="sm" onClick={() => setSyncMessage(null)} className="h-7 text-xs">

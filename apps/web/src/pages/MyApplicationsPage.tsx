@@ -7,10 +7,11 @@ import {
   CheckCircle2,
   XCircle,
   AlertTriangle,
+  Bookmark,
   Briefcase,
   Calendar,
   MessageSquare,
-  Sparkles,
+  Tag,
 } from "lucide-react";
 import type { ApplicationStatus } from "@cofound/shared";
 import { useI18n } from "@/i18n";
@@ -33,7 +34,7 @@ const statusBadges: Record<
   },
   SHORTLISTED: {
     label: "Présélectionnée",
-    icon: <Sparkles className="h-3.5 w-3.5" />,
+    icon: <Bookmark className="h-3.5 w-3.5" />,
     color: "bg-violet-500/10 text-violet-600 border-violet-500/20",
   },
   INTERVIEW: {
@@ -179,7 +180,7 @@ export default function MyApplicationsPage() {
                       </p>
                       {app.source === 'PROJECT' && app.position && (
                         <div className="flex items-center gap-1.5 text-xs text-primary font-medium pt-0.5">
-                          <Sparkles className="h-3 w-3" />
+                          <Tag className="h-3 w-3" />
                           <span>{t('applications.targetPosition')}: {app.position.title}</span>
                         </div>
                       )}

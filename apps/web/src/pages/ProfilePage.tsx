@@ -6,18 +6,17 @@ import {
   Clock,
   Eye,
   EyeOff,
+  FolderGit2,
   GraduationCap,
   Lock,
   Mail,
   Pencil,
   Plus,
-  Rocket,
   ShieldCheck,
   Tag,
   UserRound,
   Users,
   AlertCircle,
-  Sparkles,
   ChevronRight,
   Shield,
 } from 'lucide-react'
@@ -31,7 +30,7 @@ import {
 } from '@cofound/shared'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Progress } from '@/components/ui/progress'
 import { Avatar } from '@/components/shared/Avatar'
@@ -121,76 +120,83 @@ function ProfileSkeleton() {
   )
 }
 
-function EmptySection({ text, actionLabel, link }: { text: string; actionLabel?: string; link: string }) {
+function EmptySection({ text, actionLabel, link }: { text: string; actionLabel: string; link: string }) {
   return (
-    <div className="rounded-lg border border-dashed border-border/80 bg-muted/20 p-5 text-center">
+    <div className="rounded-lg border border-dashed border-border/70 p-4 text-center">
       <p className="text-xs text-muted-foreground">{text}</p>
-      {actionLabel && (
-        <Button variant="outline" size="sm" asChild className="mt-3 h-8 text-xs font-semibold shadow-2xs">
-          <Link to={link}>{actionLabel}</Link>
-        </Button>
-      )}
+      <Button variant="outline" size="sm" asChild className="mt-2.5 h-7 text-xs">
+        <Link to={link}>{actionLabel}</Link>
+      </Button>
     </div>
   )
 }
 
 export default function ProfilePage() {
-  const [data, setData] = useState<PrivateProfile | null>(null)
-  const [onboarding, setOnboarding] = useState<OnboardingData | null>(null)
-  const [reminder, setReminder] = useState<ReminderData | null>(null)
+  const [profileData, setProfileData] = useState<PrivateProfile | null>(null)
+  const [onboardingData, setOnboardingData] = useState<OnboardingData | null>(null)
+  const [reminderData, setReminderData] = useState<ReminderData | null>(null)
   const [projects, setProjects] = useState<OwnedProject[]>([])
-  const [skillsDict, setSkillsDict] = useState<Record<string, ReferenceOption>>({})
-  const [sectorsDict, setSectorsDict] = useState<Record<string, ReferenceOption>>({})
+  const [availableSkills, setAvailableSkills] = useState<ReferenceOption[]>([])
+  const [availableSectors, setAvailableSectors] = useState<ReferenceOption[]>([])
+
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let active = true
-    const fetchData = async () => {
+
+    async function loadData() {
       try {
-        const [
-          profileRes,
-          onboardingRes,
-          reminderRes,
-          projectsRes,
-          skillsRes,
-          sectorsRes,
-        ] = await Promise.allSettled([
-          apiClient.get('/me/profile', privateTalentProfileSchema),
-          apiClient.get('/me/onboarding', onboardingStepResponseSchema),
-          apiClient.get('/me/profile/completion-reminder', profileCompletionReminderSchema),
-          apiClient.get('/projects/mine', ownedProjectsResponseSchema),
-          apiClient.get<{ items: ReferenceOption[] }>('/reference-data/skills'),
-          apiClient.get<{ items: ReferenceOption[] }>('/reference-data/sectors'),
-        ])
+        setLoading(true)
+        setError(null)
+
+        const [profileRes, onboardingRes, reminderRes, projectsRes, skillsRes, sectorsRes] =
+          await Promise.allSettled([
+            apiClient.get('/me/profile', privateTalentProfileSchema),
+            apiClient.get('/onboarding/status', onboardingStepResponseSchema),
+            apiClient.get('/profile/completion-reminder', profileCompletionReminderSchema),
+            apiClient.get('/projects/owned', ownedProjectsResponseSchema),
+            apiClient.get<{ items: ReferenceOption[] }>('/reference-data/skills'),
+            apiClient.get<{ items: ReferenceOption[] }>('/reference-data/sectors'),
+          ])
 
         if (!active) return
 
-        if (profileRes.status === 'fulfilled') setData(profileRes.value)
-        else throw new Error('Failed to load profile')
+        if (profileRes.status === 'fulfilled') {
+          setProfileData(profileRes.value)
+        } else {
+          throw new Error('Impossible de charger votre profil.')
+        }
 
-        if (onboardingRes.status === 'fulfilled') setOnboarding(onboardingRes.value)
-        if (reminderRes.status === 'fulfilled') setReminder(reminderRes.value)
-        if (projectsRes.status === 'fulfilled') setProjects(projectsRes.value.projects)
+        if (onboardingRes.status === 'fulfilled') {
+          setOnboardingData(onboardingRes.value)
+        }
+
+        if (reminderRes.status === 'fulfilled') {
+          setReminderData(reminderRes.value)
+        }
+
+        if (projectsRes.status === 'fulfilled') {
+          setProjects(projectsRes.value.projects || [])
+        }
 
         if (skillsRes.status === 'fulfilled') {
-          const dict: Record<string, ReferenceOption> = {}
-          skillsRes.value.items.forEach((s) => (dict[s.id] = s))
-          setSkillsDict(dict)
+          setAvailableSkills(skillsRes.value.items || [])
         }
 
         if (sectorsRes.status === 'fulfilled') {
-          const dict: Record<string, ReferenceOption> = {}
-          sectorsRes.value.items.forEach((s) => (dict[s.id] = s))
-          setSectorsDict(dict)
+          setAvailableSectors(sectorsRes.value.items || [])
         }
-      } catch {
-        if (active) setError(true)
+      } catch (err: unknown) {
+        if (!active) return
+        setError(err instanceof Error ? err.message : 'Erreur lors du chargement de la page.')
       } finally {
         if (active) setLoading(false)
       }
     }
-    void fetchData()
+
+    loadData()
+
     return () => {
       active = false
     }
@@ -199,51 +205,51 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <DashboardLayout>
-        <main className="min-h-screen bg-muted/20 px-4 py-8 sm:px-10">
-          <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
-            <ProfileSkeleton />
-          </div>
-        </main>
+        <div className="px-4 py-8 sm:px-10">
+          <ProfileSkeleton />
+        </div>
       </DashboardLayout>
     )
   }
 
-  if (error || !data) {
+  if (error || !profileData) {
     return (
       <DashboardLayout>
-        <main className="min-h-screen bg-muted/20 px-4 py-8 sm:px-10">
-          <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
-            <Card className="rounded-xl border border-border bg-card shadow-2xs">
-              <CardContent className="p-10 text-center flex flex-col items-center">
-                <AlertCircle className="h-8 w-8 text-destructive mb-3" />
-                <p className="font-semibold text-foreground">Impossible de charger votre profil.</p>
-                <p className="mt-1 text-sm text-muted-foreground">Veuillez réessayer dans quelques instants.</p>
-              </CardContent>
-            </Card>
+        <div className="mx-auto max-w-lg px-4 py-16 text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-destructive/20 bg-destructive/10 text-destructive">
+            <AlertCircle className="h-6 w-6" />
           </div>
-        </main>
+          <h1 className="font-heading text-xl font-bold text-foreground">Erreur de chargement</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{error || 'Le profil demandé est inaccessible.'}</p>
+          <div className="mt-6 flex justify-center gap-3">
+            <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
+              Réessayer
+            </Button>
+            <Button size="sm" asChild>
+              <Link to="/feed">Retour au Feed</Link>
+            </Button>
+          </div>
+        </div>
       </DashboardLayout>
     )
   }
 
-  const { profile, identity, user } = data
-  const identityName = [identity?.firstName, identity?.lastName].filter(Boolean).join(' ').trim()
-  const displayName = identityName || profile?.pseudonym || user.email || 'Mon profil'
+  const { user, identity, profile } = profileData
 
-  // Completion calculation
-  const completion = reminder?.completion ?? profile?.completion ?? 0
-  const missingItems = (reminder?.missingFields.map((field) => MISSING_MAP[field]).filter(Boolean) || []) as {
-    label: string
-  }[]
-  if (onboarding && Array.isArray(onboarding.data?.skillIds) && onboarding.data.skillIds.length === 0) {
-    missingItems.unshift({ label: 'Ajouter vos compétences' })
-  }
+  const displayName =
+    identity?.firstName && identity?.lastName
+      ? `${identity.firstName} ${identity.lastName}`
+      : profile?.pseudonym || 'Profil Talent'
 
-  // Skills and Sectors mapped
-  const skillIds = (onboarding?.data?.skillIds as string[]) || []
-  const userSkills = skillIds.map((id) => skillsDict[id]).filter(Boolean) as ReferenceOption[]
-  const sectorIds = (onboarding?.data?.sectorIds as string[]) || []
-  const userSectors = sectorIds.map((id) => sectorsDict[id]).filter(Boolean) as ReferenceOption[]
+  const completion = reminderData?.completion ?? profile?.completion ?? 100
+  const missingKeys = reminderData?.missingFields ?? []
+  const missingItems = missingKeys.map((k) => MISSING_MAP[k] || { label: k })
+
+  const userSkillIds = Array.isArray(onboardingData?.data?.skills) ? (onboardingData.data.skills as string[]) : []
+  const userSectorIds = profile?.sectorIds || []
+
+  const userSkills: ReferenceOption[] = availableSkills.filter((s) => userSkillIds.includes(s.id))
+  const userSectors: ReferenceOption[] = availableSectors.filter((s) => userSectorIds.includes(s.id))
 
   return (
     <DashboardLayout>
@@ -311,7 +317,7 @@ export default function ProfilePage() {
 
               <div className="flex shrink-0 items-center gap-2 pt-1 sm:pt-0">
                 <span
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium ${
+                  className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium ${
                     profile?.visibleInTalentFeed
                       ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400'
                       : 'border-muted text-muted-foreground bg-muted/60'
@@ -319,11 +325,11 @@ export default function ProfilePage() {
                 >
                   {profile?.visibleInTalentFeed ? (
                     <>
-                      <Eye className="h-3 w-3" /> Visible dans l’annuaire
+                      <Eye className="h-3.5 w-3.5" /> Visible dans l’annuaire
                     </>
                   ) : (
                     <>
-                      <EyeOff className="h-3 w-3" /> Profil masqué
+                      <EyeOff className="h-3.5 w-3.5" /> Profil masqué
                     </>
                   )}
                 </span>
@@ -339,7 +345,7 @@ export default function ProfilePage() {
             )}
           </Card>
 
-          {/* Section 2: Completion Banner (Subtle & Helpful) */}
+          {/* Section 2: Completion Banner (Subtle & Functional) */}
           {completion < 100 && (
             <section
               className="rounded-xl border border-primary/20 bg-primary/5 p-4 shadow-2xs sm:p-5"
@@ -347,12 +353,11 @@ export default function ProfilePage() {
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-primary font-semibold text-xs sm:text-sm">
-                    <Sparkles className="h-4 w-4" />
-                    <span>Profil complété à {completion}%</span>
+                  <div className="text-xs sm:text-sm font-semibold text-primary">
+                    Profil complété à {completion}%
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Ajoutez les informations manquantes pour être mieux mis en relation avec des co-fondateurs.
+                    Ajoutez les informations manquantes pour enrichir votre visibilité auprès des projets et co-fondateurs.
                   </p>
                 </div>
                 <Button size="sm" variant="outline" asChild className="h-8 shrink-0 text-xs font-semibold shadow-2xs">
@@ -366,7 +371,7 @@ export default function ProfilePage() {
 
               {missingItems.length > 0 && (
                 <div className="mt-3 flex flex-wrap items-center gap-2 pt-1">
-                  <span className="text-[11px] font-semibold text-muted-foreground">Recommandé :</span>
+                  <span className="text-[11px] font-semibold text-muted-foreground">À renseigner :</span>
                   {missingItems.slice(0, 3).map((item, idx) => (
                     <Link
                       key={idx}
@@ -504,7 +509,7 @@ export default function ProfilePage() {
           <section className="space-y-4" aria-label="Mes projets">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <Rocket className="h-4 w-4 text-primary" />
+                <FolderGit2 className="h-4 w-4 text-primary" />
                 <h2 className="font-heading text-base font-bold text-foreground sm:text-lg">
                   Mes projets ({projects.length})
                 </h2>
@@ -523,16 +528,16 @@ export default function ProfilePage() {
                   <BriefcaseBusiness className="h-5 w-5" aria-hidden="true" />
                 </div>
                 <h3 className="mt-3 font-heading text-sm font-bold text-foreground">
-                  Vous n'avez pas encore de projet actif
+                  Aucun projet actif
                 </h3>
                 <p className="mx-auto mt-1 max-w-sm text-xs text-muted-foreground leading-relaxed">
-                  Créez votre propre projet ou rejoignez une équipe pour commencer à collaborer.
+                  Créez votre propre projet ou rejoignez une équipe pour collaborer.
                 </p>
                 <div className="mt-4">
                   <Button asChild size="sm" className="h-8 text-xs font-semibold shadow-2xs">
                     <Link to="/projects/new">
                       <Plus className="mr-1 h-3.5 w-3.5" />
-                      Lancer une initiative
+                      Créer un projet
                     </Link>
                   </Button>
                 </div>
@@ -548,7 +553,7 @@ export default function ProfilePage() {
                     <Link
                       key={project.id}
                       to={`/projects/${project.id}`}
-                      className="group flex flex-col justify-between rounded-xl border border-border/80 bg-card p-4 shadow-2xs transition-all hover:border-primary/40 hover:shadow-xs"
+                      className="group flex flex-col justify-between rounded-xl border border-border/80 bg-card p-4 shadow-2xs transition-all hover:border-primary/40"
                     >
                       <div className="space-y-2">
                         <div className="flex items-start justify-between gap-2">
@@ -556,7 +561,7 @@ export default function ProfilePage() {
                             {project.title}
                           </h3>
                           <span
-                            className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-bold ${statusInfo.className}`}
+                            className={`shrink-0 rounded-md border px-2 py-0.5 text-[10px] font-semibold ${statusInfo.className}`}
                           >
                             {statusInfo.label}
                           </span>
@@ -603,10 +608,10 @@ export default function ProfilePage() {
               <div className="space-y-1 flex-1">
                 <h3 className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
                   <Lock className="h-3.5 w-3.5 text-muted-foreground" />
-                  Protection de votre identité et confidentialité
+                  Protection de l'identité et confidentialité
                 </h3>
                 <p className="text-xs leading-relaxed text-muted-foreground">
-                  Conformément aux principes de confidentialité de CoFound, votre nom civil et votre adresse email ne sont jamais divulgués aux tiers sans votre accord explicite. Seul votre pseudonyme et vos compétences sont visibles dans les fonctionnalités de mise en relation.
+                  Conformément aux principes de confidentialité de CoFound, votre identité civile et votre adresse email restent protégées. Seuls votre pseudonyme, filière et compétences sont partagés dans les espaces publics de mise en relation.
                 </p>
               </div>
             </div>

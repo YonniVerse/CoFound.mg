@@ -1,6 +1,6 @@
 import { useState, useEffect, useTransition } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Search as SearchIcon, X, Building2, User, Rocket, AlertCircle } from 'lucide-react'
+import { Search as SearchIcon, X, Building2, User, FolderGit2, AlertCircle } from 'lucide-react'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -166,7 +166,7 @@ export default function SearchPage() {
               onClick={() => setActiveType('projects')}
               className="h-9 gap-1.5 rounded-lg px-3.5 text-xs font-medium sm:text-sm"
             >
-              <Rocket className="h-3.5 w-3.5" />
+              <FolderGit2 className="h-3.5 w-3.5" />
               {t('search.tab.projects')}
               <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-xs">
                 {counts.projects}
@@ -285,7 +285,7 @@ export default function SearchPage() {
                   activeResults.projects.length > 0 && (
                     <section className="space-y-4">
                       <h2 className="font-heading text-lg font-bold text-foreground flex items-center gap-2">
-                        <Rocket className="h-5 w-5 text-primary" />
+                        <FolderGit2 className="h-5 w-5 text-primary" />
                         {t('search.tab.projects')} ({activeResults.projects.length})
                       </h2>
                       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

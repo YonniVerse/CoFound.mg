@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { AlertCircle, ArrowLeft, BriefcaseBusiness, FileText, Lightbulb, Sparkles } from 'lucide-react'
+import { AlertCircle, ArrowLeft, BriefcaseBusiness, FileCheck, FileText, Lightbulb } from 'lucide-react'
 import { projectCreateSchema } from '@cofound/shared'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { Button } from '@/components/ui/button'
@@ -314,7 +314,7 @@ export default function ProjectCreatePage() {
 
               <Card className="rounded-xl border border-border bg-card p-4 shadow-2xs space-y-2">
                 <div className="flex items-center gap-1.5 text-muted-foreground text-xs font-bold uppercase tracking-wider">
-                  <Sparkles className="h-4 w-4 text-primary" />
+                  <FileCheck className="h-4 w-4 text-primary" />
                   <span>Après la création</span>
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">
