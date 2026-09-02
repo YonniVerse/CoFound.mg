@@ -1,7 +1,7 @@
 import { createHash, randomBytes } from 'node:crypto'
 import { BadRequestException, ConflictException, Injectable, NotFoundException, Optional, Inject } from '@nestjs/common'
 import * as argon2 from 'argon2'
-import { organizationCapabilityUpdateSchema, organizationRequestDecisionSchema, organizationRequestQueueQuerySchema } from '@cofound/shared'
+import { organizationCapabilitySchema, organizationCapabilityUpdateSchema, organizationRequestDecisionSchema, organizationRequestQueueQuerySchema } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { AuditService } from '../audit/audit.service.js'
 import { NotificationsQueueService } from '../notifications/notifications-queue.service.js'
@@ -143,6 +143,19 @@ export class OrganizationRequestStaffService {
     })
     await this.audit.record({ actorId, action: 'ORGANIZATION_CAPABILITY_GRANTED', targetType: 'OrganizationCapability', targetId: capability.id, metadata: { organizationId, capability: capability.capability } })
     return capability
+  }
+
+  async revokeCapability(actorId: string, organizationId: string, capabilityName: string) {
+    const parsed = organizationCapabilitySchema.safeParse(capabilityName)
+    if (!parsed.success) throw new BadRequestException({ code: 'VALIDATION_ERROR', issues: parsed.error.issues })
+    const existing = await this.prisma.organizationCapability.findUnique({
+      where: { organizationId_capability: { organizationId, capability: parsed.data } },
+      select: { id: true, organizationId: true, capability: true },
+    })
+    if (!existing) throw new NotFoundException({ code: 'CAPABILITY_NOT_FOUND', messageKey: 'errors.notFound' })
+    await this.prisma.organizationCapability.delete({ where: { id: existing.id } })
+    await this.audit.record({ actorId, action: 'ORGANIZATION_CAPABILITY_REVOKED', targetType: 'OrganizationCapability', targetId: existing.id, metadata: { organizationId, capability: existing.capability } })
+    return existing
   }
 
   async listOrganizations(query: { type?: string; status?: string; search?: string }) {
