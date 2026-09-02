@@ -1,11 +1,12 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, WalletCards, Compass, ChevronRight, AlertCircle } from "lucide-react";
+import { ArrowLeft, Compass, ChevronRight, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ProjectNavTabs } from "@/components/project/ProjectNavTabs";
 import { ProjectHeader } from "@/components/project/ProjectHeader";
 import { ProjectContent } from "@/components/project/ProjectContent";
+import { ProjectMatchingSuggestions } from "@/components/project/ProjectMatchingSuggestions";
 import { ProjectActionCard } from "@/components/project/ProjectActionCard";
 import { ProjectTeamCard } from "@/components/project/ProjectTeamCard";
 import { useProjectDetail } from "@/hooks/useProjectDetail";
@@ -57,6 +58,7 @@ export default function ProjectDetailPage() {
               <div className="space-y-6">
                 <ProjectHeader project={project} />
                 <ProjectContent project={project} />
+                <ProjectMatchingSuggestions project={project} />
               </div>
 
               {/* RIGHT SIDEBAR */}
@@ -78,16 +80,6 @@ export default function ProjectDetailPage() {
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     Design Thinking, BMC Strategyzer, Business Plan, Finances & Pitch.
                   </p>
-                </Link>
-
-                <Link
-                  to={`/projects/${project.id}/wallet`}
-                  className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 text-xs sm:text-sm font-semibold text-foreground shadow-2xs transition-colors hover:border-primary/40 hover:text-primary"
-                >
-                  <span className="flex items-center gap-2">
-                    <WalletCards className="h-4 w-4 text-primary" /> Wallet du projet
-                  </span>
-                  <span aria-hidden="true" className="text-muted-foreground">→</span>
                 </Link>
 
                 <ProjectActionCard
