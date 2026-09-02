@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ArrowLeft, ArrowRight, CheckCircle2, FileSpreadsheet, Info, XCircle } from 'lucide-react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { importColumnMappingSchema, type ImportField } from '@cofound/shared'
 import { apiClient } from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
@@ -45,8 +45,9 @@ const initialMapping = Object.fromEntries(
 export default function ImportMappingPage() {
   const { t } = useI18n()
   const navigate = useNavigate()
+  const params = useParams<{ id?: string }>()
   const [searchParams] = useSearchParams()
-  const importId = searchParams.get('importId')
+  const importId = params.id || searchParams.get('importId')
   const [mapping, setMapping] = useState(initialMapping)
   const [submitted, setSubmitted] = useState(false)
   const [isSaving, setIsSaving] = useState(false)

@@ -27,6 +27,7 @@ const ProjectBmcPage = lazy(() => import("@/pages/ProjectBmcPage"));
 const ImpactPage = lazy(() => import("@/pages/ImpactPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 const AccountStatusPage = lazy(() => import("@/pages/AccountStatusPage"));
+const ImportUploadPage = lazy(() => import("@/pages/ImportUploadPage"));
 const ImportMappingPage = lazy(() => import("@/pages/ImportMappingPage"));
 const ImportPreviewPage = lazy(() => import("@/pages/ImportPreviewPage"));
 const ImportBatchesPage = lazy(() => import("@/pages/ImportBatchesPage"));
@@ -111,7 +112,8 @@ function App() {
     <Route path="/institution/directory" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><InstitutionDirectoryPage /></PlatformRoleGate>} />
     <Route path="/institution/imports" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><ImportBatchesPage /></PlatformRoleGate>} />
     <Route path="/institution/imports/:id" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><ImportBatchesPage /></PlatformRoleGate>} />
-    <Route path="/institution/imports/new" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><ImportMappingPage /></PlatformRoleGate>} />
+    <Route path="/institution/imports/new" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><ImportUploadPage /></PlatformRoleGate>} />
+    <Route path="/institution/imports/:id/mapping" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><ImportMappingPage /></PlatformRoleGate>} />
     <Route path="/institution/imports/preview" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><ImportPreviewPage /></PlatformRoleGate>} />
     <Route path="/institution/imports/:id/preview" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><ImportPreviewPage /></PlatformRoleGate>} />
     <Route path="/projects" element={<ProjectsFeedPage />} />

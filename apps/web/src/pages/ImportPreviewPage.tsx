@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { AlertTriangle, ArrowLeft, CheckCircle2, FileSpreadsheet, Loader2, RotateCcw, XCircle } from 'lucide-react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { importPreviewSchema, type ImportPreview, type ImportPreviewResult, type ImportPreviewRow } from '@cofound/shared'
 import { apiClient } from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
@@ -35,8 +35,9 @@ function resultIcon(result: ImportPreviewResult) {
 export default function ImportPreviewPage() {
   const { t } = useI18n()
   const navigate = useNavigate()
+  const params = useParams<{ id?: string }>()
   const [searchParams] = useSearchParams()
-  const importId = searchParams.get('importId')
+  const importId = params.id || searchParams.get('importId')
   const [preview, setPreview] = useState<ImportPreview | null>(importId ? null : SAMPLE_PREVIEW)
   const [showErrorsOnly, setShowErrorsOnly] = useState(false)
   const [isLoading, setIsLoading] = useState(Boolean(importId))
