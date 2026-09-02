@@ -155,7 +155,7 @@ export default function ProfilePage() {
             apiClient.get('/me/profile', privateTalentProfileSchema),
             apiClient.get('/onboarding/status', onboardingStepResponseSchema),
             apiClient.get('/profile/completion-reminder', profileCompletionReminderSchema),
-            apiClient.get('/projects/owned', ownedProjectsResponseSchema),
+            apiClient.get('/projects/mine', ownedProjectsResponseSchema),
             apiClient.get<{ items: ReferenceOption[] }>('/reference-data/skills'),
             apiClient.get<{ items: ReferenceOption[] }>('/reference-data/sectors'),
           ])
