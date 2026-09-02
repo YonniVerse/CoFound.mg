@@ -282,7 +282,7 @@ export default function ProjectBmcPage() {
 
           {/* Contextual Help Drawer if a block is clicked */}
           {activeHelpKey && (
-            <div className="rounded-2xl border border-primary/30 bg-primary/5 p-5 shadow-xs space-y-3 animate-in fade-in duration-300">
+            <div className="rounded-xl border border-primary/30 bg-primary/5 p-5 shadow-xs space-y-3 animate-in fade-in duration-300">
               <div className="flex items-start justify-between">
                 <div>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-primary">Aide contextuelle & Méthode</span>

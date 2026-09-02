@@ -145,8 +145,8 @@ export default function MyApplicationsPage() {
         {/* Loading State */}
         {isLoading && (
           <div className="space-y-4">
-            <div className="bg-card border border-border rounded-2xl p-6 h-36 animate-pulse" />
-            <div className="bg-card border border-border rounded-2xl p-6 h-36 animate-pulse" />
+            <div className="bg-card border border-border rounded-xl p-6 h-36 animate-pulse" />
+            <div className="bg-card border border-border rounded-xl p-6 h-36 animate-pulse" />
           </div>
         )}
 
@@ -164,7 +164,7 @@ export default function MyApplicationsPage() {
               return (
                 <div
                   key={app.id}
-                  className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-2xs hover:border-border transition-all flex flex-col gap-4"
+                  className="bg-card border border-border/80 rounded-xl p-5 sm:p-6 shadow-2xs hover:border-border transition-all flex flex-col gap-4"
                 >
                   {/* Header: Project Title + Position Title + Status Badge */}
                   <div className="flex items-start justify-between gap-4">
@@ -187,7 +187,7 @@ export default function MyApplicationsPage() {
 
                     {/* Status Badge */}
                     <span
-                      className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full border ${badge.color} shrink-0`}
+                      className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-md border ${badge.color} shrink-0`}
                     >
                       {badge.icon}
                       <span>{badge.label}</span>
@@ -195,7 +195,7 @@ export default function MyApplicationsPage() {
                   </div>
 
                   {/* Candidate Message Block */}
-                  <div className="bg-muted/40 p-3.5 rounded-xl border border-border/50 space-y-1">
+                  <div className="bg-muted/40 p-3.5 rounded-lg border border-border/50 space-y-1">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                       <MessageSquare className="h-3 w-3 text-primary" />
                       {t('applications.messageLabel')}
@@ -207,7 +207,7 @@ export default function MyApplicationsPage() {
 
                   {/* Rejection Reason (if rejected) */}
                   {app.status === "REJECTED" && app.rejectionReason && (
-                    <div className="bg-destructive/10 border border-destructive/20 text-destructive text-xs p-3 rounded-xl">
+                    <div className="bg-destructive/10 border border-destructive/20 text-destructive text-xs p-3 rounded-lg">
                       <strong>{t('applications.rejectionReason')}:</strong> {app.rejectionReason}
                     </div>
                   )}
@@ -225,7 +225,7 @@ export default function MyApplicationsPage() {
                         size="sm"
                         disabled={withdrawingId === app.id}
                         onClick={() => handleWithdraw(app)}
-                        className="h-8 text-xs font-semibold rounded-xl text-destructive border-destructive/20 hover:bg-destructive/10 cursor-pointer"
+                        className="h-8 text-xs font-semibold rounded-lg text-destructive border-destructive/20 hover:bg-destructive/10 cursor-pointer"
                       >
                         {withdrawingId === app.id ? "Retrait..." : "Retirer la candidature"}
                       </Button>
@@ -236,7 +236,7 @@ export default function MyApplicationsPage() {
             })}
 
             {filteredApplications.length === 0 && (
-              <div className="text-center py-16 text-muted-foreground font-medium bg-card border border-border rounded-2xl p-8 space-y-2">
+              <div className="text-center py-16 text-muted-foreground font-medium bg-card border border-border rounded-xl p-8 space-y-2 shadow-2xs">
                 <Briefcase className="h-8 w-8 mx-auto text-muted-foreground/50 mb-2" />
                 <p className="text-sm">Aucune candidature ne correspond à ce filtre.</p>
               </div>
