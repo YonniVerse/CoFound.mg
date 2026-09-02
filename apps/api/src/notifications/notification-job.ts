@@ -9,6 +9,14 @@ export type ActivationEmailJob = {
   locale: NotificationLocale
 }
 
+export type CredentialsEmailJob = {
+  kind: 'account.credentials'
+  recipient: string
+  temporaryPassword: string
+  activationToken: string
+  locale: NotificationLocale
+}
+
 export type PasswordResetEmailJob = {
   kind: 'password.reset'
   recipient: string
@@ -24,4 +32,5 @@ export type BusinessEmailJob = {
   referenceId: string
 }
 
-export type NotificationJob = ActivationEmailJob | PasswordResetEmailJob | BusinessEmailJob
+export type NotificationJob = ActivationEmailJob | CredentialsEmailJob | PasswordResetEmailJob | BusinessEmailJob
+

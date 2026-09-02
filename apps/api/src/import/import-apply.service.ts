@@ -1,5 +1,6 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { createHash, randomBytes } from 'node:crypto'
+import * as argon2 from 'argon2'
 import type { Prisma } from '@prisma/client'
 import { ImportBatchStatus, ImportRowResult } from '@prisma/client'
 import type { ImportApplyInput } from '@cofound/shared'
@@ -22,6 +23,7 @@ type ImportStudent = {
 type PendingInvitation = {
   recipient: string
   activationToken: string
+  temporaryPassword: string
   locale: 'fr' | 'mg'
 }
 
@@ -80,13 +82,16 @@ export class ImportApplyService {
 
         const email = String(student.email).trim().toLowerCase()
         const existingUser = await transaction.user.findUnique({ where: { email } })
+        const tempPassword = this.generateTemporaryPassword()
+        const passwordHash = await argon2.hash(tempPassword, { type: argon2.argon2id })
+
         const user = existingUser
           ? await transaction.user.update({
               where: { id: existingUser.id },
               data: { status: existingUser.status === 'DISABLED' ? 'DISABLED' : existingUser.status },
             })
           : await transaction.user.create({
-              data: { email, status: 'INVITED', platformRole: 'TALENT', locale: 'fr' },
+              data: { email, passwordHash, status: 'INVITED', platformRole: 'TALENT', locale: 'fr' },
             })
 
         await transaction.talentIdentity.upsert({
@@ -136,7 +141,7 @@ export class ImportApplyService {
               expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
             },
           })
-          invitations.push({ recipient: email, activationToken: rawToken, locale: 'fr' })
+          invitations.push({ recipient: email, activationToken: rawToken, temporaryPassword: tempPassword, locale: 'fr' })
         } else {
           updatedRows += 1
         }
@@ -157,10 +162,22 @@ export class ImportApplyService {
     })
 
     for (const invitation of invitations) {
-      await this.notificationsQueue.enqueue({ kind: 'account.activation', ...invitation })
+      await this.notificationsQueue.enqueue({
+        kind: 'account.credentials',
+        recipient: invitation.recipient,
+        temporaryPassword: invitation.temporaryPassword,
+        activationToken: invitation.activationToken,
+        locale: invitation.locale,
+      })
     }
     return result
   }
+
+  private generateTemporaryPassword(): string {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#'
+    return Array.from({ length: 12 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+  }
+
 
   private readStudent(raw: Prisma.JsonValue): ImportStudent {
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {}

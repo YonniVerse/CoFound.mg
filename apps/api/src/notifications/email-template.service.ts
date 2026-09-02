@@ -20,6 +20,23 @@ export class EmailTemplateService {
       return this.rendered(from, job.recipient, copy.subject, copy.intro, copy.action, link)
     }
 
+    if (job.kind === 'account.credentials') {
+      const copy = job.locale === 'mg'
+        ? {
+            subject: 'Ny kaontinao sy tenimiafina CoFound.mg',
+            intro: `Nomena kaonty CoFound.mg ianao.\nIdentifiant: ${job.recipient}\nTenimiafina vonjimaika: ${job.temporaryPassword}`,
+            action: 'Hampihetsika ny kaontiko',
+          }
+        : {
+            subject: 'Vos identifiants d’accès CoFound.mg',
+            intro: `Un établissement vous a créé un compte CoFound.mg.\nIdentifiant (email): ${job.recipient}\nMot de passe temporaire: ${job.temporaryPassword}`,
+            action: 'Activer mon compte et personnaliser le mot de passe',
+          }
+      const link = `${process.env.APP_URL ?? 'http://localhost:5173'}/activation/${job.activationToken}`
+      return this.rendered(from, job.recipient, copy.subject, copy.intro, copy.action, link)
+    }
+
+
     if (job.kind === 'password.reset') {
       const copy = job.locale === 'mg'
         ? { subject: 'Avereno ny tenimiafina CoFound.mg', intro: 'Nangataka famerenana tenimiafina ianao.', action: 'Hanavao ny tenimiafina' }
