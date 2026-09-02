@@ -11,6 +11,7 @@ import {
   MessageSquare,
   Download,
   Eye,
+  Inbox,
 } from 'lucide-react'
 
 interface ProjectNavTabsProps {
@@ -22,16 +23,18 @@ export function ProjectNavTabs({ projectId }: ProjectNavTabsProps) {
   const currentPath = location.pathname
 
   const tabs = [
-    { label: 'Vue générale', href: `/projects/${projectId}`, icon: Eye, exact: true },
-    { label: 'Parcours & Maturité', href: `/projects/${projectId}/journey`, icon: Compass },
-    { label: '1. Design Thinking', href: `/projects/${projectId}/design-thinking`, icon: Lightbulb },
-    { label: '2. BMC Strategyzer', href: `/projects/${projectId}/bmc`, icon: LayoutGrid },
-    { label: '3. Business Plan', href: `/projects/${projectId}/business-plan`, icon: FileText },
-    { label: '4. Finances', href: `/projects/${projectId}/finances`, icon: Calculator },
-    { label: '5. Pitch Builder', href: `/projects/${projectId}/pitch`, icon: Mic },
+    { label: 'Général', href: `/projects/${projectId}`, icon: Eye, exact: true },
+    { label: 'Parcours', href: `/projects/${projectId}/journey`, icon: Compass },
+    { label: 'Design Thinking', href: `/projects/${projectId}/design-thinking`, icon: Lightbulb },
+    { label: 'BMC Strategyzer', href: `/projects/${projectId}/bmc`, icon: LayoutGrid },
+    { label: 'Business Plan', href: `/projects/${projectId}/business-plan`, icon: FileText },
+    { label: 'Finances', href: `/projects/${projectId}/finances`, icon: Calculator },
+    { label: 'Pitch', href: `/projects/${projectId}/pitch`, icon: Mic },
     { label: 'Équipe', href: `/projects/${projectId}/team`, icon: Users },
+    { label: 'Candidatures', href: `/projects/${projectId}/applications`, icon: Inbox },
     { label: 'Tâches', href: `/projects/${projectId}/tasks`, icon: CheckSquare },
     { label: 'Publications', href: `/projects/${projectId}/posts`, icon: MessageSquare },
+    { label: 'Discussion', href: `/projects/${projectId}/channel`, icon: MessageSquare },
     { label: 'Export', href: `/projects/${projectId}/export`, icon: Download },
   ]
 
@@ -48,9 +51,9 @@ export function ProjectNavTabs({ projectId }: ProjectNavTabsProps) {
             <Link
               key={tab.href}
               to={tab.href}
-              className={`flex shrink-0 items-center gap-2 border-b-2 px-3.5 py-3 text-xs font-semibold transition-colors sm:text-sm ${
+              className={`flex shrink-0 items-center gap-1.5 border-b-2 px-3 py-3 text-xs font-semibold transition-colors sm:text-sm ${
                 isActive
-                  ? 'border-primary text-primary'
+                  ? 'border-primary text-primary font-bold'
                   : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'
               }`}
             >
