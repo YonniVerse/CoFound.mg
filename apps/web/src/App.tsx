@@ -36,6 +36,7 @@ const ImportUploadPage = lazy(() => import("@/pages/ImportUploadPage"));
 const ImportMappingPage = lazy(() => import("@/pages/ImportMappingPage"));
 const ImportPreviewPage = lazy(() => import("@/pages/ImportPreviewPage"));
 const ImportBatchesPage = lazy(() => import("@/pages/ImportBatchesPage"));
+const InstitutionDashboardPage = lazy(() => import("@/pages/InstitutionDashboardPage"));
 const InstitutionOverviewPage = lazy(() => import("@/pages/InstitutionOverviewPage"));
 const InstitutionMembersPage = lazy(() => import("@/pages/InstitutionMembersPage"));
 const InstitutionAffiliationsPage = lazy(() => import("@/pages/InstitutionAffiliationsPage"));
@@ -116,7 +117,9 @@ function App() {
     <Route path="/projects/:id/public" element={<ProjectPublicPage />} />
     <Route path="/my-applications" element={<MyApplicationsPage />} />
     <Route path="/impact" element={<ImpactPage />} />
-    <Route path="/institution" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><InstitutionOverviewPage /></PlatformRoleGate>} />
+    <Route path="/institution" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><InstitutionDashboardPage /></PlatformRoleGate>} />
+    <Route path="/institution/dashboard" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><InstitutionDashboardPage /></PlatformRoleGate>} />
+    <Route path="/institution/overview" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><InstitutionOverviewPage /></PlatformRoleGate>} />
     <Route path="/institution/members" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><InstitutionMembersPage /></PlatformRoleGate>} />
     <Route path="/institution/affiliations" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><InstitutionAffiliationsPage /></PlatformRoleGate>} />
     <Route path="/institution/directory" element={<PlatformRoleGate allowedRoles={["ORG_MEMBER"]}><InstitutionDirectoryPage /></PlatformRoleGate>} />

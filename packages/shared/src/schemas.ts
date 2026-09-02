@@ -122,6 +122,97 @@ export const affiliationUpdateSchema = z.object({ status: affiliationStatusSchem
 export const affiliationBulkStatusSchema = z.object({ affiliationIds: z.array(idSchema).min(1).max(1000), status: affiliationStatusSchema, confirmation: z.string().min(1) })
 export const institutionDirectoryQuerySchema = z.object({ organizationId: idSchema, search: z.string().trim().min(1).optional(), cohortYear: z.coerce.number().int().optional(), status: z.string().min(1).optional() })
 
+export const institutionDashboardQuerySchema = z.object({
+  organizationId: idSchema.optional(),
+})
+
+export const institutionDashboardSchema = z.object({
+  organization: z.object({
+    id: idSchema,
+    name: z.string(),
+    role: z.string(),
+    canManage: z.boolean(),
+  }),
+  students: z.object({
+    total: z.number().int().min(0),
+    invited: z.number().int().min(0),
+    active: z.number().int().min(0),
+    unactivated: z.number().int().min(0),
+    alumni: z.number().int().min(0),
+    leaving: z.number().int().min(0),
+  }),
+  profiles: z.object({
+    started: z.number().int().min(0),
+    completed: z.number().int().min(0),
+    averageCompletionPercent: z.number().min(0).max(100),
+  }),
+  projects: z.object({
+    total: z.number().int().min(0),
+    draft: z.number().int().min(0),
+    recruiting: z.number().int().min(0),
+    active: z.number().int().min(0),
+    paused: z.number().int().min(0),
+    archived: z.number().int().min(0),
+    seekingMentorship: z.number().int().min(0),
+    seekingFunding: z.number().int().min(0),
+  }),
+  activity: z.object({
+    applicationsSent: z.number().int().min(0),
+    activeMentorships: z.number().int().min(0),
+    opportunityApplications: z.number().int().min(0),
+    recentActiveStudents: z.number().int().min(0),
+  }),
+  funnel: z.object({
+    totalImported: z.number().int().min(0),
+    invitationsSent: z.number().int().min(0),
+    accountsActivated: z.number().int().min(0),
+    profilesCompleted: z.number().int().min(0),
+    activationRatePercent: z.number().min(0).max(100),
+    completionRatePercent: z.number().min(0).max(100),
+  }),
+  studentBreakdown: z.object({
+    toActivate: z.number().int().min(0),
+    activated: z.number().int().min(0),
+    profileIncomplete: z.number().int().min(0),
+    profileComplete: z.number().int().min(0),
+    inAtLeastOneProject: z.number().int().min(0),
+  }),
+  projectEvolution: z.array(
+    z.object({
+      period: z.string(),
+      created: z.number().int().min(0),
+      active: z.number().int().min(0),
+    })
+  ),
+  sectorsDistribution: z.array(
+    z.object({
+      sectorId: idSchema,
+      slug: z.string(),
+      label: z.string(),
+      count: z.number().int().min(0),
+      percent: z.number().min(0).max(100),
+    })
+  ),
+  multidisciplinarity: z.object({
+    multidisciplinaryProjectsCount: z.number().int().min(0),
+    multidisciplinaryRatePercent: z.number().min(0).max(100),
+    definitionRule: z.string(),
+  }),
+  opportunities: z.object({
+    publishedOpportunitiesCount: z.number().int().min(0),
+    studentApplicationsCount: z.number().int().min(0),
+    ongoingEngagementsCount: z.number().int().min(0),
+  }),
+  confidentiality: z.object({
+    minAggregationThreshold: z.number().int(),
+    genderBreakdownMasked: z.boolean(),
+    notes: z.string(),
+  }),
+})
+
+export type InstitutionDashboardQuery = z.infer<typeof institutionDashboardQuerySchema>
+export type InstitutionDashboard = z.infer<typeof institutionDashboardSchema>
+
 export const organizationTypeSchema = z.enum(['INSTITUTION', 'INCUBATOR', 'COMPANY', 'NGO', 'PUBLIC', 'ASSOCIATION'])
 export const organizationRequestDocumentSchema = z.object({
   fileName: z.string().trim().min(1).max(255),

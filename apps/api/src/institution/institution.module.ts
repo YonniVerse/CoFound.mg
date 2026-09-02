@@ -8,10 +8,24 @@ import { InstitutionAffiliationController } from './institution-affiliation.cont
 import { InstitutionAffiliationService } from './institution-affiliation.service.js'
 import { InstitutionDirectoryController } from './institution-directory.controller.js'
 import { InstitutionDirectoryService } from './institution-directory.service.js'
+import { InstitutionDashboardController } from './institution-dashboard.controller.js'
+import { InstitutionDashboardService } from './institution-dashboard.service.js'
 
 @Module({
   imports: [PrismaModule],
-  controllers: [InstitutionOverviewController, InstitutionMembersController, InstitutionAffiliationController, InstitutionDirectoryController],
-  providers: [InstitutionOverviewService, InstitutionMembersService, InstitutionAffiliationService, InstitutionDirectoryService],
+  controllers: [
+    InstitutionOverviewController,
+    InstitutionMembersController,
+    InstitutionAffiliationController,
+    InstitutionDirectoryController,
+    InstitutionDashboardController,
+  ],
+  providers: [
+    InstitutionOverviewService,
+    InstitutionMembersService,
+    InstitutionAffiliationService,
+    InstitutionDirectoryService,
+    InstitutionDashboardService,
+  ],
 })
 export class InstitutionModule {}
