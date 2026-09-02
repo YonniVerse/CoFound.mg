@@ -1,6 +1,6 @@
 import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import type { Prisma } from '@prisma/client'
-import { ImportBatchStatus, ImportRowResult, OrganizationRole } from '@prisma/client'
+import { ImportBatchStatus, ImportRowResult, OrganizationType } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { analyzeImportFile, type ImportField } from './import-parser.js'
 
@@ -132,27 +132,29 @@ export class ImportUploadService {
   private async assertBatchAccess(batchId: string, actorId: string) {
     const batch = await this.prisma.importBatch.findUnique({ where: { id: batchId } })
     if (!batch) throw new NotFoundException('Lot d’import introuvable.')
+
+    const user = await this.prisma.user.findUnique({ where: { id: actorId }, select: { platformRole: true } })
+    if (user?.platformRole === 'STAFF') return batch
+
     const member = await this.prisma.organizationMember.findUnique({
       where: { organizationId_userId: { organizationId: batch.organizationId, userId: actorId } },
     })
-    if (!member || !['ORG_ADMIN', 'ORG_MANAGER'].includes(member.role)) {
+    if (!member) {
       throw new ForbiddenException('Vous ne pouvez pas modifier ce lot.')
     }
     return batch
   }
 
   private async resolveOrganizationId(actorId: string, requestedOrgId?: string): Promise<string> {
-    const roles = [OrganizationRole.ORG_ADMIN, OrganizationRole.ORG_MANAGER]
+    const user = await this.prisma.user.findUnique({ where: { id: actorId }, select: { platformRole: true } })
+
     const members = await this.prisma.organizationMember.findMany({
-      where: { userId: actorId, role: { in: roles } },
-      select: { organizationId: true },
+      where: { userId: actorId },
+      select: { organizationId: true, role: true },
     })
 
-    if (members.length === 0) {
-      throw new ForbiddenException('Vous devez être administrateur ou gestionnaire d’un établissement pour importer.')
-    }
-
     if (requestedOrgId) {
+      if (user?.platformRole === 'STAFF') return requestedOrgId
       const match = members.find((m) => m.organizationId === requestedOrgId)
       if (!match) {
         throw new ForbiddenException('Vous ne disposez pas des droits d’import sur cet établissement.')
@@ -160,6 +162,22 @@ export class ImportUploadService {
       return requestedOrgId
     }
 
-    return members[0]!.organizationId
+    if (members.length > 0) {
+      const managerMember = members.find((m) => ['ORG_ADMIN', 'ORG_MANAGER'].includes(m.role))
+      return (managerMember || members[0])!.organizationId
+    }
+
+    if (user?.platformRole === 'STAFF') {
+      const org = await this.prisma.organization.findFirst({
+        where: { type: OrganizationType.INSTITUTION },
+        select: { id: true },
+      }) || await this.prisma.organization.findFirst({ select: { id: true } })
+      if (org) return org.id
+    }
+
+    const firstOrg = await this.prisma.organization.findFirst({ select: { id: true } })
+    if (firstOrg) return firstOrg.id
+
+    throw new ForbiddenException('Vous devez être rattaché à un établissement pour effectuer un import.')
   }
 }

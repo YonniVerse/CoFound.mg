@@ -1,7 +1,7 @@
 import { useState, useRef, type ChangeEvent, type DragEvent } from 'react'
 import { ArrowLeft, ArrowRight, FileSpreadsheet, UploadCloud, FileText, XCircle, Loader2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { apiClient } from '@/lib/api-client'
+import { apiClient, ApiClientError } from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
@@ -74,8 +74,14 @@ export default function ImportUploadPage() {
       })
 
       navigate(`/institution/imports/${response.batchId}/mapping?importId=${response.batchId}`)
-    } catch {
-      setError('Une erreur est survenue lors de l’envoi du fichier. Vérifiez votre connexion et le format du fichier.')
+    } catch (caught) {
+      if (caught instanceof ApiClientError) {
+        setError(caught.messageKey && caught.messageKey !== 'errors.internal' ? caught.messageKey : (caught.message || 'Une erreur serveur est survenue lors de l’envoi.'))
+      } else if (caught instanceof Error) {
+        setError(caught.message)
+      } else {
+        setError('Une erreur est survenue lors de l’envoi du fichier. Vérifiez votre connexion et le format du fichier.')
+      }
     } finally {
       setIsUploading(false)
     }
