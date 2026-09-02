@@ -19,7 +19,6 @@ import {
   AlertCircle,
   ChevronRight,
   Shield,
-  Sparkles,
   Target,
   Compass,
   CheckCircle2,
@@ -47,7 +46,7 @@ type ReferenceOption = { id: string; slug: string; labelKey: string }
 
 const MISSING_MAP: Record<string, { label: string }> = {
   'profile.fields.pseudonym': { label: 'Ajouter un pseudonyme' },
-  'profile.fields.headline': { label: 'Ajouter une phrase d\'accroche' },
+  'profile.fields.headline': { label: 'Ajouter une phrase d’accroche' },
   'profile.fields.bio': { label: 'Rédiger une présentation' },
   'profile.fields.field': { label: 'Indiquer votre filière' },
   'profile.fields.cohortYear': { label: 'Indiquer votre promotion' },
@@ -110,24 +109,24 @@ function formatRole(role: string | undefined, functionalRole: string | null | un
 function ProfileSkeleton() {
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6" role="status" aria-label="Chargement du profil">
-      <Card className="rounded-2xl border border-border bg-card p-6 shadow-2xs">
+      <Card className="rounded-xl border border-border bg-card p-6 shadow-2xs">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          <Skeleton className="h-24 w-24 rounded-2xl" />
+          <Skeleton className="h-20 w-20 rounded-xl" />
           <div className="flex-1 space-y-3 w-full">
-            <Skeleton className="h-7 w-56" />
+            <Skeleton className="h-6 w-56" />
             <Skeleton className="h-4 w-72" />
             <Skeleton className="h-4 w-full max-w-lg" />
           </div>
         </div>
       </Card>
-      <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+      <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
         <div className="space-y-6">
-          <Skeleton className="h-48 w-full rounded-2xl" />
-          <Skeleton className="h-64 w-full rounded-2xl" />
+          <Skeleton className="h-48 w-full rounded-xl" />
+          <Skeleton className="h-64 w-full rounded-xl" />
         </div>
         <div className="space-y-6">
-          <Skeleton className="h-56 w-full rounded-2xl" />
-          <Skeleton className="h-40 w-full rounded-2xl" />
+          <Skeleton className="h-56 w-full rounded-xl" />
+          <Skeleton className="h-40 w-full rounded-xl" />
         </div>
       </div>
     </div>
@@ -219,7 +218,7 @@ export default function ProfilePage() {
     return (
       <DashboardLayout>
         <div className="mx-auto max-w-lg px-4 py-16 text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-destructive/20 bg-destructive/10 text-destructive">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-destructive/20 bg-destructive/10 text-destructive">
             <AlertCircle className="h-6 w-6" />
           </div>
           <h1 className="font-heading text-xl font-bold text-foreground">Erreur de chargement</h1>
@@ -287,7 +286,7 @@ export default function ProfilePage() {
               <Button
                 size="sm"
                 asChild
-                className="h-9 gap-1.5 rounded-lg px-4 text-xs font-semibold shadow-xs"
+                className="h-9 gap-1.5 rounded-lg px-4 text-xs font-semibold shadow-2xs"
               >
                 <Link to="/onboarding">
                   <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
@@ -297,130 +296,118 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* HERO BANNER CARD */}
-          <Card className="relative overflow-hidden rounded-2xl border border-border/80 bg-card shadow-2xs">
-            {/* Top decorative gradient bar */}
-            <div className="h-28 sm:h-32 w-full bg-gradient-to-r from-primary/20 via-primary/10 to-secondary/15 relative">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_70%)]" />
-              <div className="absolute top-3.5 right-4 flex items-center gap-2">
-                <span
-                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold backdrop-blur-md shadow-2xs border ${
-                    profile?.visibleInTalentFeed
-                      ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
-                      : 'border-border/60 bg-card/80 text-muted-foreground'
-                  }`}
-                >
-                  {profile?.visibleInTalentFeed ? (
-                    <>
-                      <Eye className="h-3.5 w-3.5 text-emerald-600" /> Annuaire actif
-                    </>
-                  ) : (
-                    <>
-                      <EyeOff className="h-3.5 w-3.5" /> Annuaire masqué
-                    </>
-                  )}
-                </span>
-              </div>
-            </div>
-
-            {/* Profile Info Row with overlapping Avatar */}
-            <div className="px-5 sm:px-8 pb-6 sm:pb-8 pt-0">
-              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-12 sm:-mt-14 mb-5">
-                <div className="flex items-end gap-4">
+          {/* USER INFO HEADER (Minimalist & Clean Card) */}
+          <Card className="rounded-xl border border-border bg-card p-6 shadow-2xs">
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-5">
+                <div className="flex items-start gap-4 sm:gap-5">
                   <Avatar
                     name={displayName}
                     src={identity?.photoKey}
                     size="lg"
-                    className="h-24 w-24 sm:h-28 sm:w-28 rounded-2xl border-4 border-card text-2xl font-bold shrink-0 shadow-sm bg-muted"
+                    className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl border border-border text-xl font-bold shrink-0 bg-muted"
                   />
-                  <div className="space-y-0.5 pb-1">
+                  <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                      <h1 className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-foreground">
                         {displayName}
                       </h1>
+                      {profile?.pseudonym && (
+                        <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                          @{profile.pseudonym}
+                        </span>
+                      )}
                     </div>
-                    {profile?.pseudonym && (
-                      <p className="text-xs font-semibold text-primary">
-                        @{profile.pseudonym}
+
+                    {profile?.headline && (
+                      <p className="text-sm font-medium text-foreground leading-relaxed">
+                        {profile.headline}
+                      </p>
+                    )}
+
+                    {user.email && (
+                      <p className="flex items-center gap-1.5 text-xs text-muted-foreground pt-0.5">
+                        <Mail className="h-3.5 w-3.5" />
+                        <span>{user.email}</span>
+                        <span className="text-border">·</span>
+                        <span className="text-[11px]">Privé</span>
                       </p>
                     )}
                   </div>
                 </div>
 
-                {/* Quick stats pills */}
-                <div className="flex flex-wrap items-center gap-2">
-                  {fieldLabel && (
-                    <div className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-muted/30 px-3 py-1.5 text-xs font-semibold text-foreground">
-                      <GraduationCap className="h-3.5 w-3.5 text-primary" />
-                      <span>{fieldLabel}</span>
-                    </div>
-                  )}
-                  {profile?.cohortYear && (
-                    <div className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-muted/30 px-3 py-1.5 text-xs font-semibold text-foreground">
-                      <UserRound className="h-3.5 w-3.5 text-primary" />
-                      <span>Promo {profile.cohortYear}</span>
-                    </div>
-                  )}
-                  {profile?.availabilityHours !== null && profile?.availabilityHours !== undefined && (
-                    <div className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-muted/30 px-3 py-1.5 text-xs font-semibold text-foreground">
-                      <Clock className="h-3.5 w-3.5 text-secondary" />
-                      <span>{profile.availabilityHours} h / sem</span>
-                    </div>
-                  )}
+                {/* Status Indicator */}
+                <div className="flex shrink-0 items-center">
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold ${
+                      profile?.visibleInTalentFeed
+                        ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400'
+                        : 'border-border bg-muted/50 text-muted-foreground'
+                    }`}
+                  >
+                    {profile?.visibleInTalentFeed ? (
+                      <>
+                        <Eye className="h-3.5 w-3.5" /> Profil visible dans l’annuaire
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="h-3.5 w-3.5" /> Profil masqué
+                      </>
+                    )}
+                  </span>
                 </div>
               </div>
 
-              {/* Headline & Bio */}
-              <div className="space-y-3 border-t border-border/60 pt-5">
-                {profile?.headline ? (
-                  <p className="font-heading text-base sm:text-lg font-semibold text-foreground leading-snug">
-                    {profile.headline}
-                  </p>
-                ) : (
-                  <p className="text-sm italic text-muted-foreground">
-                    Aucune phrase d’accroche définie.
-                  </p>
+              {/* Badges / Key Details */}
+              <div className="flex flex-wrap items-center gap-2 border-t border-border/60 pt-4 text-xs">
+                {fieldLabel && (
+                  <span className="inline-flex items-center gap-1.5 rounded-md border border-primary/20 bg-primary/5 px-2.5 py-1 font-medium text-primary">
+                    <GraduationCap className="h-3.5 w-3.5" />
+                    {fieldLabel}
+                  </span>
                 )}
+                {profile?.cohortYear && (
+                  <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/40 px-2.5 py-1 font-medium text-muted-foreground">
+                    <UserRound className="h-3.5 w-3.5" />
+                    Promotion {profile.cohortYear}
+                  </span>
+                )}
+                {profile?.availabilityHours !== null && profile?.availabilityHours !== undefined && (
+                  <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/40 px-2.5 py-1 font-medium text-muted-foreground">
+                    <Clock className="h-3.5 w-3.5" />
+                    {profile.availabilityHours} h / semaine
+                  </span>
+                )}
+              </div>
 
-                {profile?.bio && (
+              {/* Bio description */}
+              {profile?.bio && (
+                <div className="border-t border-border/50 pt-4">
                   <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap max-w-3xl">
                     {profile.bio}
                   </p>
-                )}
-
-                {/* Email (protected) */}
-                {user.email && (
-                  <div className="flex items-center gap-2 pt-1 text-xs text-muted-foreground">
-                    <Mail className="h-3.5 w-3.5 text-muted-foreground/80" />
-                    <span>{user.email}</span>
-                    <span className="rounded bg-muted px-1.5 py-0.2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                      Confidentiel
-                    </span>
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </Card>
 
-          {/* TWO-COLUMN GRID: Left = Projects & Collaboration, Right = Skills, Goals & Stats */}
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] items-start">
+          {/* TWO-COLUMN CONTENT GRID */}
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px] items-start">
 
-            {/* ── LEFT COLUMN ── */}
+            {/* ── LEFT COLUMN: Projects & Collaboration ── */}
             <div className="space-y-6">
 
-              {/* Projects Section */}
-              <Card className="rounded-2xl border border-border/80 bg-card shadow-2xs overflow-hidden">
+              {/* Projects Card */}
+              <Card className="rounded-xl border border-border bg-card shadow-2xs overflow-hidden">
                 <CardHeader className="flex flex-row items-center justify-between border-b border-border/60 p-5 sm:p-6">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                      <FolderGit2 className="h-4 w-4" />
-                    </div>
+                    <FolderGit2 className="h-4 w-4 text-primary" />
                     <div>
                       <CardTitle className="font-heading text-base font-bold text-foreground">
                         Mes Projets ({projects.length})
                       </CardTitle>
                       <CardDescription className="text-xs">
-                        Projets créés ou rejoints sur la plateforme.
+                        Projets créés ou rejoints sur CoFound.
                       </CardDescription>
                     </div>
                   </div>
@@ -435,7 +422,7 @@ export default function ProfilePage() {
                 <CardContent className="p-5 sm:p-6">
                   {projects.length === 0 ? (
                     <div className="rounded-xl border border-dashed border-border/80 bg-muted/20 p-8 text-center">
-                      <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                      <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
                         <BriefcaseBusiness className="h-5 w-5" aria-hidden="true" />
                       </div>
                       <h3 className="mt-3 font-heading text-sm font-bold text-foreground">
@@ -469,7 +456,7 @@ export default function ProfilePage() {
                           <Link
                             key={project.id}
                             to={`/projects/${project.id}`}
-                            className="group flex flex-col justify-between rounded-xl border border-border/80 bg-card p-4 shadow-2xs transition-all hover:border-primary/40 hover:shadow-xs"
+                            className="group flex flex-col justify-between rounded-xl border border-border bg-card p-4 shadow-2xs transition-all hover:border-primary/40 hover:shadow-xs"
                           >
                             <div className="space-y-2">
                               <div className="flex items-start justify-between gap-2">
@@ -516,9 +503,9 @@ export default function ProfilePage() {
                 </CardContent>
               </Card>
 
-              {/* Parcours Entrepreneurial Direct Access */}
+              {/* Parcours Entrepreneurial */}
               {projects.length > 0 && (
-                <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 sm:p-6 shadow-2xs">
+                <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 shadow-2xs">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="space-y-1">
                       <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-bold text-primary">
@@ -528,7 +515,7 @@ export default function ProfilePage() {
                         Pilotez votre entreprise étape par étape
                       </h3>
                       <p className="text-xs text-muted-foreground leading-relaxed max-w-xl">
-                        Design Thinking, Business Model Canvas, Modélisation Financière et Pitch Deck intégrés.
+                        Design Thinking, Business Model Canvas, Modélisation Financière et Pitch Deck.
                       </p>
                     </div>
                     <Button asChild size="sm" className="h-9 shrink-0 gap-1.5 rounded-lg text-xs font-semibold shadow-xs">
@@ -541,37 +528,34 @@ export default function ProfilePage() {
                 </div>
               )}
 
-              {/* Confidentiality & Security Card */}
-              <Card className="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-2xs">
-                <div className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border/80 bg-muted/40 text-primary">
-                    <ShieldCheck className="h-5 w-5" />
+              {/* Confidentiality Notice */}
+              <Card className="rounded-xl border border-border bg-card p-5 shadow-2xs">
+                <div className="flex items-start gap-3.5">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/40 text-primary">
+                    <ShieldCheck className="h-4 w-4" />
                   </div>
-                  <div className="space-y-1.5 flex-1">
-                    <h3 className="font-heading text-sm font-bold text-foreground flex items-center gap-1.5">
+                  <div className="space-y-1 flex-1">
+                    <h3 className="font-heading text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
                       <Lock className="h-3.5 w-3.5 text-muted-foreground" />
-                      Protection de l'identité civile & Données protégées
+                      Protection des données & Confidentialité
                     </h3>
                     <p className="text-xs leading-relaxed text-muted-foreground">
-                      Conformément aux principes de confidentialité de CoFound, votre identité civile complète et vos coordonnées personnelles ne sont jamais partagées publiquement. Seuls votre pseudonyme, filière académique et compétences sont accessibles lors des mises en relation.
+                      Conformément aux principes de confidentialité de CoFound, votre identité civile complète et votre email ne sont jamais exposés publiquement. Seuls votre pseudonyme, filière et compétences sont visibles dans les espaces d’échanges.
                     </p>
                   </div>
                 </div>
               </Card>
             </div>
 
-            {/* ── RIGHT SIDEBAR ── */}
+            {/* ── RIGHT SIDEBAR: Completion, Skills, Sectors, Goals ── */}
             <div className="space-y-6 lg:sticky lg:top-[90px]">
 
-              {/* Profile Completion Widget */}
-              <Card className="rounded-2xl border border-border/80 bg-card p-5 shadow-2xs space-y-4">
+              {/* Profile Completion Card */}
+              <Card className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-primary" />
-                    <h2 className="font-heading text-sm font-bold text-foreground">
-                      Complétion du profil
-                    </h2>
-                  </div>
+                  <h2 className="font-heading text-sm font-bold text-foreground">
+                    Complétion du profil
+                  </h2>
                   <span className="font-heading text-sm font-bold text-primary">
                     {completion}%
                   </span>
@@ -582,7 +566,7 @@ export default function ProfilePage() {
                 {completion < 100 ? (
                   <div className="space-y-3 pt-1">
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      Complétez votre profil pour maximiser vos opportunités de collaboration et de mentorat.
+                      Complétez votre profil pour enrichir vos opportunités de mise en relation.
                     </p>
                     {missingItems.length > 0 && (
                       <div className="space-y-1.5">
@@ -590,7 +574,7 @@ export default function ProfilePage() {
                           <Link
                             key={idx}
                             to="/onboarding"
-                            className="group flex items-center justify-between rounded-lg border border-border/80 bg-muted/30 px-3 py-2 text-xs font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
+                            className="group flex items-center justify-between rounded-lg border border-border bg-muted/30 px-3 py-2 text-xs font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
                           >
                             <span>{item.label}</span>
                             <ChevronRight className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
@@ -603,15 +587,15 @@ export default function ProfilePage() {
                     </Button>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 pt-1">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-emerald-700 dark:text-emerald-400 pt-1">
                     <CheckCircle2 className="h-4 w-4" />
-                    Profil complet à 100% !
+                    Profil complet à 100%
                   </div>
                 )}
               </Card>
 
-              {/* Skills & Expertise */}
-              <Card className="rounded-2xl border border-border/80 bg-card p-5 shadow-2xs space-y-4">
+              {/* Skills */}
+              <Card className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-4">
                 <div className="flex items-center justify-between border-b border-border/50 pb-3">
                   <h2 className="font-heading text-sm font-bold text-foreground flex items-center gap-2">
                     <Tag className="h-4 w-4 text-primary" />
@@ -627,7 +611,7 @@ export default function ProfilePage() {
                     {userSkills.map((skill) => (
                       <span
                         key={skill.id}
-                        className="rounded-lg bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary border border-primary/15"
+                        className="rounded-md bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary border border-primary/15"
                       >
                         {formatReferenceLabel(skill.labelKey, skill.slug)}
                       </span>
@@ -640,11 +624,11 @@ export default function ProfilePage() {
                 )}
               </Card>
 
-              {/* Sectors of Interest */}
-              <Card className="rounded-2xl border border-border/80 bg-card p-5 shadow-2xs space-y-4">
+              {/* Sectors */}
+              <Card className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-4">
                 <div className="flex items-center justify-between border-b border-border/50 pb-3">
                   <h2 className="font-heading text-sm font-bold text-foreground flex items-center gap-2">
-                    <Target className="h-4 w-4 text-secondary" />
+                    <Target className="h-4 w-4 text-primary" />
                     Secteurs d’intérêt
                   </h2>
                   <Button variant="ghost" size="sm" asChild className="h-7 text-xs text-muted-foreground hover:text-foreground px-2">
@@ -657,7 +641,7 @@ export default function ProfilePage() {
                     {userSectors.map((sector) => (
                       <span
                         key={sector.id}
-                        className="rounded-lg bg-secondary/10 px-2.5 py-1 text-xs font-medium text-secondary border border-secondary/15"
+                        className="rounded-md bg-muted px-2.5 py-1 text-xs font-medium text-foreground border border-border"
                       >
                         {formatReferenceLabel(sector.labelKey, sector.slug)}
                       </span>
@@ -670,9 +654,9 @@ export default function ProfilePage() {
                 )}
               </Card>
 
-              {/* Goals / Seeking */}
+              {/* Goals */}
               {profile?.goals && profile.goals.length > 0 && (
-                <Card className="rounded-2xl border border-border/80 bg-card p-5 shadow-2xs space-y-4">
+                <Card className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-4">
                   <div className="flex items-center justify-between border-b border-border/50 pb-3">
                     <h2 className="font-heading text-sm font-bold text-foreground flex items-center gap-2">
                       <Compass className="h-4 w-4 text-primary" />
@@ -687,7 +671,7 @@ export default function ProfilePage() {
                     {profile.goals.map((goal) => (
                       <span
                         key={goal}
-                        className="rounded-lg bg-muted px-2.5 py-1 text-xs font-medium text-foreground border border-border/60"
+                        className="rounded-md bg-muted px-2.5 py-1 text-xs font-medium text-foreground border border-border"
                       >
                         {goal}
                       </span>
