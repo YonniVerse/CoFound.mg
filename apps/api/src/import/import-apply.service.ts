@@ -76,9 +76,33 @@ export class ImportApplyService {
       // Pre-fetch active fields to match fieldOfStudy
       const activeFields = transaction.field ? await transaction.field.findMany({ where: { isActive: true } }) : []
       const fieldMap = new Map<string, string>()
+      const synonymMap: Record<string, string> = {
+        informatique: 'computer-science',
+        info: 'computer-science',
+        'génie informatique': 'computer-science',
+        gestion: 'management',
+        commerce: 'management',
+        management: 'management',
+        droit: 'law',
+        juridique: 'law',
+        économie: 'economics',
+        economie: 'economics',
+        finance: 'economics',
+        'génie civil': 'engineering',
+        ingénierie: 'engineering',
+        ingenierie: 'engineering',
+        agriculture: 'agriculture',
+        agronomie: 'agriculture',
+        communication: 'communication',
+        design: 'design',
+      }
       for (const field of activeFields) {
         fieldMap.set(field.slug.toLowerCase(), field.id)
         fieldMap.set(field.labelKey.toLowerCase(), field.id)
+      }
+      for (const [syn, slug] of Object.entries(synonymMap)) {
+        const id = fieldMap.get(slug)
+        if (id) fieldMap.set(syn, id)
       }
 
       const isCertifying = batch.organization?.type === 'INSTITUTION'
@@ -152,17 +176,20 @@ export class ImportApplyService {
               },
             })
 
+        const firstName = this.optionalString(student.firstName) || ''
+        const lastName = this.optionalString(student.lastName) || ''
+
         await transaction.talentIdentity.upsert({
           where: { userId: user.id },
           create: {
             userId: user.id,
-            firstName: String(student.firstName).trim(),
-            lastName: String(student.lastName).trim(),
+            firstName,
+            lastName,
             gender: this.optionalString(student.gender),
           },
           update: {
-            firstName: String(student.firstName).trim(),
-            lastName: String(student.lastName).trim(),
+            firstName,
+            lastName,
             gender: this.optionalString(student.gender),
           },
         })

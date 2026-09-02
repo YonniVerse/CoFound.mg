@@ -132,9 +132,12 @@ function formatDate(value: string) {
 }
 
 function apiMessage(error: unknown) {
-  return error instanceof ApiClientError
-    ? 'Cette action n’est pas autorisée ou ne peut pas être exécutée dans l’état actuel du lot.'
-    : 'Une erreur réseau est survenue. Réessayez.'
+  if (error instanceof ApiClientError) {
+    const key = error.messageKey
+    if (key && !key.startsWith('errors.') && !key.startsWith('HTTP_')) return key
+    return error.message || 'Cette action n’est pas autorisée ou ne peut pas être exécutée dans l’état actuel du lot.'
+  }
+  return 'Une erreur réseau est survenue. Réessayez.'
 }
 
 function ImportListSkeleton() {
