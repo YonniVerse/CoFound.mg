@@ -63,18 +63,18 @@ export default function ProjectDetailPage() {
                 {/* Entrepreneurial Creation Journey CTA */}
                 <Link
                   to={`/projects/${project.id}/journey`}
-                  className="group flex flex-col gap-2 rounded-xl border border-primary/20 bg-primary/5 p-4 shadow-2xs transition-all hover:border-primary/40 hover:bg-primary/10"
+                  className="group flex flex-col gap-2.5 rounded-xl border border-primary/20 bg-primary/5 p-5 shadow-2xs transition-all hover:border-primary/40 hover:bg-primary/10"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-bold text-primary">
-                      <Compass className="h-3.5 w-3.5" /> Parcours Création
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary">
+                      <Compass className="h-4 w-4" /> Parcours Création
                     </span>
                     <ChevronRight className="h-4 w-4 text-primary transition-transform group-hover:translate-x-1" />
                   </div>
-                  <p className="font-heading text-sm font-bold text-foreground">
+                  <p className="font-heading text-base font-bold text-foreground">
                     Construire l’entreprise
                   </p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     Design Thinking, BMC Strategyzer, Business Plan, Finances & Pitch.
                   </p>
                 </Link>

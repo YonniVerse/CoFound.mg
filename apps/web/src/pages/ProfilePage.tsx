@@ -297,7 +297,7 @@ export default function ProfilePage() {
           </div>
 
           {/* USER INFO HEADER (Minimalist & Clean Card) */}
-          <Card className="rounded-xl border border-border bg-card p-6 shadow-2xs">
+          <Card className="rounded-xl border border-border bg-card p-6 sm:p-7 shadow-2xs">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-5">
                 <div className="flex items-start gap-4 sm:gap-5">
@@ -305,32 +305,32 @@ export default function ProfilePage() {
                     name={displayName}
                     src={identity?.photoKey}
                     size="lg"
-                    className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl border border-border text-xl font-bold shrink-0 bg-muted"
+                    className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl border border-border text-2xl font-bold shrink-0 bg-muted"
                   />
-                  <div className="space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h1 className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+                  <div className="space-y-1.5">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                         {displayName}
                       </h1>
                       {profile?.pseudonym && (
-                        <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                        <span className="rounded-md bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
                           @{profile.pseudonym}
                         </span>
                       )}
                     </div>
 
                     {profile?.headline && (
-                      <p className="text-sm font-medium text-foreground leading-relaxed">
+                      <p className="text-base font-semibold text-foreground leading-relaxed">
                         {profile.headline}
                       </p>
                     )}
 
                     {user.email && (
-                      <p className="flex items-center gap-1.5 text-xs text-muted-foreground pt-0.5">
-                        <Mail className="h-3.5 w-3.5" />
+                      <p className="flex items-center gap-2 text-sm text-muted-foreground pt-0.5">
+                        <Mail className="h-4 w-4" />
                         <span>{user.email}</span>
                         <span className="text-border">·</span>
-                        <span className="text-[11px]">Privé</span>
+                        <span className="text-xs font-medium text-muted-foreground/80">Privé</span>
                       </p>
                     )}
                   </div>
@@ -339,7 +339,7 @@ export default function ProfilePage() {
                 {/* Status Indicator */}
                 <div className="flex shrink-0 items-center">
                   <span
-                    className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold ${
+                    className={`inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-semibold ${
                       profile?.visibleInTalentFeed
                         ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400'
                         : 'border-border bg-muted/50 text-muted-foreground'
@@ -347,11 +347,11 @@ export default function ProfilePage() {
                   >
                     {profile?.visibleInTalentFeed ? (
                       <>
-                        <Eye className="h-3.5 w-3.5" /> Profil visible dans l’annuaire
+                        <Eye className="h-4 w-4" /> Profil visible dans l’annuaire
                       </>
                     ) : (
                       <>
-                        <EyeOff className="h-3.5 w-3.5" /> Profil masqué
+                        <EyeOff className="h-4 w-4" /> Profil masqué
                       </>
                     )}
                   </span>
@@ -359,22 +359,22 @@ export default function ProfilePage() {
               </div>
 
               {/* Badges / Key Details */}
-              <div className="flex flex-wrap items-center gap-2 border-t border-border/60 pt-4 text-xs">
+              <div className="flex flex-wrap items-center gap-2.5 border-t border-border/60 pt-4 text-xs sm:text-sm">
                 {fieldLabel && (
-                  <span className="inline-flex items-center gap-1.5 rounded-md border border-primary/20 bg-primary/5 px-2.5 py-1 font-medium text-primary">
-                    <GraduationCap className="h-3.5 w-3.5" />
+                  <span className="inline-flex items-center gap-1.5 rounded-md border border-primary/20 bg-primary/5 px-3 py-1.5 font-semibold text-primary">
+                    <GraduationCap className="h-4 w-4" />
                     {fieldLabel}
                   </span>
                 )}
                 {profile?.cohortYear && (
-                  <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/40 px-2.5 py-1 font-medium text-muted-foreground">
-                    <UserRound className="h-3.5 w-3.5" />
+                  <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/40 px-3 py-1.5 font-medium text-foreground">
+                    <UserRound className="h-4 w-4 text-muted-foreground" />
                     Promotion {profile.cohortYear}
                   </span>
                 )}
                 {profile?.availabilityHours !== null && profile?.availabilityHours !== undefined && (
-                  <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/40 px-2.5 py-1 font-medium text-muted-foreground">
-                    <Clock className="h-3.5 w-3.5" />
+                  <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/40 px-3 py-1.5 font-medium text-foreground">
+                    <Clock className="h-4 w-4 text-muted-foreground" />
                     {profile.availabilityHours} h / semaine
                   </span>
                 )}
@@ -383,7 +383,7 @@ export default function ProfilePage() {
               {/* Bio description */}
               {profile?.bio && (
                 <div className="border-t border-border/50 pt-4">
-                  <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap max-w-3xl">
+                  <p className="text-sm sm:text-base leading-relaxed text-muted-foreground whitespace-pre-wrap max-w-3xl">
                     {profile.bio}
                   </p>
                 </div>
@@ -392,7 +392,7 @@ export default function ProfilePage() {
           </Card>
 
           {/* TWO-COLUMN CONTENT GRID */}
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px] items-start">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] items-start">
 
             {/* ── LEFT COLUMN: Projects & Collaboration ── */}
             <div className="space-y-6">
@@ -401,12 +401,12 @@ export default function ProfilePage() {
               <Card className="rounded-xl border border-border bg-card shadow-2xs overflow-hidden">
                 <CardHeader className="flex flex-row items-center justify-between border-b border-border/60 p-5 sm:p-6">
                   <div className="flex items-center gap-2.5">
-                    <FolderGit2 className="h-4 w-4 text-primary" />
+                    <FolderGit2 className="h-5 w-5 text-primary" />
                     <div>
-                      <CardTitle className="font-heading text-base font-bold text-foreground">
+                      <CardTitle className="font-heading text-base sm:text-lg font-bold text-foreground">
                         Mes Projets ({projects.length})
                       </CardTitle>
-                      <CardDescription className="text-xs">
+                      <CardDescription className="text-xs sm:text-sm">
                         Projets créés ou rejoints sur CoFound.
                       </CardDescription>
                     </div>
@@ -422,23 +422,23 @@ export default function ProfilePage() {
                 <CardContent className="p-5 sm:p-6">
                   {projects.length === 0 ? (
                     <div className="rounded-xl border border-dashed border-border/80 bg-muted/20 p-8 text-center">
-                      <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                        <BriefcaseBusiness className="h-5 w-5" aria-hidden="true" />
+                      <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                        <BriefcaseBusiness className="h-6 w-6" aria-hidden="true" />
                       </div>
-                      <h3 className="mt-3 font-heading text-sm font-bold text-foreground">
+                      <h3 className="mt-3 font-heading text-base font-bold text-foreground">
                         Aucun projet actif
                       </h3>
-                      <p className="mx-auto mt-1 max-w-sm text-xs text-muted-foreground leading-relaxed">
+                      <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground leading-relaxed">
                         Lancez votre première initiative entrepreneuriale ou candidatez à un projet ouvert.
                       </p>
                       <div className="mt-4 flex justify-center gap-2">
-                        <Button asChild size="sm" className="h-8 text-xs font-semibold shadow-2xs">
+                        <Button asChild size="sm" className="h-9 text-xs font-semibold shadow-2xs">
                           <Link to="/projects/new">
-                            <Plus className="mr-1 h-3.5 w-3.5" />
+                            <Plus className="mr-1.5 h-4 w-4" />
                             Créer un projet
                           </Link>
                         </Button>
-                        <Button asChild variant="outline" size="sm" className="h-8 text-xs font-semibold">
+                        <Button asChild variant="outline" size="sm" className="h-9 text-xs font-semibold">
                           <Link to="/projects">
                             Explorer les projets
                           </Link>
@@ -456,39 +456,39 @@ export default function ProfilePage() {
                           <Link
                             key={project.id}
                             to={`/projects/${project.id}`}
-                            className="group flex flex-col justify-between rounded-xl border border-border bg-card p-4 shadow-2xs transition-all hover:border-primary/40 hover:shadow-xs"
+                            className="group flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-2xs transition-all hover:border-primary/40 hover:shadow-xs"
                           >
-                            <div className="space-y-2">
+                            <div className="space-y-2.5">
                               <div className="flex items-start justify-between gap-2">
-                                <h3 className="font-heading text-sm font-bold tracking-tight text-foreground transition-colors group-hover:text-primary line-clamp-1">
+                                <h3 className="font-heading text-base font-bold tracking-tight text-foreground transition-colors group-hover:text-primary line-clamp-1">
                                   {project.title}
                                 </h3>
                                 <span
-                                  className={`shrink-0 rounded-md border px-2 py-0.5 text-[10px] font-semibold ${statusInfo.className}`}
+                                  className={`shrink-0 rounded-md border px-2 py-0.5 text-xs font-semibold ${statusInfo.className}`}
                                 >
                                   {statusInfo.label}
                                 </span>
                               </div>
-                              <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                              <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
                                 {project.pitch || 'Aucun pitch renseigné.'}
                               </p>
                             </div>
 
-                            <div className="mt-4 flex items-center justify-between border-t border-border/50 pt-3 text-[11px] text-muted-foreground">
+                            <div className="mt-4 flex items-center justify-between border-t border-border/50 pt-3 text-xs text-muted-foreground">
                               {isOwner ? (
-                                <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
-                                  <Shield className="h-3 w-3" />
+                                <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">
+                                  <Shield className="h-3.5 w-3.5" />
                                   {userRoleLabel}
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-[10px] font-semibold text-foreground">
-                                  <Users className="h-3 w-3" />
+                                <span className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-xs font-semibold text-foreground">
+                                  <Users className="h-3.5 w-3.5" />
                                   {userRoleLabel}
                                 </span>
                               )}
                               {project.sector && (
-                                <span className="inline-flex items-center gap-1 text-muted-foreground truncate max-w-[130px]">
-                                  <Tag className="h-3 w-3 shrink-0" />
+                                <span className="inline-flex items-center gap-1 text-muted-foreground truncate max-w-[140px]">
+                                  <Tag className="h-3.5 w-3.5 shrink-0" />
                                   <span className="truncate">
                                     {formatReferenceLabel(project.sector.labelKey, project.sector.slug)}
                                   </span>
@@ -505,23 +505,23 @@ export default function ProfilePage() {
 
               {/* Parcours Entrepreneurial */}
               {projects.length > 0 && (
-                <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 shadow-2xs">
+                <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 sm:p-6 shadow-2xs">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-bold text-primary">
-                        <Compass className="h-3.5 w-3.5" /> Parcours Création CoFound
+                    <div className="space-y-1.5">
+                      <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary">
+                        <Compass className="h-4 w-4" /> Parcours Création CoFound
                       </div>
-                      <h3 className="font-heading text-base font-bold text-foreground">
+                      <h3 className="font-heading text-base sm:text-lg font-bold text-foreground">
                         Pilotez votre entreprise étape par étape
                       </h3>
-                      <p className="text-xs text-muted-foreground leading-relaxed max-w-xl">
+                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-xl">
                         Design Thinking, Business Model Canvas, Modélisation Financière et Pitch Deck.
                       </p>
                     </div>
                     <Button asChild size="sm" className="h-9 shrink-0 gap-1.5 rounded-lg text-xs font-semibold shadow-xs">
                       <Link to={`/projects/${projects[0]?.id}/journey`}>
                         Accéder aux outils
-                        <ChevronRight className="h-3.5 w-3.5" />
+                        <ChevronRight className="h-4 w-4" />
                       </Link>
                     </Button>
                   </div>
@@ -529,17 +529,17 @@ export default function ProfilePage() {
               )}
 
               {/* Confidentiality Notice */}
-              <Card className="rounded-xl border border-border bg-card p-5 shadow-2xs">
-                <div className="flex items-start gap-3.5">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/40 text-primary">
-                    <ShieldCheck className="h-4 w-4" />
+              <Card className="rounded-xl border border-border bg-card p-5 sm:p-6 shadow-2xs">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/40 text-primary">
+                    <ShieldCheck className="h-5 w-5" />
                   </div>
-                  <div className="space-y-1 flex-1">
-                    <h3 className="font-heading text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
-                      <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                  <div className="space-y-1.5 flex-1">
+                    <h3 className="font-heading text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
+                      <Lock className="h-4 w-4 text-muted-foreground" />
                       Protection des données & Confidentialité
                     </h3>
-                    <p className="text-xs leading-relaxed text-muted-foreground">
+                    <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground">
                       Conformément aux principes de confidentialité de CoFound, votre identité civile complète et votre email ne sont jamais exposés publiquement. Seuls votre pseudonyme, filière et compétences sont visibles dans les espaces d’échanges.
                     </p>
                   </div>
@@ -551,12 +551,12 @@ export default function ProfilePage() {
             <div className="space-y-6 lg:sticky lg:top-[90px]">
 
               {/* Profile Completion Card */}
-              <Card className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-4">
+              <Card className="rounded-xl border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="font-heading text-sm font-bold text-foreground">
+                  <h2 className="font-heading text-base font-bold text-foreground">
                     Complétion du profil
                   </h2>
-                  <span className="font-heading text-sm font-bold text-primary">
+                  <span className="font-heading text-base font-bold text-primary">
                     {completion}%
                   </span>
                 </div>
@@ -565,29 +565,29 @@ export default function ProfilePage() {
 
                 {completion < 100 ? (
                   <div className="space-y-3 pt-1">
-                    <p className="text-xs text-muted-foreground leading-relaxed">
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                       Complétez votre profil pour enrichir vos opportunités de mise en relation.
                     </p>
                     {missingItems.length > 0 && (
-                      <div className="space-y-1.5">
+                      <div className="space-y-2">
                         {missingItems.slice(0, 3).map((item, idx) => (
                           <Link
                             key={idx}
                             to="/onboarding"
-                            className="group flex items-center justify-between rounded-lg border border-border bg-muted/30 px-3 py-2 text-xs font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
+                            className="group flex items-center justify-between rounded-lg border border-border bg-muted/30 px-3.5 py-2.5 text-xs sm:text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
                           >
                             <span>{item.label}</span>
-                            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                            <ChevronRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
                           </Link>
                         ))}
                       </div>
                     )}
-                    <Button asChild size="sm" variant="outline" className="w-full text-xs font-semibold h-8 mt-1">
+                    <Button asChild size="sm" variant="outline" className="w-full text-xs font-semibold h-9 mt-1">
                       <Link to="/onboarding">Compléter mes informations</Link>
                     </Button>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2 text-xs font-semibold text-emerald-700 dark:text-emerald-400 pt-1">
+                  <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-emerald-700 dark:text-emerald-400 pt-1">
                     <CheckCircle2 className="h-4 w-4" />
                     Profil complet à 100%
                   </div>
@@ -595,9 +595,9 @@ export default function ProfilePage() {
               </Card>
 
               {/* Skills */}
-              <Card className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-4">
+              <Card className="rounded-xl border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
                 <div className="flex items-center justify-between border-b border-border/50 pb-3">
-                  <h2 className="font-heading text-sm font-bold text-foreground flex items-center gap-2">
+                  <h2 className="font-heading text-base font-bold text-foreground flex items-center gap-2">
                     <Tag className="h-4 w-4 text-primary" />
                     Compétences clés
                   </h2>
@@ -607,27 +607,27 @@ export default function ProfilePage() {
                 </div>
 
                 {userSkills.length > 0 ? (
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2">
                     {userSkills.map((skill) => (
                       <span
                         key={skill.id}
-                        className="rounded-md bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary border border-primary/15"
+                        className="rounded-md bg-primary/10 px-3 py-1 text-xs sm:text-sm font-medium text-primary border border-primary/15"
                       >
                         {formatReferenceLabel(skill.labelKey, skill.slug)}
                       </span>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-muted-foreground italic">
+                  <p className="text-xs sm:text-sm text-muted-foreground italic">
                     Aucune compétence renseignée.
                   </p>
                 )}
               </Card>
 
               {/* Sectors */}
-              <Card className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-4">
+              <Card className="rounded-xl border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
                 <div className="flex items-center justify-between border-b border-border/50 pb-3">
-                  <h2 className="font-heading text-sm font-bold text-foreground flex items-center gap-2">
+                  <h2 className="font-heading text-base font-bold text-foreground flex items-center gap-2">
                     <Target className="h-4 w-4 text-primary" />
                     Secteurs d’intérêt
                   </h2>
@@ -637,18 +637,18 @@ export default function ProfilePage() {
                 </div>
 
                 {userSectors.length > 0 ? (
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2">
                     {userSectors.map((sector) => (
                       <span
                         key={sector.id}
-                        className="rounded-md bg-muted px-2.5 py-1 text-xs font-medium text-foreground border border-border"
+                        className="rounded-md bg-muted px-3 py-1 text-xs sm:text-sm font-medium text-foreground border border-border"
                       >
                         {formatReferenceLabel(sector.labelKey, sector.slug)}
                       </span>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-muted-foreground italic">
+                  <p className="text-xs sm:text-sm text-muted-foreground italic">
                     Aucun secteur d’intérêt sélectionné.
                   </p>
                 )}
@@ -656,9 +656,9 @@ export default function ProfilePage() {
 
               {/* Goals */}
               {profile?.goals && profile.goals.length > 0 && (
-                <Card className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-4">
+                <Card className="rounded-xl border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
                   <div className="flex items-center justify-between border-b border-border/50 pb-3">
-                    <h2 className="font-heading text-sm font-bold text-foreground flex items-center gap-2">
+                    <h2 className="font-heading text-base font-bold text-foreground flex items-center gap-2">
                       <Compass className="h-4 w-4 text-primary" />
                       Objectifs & Recherche
                     </h2>
@@ -667,11 +667,11 @@ export default function ProfilePage() {
                     </Button>
                   </div>
 
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2">
                     {profile.goals.map((goal) => (
                       <span
                         key={goal}
-                        className="rounded-md bg-muted px-2.5 py-1 text-xs font-medium text-foreground border border-border"
+                        className="rounded-md bg-muted px-3 py-1 text-xs sm:text-sm font-medium text-foreground border border-border"
                       >
                         {goal}
                       </span>
