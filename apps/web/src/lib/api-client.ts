@@ -112,7 +112,23 @@ export class ApiClient {
   private toApiError(status: number, payload: unknown): ApiClientError {
     const parsed = apiErrorSchema.safeParse(payload)
     if (parsed.success) return new ApiClientError(status, parsed.data)
-    return new ApiClientError(status, { code: 'HTTP_ERROR', messageKey: 'errors.http' })
+
+    if (payload && typeof payload === 'object') {
+      const p = payload as Record<string, unknown>
+      const message = typeof p.message === 'string'
+        ? p.message
+        : Array.isArray(p.message)
+        ? p.message.join(', ')
+        : undefined
+      const messageKey = typeof p.messageKey === 'string' ? p.messageKey : (message || `HTTP_${status}`)
+      return new ApiClientError(status, {
+        code: (typeof p.code === 'string' ? p.code : 'HTTP_ERROR') as ApiError['code'],
+        messageKey,
+        details: typeof p.details === 'object' && p.details ? (p.details as Record<string, unknown>) : undefined,
+      })
+    }
+
+    return new ApiClientError(status, { code: 'HTTP_ERROR', messageKey: `HTTP_${status}` })
   }
 
   private parseJson(raw: string): unknown {

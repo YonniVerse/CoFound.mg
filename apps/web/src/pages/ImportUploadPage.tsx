@@ -99,11 +99,12 @@ export default function ImportUploadPage() {
       navigate(`/institution/imports/${response.batchId}/mapping?importId=${response.batchId}`)
     } catch (caught) {
       if (caught instanceof ApiClientError) {
-        setError(
-          caught.messageKey && caught.messageKey !== 'errors.internal'
-            ? caught.messageKey
-            : caught.message || 'Une erreur serveur est survenue lors de l’envoi.',
-        )
+        const msgKey = caught.messageKey
+        if (msgKey === 'errors.http' || msgKey === 'errors.internal' || msgKey?.startsWith('HTTP_')) {
+          setError(caught.message || 'Une erreur est survenue lors de l’envoi du fichier. Vérifiez votre connexion et le format du fichier.')
+        } else {
+          setError(msgKey || caught.message || 'Une erreur est survenue lors de l’envoi du fichier.')
+        }
       } else if (caught instanceof Error) {
         setError(caught.message)
       } else {
