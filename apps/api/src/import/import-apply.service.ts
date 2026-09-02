@@ -34,147 +34,149 @@ export class ImportApplyService {
   async apply(input: ImportApplyInput, actorId: string): Promise<ImportApplyResult> {
     const invitations: PendingInvitation[] = []
 
-    const result = await this.prisma.$transaction(async (transaction) => {
-      const batch = await transaction.importBatch.findUnique({
-        where: { id: input.batchId },
-        include: {
-          rows: { orderBy: { lineNumber: 'asc' } },
-          organization: true,
-        },
-      })
-      if (!batch) throw new NotFoundException('Lot d’import introuvable.')
+    const result = await this.prisma.$transaction(
+      async (transaction) => {
+        const batch = await transaction.importBatch.findUnique({
+          where: { id: input.batchId },
+          include: {
+            rows: { orderBy: { lineNumber: 'asc' } },
+            organization: true,
+          },
+        })
+        if (!batch) throw new NotFoundException('Lot d’import introuvable.')
 
-      const actor = transaction.user
-        ? await transaction.user.findUnique({
-            where: { id: actorId },
-            select: { platformRole: true },
-          })
-        : null
-      const isStaff = actor?.platformRole === 'STAFF'
+        const actor = transaction.user
+          ? await transaction.user.findUnique({
+              where: { id: actorId },
+              select: { platformRole: true },
+            })
+          : null
+        const isStaff = actor?.platformRole === 'STAFF'
 
-      const member = await transaction.organizationMember.findUnique({
-        where: { organizationId_userId: { organizationId: batch.organizationId, userId: actorId } },
-      })
-      if (!isStaff && (!member || !['ORG_ADMIN', 'ORG_MANAGER'].includes(member.role))) {
-        throw new ForbiddenException('Vous ne pouvez pas appliquer ce lot.')
-      }
-
-      if (batch.status === ImportBatchStatus.APPLIED) {
-        return this.summary(
-          batch.id,
-          batch.totalRows,
-          batch.createdRows,
-          batch.updatedRows,
-          batch.rows.filter((row) => row.result === ImportRowResult.SKIPPED_DUPLICATE).length,
-          batch.errorRows,
-        )
-      }
-      if (batch.status !== ImportBatchStatus.PREVIEW) {
-        throw new ConflictException('Ce lot ne peut plus être appliqué dans son état actuel.')
-      }
-
-      // Pre-fetch active fields to match fieldOfStudy
-      const activeFields = transaction.field ? await transaction.field.findMany({ where: { isActive: true } }) : []
-      const fieldMap = new Map<string, string>()
-      const synonymMap: Record<string, string> = {
-        informatique: 'computer-science',
-        info: 'computer-science',
-        'génie informatique': 'computer-science',
-        gestion: 'management',
-        commerce: 'management',
-        management: 'management',
-        droit: 'law',
-        juridique: 'law',
-        économie: 'economics',
-        economie: 'economics',
-        finance: 'economics',
-        'génie civil': 'engineering',
-        ingénierie: 'engineering',
-        ingenierie: 'engineering',
-        agriculture: 'agriculture',
-        agronomie: 'agriculture',
-        communication: 'communication',
-        design: 'design',
-      }
-      for (const field of activeFields) {
-        fieldMap.set(field.slug.toLowerCase(), field.id)
-        fieldMap.set(field.labelKey.toLowerCase(), field.id)
-      }
-      for (const [syn, slug] of Object.entries(synonymMap)) {
-        const id = fieldMap.get(slug)
-        if (id) fieldMap.set(syn, id)
-      }
-
-      const isCertifying = batch.organization?.type === 'INSTITUTION'
-
-      let createdRows = 0
-      let updatedRows = 0
-      let errorRows = 0
-      const seenEmailsInBatch = new Set<string>()
-
-      for (const row of batch.rows) {
-        const raw = (row.raw as Record<string, unknown>) || {}
-        const { student, errors } = extractStudentFromRow(raw, batch.columnMapping)
-
-        if (row.result === ImportRowResult.ERROR || errors.length > 0) {
-          errorRows += 1
-          await transaction.importRow.update({
-            where: { id: row.id },
-            data: {
-              result: ImportRowResult.ERROR,
-              errorCode: errors.length > 0 ? errors.join('; ') : (row.errorCode ?? 'INVALID_ROW'),
-            },
-          })
-          continue
+        const member = await transaction.organizationMember.findUnique({
+          where: { organizationId_userId: { organizationId: batch.organizationId, userId: actorId } },
+        })
+        if (!isStaff && (!member || !['ORG_ADMIN', 'ORG_MANAGER'].includes(member.role))) {
+          throw new ForbiddenException('Vous ne pouvez pas appliquer ce lot.')
         }
 
-        const email = String(student.email).trim().toLowerCase()
-
-        if (seenEmailsInBatch.has(email)) {
-          await transaction.importRow.update({
-            where: { id: row.id },
-            data: {
-              normalizedEmail: email,
-              result: ImportRowResult.SKIPPED_DUPLICATE,
-              errorCode: 'Adresse email présente plusieurs fois dans le lot.',
-            },
-          })
-          continue
+        if (batch.status === ImportBatchStatus.APPLIED) {
+          return this.summary(
+            batch.id,
+            batch.totalRows,
+            batch.createdRows,
+            batch.updatedRows,
+            batch.rows.filter((row) => row.result === ImportRowResult.SKIPPED_DUPLICATE).length,
+            batch.errorRows,
+          )
         }
-        seenEmailsInBatch.add(email)
+        if (batch.status !== ImportBatchStatus.PREVIEW) {
+          throw new ConflictException('Ce lot ne peut plus être appliqué dans son état actuel.')
+        }
 
-        let matchedFieldId: string | undefined = undefined
-        if (student.fieldOfStudy) {
-          const normField = String(student.fieldOfStudy).toLowerCase().trim()
-          matchedFieldId = fieldMap.get(normField)
-          if (!matchedFieldId) {
-            for (const [key, id] of fieldMap.entries()) {
-              if (normField.includes(key) || key.includes(normField)) {
-                matchedFieldId = id
-                break
+        // Pre-fetch active fields to match fieldOfStudy
+        const activeFields = transaction.field ? await transaction.field.findMany({ where: { isActive: true } }) : []
+        const fieldMap = new Map<string, string>()
+        const synonymMap: Record<string, string> = {
+          informatique: 'computer-science',
+          info: 'computer-science',
+          'génie informatique': 'computer-science',
+          gestion: 'management',
+          commerce: 'management',
+          management: 'management',
+          droit: 'law',
+          juridique: 'law',
+          économie: 'economics',
+          economie: 'economics',
+          finance: 'economics',
+          'génie civil': 'engineering',
+          ingénierie: 'engineering',
+          ingenierie: 'engineering',
+          agriculture: 'agriculture',
+          agronomie: 'agriculture',
+          communication: 'communication',
+          design: 'design',
+        }
+        for (const field of activeFields) {
+          fieldMap.set(field.slug.toLowerCase(), field.id)
+          fieldMap.set(field.labelKey.toLowerCase(), field.id)
+        }
+        for (const [syn, slug] of Object.entries(synonymMap)) {
+          const id = fieldMap.get(slug)
+          if (id) fieldMap.set(syn, id)
+        }
+
+        const isCertifying = batch.organization?.type === 'INSTITUTION'
+
+        let createdRows = 0
+        let updatedRows = 0
+        let errorRows = 0
+        const seenEmailsInBatch = new Set<string>()
+
+        for (const row of batch.rows) {
+          const raw = (row.raw as Record<string, unknown>) || {}
+          const { student, errors } = extractStudentFromRow(raw, batch.columnMapping)
+
+          if (row.result === ImportRowResult.ERROR || errors.length > 0) {
+            errorRows += 1
+            await transaction.importRow.update({
+              where: { id: row.id },
+              data: {
+                result: ImportRowResult.ERROR,
+                errorCode: errors.length > 0 ? errors.join('; ') : (row.errorCode ?? 'INVALID_ROW'),
+              },
+            })
+            continue
+          }
+
+          const email = String(student.email).trim().toLowerCase()
+
+          if (seenEmailsInBatch.has(email)) {
+            await transaction.importRow.update({
+              where: { id: row.id },
+              data: {
+                normalizedEmail: email,
+                result: ImportRowResult.SKIPPED_DUPLICATE,
+                errorCode: 'Adresse email présente plusieurs fois dans le lot.',
+              },
+            })
+            continue
+          }
+          seenEmailsInBatch.add(email)
+
+          let matchedFieldId: string | undefined = undefined
+          if (student.fieldOfStudy) {
+            const normField = String(student.fieldOfStudy).toLowerCase().trim()
+            matchedFieldId = fieldMap.get(normField)
+            if (!matchedFieldId) {
+              for (const [key, id] of fieldMap.entries()) {
+                if (normField.includes(key) || key.includes(normField)) {
+                  matchedFieldId = id
+                  break
+                }
               }
             }
           }
-        }
 
-        const existingUser = await transaction.user.findUnique({ where: { email } })
-        const tempPassword = this.generateTemporaryPassword()
-        const passwordHash = await argon2.hash(tempPassword, { type: argon2.argon2id })
+          const existingUser = await transaction.user.findUnique({ where: { email } })
+          const tempPassword = this.generateTemporaryPassword()
+          const rawToken = randomBytes(32).toString('base64url')
+          const passwordHash = await argon2.hash(tempPassword, { type: argon2.argon2id })
 
-        const user = existingUser
-          ? await transaction.user.update({
-              where: { id: existingUser.id },
-              data: { status: existingUser.status === 'DISABLED' ? 'DISABLED' : existingUser.status },
-            })
-          : await transaction.user.create({
-              data: {
-                email,
-                passwordHash,
-                status: 'INVITED',
-                platformRole: 'TALENT',
-                locale: 'fr',
-              },
-            })
+          const user = existingUser
+            ? await transaction.user.update({
+                where: { id: existingUser.id },
+                data: { status: existingUser.status === 'DISABLED' ? 'DISABLED' : existingUser.status },
+              })
+            : await transaction.user.create({
+                data: {
+                  email,
+                  passwordHash,
+                  status: 'INVITED',
+                  platformRole: 'TALENT',
+                  locale: 'fr',
+                },
+              })
 
         const firstName = this.optionalString(student.firstName) || ''
         const lastName = this.optionalString(student.lastName) || ''
@@ -240,7 +242,6 @@ export class ImportApplyService {
 
         if (lineResult === ImportRowResult.CREATED) {
           createdRows += 1
-          const rawToken = randomBytes(32).toString('base64url')
           await transaction.invitationToken.create({
             data: {
               userId: user.id,
@@ -272,6 +273,10 @@ export class ImportApplyService {
       })
       const skippedRows = batch.rows.length - createdRows - updatedRows - errorRows
       return this.summary(applied.id, applied.totalRows, createdRows, updatedRows, Math.max(0, skippedRows), errorRows)
+    },
+    {
+      maxWait: 10000,
+      timeout: 60000,
     })
 
     for (const invitation of invitations) {

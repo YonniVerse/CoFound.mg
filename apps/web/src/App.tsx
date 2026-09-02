@@ -45,6 +45,7 @@ const MyApplicationsPage = lazy(() => import("@/pages/MyApplicationsPage"));
 const ProjectApplicationsPage = lazy(() => import("@/pages/ProjectApplicationsPage"));
 const IncubatorProgramsPage = lazy(() => import("@/pages/IncubatorProgramsPage"));
 const ProjectTeamPage = lazy(() => import("@/pages/ProjectTeamPage"));
+const ProjectSuggestionsPage = lazy(() => import("@/pages/ProjectSuggestionsPage"));
 const ProjectTasksPage = lazy(() => import("@/pages/ProjectTasksPage"));
 const ProjectPostsPage = lazy(() => import("@/pages/ProjectPostsPage"));
 const ProjectChannelPage = lazy(() => import("@/pages/ProjectChannelPage"));
@@ -110,6 +111,7 @@ function App() {
     <Route path="/projects/:id/pitch" element={<ProjectPitchPage />} />
     <Route path="/projects/:id/applications" element={<ProjectApplicationsPage />} />
     <Route path="/projects/:id/team" element={<ProjectTeamPage />} />
+    <Route path="/projects/:id/suggestions" element={<ProjectSuggestionsPage />} />
     <Route path="/projects/:id/tasks" element={<ProjectTasksPage />} />
     <Route path="/projects/:id/posts" element={<ProjectPostsPage />} />
     <Route path="/projects/:id/channel" element={<ProjectChannelPage />} />

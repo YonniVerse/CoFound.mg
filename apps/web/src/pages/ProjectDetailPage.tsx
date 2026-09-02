@@ -6,7 +6,6 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ProjectNavTabs } from "@/components/project/ProjectNavTabs";
 import { ProjectHeader } from "@/components/project/ProjectHeader";
 import { ProjectContent } from "@/components/project/ProjectContent";
-import { ProjectMatchingSuggestions } from "@/components/project/ProjectMatchingSuggestions";
 import { ProjectActionCard } from "@/components/project/ProjectActionCard";
 import { ProjectTeamCard } from "@/components/project/ProjectTeamCard";
 import { useProjectDetail } from "@/hooks/useProjectDetail";
@@ -58,7 +57,6 @@ export default function ProjectDetailPage() {
               <div className="space-y-6">
                 <ProjectHeader project={project} />
                 <ProjectContent project={project} />
-                <ProjectMatchingSuggestions project={project} />
               </div>
 
               {/* RIGHT SIDEBAR */}
