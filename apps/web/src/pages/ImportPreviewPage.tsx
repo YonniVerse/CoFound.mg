@@ -1,29 +1,47 @@
 import { useEffect, useMemo, useState } from 'react'
-import { AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, Copy, FileSpreadsheet, Loader2, RotateCcw, ShieldCheck, UserCheck, XCircle } from 'lucide-react'
+import {
+  AlertTriangle,
+  ArrowRight,
+  CheckCircle2,
+  RotateCcw,
+  XCircle,
+  RefreshCw,
+  Send,
+} from 'lucide-react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { importPreviewSchema, type ImportApplyResult, type ImportPreview, type ImportPreviewResult, type ImportPreviewRow } from '@cofound/shared'
+import {
+  importPreviewSchema,
+  type ImportApplyResult,
+  type ImportPreview,
+  type ImportPreviewResult,
+} from '@cofound/shared'
 import { apiClient, ApiClientError } from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
-import { useI18n } from '@/i18n'
+import { InstitutionHeader } from '@/components/institution/InstitutionHeader'
+import { ImportStepProgress } from '@/components/institution/ImportStepProgress'
 
-const RESULT_STYLES: Record<ImportPreviewResult, string> = {
-  CREATED: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20',
-  UPDATED: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20',
-  SKIPPED_DUPLICATE: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20',
-  ERROR: 'bg-destructive/10 text-destructive border-destructive/20',
-}
-
-function resultIcon(result: ImportPreviewResult) {
-  if (result === 'ERROR') return <XCircle className="h-4 w-4" />
-  if (result === 'SKIPPED_DUPLICATE') return <AlertTriangle className="h-4 w-4" />
-  if (result === 'UPDATED') return <CheckCircle2 className="h-4 w-4" />
-  return <CheckCircle2 className="h-4 w-4" />
+const RESULT_STYLES: Record<ImportPreviewResult, { label: string; badgeClass: string }> = {
+  CREATED: {
+    label: 'Nouveau compte & affiliation',
+    badgeClass: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20',
+  },
+  UPDATED: {
+    label: 'Affiliation mise à jour',
+    badgeClass: 'bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20',
+  },
+  SKIPPED_DUPLICATE: {
+    label: 'Doublon ignoré',
+    badgeClass: 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20',
+  },
+  ERROR: {
+    label: 'Erreur de validation',
+    badgeClass: 'bg-destructive/10 text-destructive border-destructive/20',
+  },
 }
 
 export default function ImportPreviewPage() {
-  const { t } = useI18n()
   const navigate = useNavigate()
   const params = useParams<{ id?: string }>()
   const [searchParams] = useSearchParams()
@@ -36,7 +54,6 @@ export default function ImportPreviewPage() {
   const [isApplying, setIsApplying] = useState(false)
   const [applyResult, setApplyResult] = useState<ImportApplyResult | null>(null)
   const [applyError, setApplyError] = useState<string | null>(null)
-  const [copyFeedback, setCopyFeedback] = useState<string | null>(null)
 
   useEffect(() => {
     if (!importId) return
@@ -50,9 +67,9 @@ export default function ImportPreviewPage() {
       .catch((err) => {
         if (!cancelled) {
           if (err instanceof ApiClientError) {
-            setLoadError(err.message || t('import.previewLoadError'))
+            setLoadError(err.message || 'Impossible de charger la prévisualisation.')
           } else {
-            setLoadError(t('import.previewLoadError'))
+            setLoadError('Impossible de charger la prévisualisation. Vérifiez votre connexion.')
           }
         }
       })
@@ -63,7 +80,7 @@ export default function ImportPreviewPage() {
     return () => {
       cancelled = true
     }
-  }, [importId, t])
+  }, [importId])
 
   const counts = useMemo(() => {
     const rows = preview?.rows ?? []
@@ -94,181 +111,180 @@ export default function ImportPreviewPage() {
         batchId: importId,
       })
       setApplyResult(result)
-    } catch (err) {
-      if (err instanceof ApiClientError) {
-        setApplyError(err.message || 'Une erreur est survenue lors de l’application de l’import.')
-      } else {
-        setApplyError('Une erreur inattendue est survenue. Vérifiez votre connexion et réessayez.')
-      }
+    } catch {
+      setApplyError('Une erreur est survenue lors de l’application du lot d’étudiants. Veuillez réessayer.')
     } finally {
       setIsApplying(false)
     }
   }
 
-  async function handleCopyActivationLinks() {
-    if (!importId) return
-    try {
-      const result = await apiClient.post<{ links?: Array<{ email: string; url: string }> }>(
-        `/institution/imports/${importId}/activation-links`,
-        {},
-      )
-      const lines = (result.links ?? []).map((link) => `${link.email}: ${link.url}`).join('\n')
-      if (lines) {
-        await navigator.clipboard?.writeText(lines)
-        setCopyFeedback(`${result.links?.length ?? 0} lien(s) copié(s) dans le presse-papier !`)
-        setTimeout(() => setCopyFeedback(null), 4000)
-      }
-    } catch {
-      setCopyFeedback('Impossible de générer les liens de secours.')
-      setTimeout(() => setCopyFeedback(null), 4000)
-    }
-  }
-
   return (
     <DashboardLayout>
-      <main className="min-h-screen bg-muted/20 px-4 py-8 sm:px-8 lg:px-12">
-        <div className="mx-auto max-w-6xl space-y-8">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <Button
-              variant="ghost"
-              onClick={() => navigate(importId ? `/institution/imports/${importId}/mapping` : '/institution/imports/new')}
-              className="-ml-3 gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" /> {t('import.backMapping')}
-            </Button>
-            <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-              Étape 3 sur 4
-            </span>
-          </div>
+      <main className="min-h-screen bg-muted/20 px-4 py-8 sm:px-10">
+        <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6">
+          <InstitutionHeader
+            title="Vérification & Prévisualisation"
+            description={`Examinez les lignes analysées du fichier "${preview?.fileName ?? 'import'}" avant confirmation définitive.`}
+            backHref={importId ? `/institution/imports/${importId}/mapping?importId=${importId}` : '/institution/imports/new'}
+            backLabel="Retour à la correspondance"
+          />
 
-          <header className="max-w-3xl space-y-3">
-            <div className="flex items-center gap-3 text-primary">
-              <FileSpreadsheet className="h-7 w-7" />
-              <p className="text-sm font-semibold uppercase tracking-[0.18em]">{t('import.previewEyebrow')}</p>
-            </div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              {t('import.previewTitle')}
-            </h1>
-            <p className="text-base leading-7 text-muted-foreground">{t('import.previewDescription')}</p>
-          </header>
+          <ImportStepProgress currentStep={applyResult ? 'applied' : 'preview'} />
 
-          {/* Banner Mode Simulation / Pas d'écriture */}
-          {!applyResult && (
-            <div className="flex items-start gap-3 rounded-xl border border-emerald-500/25 bg-emerald-500/5 p-4 text-sm text-foreground">
-              <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-              <p>
-                <strong>{t('import.noAccounts')}</strong> {t('import.previewNoMutation')}
-              </p>
-            </div>
-          )}
-
-          {/* Success Card After Apply */}
+          {/* Success screen after apply */}
           {applyResult && (
-            <Card className="border-emerald-500/40 bg-emerald-500/[0.04] shadow-sm">
-              <CardContent className="mt-3 space-y-6 p-6 sm:p-8">
+            <Card className="border-emerald-500/30 bg-emerald-500/[0.03] shadow-sm">
+              <CardContent className="p-6 sm:p-8 space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600">
-                    <CheckCircle2 className="h-7 w-7" />
+                    <CheckCircle2 className="h-6 w-6" />
                   </div>
                   <div className="space-y-1">
-                    <h2 className="text-xl font-bold text-foreground sm:text-2xl">Import terminé avec succès !</h2>
-                    <p className="text-sm text-muted-foreground">
-                      Les comptes étudiants ont été créés et associés à votre établissement. Les emails d’invitation ont été mis en file d'envoi.
+                    <h2 className="font-heading text-xl font-bold text-foreground sm:text-2xl">
+                      Import appliqué avec succès !
+                    </h2>
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                      Les affiliations ont été créées et les invitations d’activation envoyées aux étudiants.
                     </p>
                   </div>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  <Summary label="Comptes créés (invités)" value={applyResult.createdRows} tone="text-emerald-700" />
-                  <Summary label="Affiliations mises à jour" value={applyResult.updatedRows} tone="text-blue-700" />
-                  <Summary label="Doublons ignorés" value={applyResult.skippedRows} tone="text-amber-700" />
-                  <Summary label="Lignes en erreur" value={applyResult.errorRows} tone="text-destructive" />
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  <div className="rounded-xl border border-border/70 bg-card p-4">
+                    <p className="text-xs font-medium text-muted-foreground">Comptes créés</p>
+                    <p className="font-heading text-2xl font-bold text-emerald-600">
+                      {applyResult.createdRows}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-border/70 bg-card p-4">
+                    <p className="text-xs font-medium text-muted-foreground">Mis à jour</p>
+                    <p className="font-heading text-2xl font-bold text-blue-600">
+                      {applyResult.updatedRows}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-border/70 bg-card p-4">
+                    <p className="text-xs font-medium text-muted-foreground">Doublons ignorés</p>
+                    <p className="font-heading text-2xl font-bold text-amber-600">
+                      {applyResult.skippedRows}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-border/70 bg-card p-4">
+                    <p className="text-xs font-medium text-muted-foreground">Erreurs</p>
+                    <p className="font-heading text-2xl font-bold text-destructive">
+                      {applyResult.errorRows}
+                    </p>
+                  </div>
                 </div>
 
-                {copyFeedback && (
-                  <div className="rounded-lg bg-primary/10 p-3 text-xs font-semibold text-primary">
-                    {copyFeedback}
-                  </div>
-                )}
-
-                <div className="flex flex-wrap gap-3 pt-2">
-                  <Button asChild className="gap-2">
-                    <Link to={`/institution/imports/${applyResult.batchId}`}>
-                      <UserCheck className="h-4 w-4" /> Voir le détail du lot
+                <div className="flex flex-wrap items-center gap-3 pt-2">
+                  <Button asChild className="gap-2 text-xs font-semibold">
+                    <Link to="/institution/directory">
+                      Consulter l’annuaire des affiliés
+                      <ArrowRight className="h-3.5 w-3.5" />
                     </Link>
                   </Button>
-                  <Button variant="outline" onClick={() => void handleCopyActivationLinks()} className="gap-2">
-                    <Copy className="h-4 w-4" /> Copier les liens de secours
-                  </Button>
-                  <Button variant="ghost" asChild>
-                    <Link to="/institution">Retour à la console</Link>
+                  <Button variant="outline" asChild className="text-xs font-semibold">
+                    <Link to="/institution/dashboard">Retour au tableau de bord</Link>
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {isLoading && (
-            <Card>
-              <CardContent className="flex items-center justify-center gap-3 p-12 text-muted-foreground">
-                <Loader2 className="h-5 w-5 animate-spin" /> {t('import.previewLoading')}
               </CardContent>
             </Card>
           )}
 
           {loadError && (
-            <Card className="border-destructive/30">
-              <CardContent className="flex items-center gap-3 p-6 text-destructive">
-                <XCircle className="h-5 w-5" /> {loadError}
-              </CardContent>
+            <div className="flex items-center gap-3 rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
+              <XCircle className="h-4 w-4 shrink-0" />
+              <p className="flex-1 font-medium">{loadError}</p>
+            </div>
+          )}
+
+          {applyError && (
+            <div className="flex items-center gap-3 rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
+              <XCircle className="h-4 w-4 shrink-0" />
+              <p className="flex-1 font-medium">{applyError}</p>
+            </div>
+          )}
+
+          {isLoading && (
+            <Card className="border-border/80 p-8 shadow-2xs">
+              <div className="flex flex-col items-center justify-center gap-3 text-center">
+                <RefreshCw className="h-6 w-6 animate-spin text-primary" />
+                <p className="text-sm font-semibold text-foreground">
+                  Analyse des lignes en cours…
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Vérification de la validité des adresses et détection des comptes existants.
+                </p>
+              </div>
             </Card>
           )}
 
-          {preview && !isLoading && !applyResult && (
+          {!isLoading && preview && !applyResult && (
             <>
-              {/* Summary KPIs */}
-              <Card className="rounded-xl border-border bg-card shadow-2xs">
-                <CardHeader>
-                  <CardTitle className="flex flex-wrap items-center justify-between gap-3">
-                    <span className="truncate">{preview.fileName}</span>
-                    <span className="text-sm font-normal text-muted-foreground">
-                      {counts.total} {t('import.rowsAnalyzed')}
-                    </span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  <Summary label={t('import.toCreate')} value={counts.created} tone="text-emerald-700" />
-                  <Summary label={t('import.toUpdate')} value={counts.updated} tone="text-blue-700" />
-                  <Summary label={t('import.duplicatesSkipped')} value={counts.duplicates} tone="text-amber-700" />
-                  <Summary label={t('import.errors')} value={counts.errors} tone="text-destructive" />
-                </CardContent>
-              </Card>
+              {/* Metric Breakdown Cards */}
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <Card className="border-border/80 p-4 shadow-2xs">
+                  <p className="text-xs font-medium text-muted-foreground">Comptes à créer</p>
+                  <p className="font-heading text-2xl font-bold tracking-tight text-emerald-600">
+                    {counts.created}
+                  </p>
+                </Card>
 
-              {/* Warning on errors */}
+                <Card className="border-border/80 p-4 shadow-2xs">
+                  <p className="text-xs font-medium text-muted-foreground">À mettre à jour</p>
+                  <p className="font-heading text-2xl font-bold tracking-tight text-blue-600">
+                    {counts.updated}
+                  </p>
+                </Card>
+
+                <Card className="border-border/80 p-4 shadow-2xs">
+                  <p className="text-xs font-medium text-muted-foreground">Doublons ignorés</p>
+                  <p className="font-heading text-2xl font-bold tracking-tight text-amber-600">
+                    {counts.duplicates}
+                  </p>
+                </Card>
+
+                <Card className="border-border/80 p-4 shadow-2xs">
+                  <p className="text-xs font-medium text-muted-foreground">Lignes avec erreur</p>
+                  <p className="font-heading text-2xl font-bold tracking-tight text-destructive">
+                    {counts.errors}
+                  </p>
+                </Card>
+              </div>
+
+              {/* Warning if errors exist */}
               {counts.errors > 0 && (
-                <div className="flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm text-foreground">
-                  <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                <div className="flex items-start gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-xs text-foreground">
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
                   <div>
-                    <p className="font-semibold text-foreground">
+                    <p className="font-bold text-foreground">
                       {counts.errors} ligne(s) comportent des anomalies
                     </p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Ces lignes ne seront pas importées. Vous pouvez appliquer le lot pour importer les {counts.created + counts.updated} étudiant(s) valides, ou modifier le mapping/fichier.
+                    <p className="mt-0.5 leading-relaxed text-muted-foreground">
+                      Ces lignes en erreur seront automatiquement ignorées lors de l'application. Les {counts.created + counts.updated} étudiant(s) valides seront correctement importés.
                     </p>
                   </div>
                 </div>
               )}
 
-              {/* Row Details with Filter Tabs */}
-              <Card className="rounded-xl border-border bg-card shadow-2xs">
-                <CardHeader className="flex flex-col gap-4 border-b border-border/60 sm:flex-row sm:items-center sm:justify-between">
-                  <CardTitle className="text-base font-bold">{t('import.rowsDetail')}</CardTitle>
+              {/* Rows List with Filter Tabs */}
+              <Card className="overflow-hidden border-border/80 shadow-2xs">
+                <CardHeader className="flex flex-col gap-4 border-b border-border/60 p-5 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <CardTitle className="font-heading text-base font-bold text-foreground">
+                      Détail des lignes analysées ({counts.total})
+                    </CardTitle>
+                    <CardDescription className="text-xs">
+                      Filtrez les lignes par statut pour vérifier les données avant application.
+                    </CardDescription>
+                  </div>
+
                   <div className="flex flex-wrap gap-1.5">
                     <Button
                       size="sm"
                       variant={selectedFilter === 'ALL' ? 'default' : 'outline'}
                       onClick={() => setSelectedFilter('ALL')}
-                      className="h-8 rounded-lg px-2.5 text-xs"
+                      className="h-8 rounded-lg px-2.5 text-xs font-semibold"
                     >
                       Toutes ({counts.total})
                     </Button>
@@ -276,7 +292,7 @@ export default function ImportPreviewPage() {
                       size="sm"
                       variant={selectedFilter === 'CREATED' ? 'default' : 'outline'}
                       onClick={() => setSelectedFilter('CREATED')}
-                      className="h-8 rounded-lg px-2.5 text-xs"
+                      className="h-8 rounded-lg px-2.5 text-xs font-semibold"
                     >
                       À créer ({counts.created})
                     </Button>
@@ -284,7 +300,7 @@ export default function ImportPreviewPage() {
                       size="sm"
                       variant={selectedFilter === 'UPDATED' ? 'default' : 'outline'}
                       onClick={() => setSelectedFilter('UPDATED')}
-                      className="h-8 rounded-lg px-2.5 text-xs"
+                      className="h-8 rounded-lg px-2.5 text-xs font-semibold"
                     >
                       À mettre à jour ({counts.updated})
                     </Button>
@@ -292,7 +308,7 @@ export default function ImportPreviewPage() {
                       size="sm"
                       variant={selectedFilter === 'SKIPPED_DUPLICATE' ? 'default' : 'outline'}
                       onClick={() => setSelectedFilter('SKIPPED_DUPLICATE')}
-                      className="h-8 rounded-lg px-2.5 text-xs"
+                      className="h-8 rounded-lg px-2.5 text-xs font-semibold"
                     >
                       Doublons ({counts.duplicates})
                     </Button>
@@ -300,51 +316,108 @@ export default function ImportPreviewPage() {
                       size="sm"
                       variant={selectedFilter === 'ERROR' ? 'default' : 'outline'}
                       onClick={() => setSelectedFilter('ERROR')}
-                      className="h-8 rounded-lg px-2.5 text-xs text-destructive hover:text-destructive"
+                      className="h-8 rounded-lg px-2.5 text-xs font-semibold text-destructive hover:text-destructive"
                     >
                       Erreurs ({counts.errors})
                     </Button>
                   </div>
                 </CardHeader>
-                <CardContent className="mt-3 space-y-3">
+
+                <CardContent className="p-0">
                   {visibleRows.length === 0 ? (
-                    <p className="py-8 text-center text-sm text-muted-foreground">{t('import.noMatchingRows')}</p>
+                    <div className="p-10 text-center text-xs text-muted-foreground">
+                      Aucune ligne pour ce filtre.
+                    </div>
                   ) : (
-                    visibleRows.map((row) => <PreviewRow key={row.lineNumber} row={row} />)
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-border/80 bg-muted/40 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                            <th className="w-16 px-4 py-3.5 text-center">Ligne</th>
+                            <th className="px-4 py-3.5">Étudiant</th>
+                            <th className="px-4 py-3.5">Filière / Niveau / Année</th>
+                            <th className="px-4 py-3.5 text-right">Diagnostic</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-border/60 text-sm">
+                          {visibleRows.map((row) => {
+                            const badge = RESULT_STYLES[row.result]
+
+                            return (
+                              <tr key={row.lineNumber} className="transition-colors hover:bg-muted/30">
+                                <td className="px-4 py-3.5 text-center text-xs font-mono text-muted-foreground">
+                                  #{row.lineNumber}
+                                </td>
+
+                                <td className="px-4 py-3.5">
+                                  <p className="font-semibold text-foreground">
+                                    {row.displayName || row.email}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {row.email}
+                                  </p>
+                                </td>
+
+                                <td className="px-4 py-3.5 text-xs text-muted-foreground">
+                                  <p className="font-medium text-foreground">
+                                    {row.fieldOfStudy || '—'}
+                                  </p>
+                                  <p className="text-[11px]">
+                                    {row.level ? `Niveau ${row.level}` : ''}
+                                    {row.entryYear ? ` · Promo ${row.entryYear}` : ''}
+                                  </p>
+                                </td>
+
+                                <td className="px-4 py-3.5 text-right">
+                                  <span
+                                    className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${badge.badgeClass}`}
+                                  >
+                                    {badge.label}
+                                  </span>
+                                  {row.errorMessage && (
+                                    <p className="mt-1 text-[11px] text-destructive">
+                                      {row.errorMessage}
+                                    </p>
+                                  )}
+                                </td>
+                              </tr>
+                            )
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
                   )}
                 </CardContent>
               </Card>
 
-              {applyError && (
-                <div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
-                  <XCircle className="h-5 w-5 shrink-0" />
-                  <span>{applyError}</span>
-                </div>
-              )}
-
-              {/* Action Buttons */}
-              <div className="flex flex-col-reverse justify-between gap-3 sm:flex-row">
+              {/* Action Bar */}
+              <div className="flex flex-col-reverse justify-between gap-3 sm:flex-row pt-2">
                 <Button
                   variant="outline"
                   onClick={() =>
-                    navigate(importId ? `/institution/imports/${importId}/mapping` : '/institution/imports/new')
+                    navigate(
+                      importId
+                        ? `/institution/imports/${importId}/mapping?importId=${importId}`
+                        : '/institution/imports/new',
+                    )
                   }
-                  className="gap-2"
+                  className="gap-2 text-xs"
                 >
-                  <RotateCcw className="h-4 w-4" /> {t('import.editMapping')}
+                  <RotateCcw className="h-4 w-4" /> Modifier les correspondances
                 </Button>
+
                 <Button
                   disabled={!canApply || isApplying}
                   onClick={() => void handleApply()}
-                  className="gap-2 shadow-sm"
+                  className="gap-2 text-xs font-semibold"
                 >
                   {isApplying ? (
                     <>
-                      <Loader2 className="h-4 w-4 animate-spin" /> Application de l’import…
+                      <RefreshCw className="h-4 w-4 animate-spin" /> Application du lot en cours…
                     </>
                   ) : (
                     <>
-                      Confirmer et appliquer l’import <ArrowRight className="h-4 w-4" />
+                      <Send className="h-4 w-4" /> Confirmer et appliquer l’import ({counts.created + counts.updated} étudiants)
                     </>
                   )}
                 </Button>
@@ -354,49 +427,5 @@ export default function ImportPreviewPage() {
         </div>
       </main>
     </DashboardLayout>
-  )
-}
-
-function Summary({ label, value, tone }: { label: string; value: number; tone: string }) {
-  return (
-    <div className="rounded-xl border border-border bg-background p-4 shadow-2xs">
-      <p className="text-xs font-semibold text-muted-foreground">{label}</p>
-      <p className={`mt-1 text-2xl font-bold tracking-tight ${tone}`}>{value}</p>
-    </div>
-  )
-}
-
-function PreviewRow({ row }: { row: ImportPreviewRow }) {
-  const { t } = useI18n()
-  const resultLabels: Record<ImportPreviewResult, string> = {
-    CREATED: t('import.resultCreated'),
-    UPDATED: t('import.resultUpdated'),
-    SKIPPED_DUPLICATE: t('import.resultDuplicate'),
-    ERROR: t('import.resultError'),
-  }
-
-  return (
-    <div className="grid gap-3 rounded-xl border border-border bg-background p-4 md:grid-cols-[64px_minmax(180px,1.2fr)_minmax(200px,1.5fr)_auto] md:items-center">
-      <span className="text-sm font-semibold text-muted-foreground">
-        {t('import.row')} {row.lineNumber}
-      </span>
-      <div className="min-w-0">
-        <p className="truncate font-semibold text-foreground">{row.displayName}</p>
-        <p className="truncate text-xs text-muted-foreground">{row.email}</p>
-      </div>
-      <div className="flex flex-wrap items-center gap-2">
-        <span
-          className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${RESULT_STYLES[row.result]}`}
-        >
-          {resultIcon(row.result)} {resultLabels[row.result]}
-        </span>
-        {row.errorMessage && <span className="text-xs font-medium text-destructive">{row.errorMessage}</span>}
-      </div>
-      <div className="text-right text-xs text-muted-foreground">
-        {row.fieldOfStudy && <span>{row.fieldOfStudy}</span>}
-        {row.level && <span> · {row.level}</span>}
-        {row.entryYear && <span> ({row.entryYear})</span>}
-      </div>
-    </div>
   )
 }

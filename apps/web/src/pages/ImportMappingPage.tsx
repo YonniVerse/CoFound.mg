@@ -1,30 +1,53 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ArrowLeft, ArrowRight, CheckCircle2, FileSpreadsheet, Info, Loader2, XCircle } from 'lucide-react'
+import {
+  ArrowRight,
+  FileSpreadsheet,
+  XCircle,
+  RefreshCw,
+  Check,
+} from 'lucide-react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { importColumnMappingSchema, importMappingResponseSchema, type ImportDetectedColumn, type ImportField, type ImportMappingResponse } from '@cofound/shared'
+import {
+  importColumnMappingSchema,
+  importMappingResponseSchema,
+  type ImportDetectedColumn,
+  type ImportField,
+  type ImportMappingResponse,
+} from '@cofound/shared'
 import { apiClient, ApiClientError } from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
-import { useI18n } from '@/i18n'
+import { InstitutionHeader } from '@/components/institution/InstitutionHeader'
+import { ImportStepProgress } from '@/components/institution/ImportStepProgress'
 
-const FIELD_LABELS: Record<ImportField, string> = {
-  email: 'Email (obligatoire)',
-  firstName: 'Prénom (obligatoire)',
-  lastName: 'Nom (obligatoire)',
-  fieldOfStudy: 'Filière (obligatoire)',
-  level: 'Niveau (obligatoire)',
-  entryYear: "Année d'entrée (obligatoire)",
-  gender: 'Genre (facultatif)',
-  studentNumber: 'Matricule (facultatif)',
+const FIELD_LABELS: Record<ImportField, { label: string; required: boolean }> = {
+  email: { label: 'Adresse e-mail', required: true },
+  firstName: { label: 'Prénom', required: true },
+  lastName: { label: 'Nom', required: true },
+  fieldOfStudy: { label: 'Filière / Domaine', required: true },
+  level: { label: 'Niveau d’études', required: true },
+  entryYear: { label: 'Année d’entrée', required: true },
+  gender: { label: 'Genre', required: false },
+  studentNumber: { label: 'Matricule / Identifiant', required: false },
 }
 
-const REQUIRED_FIELDS: ImportField[] = ['email', 'firstName', 'lastName', 'fieldOfStudy', 'level', 'entryYear']
+const REQUIRED_FIELDS: ImportField[] = [
+  'email',
+  'firstName',
+  'lastName',
+  'fieldOfStudy',
+  'level',
+  'entryYear',
+]
 
 const DEFAULT_COLUMNS: ImportDetectedColumn[] = [
-  { name: 'Adresse e-mail', suggestedField: 'email', samples: ['mialy.randria@example.mg', 'fara.rakoto@example.mg', 'hery.andria@example.mg'] },
+  {
+    name: 'Adresse e-mail',
+    suggestedField: 'email',
+    samples: ['mialy.randria@example.mg', 'fara.rakoto@example.mg', 'hery.andria@example.mg'],
+  },
   { name: 'Prénom', suggestedField: 'firstName', samples: ['Mialy', 'Fara', 'Hery'] },
   { name: 'Nom', suggestedField: 'lastName', samples: ['Randriambelo', 'Rakotondrabe', 'Andrianina'] },
   { name: 'Filière', suggestedField: 'fieldOfStudy', samples: ['Informatique', 'Gestion', 'Génie civil'] },
@@ -35,7 +58,6 @@ const DEFAULT_COLUMNS: ImportDetectedColumn[] = [
 ]
 
 export default function ImportMappingPage() {
-  const { t } = useI18n()
   const navigate = useNavigate()
   const params = useParams<{ id?: string }>()
   const [searchParams] = useSearchParams()
@@ -53,7 +75,6 @@ export default function ImportMappingPage() {
 
   useEffect(() => {
     if (!importId) return
-
     let cancelled = false
 
     apiClient
@@ -122,12 +143,8 @@ export default function ImportMappingPage() {
         await apiClient.patch(`/institution/imports/${importId}`, payload)
       }
       navigate(importId ? `/institution/imports/${importId}/preview` : '/institution/imports/preview')
-    } catch (err) {
-      if (err instanceof ApiClientError) {
-        setSaveError(err.message || 'Le mapping n’a pas pu être enregistré.')
-      } else {
-        setSaveError('Le mapping n’a pas pu être enregistré. Vérifiez votre connexion puis réessayez.')
-      }
+    } catch {
+      setSaveError('Le mapping n’a pas pu être enregistré. Vérifiez votre connexion puis réessayez.')
     } finally {
       setIsSaving(false)
     }
@@ -135,174 +152,210 @@ export default function ImportMappingPage() {
 
   return (
     <DashboardLayout>
-      <main className="min-h-screen bg-muted/20 px-4 py-8 sm:px-8 lg:px-12">
-        <div className="mx-auto max-w-6xl space-y-8">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <Button variant="ghost" onClick={() => navigate('/institution/imports/new')} className="-ml-3 gap-2">
-              <ArrowLeft className="h-4 w-4" /> Retour à l'envoi
-            </Button>
-            <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">Étape 2 sur 4</span>
-          </div>
+      <main className="min-h-screen bg-muted/20 px-4 py-8 sm:px-10">
+        <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6">
+          <InstitutionHeader
+            title="Correspondance des colonnes"
+            description={`Vérifiez et confirmez le rôle de chaque colonne détectée dans votre fichier "${fileName}".`}
+            backHref="/institution/imports/new"
+            backLabel="Retour à l’envoi"
+          />
 
-          <header className="max-w-3xl space-y-3">
-            <div className="flex items-center gap-3 text-primary">
-              <FileSpreadsheet className="h-7 w-7" />
-              <p className="text-sm font-semibold uppercase tracking-[0.18em]">Nouvel import · {fileName}</p>
+          <ImportStepProgress currentStep="mapping" />
+
+          {saveError && (
+            <div className="flex items-center gap-3 rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
+              <XCircle className="h-4 w-4 shrink-0" />
+              <p className="flex-1 font-medium">{saveError}</p>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Vérifiez les colonnes de votre fichier
-            </h1>
-            <p className="text-base leading-7 text-muted-foreground">
-              Nous avons analysé les en-têtes et proposé une correspondance automatique. Confirmez ou ajustez l’association de chaque colonne avant de prévisualiser les étudiants.
-            </p>
-          </header>
-
-          <div className="flex items-start gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4 text-sm text-foreground">
-            <Info className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-            <p>{t('import.privacyNotice')}</p>
-          </div>
-
-          {isLoading ? (
-            <Card>
-              <CardContent className="space-y-4 p-8">
-                <Skeleton className="h-8 w-48" />
-                <Skeleton className="h-16 w-full" />
-                <Skeleton className="h-16 w-full" />
-                <Skeleton className="h-16 w-full" />
-              </CardContent>
-            </Card>
-          ) : loadError ? (
-            <Card className="border-destructive/30">
-              <CardContent className="flex items-center gap-3 p-6 text-destructive">
-                <XCircle className="h-5 w-5 shrink-0" />
-                <span>{loadError}</span>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card className="rounded-xl border-border bg-card shadow-2xs">
-              <CardHeader>
-                <CardTitle>{t('import.mappingTitle')}</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Des exemples issus du fichier sont affichés pour chaque colonne. Vous pouvez ignorer les colonnes non pertinentes.
-                </p>
-              </CardHeader>
-              <CardContent className="mt-3 space-y-4">
-                {columns.map((column) => {
-                  const selectedField = mapping[column.name] ?? null
-                  const isDuplicate = selectedField !== null && duplicateFields.includes(selectedField)
-                  return (
-                    <div
-                      key={column.name}
-                      className={`grid gap-4 rounded-xl border p-4 lg:grid-cols-[minmax(180px,1fr)_minmax(240px,1.2fr)_minmax(220px,1.4fr)] ${
-                        isDuplicate ? 'border-destructive/50 bg-destructive/5' : 'border-border bg-background'
-                      }`}
-                    >
-                      <div className="min-w-0">
-                        <p className="truncate font-semibold text-foreground">{column.name}</p>
-                        <p className="mt-1 text-xs text-muted-foreground">Colonne détectée</p>
-                      </div>
-                      <div>
-                        <label
-                          htmlFor={`mapping-${column.name}`}
-                          className="mb-2 block text-xs font-semibold text-muted-foreground"
-                        >
-                          Correspond au champ
-                        </label>
-                        <Select
-                          value={selectedField ?? '__ignore__'}
-                          onValueChange={(value) => updateMapping(column.name, value)}
-                        >
-                          <SelectTrigger id={`mapping-${column.name}`} className="w-full bg-background">
-                            <SelectValue placeholder="Choisir un champ" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="__ignore__">{t('import.ignoreColumn')}</SelectItem>
-                            {(Object.keys(FIELD_LABELS) as ImportField[]).map((field) => (
-                              <SelectItem key={field} value={field}>
-                                {FIELD_LABELS[field]}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {isDuplicate && (
-                          <p className="mt-2 text-xs text-destructive">Ce champ est déjà associé à une autre colonne.</p>
-                        )}
-                      </div>
-                      <div>
-                        <p className="mb-2 text-xs font-semibold text-muted-foreground">Aperçu des données</p>
-                        <div className="space-y-1 text-sm text-foreground">
-                          {column.samples.length > 0 ? (
-                            column.samples.map((sample, index) => (
-                              <p key={`${column.name}-${index}`} className="truncate rounded bg-muted/60 px-2 py-1">
-                                {sample}
-                              </p>
-                            ))
-                          ) : (
-                            <p className="rounded bg-muted/40 px-2 py-1 text-xs italic text-muted-foreground">
-                              Aucun exemple
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </CardContent>
-            </Card>
           )}
 
-          <Card className={hasErrors ? 'border-amber-500/40 bg-amber-500/[0.02]' : 'border-emerald-500/40 bg-emerald-500/[0.02]'}>
-            <CardContent className="mt-3 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-start gap-3">
-                {hasErrors ? (
-                  <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
-                ) : (
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-                )}
-                <div>
-                  <p className="font-semibold text-foreground">
-                    {hasErrors ? 'Le mapping doit être complété' : 'Le mapping est valide et prêt'}
-                  </p>
-                  {missingFields.length > 0 && (
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Champs obligatoires manquants :{' '}
-                      <span className="font-medium text-foreground">
-                        {missingFields.map((field) => FIELD_LABELS[field]).join(', ')}
-                      </span>
-                      .
-                    </p>
-                  )}
-                  {duplicateFields.length > 0 && (
-                    <p className="mt-1 text-sm text-destructive">
-                      Un même champ ne peut correspondre qu’à une seule colonne :{' '}
-                      {duplicateFields.map((f) => FIELD_LABELS[f]).join(', ')}.
-                    </p>
-                  )}
-                  {!hasErrors && (
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Toutes les colonnes requises sont correctement associées.
-                    </p>
-                  )}
-                  {saveError && <p className="mt-2 text-sm font-semibold text-destructive">{saveError}</p>}
-                </div>
+          {loadError && (
+            <div className="flex items-center gap-3 rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
+              <XCircle className="h-4 w-4 shrink-0" />
+              <p className="flex-1 font-medium">{loadError}</p>
+            </div>
+          )}
+
+          {/* Required Fields Checklist Bar */}
+          <Card className="border-border/80 shadow-2xs">
+            <CardHeader className="p-4 sm:p-5 pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="font-heading text-sm font-bold text-foreground">
+                  Champs obligatoires requis
+                </CardTitle>
+                <span className="text-xs font-semibold text-muted-foreground">
+                  {REQUIRED_FIELDS.length - missingFields.length} / {REQUIRED_FIELDS.length} associés
+                </span>
               </div>
-              <Button
-                disabled={hasErrors || isSaving || isLoading}
-                onClick={() => void continueToPreview()}
-                className="gap-2 sm:shrink-0"
-              >
-                {isSaving ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" /> Enregistrement…
-                  </>
-                ) : (
-                  <>
-                    Continuer vers la prévisualisation <ArrowRight className="h-4 w-4" />
-                  </>
-                )}
-              </Button>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-5 pt-2">
+              <div className="flex flex-wrap gap-2">
+                {REQUIRED_FIELDS.map((field) => {
+                  const isMapped = mappedFields.has(field)
+                  const isDuplicate = duplicateFields.includes(field)
+                  return (
+                    <span
+                      key={field}
+                      className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold transition-colors ${
+                        isDuplicate
+                          ? 'border-destructive/30 bg-destructive/10 text-destructive'
+                          : isMapped
+                          ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
+                          : 'border-border bg-muted/30 text-muted-foreground'
+                      }`}
+                    >
+                      {isMapped && !isDuplicate ? (
+                        <Check className="h-3 w-3" />
+                      ) : (
+                        <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                      )}
+                      {FIELD_LABELS[field].label}
+                    </span>
+                  )
+                })}
+              </div>
             </CardContent>
           </Card>
+
+          {/* Mapping Grid */}
+          <Card className="overflow-hidden border-border/80 shadow-2xs">
+            <CardHeader className="border-b border-border/60 p-5 sm:p-6">
+              <div className="flex items-center gap-2">
+                <FileSpreadsheet className="h-4 w-4 text-primary" />
+                <div>
+                  <CardTitle className="font-heading text-base font-bold text-foreground">
+                    Association des colonnes du fichier
+                  </CardTitle>
+                  <CardDescription className="text-xs">
+                    Associez chaque colonne à un champ système CoFound ou sélectionnez "Ignorer cette colonne".
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+
+            <CardContent className="p-0">
+              {isLoading ? (
+                <div className="space-y-4 p-6">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="flex items-center justify-between gap-4 py-3">
+                      <Skeleton className="h-5 w-40" />
+                      <Skeleton className="h-4 w-60" />
+                      <Skeleton className="h-10 w-48 rounded-lg" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-border/80 bg-muted/40 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                        <th className="px-6 py-3.5">Colonne dans votre fichier</th>
+                        <th className="px-4 py-3.5">Exemples d’échantillon</th>
+                        <th className="px-6 py-3.5 text-right">Champ CoFound associé</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/60 text-sm">
+                      {columns.map((column) => {
+                        const selectedField = mapping[column.name] ?? null
+                        const isDuplicate =
+                          selectedField !== null && duplicateFields.includes(selectedField)
+                        const isMatched = selectedField !== null
+
+                        return (
+                          <tr
+                            key={column.name}
+                            className={`transition-colors ${
+                              isDuplicate
+                                ? 'bg-destructive/[0.04]'
+                                : isMatched
+                                ? 'hover:bg-muted/30'
+                                : 'bg-muted/10 opacity-75'
+                            }`}
+                          >
+                            <td className="px-6 py-4 font-semibold text-foreground">
+                              <div className="flex items-center gap-2">
+                                <span className="h-2 w-2 rounded-full bg-primary/40" />
+                                {column.name}
+                              </div>
+                            </td>
+
+                            <td className="px-4 py-4 text-xs text-muted-foreground">
+                              {column.samples && column.samples.length > 0 ? (
+                                <div className="flex flex-wrap gap-1">
+                                  {column.samples.slice(0, 3).map((sample, idx) => (
+                                    <span
+                                      key={idx}
+                                      className="rounded bg-muted px-1.5 py-0.5 text-[11px] text-foreground font-mono"
+                                    >
+                                      {sample}
+                                    </span>
+                                  ))}
+                                </div>
+                              ) : (
+                                <span className="italic text-muted-foreground">Aucun échantillon</span>
+                              )}
+                            </td>
+
+                            <td className="px-6 py-4 text-right">
+                              <select
+                                value={selectedField ?? '__ignore__'}
+                                onChange={(e) => updateMapping(column.name, e.target.value)}
+                                className={`h-10 rounded-lg border px-3 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-primary ${
+                                  isDuplicate
+                                    ? 'border-destructive bg-destructive/10 text-destructive'
+                                    : isMatched
+                                    ? 'border-border bg-background text-foreground'
+                                    : 'border-border/60 bg-muted/40 text-muted-foreground'
+                                }`}
+                              >
+                                <option value="__ignore__">Ignorer cette colonne</option>
+                                <optgroup label="Champs obligatoires">
+                                  {REQUIRED_FIELDS.map((field) => (
+                                    <option key={field} value={field}>
+                                      {FIELD_LABELS[field].label} *
+                                    </option>
+                                  ))}
+                                </optgroup>
+                                <optgroup label="Champs facultatifs">
+                                  <option value="gender">Genre</option>
+                                  <option value="studentNumber">Matricule / Identifiant</option>
+                                </optgroup>
+                              </select>
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Action Bar */}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-2">
+            <Button
+              variant="outline"
+              onClick={() => navigate('/institution/imports/new')}
+              className="text-xs"
+            >
+              Retour à l'étape précédente
+            </Button>
+
+            <Button
+              onClick={() => void continueToPreview()}
+              disabled={hasErrors || isSaving || isLoading}
+              className="gap-2 text-xs font-semibold"
+            >
+              {isSaving ? (
+                <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <ArrowRight className="h-3.5 w-3.5" />
+              )}
+              Valider et prévisualiser les données
+            </Button>
+          </div>
         </div>
       </main>
     </DashboardLayout>

@@ -6,7 +6,6 @@ import {
   Building2,
   Calendar,
   CheckCircle2,
-  GraduationCap,
   HelpCircle,
   Plus,
   RefreshCw,
@@ -26,26 +25,15 @@ import { Button } from '@/components/ui/button'
 import { Card, CardTitle, CardDescription } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { apiClient } from '@/lib/api-client'
+import { InstitutionHeader } from '@/components/institution/InstitutionHeader'
 import { InstitutionErrorState } from '@/components/institution/InstitutionErrorState'
 
 function DashboardSkeleton() {
   return (
-    <div className="space-y-8" role="status" aria-label="Chargement du tableau de bord institutionnel">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-40" />
-          <Skeleton className="h-8 w-72" />
-          <Skeleton className="h-4 w-96 max-w-full" />
-        </div>
-        <div className="flex gap-2">
-          <Skeleton className="h-10 w-32 rounded-lg" />
-          <Skeleton className="h-10 w-36 rounded-lg" />
-        </div>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="space-y-6" role="status" aria-label="Chargement du tableau de bord institutionnel">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Card key={i} className="rounded-2xl border-border bg-card p-5 space-y-3">
+          <Card key={i} className="border-border/80 p-5 shadow-2xs space-y-3">
             <Skeleton className="h-4 w-28" />
             <Skeleton className="h-8 w-16" />
             <Skeleton className="h-3 w-40" />
@@ -54,11 +42,11 @@ function DashboardSkeleton() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card className="rounded-2xl border-border bg-card p-6 space-y-4">
+        <Card className="border-border/80 p-6 shadow-2xs space-y-4">
           <Skeleton className="h-6 w-48" />
           <Skeleton className="h-24 w-full" />
         </Card>
-        <Card className="rounded-2xl border-border bg-card p-6 space-y-4">
+        <Card className="border-border/80 p-6 shadow-2xs space-y-4">
           <Skeleton className="h-6 w-48" />
           <Skeleton className="h-24 w-full" />
         </Card>
@@ -92,48 +80,32 @@ export default function InstitutionDashboardPage() {
   return (
     <DashboardLayout>
       <main className="min-h-screen bg-muted/20 px-4 py-8 sm:px-10">
-        <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-8">
-          {/* Header & Quick Actions */}
-          <header className="flex flex-col gap-5 border-b border-border pb-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="space-y-1.5">
+        <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-6">
+          <InstitutionHeader
+            title={data?.organization?.name ? `Tableau de bord — ${data.organization.name}` : 'Tableau de bord institutionnel'}
+            description="Suivez l’activation, la complétion des profils et la dynamique entrepreneuriale de vos étudiants affiliés."
+            badgeLabel={data?.organization?.role ? `Rôle : ${data.organization.role}` : 'Espace Établissement'}
+            actions={
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-0.5 text-xs font-semibold text-primary">
-                  <GraduationCap className="h-3.5 w-3.5" />
-                  Espace Établissement
-                </span>
-                {data?.organization && (
-                  <span className="text-xs font-medium text-muted-foreground">
-                    Rôle : <strong className="text-foreground">{data.organization.role}</strong>
-                  </span>
-                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => void load()}
+                  disabled={loading}
+                  className="h-9 gap-1.5 text-xs font-semibold"
+                >
+                  <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
+                  Actualiser
+                </Button>
+                <Button asChild size="sm" className="h-9 gap-1.5 text-xs font-semibold shadow-xs">
+                  <Link to="/institution/imports/new">
+                    <Plus className="h-3.5 w-3.5" />
+                    Importer des étudiants
+                  </Link>
+                </Button>
               </div>
-              <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                {data?.organization?.name ? `Tableau de bord — ${data.organization.name}` : 'Tableau de bord institutionnel'}
-              </h1>
-              <p className="max-w-3xl text-xs leading-relaxed text-muted-foreground sm:text-sm">
-                Suivez l’activation, la complétion des profils et la dynamique entrepreneuriale de vos étudiants affiliés.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => void load()}
-                disabled={loading}
-                className="h-9 gap-1.5 rounded-lg text-xs font-semibold"
-              >
-                <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
-                Actualiser
-              </Button>
-              <Button asChild size="sm" className="h-9 gap-1.5 rounded-lg text-xs font-semibold shadow-xs">
-                <Link to="/institution/imports/new">
-                  <Plus className="h-3.5 w-3.5" />
-                  Importer des étudiants
-                </Link>
-              </Button>
-            </div>
-          </header>
+            }
+          />
 
           {loading && <DashboardSkeleton />}
 
@@ -144,9 +116,9 @@ export default function InstitutionDashboardPage() {
           {!loading && error === null && data && (
             <>
               {/* 1. TOP KPI CARDS */}
-              <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Indicateurs clés">
+              <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Indicateurs clés">
                 {/* KPI 1 : Étudiants */}
-                <Card className="rounded-2xl border-border bg-card p-5 shadow-2xs transition-all hover:border-primary/30 hover:shadow-xs">
+                <Card className="border-border/80 p-5 shadow-2xs transition-all hover:border-primary/30">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                       Étudiants Affiliés
@@ -170,7 +142,7 @@ export default function InstitutionDashboardPage() {
                 </Card>
 
                 {/* KPI 2 : Profils */}
-                <Card className="rounded-2xl border-border bg-card p-5 shadow-2xs transition-all hover:border-primary/30 hover:shadow-xs">
+                <Card className="border-border/80 p-5 shadow-2xs transition-all hover:border-primary/30">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                       Profils Complétés
@@ -194,7 +166,7 @@ export default function InstitutionDashboardPage() {
                 </Card>
 
                 {/* KPI 3 : Projets */}
-                <Card className="rounded-2xl border-border bg-card p-5 shadow-2xs transition-all hover:border-primary/30 hover:shadow-xs">
+                <Card className="border-border/80 p-5 shadow-2xs transition-all hover:border-primary/30">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                       Projets Étudiants
@@ -218,7 +190,7 @@ export default function InstitutionDashboardPage() {
                 </Card>
 
                 {/* KPI 4 : Dynamique & Activité */}
-                <Card className="rounded-2xl border-border bg-card p-5 shadow-2xs transition-all hover:border-primary/30 hover:shadow-xs">
+                <Card className="border-border/80 p-5 shadow-2xs transition-all hover:border-primary/30">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                       Activité Récente
@@ -245,10 +217,10 @@ export default function InstitutionDashboardPage() {
               {/* 2. ENTONNOIR D'ACTIVATION (FUNNEL) & SUIVI DES ÉTUDIANTS */}
               <section className="grid gap-6 lg:grid-cols-2">
                 {/* Entonnoir d'activation */}
-                <Card className="rounded-2xl border-border bg-card p-6 shadow-2xs">
+                <Card className="border-border/80 p-6 shadow-2xs">
                   <div className="flex items-center justify-between border-b border-border/60 pb-4">
                     <div className="space-y-0.5">
-                      <CardTitle className="text-base font-bold tracking-tight text-foreground">
+                      <CardTitle className="font-heading text-base font-bold tracking-tight text-foreground">
                         Entonnoir d'Activation des Étudiants
                       </CardTitle>
                       <CardDescription className="text-xs text-muted-foreground">
@@ -271,7 +243,7 @@ export default function InstitutionDashboardPage() {
                         <span className="font-bold text-foreground">{data.funnel.totalImported} (100%)</span>
                       </div>
                       <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                        <div className="h-full rounded-full bg-muted-foreground/50 w-full" />
+                        <div className="h-full rounded-full bg-muted-foreground/40 w-full" />
                       </div>
                     </div>
 
@@ -339,11 +311,11 @@ export default function InstitutionDashboardPage() {
                 </Card>
 
                 {/* Suivi des étudiants & Catégorisation */}
-                <Card className="rounded-2xl border-border bg-card p-6 shadow-2xs flex flex-col justify-between">
+                <Card className="border-border/80 p-6 shadow-2xs flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between border-b border-border/60 pb-4">
                       <div className="space-y-0.5">
-                        <CardTitle className="text-base font-bold tracking-tight text-foreground">
+                        <CardTitle className="font-heading text-base font-bold tracking-tight text-foreground">
                           Répartition & Suivi des Affiliés
                         </CardTitle>
                         <CardDescription className="text-xs text-muted-foreground">
@@ -423,12 +395,12 @@ export default function InstitutionDashboardPage() {
 
                 <div className="grid gap-6 lg:grid-cols-3">
                   {/* États des projets */}
-                  <Card className="rounded-2xl border-border bg-card p-6 shadow-2xs space-y-4">
-                    <CardTitle className="text-base font-bold tracking-tight text-foreground">
+                  <Card className="border-border/80 p-6 shadow-2xs space-y-4">
+                    <CardTitle className="font-heading text-base font-bold tracking-tight text-foreground">
                       État des Projets ({data.projects.total})
                     </CardTitle>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2.5">
                       <div className="flex items-center justify-between rounded-xl border border-border/70 p-3">
                         <div className="flex items-center gap-2">
                           <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
@@ -465,16 +437,16 @@ export default function InstitutionDashboardPage() {
                     </div>
 
                     <div className="border-t border-border/60 pt-3 flex items-center justify-between text-xs text-muted-foreground">
-                      <span>Recherche de mentor : <strong className="text-foreground">{data.projects.seekingMentorship}</strong></span>
-                      <span>Recherche de fonds : <strong className="text-foreground">{data.projects.seekingFunding}</strong></span>
+                      <span>Recherche mentor : <strong className="text-foreground">{data.projects.seekingMentorship}</strong></span>
+                      <span>Recherche fonds : <strong className="text-foreground">{data.projects.seekingFunding}</strong></span>
                     </div>
                   </Card>
 
                   {/* Évolution temporelle sur 6 mois */}
-                  <Card className="rounded-2xl border-border bg-card p-6 shadow-2xs lg:col-span-2 space-y-4">
+                  <Card className="border-border/80 p-6 shadow-2xs lg:col-span-2 space-y-4">
                     <div className="flex items-center justify-between border-b border-border/60 pb-3">
                       <div>
-                        <CardTitle className="text-base font-bold tracking-tight text-foreground">
+                        <CardTitle className="font-heading text-base font-bold tracking-tight text-foreground">
                           Évolution des Créations de Projets
                         </CardTitle>
                         <CardDescription className="text-xs text-muted-foreground">
@@ -517,10 +489,10 @@ export default function InstitutionDashboardPage() {
               {/* 4. RÉPARTITION SECTORIELLE & PLURIDISCIPLINARITÉ */}
               <section className="grid gap-6 lg:grid-cols-2">
                 {/* Secteurs représentés */}
-                <Card className="rounded-2xl border-border bg-card p-6 shadow-2xs space-y-4">
+                <Card className="border-border/80 p-6 shadow-2xs space-y-4">
                   <div className="flex items-center justify-between border-b border-border/60 pb-3">
                     <div className="space-y-0.5">
-                      <CardTitle className="text-base font-bold tracking-tight text-foreground">
+                      <CardTitle className="font-heading text-base font-bold tracking-tight text-foreground">
                         Secteurs d’Activité Représentés
                       </CardTitle>
                       <CardDescription className="text-xs text-muted-foreground">
@@ -559,11 +531,11 @@ export default function InstitutionDashboardPage() {
                 </Card>
 
                 {/* Pluridisciplinarité */}
-                <Card className="rounded-2xl border-border bg-card p-6 shadow-2xs space-y-4 flex flex-col justify-between">
+                <Card className="border-border/80 p-6 shadow-2xs space-y-4 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between border-b border-border/60 pb-3">
                       <div className="space-y-0.5">
-                        <CardTitle className="text-base font-bold tracking-tight text-foreground">
+                        <CardTitle className="font-heading text-base font-bold tracking-tight text-foreground">
                           Projets Pluridisciplinaires
                         </CardTitle>
                         <CardDescription className="text-xs text-muted-foreground">
@@ -611,10 +583,10 @@ export default function InstitutionDashboardPage() {
               {/* 5. OPPORTUNITÉS, MENTORAT & ACTIONS RAPIDES */}
               <section className="grid gap-6 lg:grid-cols-3">
                 {/* Opportunités & Mentorat */}
-                <Card className="rounded-2xl border-border bg-card p-6 shadow-2xs space-y-4 lg:col-span-2">
+                <Card className="border-border/80 p-6 shadow-2xs space-y-4 lg:col-span-2">
                   <div className="flex items-center justify-between border-b border-border/60 pb-3">
                     <div className="space-y-0.5">
-                      <CardTitle className="text-base font-bold tracking-tight text-foreground">
+                      <CardTitle className="font-heading text-base font-bold tracking-tight text-foreground">
                         Opportunités, Candidatures & Mentorat
                       </CardTitle>
                       <CardDescription className="text-xs text-muted-foreground">
@@ -655,8 +627,8 @@ export default function InstitutionDashboardPage() {
                 </Card>
 
                 {/* Actions Rapides */}
-                <Card className="rounded-2xl border-border bg-card p-6 shadow-2xs space-y-4">
-                  <CardTitle className="text-base font-bold tracking-tight text-foreground">
+                <Card className="border-border/80 p-6 shadow-2xs space-y-4">
+                  <CardTitle className="font-heading text-base font-bold tracking-tight text-foreground">
                     Actions Rapides
                   </CardTitle>
 
@@ -705,7 +677,7 @@ export default function InstitutionDashboardPage() {
               </section>
 
               {/* 6. RESPECT DE LA CONFIDENTIALITÉ */}
-              <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 sm:p-5 flex items-start gap-3.5">
+              <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 sm:p-5 flex items-start gap-3.5">
                 <ShieldCheck className="h-5 w-5 shrink-0 text-primary mt-0.5" />
                 <div className="space-y-1 text-xs text-muted-foreground leading-relaxed">
                   <p className="font-semibold text-foreground">
