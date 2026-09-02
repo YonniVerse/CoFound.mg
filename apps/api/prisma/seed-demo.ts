@@ -13,12 +13,21 @@ import {
   ProjectStatus,
   TaskStatus,
 } from '@prisma/client'
+import * as argon2 from 'argon2'
 
 const prisma = new PrismaClient()
 const DEMO_PREFIX = 'demo-'
 
 async function seedDemo(): Promise<void> {
   console.log('Début du seeding de démonstration CoFound.mg...')
+
+  const defaultPassword =
+    process.env.DEMO_INSTITUTION_PASSWORD ??
+    process.env.SEED_DEMO_PASSWORD ??
+    'UnivTest2026!Secure'
+  const demoPasswordHash = await argon2.hash(defaultPassword, {
+    type: argon2.argon2id,
+  })
 
   await prisma.$transaction(async (tx) => {
     // 1. Référentiels (Secteurs, Régions, Filières, Compétences)
@@ -69,8 +78,21 @@ async function seedDemo(): Promise<void> {
     // 2. Organisations & Établissements
     const institution = await tx.organization.upsert({
       where: { id: `${DEMO_PREFIX}institution` },
-      update: { name: 'Université d’Antsiranana (UNA / ESPA)', type: OrganizationType.INSTITUTION, verificationStatus: 'VERIFIED', description: 'Établissement supérieur partenaire de démonstration.' },
-      create: { id: `${DEMO_PREFIX}institution`, name: 'Université d’Antsiranana (UNA / ESPA)', type: OrganizationType.INSTITUTION, verificationStatus: 'VERIFIED', description: 'Établissement supérieur partenaire de démonstration.' },
+      update: {
+        name: 'Université de Test',
+        type: OrganizationType.INSTITUTION,
+        verificationStatus: 'VERIFIED',
+        description: 'Université de Test — Établissement d’enseignement supérieur partenaire de démonstration à Antsiranana (Région Diana).',
+        countryCode: 'MG',
+      },
+      create: {
+        id: `${DEMO_PREFIX}institution`,
+        name: 'Université de Test',
+        type: OrganizationType.INSTITUTION,
+        verificationStatus: 'VERIFIED',
+        description: 'Université de Test — Établissement d’enseignement supérieur partenaire de démonstration à Antsiranana (Région Diana).',
+        countryCode: 'MG',
+      },
     })
 
     const partner = await tx.organization.upsert({
@@ -98,8 +120,8 @@ async function seedDemo(): Promise<void> {
     for (const tData of talentsData) {
       const user = await tx.user.upsert({
         where: { email: tData.email },
-        update: { status: AccountStatus.ACTIVE, platformRole: PlatformRole.TALENT, activatedAt: new Date('2026-01-10T00:00:00Z') },
-        create: { id: tData.id, email: tData.email, status: AccountStatus.ACTIVE, platformRole: PlatformRole.TALENT, activatedAt: new Date('2026-01-10T00:00:00Z'), locale: 'fr' },
+        update: { passwordHash: demoPasswordHash, status: AccountStatus.ACTIVE, platformRole: PlatformRole.TALENT, activatedAt: new Date('2026-01-10T00:00:00Z') },
+        create: { id: tData.id, email: tData.email, passwordHash: demoPasswordHash, status: AccountStatus.ACTIVE, platformRole: PlatformRole.TALENT, activatedAt: new Date('2026-01-10T00:00:00Z'), locale: 'fr' },
       })
 
       const profile = await tx.talentProfile.upsert({
@@ -137,14 +159,80 @@ async function seedDemo(): Promise<void> {
     // Staff User & Partner capability
     const staffUser = await tx.user.upsert({
       where: { email: `${DEMO_PREFIX}staff@cofound.mg` },
-      update: { status: AccountStatus.ACTIVE, platformRole: PlatformRole.STAFF, staffRole: 'OPS_ADMIN' },
-      create: { id: `${DEMO_PREFIX}staff`, email: `${DEMO_PREFIX}staff@cofound.mg`, status: AccountStatus.ACTIVE, platformRole: PlatformRole.STAFF, staffRole: 'OPS_ADMIN', locale: 'fr' },
+      update: { passwordHash: demoPasswordHash, status: AccountStatus.ACTIVE, platformRole: PlatformRole.STAFF, staffRole: 'OPS_ADMIN' },
+      create: { id: `${DEMO_PREFIX}staff`, email: `${DEMO_PREFIX}staff@cofound.mg`, passwordHash: demoPasswordHash, status: AccountStatus.ACTIVE, platformRole: PlatformRole.STAFF, staffRole: 'OPS_ADMIN', locale: 'fr' },
     })
     await tx.organizationMember.upsert({
       where: { organizationId_userId: { organizationId: institution.id, userId: staffUser.id } },
       update: { role: OrganizationRole.ORG_ADMIN },
       create: { organizationId: institution.id, userId: staffUser.id, role: OrganizationRole.ORG_ADMIN },
     })
+
+    // Compte administrateur dédié pour l'établissement institutionnel
+    const institutionAdmin = await tx.user.upsert({
+      where: { email: 'admin.test@univ-test.mg' },
+      update: {
+        passwordHash: demoPasswordHash,
+        status: AccountStatus.ACTIVE,
+        platformRole: PlatformRole.ORG_MEMBER,
+        activatedAt: new Date('2026-01-01T00:00:00Z'),
+      },
+      create: {
+        id: `${DEMO_PREFIX}institution-admin`,
+        email: 'admin.test@univ-test.mg',
+        passwordHash: demoPasswordHash,
+        status: AccountStatus.ACTIVE,
+        platformRole: PlatformRole.ORG_MEMBER,
+        locale: 'fr',
+        activatedAt: new Date('2026-01-01T00:00:00Z'),
+      },
+    })
+
+    await tx.talentIdentity.upsert({
+      where: { userId: institutionAdmin.id },
+      update: {
+        firstName: 'Cadre',
+        lastName: 'Université',
+        regionId: regionMap.get('diana'),
+      },
+      create: {
+        userId: institutionAdmin.id,
+        firstName: 'Cadre',
+        lastName: 'Université',
+        regionId: regionMap.get('diana'),
+      },
+    })
+
+    await tx.organizationMember.upsert({
+      where: {
+        organizationId_userId: {
+          organizationId: institution.id,
+          userId: institutionAdmin.id,
+        },
+      },
+      update: { role: OrganizationRole.ORG_ADMIN },
+      create: {
+        organizationId: institution.id,
+        userId: institutionAdmin.id,
+        role: OrganizationRole.ORG_ADMIN,
+      },
+    })
+
+    await tx.organizationCapability.upsert({
+      where: {
+        organizationId_capability: {
+          organizationId: institution.id,
+          capability: OrganizationCapabilityName.CERTIFY_AFFILIATION,
+        },
+      },
+      update: { grantedById: staffUser.id },
+      create: {
+        organizationId: institution.id,
+        capability: OrganizationCapabilityName.CERTIFY_AFFILIATION,
+        grantedById: staffUser.id,
+      },
+    })
+
     await tx.organizationCapability.upsert({
       where: { organizationId_capability: { organizationId: partner.id, capability: OrganizationCapabilityName.PUBLISH_OPPORTUNITY } },
       update: { grantedById: staffUser.id },
@@ -497,7 +585,7 @@ async function seedDemo(): Promise<void> {
     }
 
     console.log('Seeding de démonstration CoFound.mg complété avec succès !')
-  })
+  }, { timeout: 180000, maxWait: 30000 })
 }
 
 seedDemo()
