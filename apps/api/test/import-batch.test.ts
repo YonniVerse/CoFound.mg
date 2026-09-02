@@ -30,6 +30,9 @@ function dependencies(batch: TestBatch, rows: TestRow[] = []) {
       }),
       update: async ({ data }: { data: TestRecord }) => { state.updates.push(data); return { ...state.batch, ...data } },
     },
+    user: {
+      findUnique: async () => ({ id: 'manager-1', platformRole: 'ORG_MEMBER' }),
+    },
     organizationMember: {
       findUnique: async () => ({ role: 'ORG_MANAGER' }),
       findMany: async () => [{ organizationId: 'org-1' }],
@@ -44,6 +47,7 @@ function dependencies(batch: TestBatch, rows: TestRow[] = []) {
       findMany: async () => [{ ...state.batch, uploadedBy: { id: 'uploader', email: 'uploader@example.mg' }, rows: state.rows.map((row) => ({ result: row.result })) }],
       update: async ({ data }: { data: TestRecord }) => { state.updates.push(data); return { ...state.batch, ...data } },
     },
+    user: tx.user,
     organizationMember: tx.organizationMember,
     invitationToken: tx.invitationToken,
     $transaction: async (callback: (transaction: typeof tx) => Promise<unknown>) => callback(tx),

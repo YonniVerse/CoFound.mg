@@ -21,13 +21,19 @@ type FakeState = {
 
 function fakeDependencies(batch: any, existingUsers: any[] = []) {
   const state: FakeState = {
-    batch,
+    batch: {
+      ...batch,
+      organization: { type: 'INSTITUTION' },
+    },
     users: new Map(existingUsers.map((user) => [user.email, user])),
     rowUpdates: [],
     batchUpdates: [],
     invitations: [],
     jobs: [],
   }
+
+  // Pre-seed manager user
+  state.users.set('manager-1', { id: 'manager-1', email: 'manager@example.mg', platformRole: 'ORG_MEMBER' })
 
   const transaction = {
     importBatch: {
@@ -41,7 +47,11 @@ function fakeDependencies(batch: any, existingUsers: any[] = []) {
       findUnique: async () => ({ role: 'ORG_MANAGER' }),
     },
     user: {
-      findUnique: async ({ where }: any) => state.users.get(where.email) ?? null,
+      findUnique: async ({ where }: any) => {
+        if (where.email) return state.users.get(where.email) ?? null
+        if (where.id) return state.users.get(where.id) ?? { id: where.id, platformRole: 'ORG_MEMBER' }
+        return null
+      },
       create: async ({ data }: any) => {
         const user = { id: `user-${state.users.size + 1}`, ...data }
         state.users.set(user.email, user)
@@ -55,7 +65,9 @@ function fakeDependencies(batch: any, existingUsers: any[] = []) {
       },
     },
     talentIdentity: { upsert: async () => ({}) },
+    talentProfile: { upsert: async () => ({}) },
     affiliation: { upsert: async () => ({}) },
+    field: { findMany: async () => [] },
     importRow: {
       update: async ({ data }: any) => {
         state.rowUpdates.push(data)
@@ -93,18 +105,26 @@ function validBatch() {
     createdRows: 0,
     updatedRows: 0,
     errorRows: 0,
+    columnMapping: {
+      email: 'Adresse e-mail',
+      firstName: 'Prénom',
+      lastName: 'Nom',
+      fieldOfStudy: 'Filière',
+      level: 'Niveau',
+      entryYear: 'Année',
+    },
     rows: [
       {
         id: 'row-1',
         lineNumber: 2,
         result: null,
-        raw: { email: 'new@example.mg', firstName: 'Noro', lastName: 'Rabe', fieldOfStudy: 'Informatique', level: 'L3', entryYear: 2024 },
+        raw: { 'Adresse e-mail': 'new@example.mg', 'Prénom': 'Noro', 'Nom': 'Rabe', 'Filière': 'Informatique', 'Niveau': 'L3', 'Année': 2024 },
       },
       {
         id: 'row-2',
         lineNumber: 3,
         result: null,
-        raw: { email: 'existing@example.mg', firstName: 'Fara', lastName: 'Rakoto', fieldOfStudy: 'Gestion', level: 'M1', entryYear: 2023 },
+        raw: { 'Adresse e-mail': 'existing@example.mg', 'Prénom': 'Fara', 'Nom': 'Rakoto', 'Filière': 'Gestion', 'Niveau': 'M1', 'Année': 2023 },
       },
     ],
   }

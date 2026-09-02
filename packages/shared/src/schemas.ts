@@ -518,12 +518,34 @@ export const importColumnMappingSchema = z.object({
   columns: z.record(z.string().trim().min(1), importFieldSchema.nullable()),
 })
 
+export const importDetectedColumnSchema = z.object({
+  name: z.string().min(1),
+  suggestedField: importFieldSchema.nullable(),
+  samples: z.array(z.string()),
+})
+
+export const importMappingResponseSchema = z.object({
+  batchId: idSchema,
+  fileName: z.string().min(1),
+  status: z.string().min(1),
+  totalRows: z.number().int().nonnegative(),
+  errorRows: z.number().int().nonnegative(),
+  headers: z.array(z.string()),
+  columnMapping: z.record(z.string(), importFieldSchema.nullable()),
+  detectedColumns: z.array(importDetectedColumnSchema),
+  missingRequiredFields: z.array(importFieldSchema).optional(),
+  unknownColumns: z.array(z.string()).optional(),
+})
+
 export const importPreviewResultSchema = z.enum(['CREATED', 'UPDATED', 'SKIPPED_DUPLICATE', 'ERROR'])
 
 export const importPreviewRowSchema = z.object({
   lineNumber: z.number().int().positive(),
   displayName: z.string().min(1),
   email: z.string().min(1),
+  fieldOfStudy: z.string().optional(),
+  level: z.string().optional(),
+  entryYear: z.number().int().nullable().optional(),
   result: importPreviewResultSchema,
   errorMessage: z.string().min(1).nullable(),
 })
@@ -531,6 +553,14 @@ export const importPreviewRowSchema = z.object({
 export const importPreviewSchema = z.object({
   batchId: idSchema,
   fileName: z.string().min(1),
+  status: z.string().optional(),
+  counters: z.object({
+    totalRows: z.number().int().nonnegative(),
+    createdRows: z.number().int().nonnegative(),
+    updatedRows: z.number().int().nonnegative(),
+    skippedRows: z.number().int().nonnegative(),
+    errorRows: z.number().int().nonnegative(),
+  }).optional(),
   rows: z.array(importPreviewRowSchema),
 })
 
@@ -538,12 +568,25 @@ export const importApplyInputSchema = z.object({
   batchId: idSchema,
 })
 
+export const importApplyResultSchema = z.object({
+  batchId: idSchema,
+  status: z.literal('APPLIED'),
+  totalRows: z.number().int().nonnegative(),
+  createdRows: z.number().int().nonnegative(),
+  updatedRows: z.number().int().nonnegative(),
+  skippedRows: z.number().int().nonnegative(),
+  errorRows: z.number().int().nonnegative(),
+})
+
 export type ImportField = z.infer<typeof importFieldSchema>
 export type ImportColumnMapping = z.infer<typeof importColumnMappingSchema>
+export type ImportDetectedColumn = z.infer<typeof importDetectedColumnSchema>
+export type ImportMappingResponse = z.infer<typeof importMappingResponseSchema>
 export type ImportPreviewResult = z.infer<typeof importPreviewResultSchema>
 export type ImportPreviewRow = z.infer<typeof importPreviewRowSchema>
 export type ImportPreview = z.infer<typeof importPreviewSchema>
 export type ImportApplyInput = z.infer<typeof importApplyInputSchema>
+export type ImportApplyResult = z.infer<typeof importApplyResultSchema>
 
 export type LoginInput = z.infer<typeof loginInputSchema>
 export type ActivationInput = z.infer<typeof activationInputSchema>

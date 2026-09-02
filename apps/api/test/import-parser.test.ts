@@ -1,7 +1,9 @@
 import { strict as assert } from 'node:assert'
 import { test } from 'node:test'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
 import * as XLSX from 'xlsx'
-import { analyzeImportFile } from '../src/import/import-parser.js'
+import { analyzeImportFile, extractStudentFromRow } from '../src/import/import-parser.js'
 
 function csvBuffer(content: string, encoding: BufferEncoding = 'utf8'): Buffer {
   return Buffer.from(content, encoding)
@@ -84,4 +86,57 @@ test('décode un CSV Windows-1252 avec accents', () => {
   assert.equal(result.rows[0]?.normalized.firstName, 'Élodie')
   assert.equal(result.rows[0]?.normalized.lastName, "D'Amour")
   assert.deepEqual(result.rows[0]?.errors, [])
+})
+
+test('extractStudentFromRow résout correctement les champs selon le mapping personnalisé ou direct', () => {
+  const rawRow = {
+    'Courriel univ': 'mialy@univ.mg',
+    'Nom usuel': 'Randria',
+    'Prénom': 'Mialy',
+    'Parcours': 'Génie Logiciel',
+    'Année': '2024',
+    'Niveau': 'M1',
+  }
+  const customMapping = {
+    'Courriel univ': 'email',
+    'Nom usuel': 'lastName',
+    'Prénom': 'firstName',
+    'Parcours': 'fieldOfStudy',
+    'Année': 'entryYear',
+    'Niveau': 'level',
+  }
+
+  const { student, errors } = extractStudentFromRow(rawRow, customMapping)
+
+  assert.deepEqual(errors, [])
+  assert.equal(student.email, 'mialy@univ.mg')
+  assert.equal(student.firstName, 'Mialy')
+  assert.equal(student.lastName, 'Randria')
+  assert.equal(student.fieldOfStudy, 'Génie Logiciel')
+  assert.equal(student.level, 'M1')
+  assert.equal(student.entryYear, 2024)
+})
+
+test('analyse le fichier d’exemple docs/examples/students-import.csv', () => {
+  const csvPath = path.resolve(process.cwd(), '../../docs/examples/students-import.csv')
+  if (fs.existsSync(csvPath)) {
+    const buffer = fs.readFileSync(csvPath)
+    const result = analyzeImportFile(buffer, 'students-import.csv')
+
+    assert.equal(result.fileType, 'CSV')
+    assert.equal(result.missingRequiredFields.length, 0)
+    assert.equal(result.rows.length, 7)
+
+    // Valid rows
+    assert.equal(result.rows[0]?.normalized.email, 'mialy.randria@example.mg')
+    assert.equal(result.rows[0]?.errors.length, 0)
+
+    // Invalid email row
+    const invalidEmailRow = result.rows[5]
+    assert.ok(invalidEmailRow?.errors.some((e) => e.includes('invalide')))
+
+    // Missing first name row
+    const missingFirstNameRow = result.rows[6]
+    assert.ok(missingFirstNameRow?.errors.some((e) => e.includes('Prénom absent')))
+  }
 })

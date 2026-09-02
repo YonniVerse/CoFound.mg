@@ -1,24 +1,11 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { createHash, randomBytes } from 'node:crypto'
 import * as argon2 from 'argon2'
-import type { Prisma } from '@prisma/client'
 import { ImportBatchStatus, ImportRowResult } from '@prisma/client'
-import type { ImportApplyInput } from '@cofound/shared'
+import { INVITATION_EXPIRY_DAYS, type ImportApplyInput } from '@cofound/shared'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { NotificationsQueueService } from '../notifications/notifications-queue.service.js'
-
-const REQUIRED_FIELDS = ['email', 'firstName', 'lastName', 'fieldOfStudy', 'level', 'entryYear'] as const
-
-type ImportStudent = {
-  email?: unknown
-  firstName?: unknown
-  lastName?: unknown
-  fieldOfStudy?: unknown
-  level?: unknown
-  entryYear?: unknown
-  gender?: unknown
-  studentNumber?: unknown
-}
+import { extractStudentFromRow } from './import-parser.js'
 
 type PendingInvitation = {
   recipient: string
@@ -39,48 +26,113 @@ export type ImportApplyResult = {
 
 @Injectable()
 export class ImportApplyService {
-  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Inject(NotificationsQueueService) private readonly notificationsQueue: NotificationsQueueService) {}
+  constructor(
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(NotificationsQueueService) private readonly notificationsQueue: NotificationsQueueService,
+  ) {}
 
   async apply(input: ImportApplyInput, actorId: string): Promise<ImportApplyResult> {
     const invitations: PendingInvitation[] = []
+
     const result = await this.prisma.$transaction(async (transaction) => {
       const batch = await transaction.importBatch.findUnique({
         where: { id: input.batchId },
-        include: { rows: { orderBy: { lineNumber: 'asc' } } },
+        include: {
+          rows: { orderBy: { lineNumber: 'asc' } },
+          organization: true,
+        },
       })
       if (!batch) throw new NotFoundException('Lot d’import introuvable.')
+
+      const actor = transaction.user
+        ? await transaction.user.findUnique({
+            where: { id: actorId },
+            select: { platformRole: true },
+          })
+        : null
+      const isStaff = actor?.platformRole === 'STAFF'
 
       const member = await transaction.organizationMember.findUnique({
         where: { organizationId_userId: { organizationId: batch.organizationId, userId: actorId } },
       })
-      if (!member || !['ORG_ADMIN', 'ORG_MANAGER'].includes(member.role)) {
+      if (!isStaff && (!member || !['ORG_ADMIN', 'ORG_MANAGER'].includes(member.role))) {
         throw new ForbiddenException('Vous ne pouvez pas appliquer ce lot.')
       }
 
       if (batch.status === ImportBatchStatus.APPLIED) {
-        return this.summary(batch.id, batch.totalRows, batch.createdRows, batch.updatedRows, batch.rows.filter((row) => row.result === ImportRowResult.SKIPPED_DUPLICATE).length, batch.errorRows)
+        return this.summary(
+          batch.id,
+          batch.totalRows,
+          batch.createdRows,
+          batch.updatedRows,
+          batch.rows.filter((row) => row.result === ImportRowResult.SKIPPED_DUPLICATE).length,
+          batch.errorRows,
+        )
       }
       if (batch.status !== ImportBatchStatus.PREVIEW) {
         throw new ConflictException('Ce lot ne peut plus être appliqué dans son état actuel.')
       }
 
+      // Pre-fetch active fields to match fieldOfStudy
+      const activeFields = transaction.field ? await transaction.field.findMany({ where: { isActive: true } }) : []
+      const fieldMap = new Map<string, string>()
+      for (const field of activeFields) {
+        fieldMap.set(field.slug.toLowerCase(), field.id)
+        fieldMap.set(field.labelKey.toLowerCase(), field.id)
+      }
+
+      const isCertifying = batch.organization?.type === 'INSTITUTION'
+
       let createdRows = 0
       let updatedRows = 0
       let errorRows = 0
+      const seenEmailsInBatch = new Set<string>()
 
       for (const row of batch.rows) {
-        const student = this.readStudent(row.raw)
-        const validationError = this.validateStudent(student)
-        if (row.result === ImportRowResult.ERROR || validationError) {
+        const raw = (row.raw as Record<string, unknown>) || {}
+        const { student, errors } = extractStudentFromRow(raw, batch.columnMapping)
+
+        if (row.result === ImportRowResult.ERROR || errors.length > 0) {
           errorRows += 1
           await transaction.importRow.update({
             where: { id: row.id },
-            data: { result: ImportRowResult.ERROR, errorCode: validationError ?? 'INVALID_ROW' },
+            data: {
+              result: ImportRowResult.ERROR,
+              errorCode: errors.length > 0 ? errors.join('; ') : (row.errorCode ?? 'INVALID_ROW'),
+            },
           })
           continue
         }
 
         const email = String(student.email).trim().toLowerCase()
+
+        if (seenEmailsInBatch.has(email)) {
+          await transaction.importRow.update({
+            where: { id: row.id },
+            data: {
+              normalizedEmail: email,
+              result: ImportRowResult.SKIPPED_DUPLICATE,
+              errorCode: 'Adresse email présente plusieurs fois dans le lot.',
+            },
+          })
+          continue
+        }
+        seenEmailsInBatch.add(email)
+
+        let matchedFieldId: string | undefined = undefined
+        if (student.fieldOfStudy) {
+          const normField = String(student.fieldOfStudy).toLowerCase().trim()
+          matchedFieldId = fieldMap.get(normField)
+          if (!matchedFieldId) {
+            for (const [key, id] of fieldMap.entries()) {
+              if (normField.includes(key) || key.includes(normField)) {
+                matchedFieldId = id
+                break
+              }
+            }
+          }
+        }
+
         const existingUser = await transaction.user.findUnique({ where: { email } })
         const tempPassword = this.generateTemporaryPassword()
         const passwordHash = await argon2.hash(tempPassword, { type: argon2.argon2id })
@@ -91,7 +143,13 @@ export class ImportApplyService {
               data: { status: existingUser.status === 'DISABLED' ? 'DISABLED' : existingUser.status },
             })
           : await transaction.user.create({
-              data: { email, passwordHash, status: 'INVITED', platformRole: 'TALENT', locale: 'fr' },
+              data: {
+                email,
+                passwordHash,
+                status: 'INVITED',
+                platformRole: 'TALENT',
+                locale: 'fr',
+              },
             })
 
         await transaction.talentIdentity.upsert({
@@ -115,13 +173,35 @@ export class ImportApplyService {
             userId: user.id,
             organizationId: batch.organizationId,
             status: 'ACTIVE',
-            cohortYear: Number(student.entryYear),
+            isCertifying,
+            cohortYear: Number(student.entryYear) || undefined,
+            fieldId: matchedFieldId,
             changedById: actorId,
           },
           update: {
             status: 'ACTIVE',
-            cohortYear: Number(student.entryYear),
+            isCertifying,
+            cohortYear: Number(student.entryYear) || undefined,
+            fieldId: matchedFieldId,
             changedById: actorId,
+          },
+        })
+
+        await transaction.talentProfile.upsert({
+          where: { userId: user.id },
+          create: {
+            userId: user.id,
+            pseudonym: `talent-${user.id.slice(0, 8)}`,
+            avatarSeed: `cofound-${user.id.slice(0, 12)}`,
+            level: this.optionalString(student.level),
+            cohortYear: Number(student.entryYear) || undefined,
+            fieldId: matchedFieldId,
+            onboardingStep: 1,
+          },
+          update: {
+            level: this.optionalString(student.level),
+            cohortYear: Number(student.entryYear) || undefined,
+            fieldId: matchedFieldId,
           },
         })
 
@@ -130,6 +210,7 @@ export class ImportApplyService {
           where: { id: row.id },
           data: { normalizedEmail: email, result: lineResult, errorCode: null, userId: user.id },
         })
+
         if (lineResult === ImportRowResult.CREATED) {
           createdRows += 1
           const rawToken = randomBytes(32).toString('base64url')
@@ -138,10 +219,15 @@ export class ImportApplyService {
               userId: user.id,
               importBatchId: batch.id,
               tokenHash: this.hashToken(rawToken),
-              expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+              expiresAt: new Date(Date.now() + INVITATION_EXPIRY_DAYS * 24 * 60 * 60 * 1000),
             },
           })
-          invitations.push({ recipient: email, activationToken: rawToken, temporaryPassword: tempPassword, locale: 'fr' })
+          invitations.push({
+            recipient: email,
+            activationToken: rawToken,
+            temporaryPassword: tempPassword,
+            locale: 'fr',
+          })
         } else {
           updatedRows += 1
         }
@@ -157,8 +243,8 @@ export class ImportApplyService {
           errorRows,
         },
       })
-      const skippedRows = batch.rows.filter((row) => row.result === ImportRowResult.SKIPPED_DUPLICATE).length
-      return this.summary(applied.id, applied.totalRows, createdRows, updatedRows, skippedRows, errorRows)
+      const skippedRows = batch.rows.length - createdRows - updatedRows - errorRows
+      return this.summary(applied.id, applied.totalRows, createdRows, updatedRows, Math.max(0, skippedRows), errorRows)
     })
 
     for (const invitation of invitations) {
@@ -178,21 +264,6 @@ export class ImportApplyService {
     return Array.from({ length: 12 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
   }
 
-
-  private readStudent(raw: Prisma.JsonValue): ImportStudent {
-    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {}
-    return raw as ImportStudent
-  }
-
-  private validateStudent(student: ImportStudent): string | null {
-    for (const field of REQUIRED_FIELDS) {
-      if (student[field] === undefined || student[field] === null || String(student[field]).trim() === '') return `MISSING_${field.toUpperCase()}`
-    }
-    if (!String(student.email).includes('@')) return 'INVALID_EMAIL'
-    if (!Number.isInteger(Number(student.entryYear))) return 'INVALID_ENTRY_YEAR'
-    return null
-  }
-
   private optionalString(value: unknown): string | undefined {
     const normalized = value === undefined || value === null ? '' : String(value).trim()
     return normalized || undefined
@@ -202,7 +273,14 @@ export class ImportApplyService {
     return createHash('sha256').update(token).digest('hex')
   }
 
-  private summary(batchId: string, totalRows: number, createdRows: number, updatedRows: number, skippedRows: number, errorRows: number): ImportApplyResult {
+  private summary(
+    batchId: string,
+    totalRows: number,
+    createdRows: number,
+    updatedRows: number,
+    skippedRows: number,
+    errorRows: number,
+  ): ImportApplyResult {
     return { batchId, status: 'APPLIED', totalRows, createdRows, updatedRows, skippedRows, errorRows }
   }
 }

@@ -15,7 +15,8 @@
     "test": "pnpm --recursive test",
     "typecheck": "pnpm --recursive typecheck",
     "e2e": "playwright test",
-    "e2e:list": "playwright test --list"
+    "e2e:list": "playwright test --list",
+    "seed:demo": "pnpm --filter @cofound/api seed:demo"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0"

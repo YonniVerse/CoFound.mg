@@ -23,6 +23,11 @@ export class ImportUploadController {
     return this.importUploadService.upload(file, request.user!.userId, organizationId)
   }
 
+  @Get(':id/mapping')
+  async mapping(@Param('id') id: string, @Req() request: AuthenticatedRequest) {
+    return this.importUploadService.getMapping(id, request.user!.userId)
+  }
+
   @Get(':id/preview')
   async preview(@Param('id') id: string, @Req() request: AuthenticatedRequest) {
     return this.importUploadService.getPreview(id, request.user!.userId)

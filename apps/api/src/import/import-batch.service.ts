@@ -11,7 +11,10 @@ type BatchCounters = { totalRows: number; createdRows: number; updatedRows: numb
 
 @Injectable()
 export class ImportBatchService {
-  constructor(@Inject(PrismaService) private readonly prisma: PrismaService, @Inject(NotificationsQueueService) private readonly notificationsQueue: NotificationsQueueService) {}
+  constructor(
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(NotificationsQueueService) private readonly notificationsQueue: NotificationsQueueService,
+  ) {}
 
   async list(actorId: string) {
     const organizationIds = await this.authorizedOrganizationIds(actorId, false)
@@ -35,7 +38,13 @@ export class ImportBatchService {
     await this.assertBatchAccess(batchId, actorId, false)
     const batch = await this.prisma.importBatch.findUnique({
       where: { id: batchId },
-      include: { uploadedBy: { select: { id: true, email: true } }, rows: { orderBy: { lineNumber: 'asc' }, include: { user: { select: { id: true, email: true, status: true } } } } },
+      include: {
+        uploadedBy: { select: { id: true, email: true } },
+        rows: {
+          orderBy: { lineNumber: 'asc' },
+          include: { user: { select: { id: true, email: true, status: true } } },
+        },
+      },
     })
     if (!batch) throw new NotFoundException('Lot d’import introuvable.')
     return {
@@ -54,7 +63,10 @@ export class ImportBatchService {
         normalizedEmail: row.normalizedEmail,
         user: row.user,
       })),
-      bouncedEmails: batch.rows.filter((row) => row.result === ImportRowResult.BOUNCED).map((row) => row.normalizedEmail).filter((email): email is string => Boolean(email)),
+      bouncedEmails: batch.rows
+        .filter((row) => row.result === ImportRowResult.BOUNCED)
+        .map((row) => row.normalizedEmail)
+        .filter((email): email is string => Boolean(email)),
     }
   }
 
@@ -70,14 +82,30 @@ export class ImportBatchService {
   async activationLinks(batchId: string, actorId: string) {
     await this.assertBatchAccess(batchId, actorId, true)
     return this.prisma.$transaction(async (transaction) => {
-      const batch = await transaction.importBatch.findUnique({ where: { id: batchId }, include: { rows: { where: { result: ImportRowResult.CREATED }, include: { user: true }, orderBy: { lineNumber: 'asc' } } } })
+      const batch = await transaction.importBatch.findUnique({
+        where: { id: batchId },
+        include: {
+          rows: {
+            where: { result: ImportRowResult.CREATED },
+            include: { user: true },
+            orderBy: { lineNumber: 'asc' },
+          },
+        },
+      })
       if (!batch) throw new NotFoundException('Lot d’import introuvable.')
       if (batch.status !== ImportBatchStatus.APPLIED) throw new ConflictException('Les liens ne sont disponibles qu’après application du lot.')
       const links: Array<{ email: string; url: string }> = []
       for (const row of batch.rows) {
         if (!row.user || row.user.status !== AccountStatus.INVITED) continue
         const token = randomBytes(32).toString('base64url')
-        await transaction.invitationToken.create({ data: { userId: row.user.id, importBatchId: batch.id, tokenHash: this.hashToken(token), expiresAt: new Date(Date.now() + INVITATION_EXPIRY_DAYS * 24 * 60 * 60 * 1000) } })
+        await transaction.invitationToken.create({
+          data: {
+            userId: row.user.id,
+            importBatchId: batch.id,
+            tokenHash: this.hashToken(token),
+            expiresAt: new Date(Date.now() + INVITATION_EXPIRY_DAYS * 24 * 60 * 60 * 1000),
+          },
+        })
         links.push({ email: row.user.email, url: `${process.env.WEB_APP_URL ?? 'http://localhost:5173'}/activation/${token}` })
       }
       return { batchId, links }
@@ -88,7 +116,16 @@ export class ImportBatchService {
     await this.assertBatchAccess(batchId, actorId, true)
     const invitations: PendingInvitation[] = []
     const result = await this.prisma.$transaction(async (transaction) => {
-      const batch = await transaction.importBatch.findUnique({ where: { id: batchId }, include: { rows: { where: { result: ImportRowResult.CREATED }, include: { user: true }, orderBy: { lineNumber: 'asc' } } } })
+      const batch = await transaction.importBatch.findUnique({
+        where: { id: batchId },
+        include: {
+          rows: {
+            where: { result: ImportRowResult.CREATED },
+            include: { user: true },
+            orderBy: { lineNumber: 'asc' },
+          },
+        },
+      })
       if (!batch) throw new NotFoundException('Lot d’import introuvable.')
       if (batch.status !== ImportBatchStatus.APPLIED) throw new ConflictException('Les invitations ne peuvent être relancées qu’après application du lot.')
       for (const row of batch.rows) {
@@ -113,14 +150,31 @@ export class ImportBatchService {
   private async assertBatchAccess(batchId: string, actorId: string, managerOnly: boolean) {
     const batch = await this.prisma.importBatch.findUnique({ where: { id: batchId } })
     if (!batch) throw new NotFoundException('Lot d’import introuvable.')
-    const member = await this.prisma.organizationMember.findUnique({ where: { organizationId_userId: { organizationId: batch.organizationId, userId: actorId } } })
-    const allowedRoles = managerOnly ? [OrganizationRole.ORG_ADMIN, OrganizationRole.ORG_MANAGER] : [OrganizationRole.ORG_ADMIN, OrganizationRole.ORG_MANAGER, OrganizationRole.ORG_VIEWER]
+    const user = this.prisma.user
+      ? await this.prisma.user.findUnique({ where: { id: actorId }, select: { platformRole: true } })
+      : null
+    if (user?.platformRole === 'STAFF') return batch
+    const member = await this.prisma.organizationMember.findUnique({
+      where: { organizationId_userId: { organizationId: batch.organizationId, userId: actorId } },
+    })
+    const allowedRoles = managerOnly
+      ? [OrganizationRole.ORG_ADMIN, OrganizationRole.ORG_MANAGER]
+      : [OrganizationRole.ORG_ADMIN, OrganizationRole.ORG_MANAGER, OrganizationRole.ORG_VIEWER]
     if (!member || !allowedRoles.includes(member.role)) throw new ForbiddenException('Vous ne pouvez pas accéder à ce lot.')
     return batch
   }
 
   private async authorizedOrganizationIds(actorId: string, managerOnly: boolean) {
-    const roles = managerOnly ? [OrganizationRole.ORG_ADMIN, OrganizationRole.ORG_MANAGER] : [OrganizationRole.ORG_ADMIN, OrganizationRole.ORG_MANAGER, OrganizationRole.ORG_VIEWER]
+    const user = this.prisma.user
+      ? await this.prisma.user.findUnique({ where: { id: actorId }, select: { platformRole: true } })
+      : null
+    if (user?.platformRole === 'STAFF') {
+      const orgs = await this.prisma.organization.findMany({ select: { id: true } })
+      return orgs.map((o) => o.id)
+    }
+    const roles = managerOnly
+      ? [OrganizationRole.ORG_ADMIN, OrganizationRole.ORG_MANAGER]
+      : [OrganizationRole.ORG_ADMIN, OrganizationRole.ORG_MANAGER, OrganizationRole.ORG_VIEWER]
     const members = await this.prisma.organizationMember.findMany({ where: { userId: actorId, role: { in: roles } }, select: { organizationId: true } })
     return members.map((member) => member.organizationId)
   }
@@ -136,5 +190,7 @@ export class ImportBatchService {
     }
   }
 
-  private hashToken(token: string) { return createHash('sha256').update(token).digest('hex') }
+  private hashToken(token: string) {
+    return createHash('sha256').update(token).digest('hex')
+  }
 }

@@ -42,7 +42,7 @@ export type ImportAnalysis = {
   warnings: string[]
 }
 
-const REQUIRED_FIELDS: readonly ImportField[] = [
+export const REQUIRED_FIELDS: readonly ImportField[] = [
   'email',
   'firstName',
   'lastName',
@@ -51,29 +51,34 @@ const REQUIRED_FIELDS: readonly ImportField[] = [
   'entryYear',
 ]
 
-const FIELD_ALIASES: Record<ImportField, readonly string[]> = {
-  email: ['email', 'e-mail', 'mail', 'adresse email', 'adresse e-mail', 'courriel'],
-  firstName: ['prenom', 'prénom', 'first name', 'firstname', 'given name'],
-  lastName: ['nom', 'nom de famille', 'lastname', 'last name', 'family name'],
-  fieldOfStudy: ['filiere', 'filière', 'domaine', 'formation', 'parcours', 'field of study', 'major'],
-  level: ['niveau', 'classe', 'annee detude', "année d'étude", 'niveau detude', "niveau d'étude", 'level'],
+export const FIELD_ALIASES: Record<ImportField, readonly string[]> = {
+  email: ['email', 'e-mail', 'mail', 'adresse email', 'adresse e-mail', 'courriel', 'adresse mail', 'contact email'],
+  firstName: ['prenom', 'prénom', 'first name', 'firstname', 'given name', 'nom de bapteme'],
+  lastName: ['nom', 'nom de famille', 'lastname', 'last name', 'family name', 'patronyme'],
+  fieldOfStudy: ['filiere', 'filière', 'domaine', 'formation', 'parcours', 'field of study', 'major', 'etudes', 'études', 'departement', 'département'],
+  level: ['niveau', 'classe', 'annee detude', "année d'étude", 'annee d etude', 'niveau detude', "niveau d'étude", 'level', 'grade', 'promotion'],
   entryYear: [
     'annee dentree',
     "année d'entrée",
+    'annee d entree',
     'annee entree',
-    "année entrée",
+    'année entrée',
     'annee dinscription',
     "année d'inscription",
     'entry year',
     'cohort year',
+    'annee',
+    'année',
+    'annee promotion',
+    'promo',
   ],
-  gender: ['genre', 'sexe', 'gender'],
-  studentNumber: ['matricule', 'numero matricule', 'numéro matricule', 'student number', 'student id', 'id etudiant'],
+  gender: ['genre', 'sexe', 'gender', 'sex'],
+  studentNumber: ['matricule', 'numero matricule', 'numéro matricule', 'student number', 'student id', 'id etudiant', 'num etudiant', 'n° matricule'],
 }
 
 const HEADER_SEPARATOR = /[\s_./:-]+/g
 
-function canonicalizeHeader(value: string): string {
+export function canonicalizeHeader(value: string): string {
   return value
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
@@ -83,15 +88,29 @@ function canonicalizeHeader(value: string): string {
     .replace(HEADER_SEPARATOR, ' ')
 }
 
-function cleanText(value: unknown): string {
+export function cleanText(value: unknown): string {
   return String(value ?? '')
     .normalize('NFC')
     .replace(/\s+/gu, ' ')
     .trim()
 }
 
-function normalizeEmail(value: string): string {
+export function normalizeEmail(value: string): string {
   return value.replace(/\s+/gu, '').toLocaleLowerCase('en-US')
+}
+
+export function parseEntryYear(value: unknown): number | undefined {
+  if (typeof value === 'number' && Number.isInteger(value)) {
+    const currentYear = new Date().getFullYear()
+    if (value >= 1900 && value <= currentYear + 5) return value
+    return undefined
+  }
+  const str = cleanText(value).replace(/[^\d]/g, '')
+  if (!/^\d{4}$/u.test(str)) return undefined
+  const year = Number(str)
+  const currentYear = new Date().getFullYear()
+  if (year < 1900 || year > currentYear + 5) return undefined
+  return year
 }
 
 function normalizeHeaderMap(headers: string[]): {
@@ -142,33 +161,54 @@ function decodeCsv(buffer: Buffer): string {
   return new TextDecoder('windows-1252').decode(buffer)
 }
 
-function parseEntryYear(value: string): number | undefined {
-  if (!/^\d{4}$/u.test(value)) return undefined
-  const year = Number(value)
-  const currentYear = new Date().getFullYear()
-  if (year < 1900 || year > currentYear + 2) return undefined
-  return year
-}
-
 function getCell(row: Record<string, unknown>, header: string | undefined): string {
-  return header ? cleanText(row[header]) : ''
+  return header && header in row ? cleanText(row[header]) : ''
 }
 
-function normalizeRow(
-  row: Record<string, unknown>,
-  lineNumber: number,
-  columnMapping: Partial<Record<ImportField, string>>,
-): ImportRowAnalysis {
-  const raw = Object.fromEntries(Object.entries(row).map(([key, value]) => [key, cleanText(value)]))
-  const errors: string[] = []
-  const email = normalizeEmail(getCell(row, columnMapping.email))
-  const firstName = getCell(row, columnMapping.firstName)
-  const lastName = getCell(row, columnMapping.lastName)
-  const fieldOfStudy = getCell(row, columnMapping.fieldOfStudy)
-  const level = getCell(row, columnMapping.level)
-  const entryYearText = getCell(row, columnMapping.entryYear)
-  const entryYear = parseEntryYear(entryYearText)
+export function extractStudentFromRow(
+  raw: Record<string, unknown>,
+  columnMapping?: unknown,
+): { student: Partial<NormalizedStudent>; errors: string[] } {
+  const mapping = typeof columnMapping === 'object' && columnMapping !== null
+    ? (columnMapping as Record<string, unknown>)
+    : {}
 
+  function resolveHeader(field: ImportField): string | undefined {
+    // Check if mapping is { field: headerName }
+    if (typeof mapping[field] === 'string' && (mapping[field] as string) in raw) {
+      return mapping[field] as string
+    }
+    // Check if mapping is { headerName: field }
+    for (const [header, mappedField] of Object.entries(mapping)) {
+      if (mappedField === field && header in raw) {
+        return header
+      }
+    }
+    // Check direct key on raw
+    if (field in raw) return field
+    // Check aliases on raw
+    for (const alias of FIELD_ALIASES[field]) {
+      if (alias in raw) return alias
+      const canonAlias = canonicalizeHeader(alias)
+      for (const rawKey of Object.keys(raw)) {
+        if (canonicalizeHeader(rawKey) === canonAlias) return rawKey
+      }
+    }
+    return undefined
+  }
+
+  const emailRaw = getCell(raw, resolveHeader('email'))
+  const email = emailRaw ? normalizeEmail(emailRaw) : ''
+  const firstName = getCell(raw, resolveHeader('firstName'))
+  const lastName = getCell(raw, resolveHeader('lastName'))
+  const fieldOfStudy = getCell(raw, resolveHeader('fieldOfStudy'))
+  const level = getCell(raw, resolveHeader('level'))
+  const entryYearText = getCell(raw, resolveHeader('entryYear'))
+  const entryYear = parseEntryYear(entryYearText)
+  const gender = getCell(raw, resolveHeader('gender'))
+  const studentNumber = getCell(raw, resolveHeader('studentNumber'))
+
+  const errors: string[] = []
   if (!email) errors.push('Adresse email absente.')
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email)) errors.push('Adresse email invalide.')
   if (!firstName) errors.push('Prénom absent.')
@@ -178,21 +218,28 @@ function normalizeRow(
   if (!entryYearText) errors.push("Année d'entrée absente.")
   else if (entryYear === undefined) errors.push("Année d'entrée invalide.")
 
-  const normalized: Partial<NormalizedStudent> = {
+  const student: Partial<NormalizedStudent> = {
     email,
     firstName,
     lastName,
     fieldOfStudy,
     level,
   }
-  if (entryYear !== undefined) normalized.entryYear = entryYear
+  if (entryYear !== undefined) student.entryYear = entryYear
+  if (gender) student.gender = gender
+  if (studentNumber) student.studentNumber = studentNumber
 
-  const gender = getCell(row, columnMapping.gender)
-  if (gender) normalized.gender = gender
-  const studentNumber = getCell(row, columnMapping.studentNumber)
-  if (studentNumber) normalized.studentNumber = studentNumber
+  return { student, errors }
+}
 
-  return { lineNumber, raw, normalized, errors }
+function normalizeRow(
+  row: Record<string, unknown>,
+  lineNumber: number,
+  columnMapping: Partial<Record<ImportField, string>>,
+): ImportRowAnalysis {
+  const raw = Object.fromEntries(Object.entries(row).map(([key, value]) => [key, cleanText(value)]))
+  const { student, errors } = extractStudentFromRow(raw, columnMapping)
+  return { lineNumber, raw, normalized: student, errors }
 }
 
 function inferFileType(fileName: string, buffer: Buffer): 'CSV' | 'XLSX' {

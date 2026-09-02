@@ -1,5 +1,5 @@
 import { useState, useRef, type ChangeEvent, type DragEvent } from 'react'
-import { ArrowLeft, ArrowRight, FileSpreadsheet, UploadCloud, FileText, XCircle, Loader2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, FileSpreadsheet, UploadCloud, FileText, XCircle, Loader2, Download, HelpCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { apiClient, ApiClientError } from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,13 @@ type UploadResponse = {
   totalRows: number
   errorRows: number
 }
+
+const SAMPLE_CSV_CONTENT = `Adresse e-mail,Prénom,Nom,Filière,Niveau,Année d'entrée,Genre,Matricule
+mialy.randria@example.mg,Mialy,Randriambelo,Informatique,L3,2024,F,ETU-2024-001
+normanvonizara@gmail.com,Norman,Vonizara,Informatique,M1,2024,F,ETU-2024-002
+hery.andria@example.mg,Hery,Andrianina,Génie Civil,L2,2023,M,ETU-2023-015
+toky.ramah@example.mg,Toky,Ramaharo,Informatique,M2,2022,M,ETU-2022-089
+soafara.rasoa@example.mg,Soafara,Rasoanaivo,Économie,L3,2024,F,ETU-2024-044`
 
 export default function ImportUploadPage() {
   const navigate = useNavigate()
@@ -31,7 +38,11 @@ export default function ImportUploadPage() {
       return
     }
     if (file.size > 10 * 1024 * 1024) {
-      setError('Le fichier est trop volumineux (max 10 Mo).')
+      setError('Le fichier est trop volumineux (taille maximale autorisée : 10 Mo).')
+      return
+    }
+    if (file.size === 0) {
+      setError('Le fichier sélectionné est vide.')
       return
     }
     setSelectedFile(file)
@@ -59,6 +70,18 @@ export default function ImportUploadPage() {
     if (file) validateAndSetFile(file)
   }
 
+  function handleDownloadSample() {
+    const blob = new Blob([SAMPLE_CSV_CONTENT], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'modele_import_etudiants.csv')
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
   async function handleUpload() {
     if (!selectedFile || isUploading) return
     setIsUploading(true)
@@ -76,7 +99,11 @@ export default function ImportUploadPage() {
       navigate(`/institution/imports/${response.batchId}/mapping?importId=${response.batchId}`)
     } catch (caught) {
       if (caught instanceof ApiClientError) {
-        setError(caught.messageKey && caught.messageKey !== 'errors.internal' ? caught.messageKey : (caught.message || 'Une erreur serveur est survenue lors de l’envoi.'))
+        setError(
+          caught.messageKey && caught.messageKey !== 'errors.internal'
+            ? caught.messageKey
+            : caught.message || 'Une erreur serveur est survenue lors de l’envoi.',
+        )
       } else if (caught instanceof Error) {
         setError(caught.message)
       } else {
@@ -95,7 +122,9 @@ export default function ImportUploadPage() {
             <Button variant="ghost" onClick={() => navigate('/institution')} className="-ml-3 gap-2">
               <ArrowLeft className="h-4 w-4" /> Retour à la console
             </Button>
-            <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">Étape 1 sur 4</span>
+            <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+              Étape 1 sur 4
+            </span>
           </div>
 
           <header className="max-w-2xl space-y-3">
@@ -103,16 +132,23 @@ export default function ImportUploadPage() {
               <FileSpreadsheet className="h-7 w-7" />
               <p className="text-sm font-semibold uppercase tracking-[0.18em]">Nouvel import</p>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Sélectionnez le fichier d’étudiants</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              Sélectionnez le fichier d’étudiants
+            </h1>
             <p className="text-base leading-7 text-muted-foreground">
-              Déposez votre liste au format CSV ou Excel (XLSX). Nous analyserons la structure avant d’inviter les étudiants.
+              Déposez votre liste d'étudiants au format CSV ou Excel (XLSX). La structure sera analysée et prévisualisée avant toute création de compte.
             </p>
           </header>
 
           <Card className="rounded-xl border-border bg-card shadow-2xs">
-            <CardHeader>
-              <CardTitle>Déposer un fichier</CardTitle>
-              <p className="text-sm text-muted-foreground">Formats acceptés : .csv, .xlsx, .xls (max 10 Mo)</p>
+            <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <CardTitle>Déposer un fichier</CardTitle>
+                <p className="text-sm text-muted-foreground">Formats acceptés : CSV (.csv), Excel (.xlsx, .xls) · Max 10 Mo</p>
+              </div>
+              <Button variant="outline" size="sm" onClick={handleDownloadSample} className="h-8 gap-2 text-xs">
+                <Download className="h-3.5 w-3.5" /> Télécharger un modèle CSV
+              </Button>
             </CardHeader>
             <CardContent className="mt-3 space-y-6">
               <div
@@ -143,7 +179,9 @@ export default function ImportUploadPage() {
                     </div>
                     <div>
                       <p className="font-semibold text-foreground">{selectedFile.name}</p>
-                      <p className="text-xs text-muted-foreground">{(selectedFile.size / 1024).toFixed(1)} Ko</p>
+                      <p className="text-xs text-muted-foreground">
+                        {(selectedFile.size / 1024).toFixed(1)} Ko · Prêt pour l'analyse
+                      </p>
                     </div>
                     <Button
                       variant="outline"
@@ -176,6 +214,33 @@ export default function ImportUploadPage() {
                   <span>{error}</span>
                 </div>
               )}
+
+              {/* Format specifications */}
+              <div className="rounded-xl border border-border/70 bg-muted/30 p-4 space-y-3 text-xs">
+                <div className="flex items-center gap-2 font-semibold text-foreground">
+                  <HelpCircle className="h-4 w-4 text-primary" /> Structure attendue des colonnes
+                </div>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <div className="space-y-1">
+                    <span className="font-semibold text-foreground">Colonnes obligatoires :</span>
+                    <ul className="space-y-0.5 text-muted-foreground list-disc list-inside">
+                      <li><strong>Adresse e-mail</strong> (clé unique de compte)</li>
+                      <li><strong>Prénom</strong> et <strong>Nom</strong></li>
+                      <li><strong>Filière</strong> (ex: Informatique, Gestion)</li>
+                      <li><strong>Niveau</strong> (ex: L3, M1, M2)</li>
+                      <li><strong>Année d'entrée</strong> (ex: 2024)</li>
+                    </ul>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="font-semibold text-foreground">Colonnes facultatives :</span>
+                    <ul className="space-y-0.5 text-muted-foreground list-disc list-inside">
+                      <li><strong>Genre</strong> (privé, statistiques agrégées uniquement)</li>
+                      <li><strong>Matricule</strong> (identifiant étudiant interne)</li>
+                      <li>Encodages supportés : UTF-8, Windows-1252, accents</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
 
               <div className="flex justify-end pt-2">
                 <Button
